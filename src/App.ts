@@ -24,15 +24,12 @@ interface ConnectionSettings {
     user: string
 }
 
-export type Notifier = <Event extends {}>(name: string) => (event: Event) => void
+export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
 
 
 export default class App {
        
-    static bootstrap(
-        handle: (name: string, handler: (args: {}) => any) => void,
-        notify: Notifier
-    ) {
+    static bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter) {
         const dataPath = join(homedir(), '.f5')
         mkdir(join(dataPath, 'connections'), { recursive: true })
         touch(join(dataPath, 'credentials.json')) // TODO write "[]" if empty
@@ -44,12 +41,20 @@ export default class App {
             config:     () => this.config(),
             connect:    ({file}: {file: Path}) => this.connect(file),
             disconnect: ({id}: {id: ConnectionID}) => Connection.close(id),
-            watch:      ({dir}: {dir: URI}) => this.watch(dir),
-            unwatch:    ({dir}: {dir: URI}) => this.unwatch(dir),
+            watch:      ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.watch(parseURI(dir)['path']) : this.remoteWatcher.watch(dir),
+            unwatch:    ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.unwatch(parseURI(dir)['path']) : this.remoteWatcher.unwatch(dir),
             refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),
-            stop:       ({id}: {id: string}) => queues.get(id)?.close(),
+            stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))
+
+        const emitFS = emitter<{uri: URI, files: Files}>('fs')
+        const sendDirContent = (uri: URI, files: Files) => emitFS({uri, files})
+        this.localWatcher = new LocalWatcher((path, files) => sendDirContent('file://'+path as URI, files))
+        this.remoteWatcher = new RemoteWatcher(sendDirContent, transform)
+
+        const emitQueue = emitter<{id: string, event: QueueEvent}>('queue')
+        this.onQueueUpdate = (id: string, event: QueueEvent) => emitQueue({id, event})
 
 /* 
         Object.entries({
@@ -76,14 +81,6 @@ export default class App {
         this.localWatcher = new LocalWatcher((path, files) => sendDirContent('file://'+path as URI, files))
         this.remoteWatcher = new RemoteWatcher(sendDirContent, transform)
 */
-    
-        const notifyFS = notify<{uri: URI, files: Files}>('fs')
-        const sendDirContent = (uri: URI, files: Files) => notifyFS({uri, files})
-        this.localWatcher = new LocalWatcher((path, files) => sendDirContent('file://'+path as URI, files))
-        this.remoteWatcher = new RemoteWatcher(sendDirContent, transform)
-
-        const notifyQueue = notify<{id: string, event: QueueEvent}>('queue')
-        this.onQueueUpdate = (id: string, event: QueueEvent) => notifyQueue({id, event})
     }
 
     public static onError: (error: any) => void
@@ -104,14 +101,6 @@ export default class App {
         const {scheme, user, host, port} = JSON.parse( readFileSync(file).toString() ) as ConnectionSettings
         const id = await Connection.open(scheme, user, host, port)
         return { id, config: { pwd: await Connection.get(id).pwd() } }
-    }
-
-    private static watch(uri: URI) {
-        isLocal(uri) ? this.localWatcher.watch(parseURI(uri)['path']) : this.remoteWatcher.watch(uri)
-    }
-
-    private static unwatch(uri: URI) {
-        isLocal(uri) ? this.localWatcher.unwatch(parseURI(uri)['path']) : this.remoteWatcher.unwatch(uri)
     }
 
     private static localWatcher: LocalWatcher
