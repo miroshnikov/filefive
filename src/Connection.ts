@@ -1,0 +1,119 @@
+import ReferenceCountMap from './utils/ReferenceCountMap'
+import { FileSystem } from './FileSystem'
+import { URI, ConnectionID } from './types'
+import Ftp from './fs/Ftp'
+import Password from './Password'
+import  { parseURI } from './utils/URI'
+import App from './App'
+import unqid from './utils/uniqid'
+import logger from './log'
+
+
+export default class {
+
+    static initialize() {
+        // this.shared.set(LocalFileSystemID, new Local)
+    }
+
+    static async open(scheme: string, user: string, host: string, port:number): Promise<ConnectionID> {
+        const id: ConnectionID = `${scheme}://${user}@${host}:${port}`
+        if (this.shared.inc(id)) {
+            return id
+        }
+        const conn = this.create(id, scheme, user, host, port)
+        this.shared.set(id, conn)
+        await conn.open()
+        return id
+    }
+
+    static get(id: ConnectionID) {
+        // open ?
+        return this.shared.get(id)
+    }
+
+    static close(id: ConnectionID) {
+        logger.log(`close shared ${id} ${this.shared.count(id)}`)
+        this.shared.dec(id)?.close()
+    }
+
+    static async transmit(id: ConnectionID): Promise<[FileSystem, () => void]> {
+        const conn = await this.hold(id)
+        if (conn) {
+            return Promise.resolve([conn[0], () => this.release(id, conn[1])])
+        }
+        return new Promise((resolve) => {
+            const onRelease = (poolId: string) => {
+                const { fs } = this.pools[id][poolId]
+                resolve([fs, () => this.release(id, poolId)])
+            }
+            id in this.pending ? this.pending[id].push(onRelease) : (this.pending[id] = [onRelease])
+        })
+    }
+
+    private static async hold(id: ConnectionID): Promise<[FileSystem, string]|undefined> {
+        !(id in this.pools) && (this.pools[id] = {})
+        const pool = Object.entries(this.pools[id])
+        const conn = pool.find(([, { idle }]) => idle !== false)
+        if (conn) {
+            conn[1].idle !== false && clearTimeout(conn[1].idle)
+            conn[1].idle = false
+            return [conn[1].fs, conn[0]]
+        }
+        if (pool.length < this.getLimit(id)) {
+            const poolId = unqid()
+            try {
+                const fs = this.createFromId(id)
+                await fs.open()
+                this.pools[id][poolId] = { fs, idle: false }
+                return [fs, poolId]
+            } catch (e) {
+                this.limits.set(id, Object.entries(this.pools[id]).length)
+            }
+        }
+    }
+
+    private static release(id: ConnectionID, poolId: string) {
+        const conn = this.pools[id]?.[poolId]
+        if (conn) {
+            if (this.pending[id]?.length) {
+                this.pending[id].shift()(poolId)
+            } else {
+                conn.idle = setTimeout(() => {
+                    conn.fs.close()
+                    delete this.pools[id][poolId]
+                }, 2000)
+            }
+        }
+    }
+
+    private static getLimit(id: ConnectionID) {
+        return this.limits.has(id) ? this.limits.get(id) : 1024
+    }
+
+    private static create(id: ConnectionID, scheme: string, user: string, host: string, port: number): FileSystem {
+        switch (scheme) {
+            case 'ftp': {
+                return new Ftp(
+                    host, 
+                    user, 
+                    Password.get(id), 
+                    port, 
+                    e => { logger.log('FTP error:', e);  App.onError(e) },
+                )
+            }
+        }
+    }
+
+    private static createFromId(id: ConnectionID): FileSystem {
+        const { scheme, user, host, port } = parseURI(id as URI)
+        return this.create(id, scheme, user, host, port)
+    }
+
+    private static shared = new ReferenceCountMap<ConnectionID, FileSystem>
+
+    private static pools: Record<string, Record<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = {}
+
+    private static pending: Record<string, ((id: string) => void)[]> = {}
+
+    private static limits = new Map<ConnectionID, number>()
+}
