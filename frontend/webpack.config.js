@@ -18,7 +18,10 @@ module.exports = {
       port: 1331,
       proxy: {
         '/api': 'http://localhost:3113',
-        '/events': 'http://localhost:3113',
+        '/events': {
+          target: 'http://localhost:3113',
+          ws: true
+        },
       }
     },
     plugins: [

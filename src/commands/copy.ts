@@ -1,4 +1,4 @@
-import { Command, URI } from '../types'
+import { URI } from '../types'
 import { isLocal, parseURI } from '../utils/URI'
 import { QueueEventType, QueueType } from '../types'
 import Queue, { queues } from '../Queue'
@@ -6,11 +6,9 @@ import unqid from '../utils/uniqid'
 import App from '../App'
 
 
-type CopyArgs = { src: URI[], dest?: URI }
-
-export const copy: Command<CopyArgs, string|null> = async ({ src, dest }: CopyArgs) => {
-    if (isLocal(src[0]) && dest && isLocal(dest)) {
-        console.log('TODO local copy')
+export default function (src: URI[], dest: URI) {
+    if (isLocal(src[0]) && isLocal(dest)) {
+        console.log('TODO local copy (as upload?)')
         return
     }
     

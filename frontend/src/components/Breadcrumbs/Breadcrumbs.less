@@ -1,0 +1,44 @@
+:local(.root) {
+    background-color: var(--bar-background);
+    user-select: none;
+    > div {
+        display: flex;
+        align-items: center;
+        background-color: var(--background);
+        color: var(--color);
+        margin: .4em;
+        padding: .2em .4em;
+        border-radius: 2px;
+        > i {
+            color: var(--bar-color);
+            padding-right: .5em;
+            cursor: pointer;
+            &:hover {
+                color: var(--color);
+            }
+        }
+        > div {
+            white-space: nowrap;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            &::after {
+                padding: 0 .2em;
+                content: "/";
+            }
+            &:first-child::before {
+                padding-right: .2em;
+                content: "/";
+            }
+            &:last-child::after {
+                display: none;
+            }
+            > span {
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    
+    }
+}

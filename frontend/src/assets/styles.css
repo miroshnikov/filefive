@@ -1,0 +1,135 @@
+@font-face {
+    font-family: OpenSans;
+    src: url(./fonts/OpenSans-VariableFont_wdth,wght.ttf);
+    font-weight: 400;
+    font-variation-settings: "wght" 400;
+}
+@font-face {
+    font-family: OpenSans;
+    src: url(./fonts/OpenSans-Italic-VariableFont_wdth,wght.ttf);
+    font-style: italic;
+}
+@font-face {
+    font-family: OpenSans;
+    src: url(./fonts/OpenSans-VariableFont_wdth,wght.ttf);
+    font-weight: 600;
+    font-variation-settings: "wght" 600;
+}
+
+
+
+@font-face {
+    font-family: FiraCode;
+    src: url(./fonts/FiraCode-VariableFont_wght.ttf);
+    font-weight: 400;
+    font-variation-settings: "wght" 400;
+}
+
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    /* src: url(../fonts/MaterialIcons-Regular.ttf) format('truetype'); */
+    src: url(./fonts/MaterialIconsOutlined-Regular.otf) format('opentype');
+}
+/* https://github.com/google/material-design-icons/tree/master/font */
+
+.icon {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: var(--icon-size);
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+  
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+  
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+    border: 0;
+    font: inherit;
+    font-style: normal;
+    font-weight: 400;
+    color: var(--color);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+image, picture, svg, video {
+    display: block;
+    max-width: 100%; 
+}
+
+*::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: transparent;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: var(--hover-background);
+}
+*::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
+*:focus {
+    outline: none !important
+}
+
+button {
+    background-color: transparent;
+}
+
+html {
+    color-scheme: dark light;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+}
+
+strong {
+    font-weight: 600;
+}
+
+svg.drag-image text {
+    fill: var(--color);
+    font-family: var(--font-family);
+    font-size: 13px;
+}
+
+:root {
+    --font-family: OpenSans;
+    --font-size: 13px;
+    --icon-size: 14px;
+    --background: #fff;
+    --color: #040404;
+    --bar-background: #ECE7E5;
+    --bar-color: #000000;
+    --border-color: #E3E2E3; 
+    --hover-background: #e9edf9;
+    --selected-background: #2551C8;
+    --selected-color: #fff;
+    --drop-background: #BEBEBE;
+}
+
+@import "themes/one-dark.css";

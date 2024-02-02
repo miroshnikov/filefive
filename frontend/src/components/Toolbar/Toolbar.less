@@ -1,0 +1,27 @@
+:local(.root) {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    gap: .5em;
+    background-color: var(--bar-background);
+    padding: .2em .4em;
+    user-select: none;
+    > .icon {
+        font-size: 1.1rem;
+        color: var(--bar-color);
+        padding: 0.1em;
+        cursor: pointer;
+        &:hover {
+            background-color: var(--hover-background);
+            color: var(--color);
+        }
+        &:disabled {
+            opacity: .6;
+            cursor: auto;
+            &:hover {
+                background-color: inherit;
+                color: revert;
+            }
+        }
+    }
+}

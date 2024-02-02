@@ -1,8 +1,8 @@
-// import { remove } from './remove'
-// import { copy } from './copy'
+import copy from './copy'
+import remove from './remove'
 
 export const commands = {
-    // 'remove': remove,
-    // 'copy': copy
+    'copy': copy,
+    'remove': remove
 }
 

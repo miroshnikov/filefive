@@ -1,0 +1,26 @@
+:local(.root) {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    > header {
+        position: sticky;
+        top: 0;
+        background-color: var(--bar-background);
+        > .toolbar {
+            flex: 20px 0 0 ;
+            display: flex;
+            justify-content: end;
+            > button {
+                flex: 20px 0 0;
+                height: 20px;
+                padding: 2px;
+                cursor: pointer;
+            }
+        }    
+    }
+    > .list {
+        flex: auto 1 1;
+        overflow: auto;
+    }
+}
+

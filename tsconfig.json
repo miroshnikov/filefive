@@ -11,7 +11,7 @@
     "esModuleInterop": true,
     "paths": {
       "*": ["node_modules/*"]
-    }
+    },
   },
-  "include": ["src/index.ts", "src/**/*"]
+  "include": ["./src/**/*"]
 }

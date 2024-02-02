@@ -20,6 +20,7 @@ const handle = (name: string, handler: (args: {}) => any) =>
     app.post(`/api/${name}`, (req, res) => res.json(handler(req.body)))
 
 const wss = new WebSocketServer({server, path: `/events`})
-const emitter: Emitter = channel => event => wss.clients.forEach(ws => ws.send(JSON.stringify({channel, ...event})))
+const emitter: Emitter = channel => event => 
+    wss.clients.forEach(ws => ws.send(JSON.stringify({channel, ...event})))
 
 MainApp.bootstrap(handle, emitter)

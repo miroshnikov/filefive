@@ -1,0 +1,32 @@
+:local(.root) {
+    position: relative;
+    background-color: var(--background);
+    height: 100vh;
+    overflow: hidden;
+    &.hasQueues {
+        padding-bottom: 2em;
+    }
+    > .queues {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4em;
+        padding: 0.3em 0.6em;
+        background-color: var(--bar-background);
+        color: var(--bar-color);
+        text-overflow: ellipsis;
+        display: flex;
+        gap: 0.6em;
+        align-items: center;
+        > div {
+            flex: 2em 0 1;
+            &.active {
+                flex: 100% 1 1;
+            }
+            &:not(.active) {
+                cursor: pointer;
+            }
+        }
+    }
+}

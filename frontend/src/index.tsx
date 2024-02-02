@@ -1,8 +1,10 @@
 import React, { StrictMode } from "react"
 import { createRoot } from 'react-dom/client'
+import './api'
 import './assets/styles.css'
 import App from './components/App/App'
 import i18next from 'i18next'
+
 
 i18next
     .use({

@@ -2,7 +2,7 @@ import { homedir } from 'node:os'
 import { mkdir } from 'node:fs/promises'
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path'
-import { AppConfig, Path, ConnectionID, ConnectionConfig, CommandID, URI, Files } from './types'
+import { AppConfig, Path, ConnectionID, ConnectionConfig, URI, Files } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
 import RemoteWatcher from './RemoteWatcher'
@@ -14,6 +14,7 @@ import { commands } from './commands'
 import logger from './log'
 import transform from './transform'
 import { touch } from './Local'
+
 
 
 
@@ -44,9 +45,16 @@ export default class App {
             watch:      ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.watch(parseURI(dir)['path']) : this.remoteWatcher.watch(dir),
             unwatch:    ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.unwatch(parseURI(dir)['path']) : this.remoteWatcher.unwatch(dir),
             refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
+            copy:       ({src, dest}: {src: URI[], dest: URI}) => commands.copy(src, dest),
+            remove:     ({files}: {files: URI[]}) => commands.remove(files),
+            // read
+            // write
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),
             stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))
+
+        const emitError = emitter<any>('error')
+        this.onError = (error: any) => { logger.error(error); emitError(error) }
 
         const emitFS = emitter<{uri: URI, files: Files}>('fs')
         const sendDirContent = (uri: URI, files: Files) => emitFS({uri, files})
@@ -65,8 +73,6 @@ export default class App {
             unwatch:    (dir: URI) => this.unwatch(dir),
             execute:    (command: CommandID, args: {}) => (commands as Record<CommandID, Function>)[command](args), // ?
             refresh:    (dir: URI) => this.remoteWatcher.refresh(dir),
-            // copy
-            // remove
             // read
             // write
             resolve:    (id: string, action: QueueAction) => queues.get(id)?.resolve(action),

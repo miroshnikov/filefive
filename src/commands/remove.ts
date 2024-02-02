@@ -1,10 +1,10 @@
-import { Command, URI, QueueEventType, QueueType } from '../types'
-import { basename } from 'node:path'
+import { URI, QueueEventType, QueueType } from '../types'
 import { rm } from 'node:fs/promises'
 import { isLocal, parseURI } from '../utils/URI'
 import unqid from '../utils/uniqid'
 import Queue, { queues } from '../Queue'
 import App from '../App'
+// import trash from 'trash'
 
 /*
 const confirmLocalDelete = (names: string[], window: BrowserWindow) => 
@@ -35,30 +35,27 @@ const confirmRemoteDelete = (names: string[], window: BrowserWindow) =>
 
 
 type RemoveArgs = { paths: URI[], window: BrowserWindow }
+*/
 
-export const remove: Command<RemoveArgs, boolean> = async ({ paths, window }: RemoveArgs) => {
-    if (!paths.length) {
+export default function (files: URI[], immediately = false) {
+    if (!files.length) {
         return true
     }
 
-    const local = isLocal(paths[0])
-    const names = paths.map(p => basename(parseURI(p)['path']))
-    const {response, checkboxChecked} = await (local ? confirmLocalDelete(names, window) : confirmRemoteDelete(names, window))
-    if (response) {
-        return false
-    }
-
-    if (local) {
-        paths
-            .map(p => parseURI(p)['path'])
-            .forEach(path => checkboxChecked ? rm(path, { recursive: true, force: true }) : shell.trashItem(path))
+    if (isLocal(files[0])) {
+        const paths = files.map(p => parseURI(p)['path'])
+        if (immediately) {
+            // trash(paths) TODO
+        } else {
+            paths.forEach(path => rm(path, { recursive: true, force: true }))
+        }
     } else {
-        const connId = parseURI(paths[0])['id']
+        const connId = parseURI(files[0])['id']
         const id = unqid()
         const queue = new Queue(
             QueueType.Remove,
             connId,
-            paths, 
+            files, 
             '' as URI,
             App.remoteWatcher,
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
@@ -72,7 +69,5 @@ export const remove: Command<RemoveArgs, boolean> = async ({ paths, window }: Re
         queues.set(id, queue)
         App.onQueueUpdate(id, { type: QueueEventType.Create, queueType: QueueType.Remove, connection: connId })
     }
-
     return true
 }
-*/
