@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext, useMemo } from "react"
 import Split from '../Split/Split'
-import Spinner from '../ui/Spinner/Spinner'
+import { Spinner } from '../../ui'
 import Explorer from '../Explorer/Explorer'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { useEvent } from '../../hooks'
 import { ConnectionID, LocalFileSystemID, URI } from '../../../../src/types'
 import { ConfigContext } from '../../context/config'
+import { MenuItem } from '../../ui'
 
 
 export default function () {
@@ -17,6 +18,7 @@ export default function () {
     const [localSelected, setLocalSelected] = useState<string[]>([])
     const [remoteSelected, setRemoteSelected] = useState<string[]>([])
     const [showConnections, setShowConnections] = useState(true)
+    const [menu, setMenu] = useState<MenuItem[]>([])
 
     useEffect(() => {
         window.document.body.setAttribute('theme', 'one-dark')
@@ -133,10 +135,36 @@ export default function () {
             }
         }
     ], [remoteToolbar]);
- 
-    return (
+
+    const fileContextMenu = (item: URI) => {
+        setMenu([
+            {
+                key: 'open',
+                label: 'Open'
+            },
+            {
+                key: 'finder',
+                label: 'Reveal in Finder'
+            },
+            {
+                key: 'vscode',
+                label: 'Edit in VSCode',
+                separator: true,
+            },
+            {
+                key: 'copy-path',
+                label: 'Copy Path'
+            },
+            {
+                key: 'copy-name',
+                label: 'Copy Name'
+            }
+        ])
+    }
+
+    return (<>
         <Split 
-            left={
+            left = {
                 localPath ? 
                     <Explorer 
                         icon='computer'
@@ -146,12 +174,16 @@ export default function () {
                         onChange={setLocalPath} 
                         onSelect={paths => setLocalSelected(paths)}
                         onOpen={openLocal}
+                        onMenu={fileContextMenu}
+                        contextMenu={menu}
                         toolbar={localToolbar}
                         tabindex={1}
                     /> : 
-                    <Spinner />
+                    <div className="fill-center">
+                        <Spinner radius="2em" />
+                    </div>
             }
-            right={
+            right = {
                 showConnections ? 
                     <Explorer 
                         icon='power_settings_new'
@@ -161,6 +193,7 @@ export default function () {
                         onChange={setRemotePath} 
                         onSelect={paths => setRemoteSelected(paths)}
                         onOpen={connect}
+                        onMenu={fileContextMenu}
                         toolbar={connectionsToolbar}
                         tabindex={2}
                     /> : 
@@ -173,6 +206,7 @@ export default function () {
                             onChange={setRemotePath} 
                             onSelect={paths => setRemoteSelected(paths)}
                             onOpen={openRemote}
+                            onMenu={fileContextMenu}
                             toolbar={remoteToolbar}
                             tabindex={2}
                         /> :
@@ -184,14 +218,16 @@ export default function () {
                             onChange={setRemotePath} 
                             onSelect={paths => setRemoteSelected(paths)}
                             onOpen={openRemote}
+                            onMenu={fileContextMenu}
                             toolbar={remoteToolbar}
                             tabindex={2}
                         />
             }
         />
-    )
+    </>)
 }
 
 // {/* <span className="icon">drive_file_rename_outline</span>
 // <span className="icon">create_new_folder</span>
 // <span className="icon">file_copy</span> */}
+

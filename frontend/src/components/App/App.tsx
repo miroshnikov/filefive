@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import Workspace from '../Workspace/Workspace'
 import styles from './App.less'
 import { useMap, useSubscribe } from '../../hooks'
@@ -28,20 +28,20 @@ export default function () {
 
     const [active, setActive] = useState(0)
     useEffect(() => setActive(queues.size-1), [queues])
-   
+  
     return (<>
         {config ? 
             <ConfigContext.Provider value={config}>
                 <div className={classNames(styles.root, {hasQueues: queues.size > 0})}>
                     <Workspace />
                     {queues.size > 0 && 
-                    <div className={styles.queues}>
-                        {Array.from(queues.entries()).map(([id, {type, connection}], i) => 
-                            <div key={id} onClick={() => setActive(i)} className={classNames({active: i==active})}>
-                                <Queue id={id} type={type} connection={connection} active={i==active} />
-                            </div>
-                        )}
-                    </div>
+                        <div className={styles.queues}>
+                            {Array.from(queues.entries()).map(([id, {type, connection}], i) => 
+                                <div key={id} onClick={() => setActive(i)} className={classNames({active: i==active})}>
+                                    <Queue id={id} type={type} connection={connection} active={i==active} />
+                                </div>
+                            )}
+                        </div>
                     }
                     <QueueAction />
                     <Error />

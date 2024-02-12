@@ -17,6 +17,7 @@
     --dry-border-width: 1px;
     --dry-border-style: solid;
     --dry-border-radius: .3rem;
+    --dry-hover-bg: var(--hover-background);
     --dry-shadow-color: #d9d9d920;
     --dry-shadow: 0 2px 0 var(--dry-shadow-color);
     --dry-primary: var(--primary);

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
-import { FileInfo } from '../../../../src/types'
+import { FileInfo, URI } from '../../../../src/types'
 import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity } from 'ramda'
 import { depth, dirname } from '../../utils/path'
 import { useSet, useKeyHold } from '../../hooks'
@@ -27,21 +27,6 @@ export enum DropEffect {
     Move = 'move'
 }
 
-
-interface ListProps {
-    columns: Columns
-    items: Items
-    onGo: (dir: string) => void
-    onToggle: (dir: string) => void
-    onSelect: (paths: string[]) => void
-    onOpen: (path: string) => void
-    onDrop(URIs: string[], target: string, effect: DropEffect): void
-    onMenu(path: string): void
-    root: string
-    tabindex: number
-    parent?: string,
-}
-
 const createDragImage = (text: string) => {
     const dragImage = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     dragImage.setAttribute('class', 'drag-image')
@@ -57,8 +42,22 @@ const isDescendant = (path: string, ancestor: string) => path.startsWith(ancesto
 const isChild = (path: string, parent: string) => path == parent || dirname(path) == parent
 
 
+interface ListProps {
+    columns: Columns
+    items: Items
+    onGo: (dir: string) => void
+    onToggle: (dir: string) => void
+    onSelect: (paths: string[]) => void
+    onOpen: (path: string) => void
+    onDrop(URIs: string[], target: string, effect: DropEffect): void
+    onMenu(path: string): void
+    root: string
+    tabindex: number
+    parent?: string,
+}
+
 export default function ({columns, items, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, root, tabindex, parent}: ListProps) {
-    const listEl = useRef(null)
+    const rootEl = useRef(null)
 
     const [expanded, setExpanded] = useState<string[]>([])
     const [rootDepth, setRootDepth] = useState(0)
@@ -74,7 +73,7 @@ export default function ({columns, items, onGo, onToggle, onSelect, onOpen, onDr
     useEffect(() => {
         setSelected([])
         setExpanded([])
-        listEl.current.scrollTop = listEl.current.scrollLeft = 0
+        rootEl.current.scrollTop = rootEl.current.scrollLeft = 0
     }, [parent])
 
     useEffect(() => {
@@ -210,7 +209,8 @@ export default function ({columns, items, onGo, onToggle, onSelect, onOpen, onDr
 
     return <div 
         className={classNames(styles.root, 'list', {draggedOver})} 
-        ref={listEl}
+        ref={rootEl}
+        onContextMenu={() => onMenu(root)}
         onDragOver={e => parent && e.preventDefault()}
         onDragEnter={() => setDraggedOver(true)}
         onDragLeave={() => setDraggedOver(false)}
@@ -233,6 +233,7 @@ export default function ({columns, items, onGo, onToggle, onSelect, onOpen, onDr
                         key={parent} 
                         className='up'
                         onDoubleClick={() => onGo(parent)}
+                        onContextMenu={e => {e.stopPropagation(); onMenu(parent)}}
                     >
                         <td colSpan={3}>..</td>
                     </tr>
@@ -247,7 +248,7 @@ export default function ({columns, items, onGo, onToggle, onSelect, onOpen, onDr
                         })}
                         onClick={() => {select(item.path); setClicked(item); setTarget(item.path)}}
                         onDoubleClick={() => doubleClick(item)}
-                        onContextMenu={() => {setTarget(item.path); onMenu(item.path)}}
+                        onContextMenu={e => {e.stopPropagation(); setTarget(item.path); onMenu(item.path)}}
                         draggable={true}
                         onDragStart={e => dragStart(i, e)}
                         onDragEnd={e => dragEnd(e)}

@@ -13,8 +13,8 @@ import { dirname, descendantOf } from '../../utils/path'
 import numeral from 'numeral'
 import { DateTime } from "luxon";
 import { DropEffect } from '../List/List'
-
-
+import { Menu, MenuItem, ContextMenu } from '../../ui/'
+ 
 
 const sortFiles = (files: Files) => {
     return sortWith([
@@ -49,19 +49,34 @@ const onlyVisible = (dirs: string[]) => {
 
 
 
-export default function (
-    {icon, connection, path, fixedRoot, onChange, onSelect, onOpen, toolbar, tabindex}: {
-        icon: string
-        connection: ConnectionID
-        path: string
-        fixedRoot: string
-        onChange: (dir: string) => void
-        onSelect: (paths: string[]) => void,
-        onOpen: (path: Path) => void,
-        toolbar: ToolbarItem[],
-        tabindex: number
-    }
-) {
+interface ExplorerProps {
+    icon: string
+    connection: ConnectionID
+    path: string
+    fixedRoot: string
+    onChange: (dir: string) => void
+    onSelect: (paths: string[]) => void
+    onOpen: (path: Path) => void
+    onMenu: (item: URI) => void
+    toolbar: ToolbarItem[]
+    tabindex: number
+    contextMenu?: MenuItem[]
+}
+
+
+export default function ({
+    icon, 
+    connection, 
+    path, 
+    fixedRoot, 
+    onChange, 
+    onSelect, 
+    onOpen, 
+    onMenu, 
+    toolbar, 
+    tabindex,
+    contextMenu = []
+}: ExplorerProps) {
     const [columns, setColumns] = useState<Columns>([
         {name: 'size', type: ColumnType.Number, title: 'Size'},
         {name: 'modified', type: ColumnType.String, title: 'Last Modified'}
@@ -76,6 +91,8 @@ export default function (
     const folders = useRef<Record<string, Files>>({})
     
     const expanded = useRef<string[]>([])
+
+    const contextMenuTarget = useRef(null)
 
     useEffect(() => setRoot(path), [path])
     
@@ -150,15 +167,6 @@ export default function (
         window.f5.copy(URIs as URI[], connection+target as URI)
     }
 
-    const contextMenu = (path: string) => {
-        // TODO 
-        // window.electronAPI.fileMenu(
-        //     connection+path, 
-        //     selected.current.includes(path) && selected.current.length > 1 ? 
-        //         selected.current.map(path => connection+path) : 
-        //         []
-        // )
-    }
 
     return <div className={styles.root}>
         <header>
@@ -173,18 +181,25 @@ export default function (
                 go={setRoot}
             />
         </header>
-        <List 
-            columns={columns}
-            items={files} 
-            onGo={setRoot}
-            onToggle={toggle}
-            onSelect={paths => onSelect(selected.current = paths)}
-            onOpen={onOpen}
-            onDrop={onDrop}
-            onMenu={contextMenu}
-            root={root}
-            tabindex={tabindex}
-            parent={parent}
-        />
+        <div ref={contextMenuTarget}>
+            <List 
+                columns={columns}
+                items={files} 
+                onGo={setRoot}
+                onToggle={toggle}
+                onSelect={paths => onSelect(selected.current = paths)}
+                onOpen={onOpen}
+                onDrop={onDrop}
+                onMenu={path => onMenu(connection + path as URI)}
+                root={root}
+                tabindex={tabindex}
+                parent={parent}
+            />
+        </div>
+        {contextMenuTarget.current &&
+            <ContextMenu target={contextMenuTarget.current}>
+                <Menu items={contextMenu} />
+            </ContextMenu>
+        }
     </div>
 }

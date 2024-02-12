@@ -4,7 +4,7 @@ import { queue$ } from '../../observables/queue'
 import { filter } from 'rxjs/operators'
 import { whereEq, ifElse, isNil, always, last, pipe, split } from 'ramda'
 import { QueueEventType, QueueType, ConnectionID } from '../../../../src/types'
-import { Progress, CircleProgress } from 'dry-clean-ui'
+import { Progress, CircleProgress } from '../../ui'
 import styles from './Queue.less'
 import { t } from 'i18next'
 

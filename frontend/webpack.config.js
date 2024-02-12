@@ -9,7 +9,8 @@ module.exports = {
         clean: true
     },
     resolve: {
-        extensions: [ '.tsx', '.ts', '...' ]
+        extensions: [ '.tsx', '.ts', '...' ],
+        symlinks: false
     },   
     cache: false,
     devtool: 'cheap-source-map',
@@ -31,7 +32,23 @@ module.exports = {
         rules: [
             { test: /\.tsx?$/, use: 'ts-loader' },
             { test: /\.css$/,  use: ["style-loader", 'css-loader'] },
-            { test: /\.less$/,            
+
+            { 
+              test: /\.less$/,
+              include: path.resolve(__dirname, "src/ui"),
+              use: [ 
+                "style-loader", 
+                {
+                    loader: 'css-loader',
+                    options: { modules: true }
+                },
+                "less-loader" 
+              ] 
+            },
+
+            { 
+              test: /\.less$/,    
+              exclude: path.resolve(__dirname, "src/ui"),
               use: [ 
                 "style-loader", 
                 {
@@ -43,6 +60,7 @@ module.exports = {
                 "less-loader" 
               ] 
             },
+
             { test: /\.svg$/, use: ['@svgr/webpack'] }
         ]
     }

@@ -6,18 +6,19 @@
   "scripts": {
     "dev": "webpack serve --mode=development",
     "build": "webpack --mode=production",
-    "configtest": "webpack configtest"
+    "configtest": "webpack configtest",
+    "ui": "yarn upgrade dry-clean-ui"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
+    "@types/classnames": "^2.3.1",
     "@types/luxon": "^3.3.3",
     "@types/numeral": "^2.0.4",
     "@types/ramda": "^0.28.20",
     "@types/react": "^18.2.34",
     "@types/react-dom": "^18.2.14",
-    "classnames": "^2.3.2",
     "css-loader": "^6.8.1",
     "html-webpack-plugin": "^5.6.0",
     "less": "^4.2.0",
@@ -30,7 +31,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "dry-clean-ui": "file:../../dry-clean-ui",
+    "classnames": "^2.5.1",
     "i18next": "^23.6.0",
     "luxon": "^3.4.3",
     "numeral": "^2.0.6",
