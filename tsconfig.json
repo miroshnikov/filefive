@@ -1,17 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "module": "nodenext",
     "allowJs": true,
-    "module": "commonjs",
     "noImplicitAny": true,
     "baseUrl": ".",
     "outDir": "dist",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "paths": {
-      "*": ["node_modules/*"]
-    },
   },
   "include": ["./src/**/*"]
 }

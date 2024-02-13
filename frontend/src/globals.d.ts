@@ -16,12 +16,11 @@ export interface F5 {
 
     copy(src: URI[], dest: URI): Promise<string>
     remove(files: URI[]): void
+    open(file: Path): void
 
     resolve(id: string, action: QueueAction): void
     stop(id: string): void
     onQueueUpdate(listener: (id: string, event: QueueEvent) => void): void
-
-    // fileMenu(target: string, selected: string[]): void
 }
 
 declare global {

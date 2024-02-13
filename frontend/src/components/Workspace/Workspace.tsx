@@ -138,27 +138,27 @@ export default function () {
 
     const fileContextMenu = (item: URI) => {
         setMenu([
-            {
-                key: 'open',
-                label: 'Open'
-            },
-            {
-                key: 'finder',
-                label: 'Reveal in Finder'
-            },
-            {
-                key: 'vscode',
-                label: 'Edit in VSCode',
-                separator: true,
-            },
-            {
-                key: 'copy-path',
-                label: 'Copy Path'
-            },
-            {
-                key: 'copy-name',
-                label: 'Copy Name'
-            }
+            // {
+            //     key: 'open',
+            //     label: 'Open'
+            // },
+            // {
+            //     key: 'finder',
+            //     label: 'Reveal in Finder'
+            // },
+            // {
+            //     key: 'vscode',
+            //     label: 'Edit in VSCode',
+            //     separator: true,
+            // },
+            // {
+            //     key: 'copy-path',
+            //     label: 'Copy Path'
+            // },
+            // {
+            //     key: 'copy-name',
+            //     label: 'Copy Name'
+            // }
         ])
     }
 

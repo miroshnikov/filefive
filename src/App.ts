@@ -30,7 +30,7 @@ export type Emitter = <Event extends {}>(channel: string) => (event: Event) => v
 
 export default class App {
        
-    static bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter) {
+    static bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter, opener: (file: string) => void) {
         const dataPath = join(homedir(), '.f5')
         mkdir(join(dataPath, 'connections'), { recursive: true })
         touch(join(dataPath, 'credentials.json')) // TODO write "[]" if empty
@@ -47,6 +47,7 @@ export default class App {
             refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
             copy:       ({src, dest}: {src: URI[], dest: URI}) => commands.copy(src, dest),
             remove:     ({files}: {files: URI[]}) => commands.remove(files),
+            open:       ({file}: {file: Path}) => opener(file),
             // read
             // write
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),

@@ -1,8 +1,8 @@
 import express from 'express'
 import path from 'path'
-import open from 'open'
 import MainApp, { Emitter } from './App'
 import { WebSocketServer } from 'ws'
+const open = import("open")
 
 const port = 3113
 
@@ -23,4 +23,4 @@ const wss = new WebSocketServer({server, path: `/events`})
 const emitter: Emitter = channel => event => 
     wss.clients.forEach(ws => ws.send(JSON.stringify({channel, ...event})))
 
-MainApp.bootstrap(handle, emitter)
+MainApp.bootstrap(handle, emitter, file => open.then(({openApp}) => openApp(file)))

@@ -39,6 +39,7 @@ window.f5 = {
 
     copy: (src, dest) => invoke<string>('copy', { src, dest }),
     remove: files => invoke<void>('remove', { files }),
+    open: file => invoke<void>('open', { file }),
 
     resolve: (id, action) => invoke<void>('resolve', { id, action }),
     stop: id => invoke<void>('stop', { id }),

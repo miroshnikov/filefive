@@ -6,14 +6,16 @@
   "bin": {
     "f5": "dist/index.js"
   },
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc -p .",
     "start": "node dist/index.js"
   },
   "nodemonConfig": {
-    "ignore": ["frontend/**"]
+    "ignore": [
+      "frontend/**"
+    ]
   },
   "dependencies": {
     "express": "^4.18.2",
