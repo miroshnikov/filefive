@@ -181,21 +181,21 @@ export default function ({
                 go={setRoot}
             />
         </header>
-        <div ref={contextMenuTarget}>
-            <List 
-                columns={columns}
-                items={files} 
-                onGo={setRoot}
-                onToggle={toggle}
-                onSelect={paths => onSelect(selected.current = paths)}
-                onOpen={onOpen}
-                onDrop={onDrop}
-                onMenu={path => onMenu(connection + path as URI)}
-                root={root}
-                tabindex={tabindex}
-                parent={parent}
-            />
-        </div>
+        <List 
+            ref={contextMenuTarget}
+            columns={columns}
+            items={files} 
+            onGo={setRoot}
+            onToggle={toggle}
+            onSelect={paths => onSelect(selected.current = paths)}
+            onOpen={onOpen}
+            onDrop={onDrop}
+            onMenu={path => onMenu(connection + path as URI)}
+            root={root}
+            tabindex={tabindex}
+            parent={parent}
+        />
+
         {contextMenuTarget.current &&
             <ContextMenu target={contextMenuTarget.current}>
                 <Menu items={contextMenu} />

@@ -1,10 +1,11 @@
-import React, { useRef, useState, useEffect } from "react"
+import React, { useRef, useState, useEffect, forwardRef, ForwardedRef } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
 import { FileInfo, URI } from '../../../../src/types'
 import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity } from 'ramda'
 import { depth, dirname } from '../../utils/path'
 import { useSet, useKeyHold } from '../../hooks'
+import setRef from '../../utils/setRef'
 
 
 export enum ColumnType {
@@ -56,7 +57,7 @@ interface ListProps {
     parent?: string,
 }
 
-export default function ({columns, items, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, root, tabindex, parent}: ListProps) {
+export default forwardRef<HTMLDivElement, ListProps>(function ({columns, items, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, root, tabindex, parent}, fwdRef) {
     const rootEl = useRef(null)
 
     const [expanded, setExpanded] = useState<string[]>([])
@@ -209,7 +210,7 @@ export default function ({columns, items, onGo, onToggle, onSelect, onOpen, onDr
 
     return <div 
         className={classNames(styles.root, 'list', {draggedOver})} 
-        ref={rootEl}
+        ref={setRef(rootEl, fwdRef)}
         onContextMenu={() => onMenu(root)}
         onDragOver={e => parent && e.preventDefault()}
         onDragEnter={() => setDraggedOver(true)}
@@ -281,4 +282,4 @@ export default function ({columns, items, onGo, onToggle, onSelect, onOpen, onDr
             </tbody>
         </table>
     </div>
-}
+})
