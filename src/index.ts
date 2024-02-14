@@ -22,5 +22,5 @@ const handle = (name: string, handler: (args: {}) => any) =>
 const wss = new WebSocketServer({server, path: `/events`})
 const emitter: Emitter = channel => event => 
     wss.clients.forEach(ws => ws.send(JSON.stringify({channel, ...event})))
-
-MainApp.bootstrap(handle, emitter, file => open.then(({openApp}) => openApp(file)))
+    
+MainApp.bootstrap(handle, emitter, async file => { console.log('open ', file); (await open).default(file) })

@@ -51,7 +51,7 @@ interface ListProps {
     onSelect: (paths: string[]) => void
     onOpen: (path: string) => void
     onDrop(URIs: string[], target: string, effect: DropEffect): void
-    onMenu(path: string): void
+    onMenu(path: string, dir: boolean): void
     root: string
     tabindex: number
     parent?: string,
@@ -211,7 +211,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, items, 
     return <div 
         className={classNames(styles.root, 'list', {draggedOver})} 
         ref={setRef(rootEl, fwdRef)}
-        onContextMenu={() => onMenu(root)}
+        onContextMenu={() => onMenu(root, true)}
         onDragOver={e => parent && e.preventDefault()}
         onDragEnter={() => setDraggedOver(true)}
         onDragLeave={() => setDraggedOver(false)}
@@ -234,7 +234,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, items, 
                         key={parent} 
                         className='up'
                         onDoubleClick={() => onGo(parent)}
-                        onContextMenu={e => {e.stopPropagation(); onMenu(parent)}}
+                        onContextMenu={e => {e.stopPropagation(); onMenu(parent, true)}}
                     >
                         <td colSpan={3}>..</td>
                     </tr>
@@ -249,7 +249,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, items, 
                         })}
                         onClick={() => {select(item.path); setClicked(item); setTarget(item.path)}}
                         onDoubleClick={() => doubleClick(item)}
-                        onContextMenu={e => {e.stopPropagation(); setTarget(item.path); onMenu(item.path)}}
+                        onContextMenu={e => {e.stopPropagation(); setTarget(item.path); onMenu(item.path, item.dir)}}
                         draggable={true}
                         onDragStart={e => dragStart(i, e)}
                         onDragEnd={e => dragEnd(e)}

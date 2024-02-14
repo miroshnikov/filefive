@@ -138,6 +138,9 @@ svg.drag-image text {
     --selected-background: #2551C8;
     --selected-color: #fff;
     --drop-background: #BEBEBE;
+
+    --dry-modal-zindex:    1000;
+    --dry-popover-zindex: 10000;
 }
 
 @import "themes/one-dark.css";

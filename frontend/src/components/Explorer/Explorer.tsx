@@ -57,7 +57,7 @@ interface ExplorerProps {
     onChange: (dir: string) => void
     onSelect: (paths: string[]) => void
     onOpen: (path: Path) => void
-    onMenu: (item: URI) => void
+    onMenu: (item: URI, dir: boolean) => void
     toolbar: ToolbarItem[]
     tabindex: number
     contextMenu?: MenuItem[]
@@ -190,7 +190,7 @@ export default function ({
             onSelect={paths => onSelect(selected.current = paths)}
             onOpen={onOpen}
             onDrop={onDrop}
-            onMenu={path => onMenu(connection + path as URI)}
+            onMenu={(path, dir) => onMenu(connection + path as URI, dir)}
             root={root}
             tabindex={tabindex}
             parent={parent}

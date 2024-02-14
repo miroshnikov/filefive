@@ -7,6 +7,8 @@ import { useEvent } from '../../hooks'
 import { ConnectionID, LocalFileSystemID, URI } from '../../../../src/types'
 import { ConfigContext } from '../../context/config'
 import { MenuItem } from '../../ui'
+import localFile from '../../menus/localFile'
+import localDir from '../../menus/localDir'
 
 
 export default function () {
@@ -40,7 +42,7 @@ export default function () {
         )
     }
 
-    const openRemote = (path: string) => {     
+    const openRemote = (path: string) => {
         window.f5.copy(
             [(connectionId ?? LocalFileSystemID) + path] as URI[], 
             LocalFileSystemID + localPath as URI
@@ -136,30 +138,13 @@ export default function () {
         }
     ], [remoteToolbar]);
 
-    const fileContextMenu = (item: URI) => {
-        setMenu([
-            // {
-            //     key: 'open',
-            //     label: 'Open'
-            // },
-            // {
-            //     key: 'finder',
-            //     label: 'Reveal in Finder'
-            // },
-            // {
-            //     key: 'vscode',
-            //     label: 'Edit in VSCode',
-            //     separator: true,
-            // },
-            // {
-            //     key: 'copy-path',
-            //     label: 'Copy Path'
-            // },
-            // {
-            //     key: 'copy-name',
-            //     label: 'Copy Name'
-            // }
-        ])
+    const fileContextMenu = (file: URI, dir: boolean) => {
+        const {protocol, pathname} = new URL(file)
+        if (protocol == 'file:') {
+            setMenu(dir ? localDir(pathname, localSelected as URI[]) : localFile(pathname, localSelected as URI[]))
+        } else {
+            setMenu([])
+        }
     }
 
     return (<>
@@ -227,7 +212,4 @@ export default function () {
     </>)
 }
 
-// {/* <span className="icon">drive_file_rename_outline</span>
-// <span className="icon">create_new_folder</span>
-// <span className="icon">file_copy</span> */}
 
