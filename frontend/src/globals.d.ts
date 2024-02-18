@@ -7,7 +7,9 @@ export interface F5 {
     onError(listener: (error: any) => void): void
 
     connect(file: Path): Promise<{ id: ConnectionID, config: ConnectionConfig }>
+    login(id: ConnectionID, password: string, remember: boolean): Promise<void>
     disconnect(id: ConnectionID): void
+
 
     watch(dir: URI): void
     unwatch(dir: URI): void

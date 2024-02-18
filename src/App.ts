@@ -2,11 +2,11 @@ import { homedir } from 'node:os'
 import { mkdir } from 'node:fs/promises'
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path'
-import { AppConfig, Path, ConnectionID, ConnectionConfig, URI, Files } from './types'
+import { AppConfig, Path, ConnectionID, ConnectionConfig, URI, Files, Failure, FailureType } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
 import RemoteWatcher from './RemoteWatcher'
-import { isLocal, parseURI } from './utils/URI'
+import { isLocal, parseURI, connectionID } from './utils/URI'
 import { queues } from './Queue'
 import { QueueEvent, QueueAction } from './types'
 import Password from './Password'
@@ -31,16 +31,18 @@ export type Emitter = <Event extends {}>(channel: string) => (event: Event) => v
 export default class App {
        
     static bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter, opener: (file: string) => void) {
+
         const dataPath = join(homedir(), '.f5')
         mkdir(join(dataPath, 'connections'), { recursive: true })
         touch(join(dataPath, 'credentials.json')) // TODO write "[]" if empty
                
-        Password.load(dataPath)
+        Password.load(dataPath, id => App.onError({ type: FailureType.Unauthorized, id }))
         Connection.initialize()
 
         Object.entries({
             config:     () => this.config(),
             connect:    ({file}: {file: Path}) => this.connect(file),
+            login:      ({id, password, remember}: {id: ConnectionID, password: string, remember: boolean}) => Password.set(id, password, remember),
             disconnect: ({id}: {id: ConnectionID}) => Connection.close(id),
             watch:      ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.watch(parseURI(dir)['path']) : this.remoteWatcher.watch(dir),
             unwatch:    ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.unwatch(parseURI(dir)['path']) : this.remoteWatcher.unwatch(dir),
@@ -54,8 +56,8 @@ export default class App {
             stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))
 
-        const emitError = emitter<any>('error')
-        this.onError = (error: any) => { logger.error(error); emitError(error) }
+        const emitError = emitter<Failure>('error')
+        this.onError = (error: Failure) => { logger.error(error); emitError(error) }
 
         const emitFS = emitter<{uri: URI, files: Files}>('fs')
         const sendDirContent = (uri: URI, files: Files) => emitFS({uri, files})
@@ -106,7 +108,13 @@ export default class App {
 
     private static async connect(file: Path): Promise<{ id: ConnectionID, config: ConnectionConfig }> {
         const {scheme, user, host, port} = JSON.parse( readFileSync(file).toString() ) as ConnectionSettings
-        const id = await Connection.open(scheme, user, host, port)
+        const id = connectionID(scheme, user, host, port)
+        await Password.get(id)
+        try {
+            await Connection.open(scheme, user, host, port)
+        } catch (e) {
+            console.log('connection error: ', e)
+        }
         return { id, config: { pwd: await Connection.get(id).pwd() } }
     }
 

@@ -3,7 +3,7 @@ import { MenuItem } from '../ui'
 import { basename } from '../utils/path'
 
 
-export default function (path: Path, selected: URI[]): MenuItem[] {
+export default function (path: Path, selected: Path[], onDelete: () => void): MenuItem[] {
     return [
         {
             id: 'new-dir',
@@ -32,9 +32,7 @@ export default function (path: Path, selected: URI[]): MenuItem[] {
         {
             id: 'delete',
             label: 'Delete',
-            click: () => {
-                window.f5.remove(selected.length ? selected : [LocalFileSystemID + path as URI] )
-            }
+            click: onDelete
         }
     ]
 }

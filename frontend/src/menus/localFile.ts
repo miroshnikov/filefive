@@ -1,9 +1,9 @@
-import { Path, URI, LocalFileSystemID } from '../../../src/types'
+import { Path, URI } from '../../../src/types'
 import { MenuItem } from '../ui'
 import { basename } from '../utils/path'
 
 
-export default function (path: Path, selected: URI[]): MenuItem[] {
+export default function (path: Path, selected: Path[], onDelete: () => void): MenuItem[] {
     return [
         {
             id: 'copy-path',
@@ -25,6 +25,7 @@ export default function (path: Path, selected: URI[]): MenuItem[] {
             },
             separator: true
         },
+        
         {
             id: 'vscode',
             label: "Edit in VSCode",
@@ -35,7 +36,7 @@ export default function (path: Path, selected: URI[]): MenuItem[] {
         },
         {
             id: 'open',
-            label: 'Open',
+            label: 'Open in Default App',
             click: () => window.f5.open(path),
             separator: true
         },
@@ -48,9 +49,7 @@ export default function (path: Path, selected: URI[]): MenuItem[] {
         {
             id: 'delete',
             label: 'Delete',
-            click: () => {
-                window.f5.remove(selected.length ? selected : [LocalFileSystemID + path as URI] )
-            }
+            click: onDelete
         }
     ]
 }

@@ -4,7 +4,8 @@ import { isLocal, parseURI } from '../utils/URI'
 import unqid from '../utils/uniqid'
 import Queue, { queues } from '../Queue'
 import App from '../App'
-// import trash from 'trash'
+const trash = import("trash")
+
 
 /*
 const confirmLocalDelete = (names: string[], window: BrowserWindow) => 
@@ -37,7 +38,7 @@ const confirmRemoteDelete = (names: string[], window: BrowserWindow) =>
 type RemoveArgs = { paths: URI[], window: BrowserWindow }
 */
 
-export default function (files: URI[], immediately = false) {
+export default async function (files: URI[], immediately = false) {
     if (!files.length) {
         return true
     }
@@ -45,9 +46,9 @@ export default function (files: URI[], immediately = false) {
     if (isLocal(files[0])) {
         const paths = files.map(p => parseURI(p)['path'])
         if (immediately) {
-            // trash(paths) TODO
-        } else {
             paths.forEach(path => rm(path, { recursive: true, force: true }))
+        } else {
+            (await trash).default(paths)
         }
     } else {
         const connId = parseURI(files[0])['id']

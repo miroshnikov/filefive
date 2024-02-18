@@ -8,6 +8,7 @@ import { QueueEventType, QueueType, ConnectionID, AppConfig } from '../../../../
 import classNames from "classnames"
 import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'
+import AskForPassword from '../../modals/Password'
 import { ConfigContext } from '../../context/config'
 
 
@@ -46,6 +47,7 @@ export default function () {
                     <QueueAction />
                     <Error />
                 </div>
+                <AskForPassword />
             </ConfigContext.Provider> : 
             <span>wait...</span>
         }

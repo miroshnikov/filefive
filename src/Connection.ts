@@ -1,12 +1,13 @@
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import { FileSystem } from './FileSystem'
 import { URI, ConnectionID } from './types'
-import Ftp from './fs/Ftp'
+import { parseURI, connectionID } from './utils/URI'
 import Password from './Password'
-import  { parseURI } from './utils/URI'
 import App from './App'
 import unqid from './utils/uniqid'
 import logger from './log'
+
+import Ftp from './fs/Ftp'
 
 
 export default class {
@@ -15,19 +16,18 @@ export default class {
         // this.shared.set(LocalFileSystemID, new Local)
     }
 
-    static async open(scheme: string, user: string, host: string, port:number): Promise<ConnectionID> {
-        const id: ConnectionID = `${scheme}://${user}@${host}:${port}`
+    static async open(scheme: string, user: string, host: string, port: number): Promise<ConnectionID> {
+        const id = connectionID(scheme, user, host, port)
         if (this.shared.inc(id)) {
             return id
         }
-        const conn = this.create(id, scheme, user, host, port)
+        const conn = await this.create(id, scheme, user, host, port)
         this.shared.set(id, conn)
         await conn.open()
         return id
     }
 
     static get(id: ConnectionID) {
-        // open ?
         return this.shared.get(id)
     }
 
@@ -62,7 +62,7 @@ export default class {
         if (pool.length < this.getLimit(id)) {
             const poolId = unqid()
             try {
-                const fs = this.createFromId(id)
+                const fs = await this.createFromId(id)
                 await fs.open()
                 this.pools[id][poolId] = { fs, idle: false }
                 return [fs, poolId]
@@ -90,13 +90,14 @@ export default class {
         return this.limits.has(id) ? this.limits.get(id) : 1024
     }
 
-    private static create(id: ConnectionID, scheme: string, user: string, host: string, port: number): FileSystem {
+    private static async create(id: ConnectionID, scheme: string, user: string, host: string, port: number): Promise<FileSystem> {
+        const password = await Password.get(id)
         switch (scheme) {
             case 'ftp': {
                 return new Ftp(
                     host, 
                     user, 
-                    Password.get(id), 
+                    password,
                     port, 
                     e => { logger.log('FTP error:', e);  App.onError(e) },
                 )
@@ -104,16 +105,13 @@ export default class {
         }
     }
 
-    private static createFromId(id: ConnectionID): FileSystem {
+    private static async createFromId(id: ConnectionID): Promise<FileSystem> {
         const { scheme, user, host, port } = parseURI(id as URI)
         return this.create(id, scheme, user, host, port)
     }
 
     private static shared = new ReferenceCountMap<ConnectionID, FileSystem>
-
     private static pools: Record<string, Record<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = {}
-
     private static pending: Record<string, ((id: string) => void)[]> = {}
-
     private static limits = new Map<ConnectionID, number>()
 }

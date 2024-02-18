@@ -2,55 +2,54 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 
-export default class Password {
+export default class Passwords {
 
-    static async load(dir: string) {
+    static async load(dir: string, onMiss: (key: string) => void) {
         this.saveFile = join(dir, 'credentials.json')
+        this.resolve = onMiss
         this.store = new Map(
             (JSON.parse(
                 (await readFile(this.saveFile)).toString()
-            ) as [string, string][]).map(([key, password]) => [key, password])
+            ) as [string, string][]).map(([key, password]) => [key, [password, true]])
         )
     }
 
-    static set(key: string, password: string) {
-        this.store.set(key, password)
+    static set(key: string, password: string, save = false) {
+        this.store.set(key, [password, save])
+        this.pending.get(key)?.(password)
+        save && this.save()
+    }
+
+    static async get(key: string): Promise<string> {
+        if (this.store.has(key)) {
+            return this.store.get(key)[0]
+        }
+        const p = new Promise<string>((resolve) => this.pending.set(key, resolve))
+        this.resolve(key)
+        return p
+    }
+
+    static delete(key: string) {
+        const found = this.store.get(key)
+        this.store.delete(key)
+        this.pending.delete(key)
+        found?.[1] == true && this.save()
+    }
+
+
+    private static save() {
         writeFile(
             this.saveFile,
             JSON.stringify(
-                Array.from(this.store.entries()).map(([key, password]) => [key, password])
+                Array.from(this.store.entries())
+                    .filter(([, [, save]]) => save)
+                    .map(([key, [password,]]) => [key, password])
             )            
         )
     }
 
-    static get(key: string) {
-        return this.store.get(key) ?? ''
-    }
-
-    private static store: Map<string, string>
+    private static store: Map<string, [string, boolean]>
     private static saveFile = ''
+    private static resolve: (key: string) => void
+    private static pending = new Map<string, (password: string) => void>()
 }
-
-
-/*
-https://stackoverflow.com/questions/6953286/how-to-encrypt-data-that-needs-to-be-decrypted-in-node-js
-
-
-var crypto = require('crypto');
-var assert = require('assert');
-
-require('dotenv').config();
-
-
-
-var algorithm = 'aes256'; // or any other algorithm supported by OpenSSL
-var secret = process.env.SECRET;
-var text = 'I love kittens';
-
-var cipher = crypto.createCipher(algorithm, secret);  
-var encrypted = cipher.update(text, 'utf8', 'hex') + cipher.final('hex');
-var decipher = crypto.createDecipher(algorithm, secret);
-var decrypted = decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
-
-assert.equal(decrypted, text);
-*/

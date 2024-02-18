@@ -75,3 +75,18 @@ export enum QueueActionType {
 export type QueueAction = 
     | { type: QueueActionType.Skip }
     | { type: QueueActionType.Replace }
+
+
+
+export enum FailureType {
+    Unauthorized = 'Unauthorized',
+    Connection = 'Connection'
+}
+export type Failure =
+    | {
+        type: FailureType.Unauthorized 
+        id: ConnectionID
+    }
+    | {
+        type: FailureType.Connection
+    }

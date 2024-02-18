@@ -4,9 +4,10 @@ import { Spinner } from '../../ui'
 import Explorer from '../Explorer/Explorer'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { useEvent } from '../../hooks'
-import { ConnectionID, LocalFileSystemID, URI } from '../../../../src/types'
+import { ConnectionID, LocalFileSystemID, URI, Path } from '../../../../src/types'
 import { ConfigContext } from '../../context/config'
 import { MenuItem } from '../../ui'
+import FileDeleteModal from '../../modals/FileDelete'
 import localFile from '../../menus/localFile'
 import localDir from '../../menus/localDir'
 
@@ -17,11 +18,12 @@ export default function () {
     const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
     const [localPath, setLocalPath] = useState(config.paths.home)
     const [remotePath, setRemotePath] = useState(config.paths.connections)
-    const [localSelected, setLocalSelected] = useState<string[]>([])
-    const [remoteSelected, setRemoteSelected] = useState<string[]>([])
+    const [localSelected, setLocalSelected] = useState<Path[]>([])
+    const [remoteSelected, setRemoteSelected] = useState<Path[]>([])
     const [showConnections, setShowConnections] = useState(true)
     const [menu, setMenu] = useState<MenuItem[]>([])
-
+    const [deleting, fileToDelete] = useState<URI|null>(null)
+ 
     useEffect(() => {
         window.document.body.setAttribute('theme', 'one-dark')
         const size = localStorage.getItem('window_size')
@@ -57,10 +59,6 @@ export default function () {
             setRemotePath(pwd)
         })
     }
-
-    useEffect(() => {
-        console.log('set remote', remotePath)
-    }, [remotePath])
 
     const localToolbar = useMemo<ToolbarItem[]>(() => [
         {
@@ -139,9 +137,15 @@ export default function () {
     ], [remoteToolbar]);
 
     const fileContextMenu = (file: URI, dir: boolean) => {
+
+        // window.f5.remove(selected.length ? selected : [LocalFileSystemID + path as URI] )
+
         const {protocol, pathname} = new URL(file)
         if (protocol == 'file:') {
-            setMenu(dir ? localDir(pathname, localSelected as URI[]) : localFile(pathname, localSelected as URI[]))
+            setMenu(dir ? 
+                localDir(pathname, localSelected as URI[], () => fileToDelete(file)) : 
+                localFile(pathname, localSelected as URI[], () => fileToDelete(file))
+            )
         } else {
             setMenu([])
         }
@@ -209,6 +213,9 @@ export default function () {
                         />
             }
         />
+        {/* {deleting &&
+            <FileDeleteModal >
+        } */}
     </>)
 }
 
