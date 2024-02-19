@@ -8,6 +8,14 @@ export type Path = string
 
 export type URI = `${ConnectionID}/${Path}`
 
+
+export const FileStateAttr = Symbol.for('state')
+export enum FileState {
+    Renaming = 'renaming'
+}
+
+export const FileTagsAttr = Symbol.for('tags')
+
 export type FileInfo = {
     URI: URI
     path: Path
@@ -15,8 +23,9 @@ export type FileInfo = {
     dir: boolean
     size: number
     modified: Date
-    // Symbol('tags'): string[]
-} & {[key: string]: any}        
+    FileState?: FileState
+    FileTags?: string[]
+} & {[key: string|symbol]: any}
 
 export type Files = FileInfo[]
 

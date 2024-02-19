@@ -1,11 +1,15 @@
-import React, { useRef, useState, useEffect, forwardRef, ForwardedRef } from "react"
+import React, { useRef, useState, useEffect, forwardRef } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
-import { FileInfo, URI } from '../../../../src/types'
-import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity } from 'ramda'
+import { FileInfo, Path, FileStateAttr, FileState } from '../../../../src/types'
+import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, insert } from 'ramda'
+import { filter } from 'rxjs/operators'
 import { depth, dirname } from '../../utils/path'
-import { useSet, useKeyHold } from '../../hooks'
+import { useSet, useKeyHold, useSubscribe } from '../../hooks'
 import setRef from '../../utils/setRef'
+import { CommandID } from '../../commands'
+import { command$ } from '../../observables/command'
+import EditFileName from '../EditFileName/EditFileName'
 
 
 export enum ColumnType {
@@ -20,7 +24,7 @@ export interface Column {
 }
 export type Columns = Column[]
 
-export type Item = Pick<FileInfo, 'URI'|'path'|'dir'|'name'> & {[key: Column['name']]: string}
+export type Item = FileInfo //Pick<FileInfo, 'URI'|'path'|'dir'|'name'> & {[key: Column['name']]: string}
 export type Items = Item[]
 
 export enum DropEffect {
@@ -41,11 +45,12 @@ const createDragImage = (text: string) => {
 
 const isDescendant = (path: string, ancestor: string) => path.startsWith(ancestor+'/') || path == ancestor
 const isChild = (path: string, parent: string) => path == parent || dirname(path) == parent
+const dirOf = (item: Item, all: Items) => item.dir ? item : all.find(({path}) => path == dirname(item.path))
 
 
 interface ListProps {
     columns: Columns
-    items: Items
+    files: Items
     onGo: (dir: string) => void
     onToggle: (dir: string) => void
     onSelect: (paths: string[]) => void
@@ -57,19 +62,42 @@ interface ListProps {
     parent?: string,
 }
 
-export default forwardRef<HTMLDivElement, ListProps>(function ({columns, items, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, root, tabindex, parent}, fwdRef) {
+export default forwardRef<HTMLDivElement, ListProps>(function ({columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, root, tabindex, parent}, fwdRef) {
     const rootEl = useRef(null)
 
+    const [items, setItems] = useState<Items>([])
     const [expanded, setExpanded] = useState<string[]>([])
     const [rootDepth, setRootDepth] = useState(0)
     const [clicked, setClicked] = useState<Item>(null)
     const [selected, {has: isSelected, reset: setSelected, toggle: toggleSelected}] = useSet<string>([])
-    const [target, setTarget] = useState<string>(null)
+    const [target, setTarget] = useState<Item>(null)
+
+    const isActive = useRef(false)
+
     const metaPressed = useKeyHold('Meta')
     const shiftPressed = useKeyHold('Shift')
+
+    const [adding, addIn] = useState<{in: Item, dir: boolean}>()
+
     const [dragging, setDragging] = useState(false)
     const [dropTarget, setDropTarget] = useState<string>('')
     const [draggedOver, setDraggedOver] = useState(false)
+
+    useEffect(() => setItems(files), [files])
+
+    useEffect(() => {
+        setItems(items => {
+            items = items.filter(({FileStateAttr}) => FileStateAttr != FileState.Renaming)
+            if (adding) {
+                const i = items.findIndex(({path}) => path == adding.in.path)
+                const parent = items[i]
+                if (i >= 0) {
+                    items.splice(i+1, 0, { ...parent, dir: adding.dir, FileStateAttr: FileState.Renaming, name: '' })    
+                }
+            }
+            return items
+        })
+    }, [adding]);
 
     useEffect(() => {
         setSelected([])
@@ -135,6 +163,23 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, items, 
         }
     }
 
+    useSubscribe(
+        () => command$.pipe(filter(() => isActive.current)).subscribe(cmd => {
+            switch (cmd) {
+                case CommandID.NewDir: {
+                    const inDir = dirOf(target, items)
+                    if (inDir) {
+                        !expanded.includes(inDir.path) && toggle(inDir.path);
+                        addIn({ in: inDir, dir: true })
+                    }
+                    break
+                }
+            }
+        }),
+        [target]
+    )
+
+  
     const dragStart = (i: number, e: React.DragEvent<HTMLTableRowElement>) => {
         setDragging(true)       //TODO make an array in useRef() of selected
         e.dataTransfer.effectAllowed = 'copyMove'
@@ -211,6 +256,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, items, 
     return <div 
         className={classNames(styles.root, 'list', {draggedOver})} 
         ref={setRef(rootEl, fwdRef)}
+        onFocus={() => isActive.current = true}
+        onBlur={() => isActive.current = false}
         onContextMenu={() => onMenu(root, true)}
         onDragOver={e => parent && e.preventDefault()}
         onDragEnter={() => setDraggedOver(true)}
@@ -240,44 +287,55 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, items, 
                     </tr>
                 }
                 {items.map((item, i) => 
-                    <tr 
-                        key={item.path} 
-                        className={classNames({
-                            selected: isSelected(item.path), 
-                            dragover: dropTarget && isDescendant(item.path, dropTarget),
-                            target: target == item.path
-                        })}
-                        onClick={() => {select(item.path); setClicked(item); setTarget(item.path)}}
-                        onDoubleClick={() => doubleClick(item)}
-                        onContextMenu={e => {e.stopPropagation(); setTarget(item.path); onMenu(item.path, item.dir)}}
-                        draggable={true}
-                        onDragStart={e => dragStart(i, e)}
-                        onDragEnd={e => dragEnd(e)}
-                        onDragOver={e => dragOver(e)}
-                        onDragEnter={e => dragEnter(item, e)}
-                        onDragLeave={e => dragLeave(item, e)}
-                        onDrop={e => dragDrop(item.dir ? item.path : dirname(item.path), e)}
-                    >
-                        <td 
-                            className={classNames({d: item.dir})}
-                            title={item.path}
-                            data-depth={depth(item.path)-rootDepth}
+                    item.FileStateAttr == FileState.Renaming ?
+                        <tr key='editing'>
+                            <td colSpan={columns.length + 1}>
+                                <EditFileName 
+                                    name = {item.name}
+                                    onOk = {nm => { console.log(nm); addIn(undefined) }}
+                                    onCancel={() => addIn(undefined)}
+                                />
+                            </td>
+                            <td></td>
+                        </tr> :
+                        <tr 
+                            key={item.path} 
+                            className={classNames({
+                                selected: isSelected(item.path), 
+                                dragover: dropTarget && isDescendant(item.path, dropTarget),
+                                target: target?.path == item.path
+                            })}
+                            onClick={() => {select(item.path); setClicked(item); setTarget(item)}}
+                            onDoubleClick={() => doubleClick(item)}
+                            onContextMenu={e => {e.stopPropagation(); setTarget(item); onMenu(item.path, item.dir)}}
+                            draggable={true}
+                            onDragStart={e => dragStart(i, e)}
+                            onDragEnd={e => dragEnd(e)}
+                            onDragOver={e => dragOver(e)}
+                            onDragEnter={e => dragEnter(item, e)}
+                            onDragLeave={e => dragLeave(item, e)}
+                            onDrop={e => dragDrop(item.dir ? item.path : dirname(item.path), e)}
                         >
-                            <div className={classNames({expanded: expanded.includes(item.path)})}>
-                                {item.dir && 
-                                    <i className="icon">arrow_forward_ios</i>
-                                }
-                                <span>{item.name}</span>
-                            </div>
-                        </td>
-                        {columns.map(({name, type}) =>
                             <td 
-                                key={name} 
-                                className={'type-'+type}
-                            >{item[name]}</td>
-                        )}
-                        <td></td>
-                    </tr>
+                                className={classNames({d: item.dir})}
+                                title={item.path}
+                                data-depth={depth(item.path)-rootDepth}
+                            >
+                                <div className={classNames({expanded: expanded.includes(item.path)})}>
+                                    {item.dir && 
+                                        <i className="icon">arrow_forward_ios</i>
+                                    }
+                                    <span>{item.name}</span>
+                                </div>
+                            </td>
+                            {columns.map(({name, type}) =>
+                                <td 
+                                    key={name} 
+                                    className={'type-'+type}
+                                >{item[name]}</td>
+                            )}
+                            <td></td>
+                        </tr>
                 )}
             </tbody>
         </table>

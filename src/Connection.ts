@@ -6,7 +6,7 @@ import Password from './Password'
 import App from './App'
 import unqid from './utils/uniqid'
 import logger from './log'
-
+import SFtp from './fs/SFtp'
 import Ftp from './fs/Ftp'
 
 
@@ -93,13 +93,22 @@ export default class {
     private static async create(id: ConnectionID, scheme: string, user: string, host: string, port: number): Promise<FileSystem> {
         const password = await Password.get(id)
         switch (scheme) {
+            case 'sftp': {
+                return new SFtp(
+                    host, 
+                    user, 
+                    password,
+                    port, 
+                    e => { logger.error('SFTP error:', e);  App.onError(e) }
+                )
+            }
             case 'ftp': {
                 return new Ftp(
                     host, 
                     user, 
                     password,
                     port, 
-                    e => { logger.log('FTP error:', e);  App.onError(e) },
+                    e => { logger.error('FTP error:', e);  App.onError(e) }
                 )
             }
         }

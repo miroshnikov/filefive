@@ -111,6 +111,11 @@ strong {
     font-weight: 600;
 }
 
+input {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
 svg.drag-image text {
     fill: var(--color);
     font-family: var(--font-family);
@@ -127,7 +132,7 @@ svg.drag-image text {
 
 :root {
     --font-family: OpenSans;
-    --font-size: 13px;
+    --font-size: 13.5px;
     --icon-size: 14px;
     --background: #fff;
     --color: #040404;
@@ -138,6 +143,7 @@ svg.drag-image text {
     --selected-background: #2551C8;
     --selected-color: #fff;
     --drop-background: #BEBEBE;
+    --dry-control-bg: #1D1F23;
 
     --dry-modal-zindex:    1000;
     --dry-popover-zindex: 10000;

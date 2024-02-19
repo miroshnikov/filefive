@@ -8,8 +8,8 @@ import { ConnectionID, LocalFileSystemID, URI, Path } from '../../../../src/type
 import { ConfigContext } from '../../context/config'
 import { MenuItem } from '../../ui'
 import FileDeleteModal from '../../modals/FileDelete'
-import localFile from '../../menus/localFile'
-import localDir from '../../menus/localDir'
+import localFile from '../../menu/localFile'
+import localDir from '../../menu/localDir'
 
 
 export default function () {

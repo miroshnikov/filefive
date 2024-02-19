@@ -1,6 +1,8 @@
 import { Path, URI, LocalFileSystemID } from '../../../src/types'
 import { MenuItem } from '../ui'
 import { basename } from '../utils/path'
+import { CommandID } from '../commands'
+import { command$ } from '../observables/command'
 
 
 export default function (path: Path, selected: Path[], onDelete: () => void): MenuItem[] {
@@ -8,7 +10,7 @@ export default function (path: Path, selected: Path[], onDelete: () => void): Me
         {
             id: 'new-dir',
             label: 'New Folder...',
-            click: () => {},
+            click: () => command$.next(CommandID.NewDir),
             separator: true
         },
          

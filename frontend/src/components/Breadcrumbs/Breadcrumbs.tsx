@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import styles from './Breadcrumbs.less'
 import { segments, join, normalize, basename } from '../../utils/path'
 import { last } from 'ramda'

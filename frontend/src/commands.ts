@@ -1,16 +1,10 @@
-export interface Command {
-    id: string
-    title: string
+export enum CommandID {
+    NewDir = 'new-dir'
 }
 
-/*
 export interface Command {
-    id: string
-    targets: string[]   // e.g ['workspace']
-    condition: { 
-        min: number
-        max: number
-    }
+    id: CommandID|string
+    label: string
+    // target?: string
 }
-*/
 

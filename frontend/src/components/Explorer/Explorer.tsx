@@ -184,7 +184,7 @@ export default function ({
         <List 
             ref={contextMenuTarget}
             columns={columns}
-            items={files} 
+            files={files} 
             onGo={setRoot}
             onToggle={toggle}
             onSelect={paths => onSelect(selected.current = paths)}
