@@ -4,7 +4,7 @@ export type FileSystemURI = `${string}://${string}@${string}:${number}`
 
 
 export abstract class FileSystem {
-    abstract open(): Promise<FileSystemURI>
+    abstract open(): Promise<any>
     abstract close(): void
     abstract pwd(): Promise<Path>
     abstract ls(dir: Path): Promise<Files>
