@@ -104,6 +104,10 @@ export default class Ftp extends FileSystem {
         return new Promise((resolve, reject) => this.connection.mkdir(path, true, e => e ? reject(e) : resolve()))
     }
 
+    async write(path: Path, s: string): Promise<void> {
+        // TODO
+    }
+
     private connected: Promise<FileSystemURI>
     private connection = new Client()
     private uri: FileSystemURI

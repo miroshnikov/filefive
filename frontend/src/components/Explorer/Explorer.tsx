@@ -9,7 +9,7 @@ import { dir$ } from '../../observables/watch'
 import { filter } from 'rxjs/operators'
 import { useEffectOnUpdate } from '../../hooks'
 import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry } from 'ramda'
-import { dirname, descendantOf } from '../../utils/path'
+import { dirname, descendantOf, join } from '../../utils/path'
 import numeral from 'numeral'
 import { DateTime } from "luxon";
 import { DropEffect } from '../List/List'
@@ -163,9 +163,9 @@ export default function ({
     }
 
     const createNew = (name: string, parent: Path, dir: boolean) => {
-        if (dir) {
-            window.f5.mkdir(name, createURI(connection, parent))
-        }
+        dir ?
+            window.f5.mkdir(name, createURI(connection, parent)) :
+            window.f5.write(createURI(connection, join(parent, name)), '')
     }
 
     const onDrop = (URIs: string[], target: string, effect: DropEffect) => {

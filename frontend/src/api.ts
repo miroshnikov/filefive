@@ -42,6 +42,7 @@ window.f5 = {
     remove: files => invoke<void>('remove', { files }),
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
+    write: (path, content) => invoke<void>('write', { path, content }),
 
     resolve: (id, action) => invoke<void>('resolve', { id, action }),
     stop: id => invoke<void>('stop', { id }),

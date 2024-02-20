@@ -1,5 +1,6 @@
 export enum CommandID {
-    NewDir = 'new-dir'
+    NewDir = 'new-dir',
+    NewFile = 'new-file'
 }
 
 export interface Command {

@@ -20,6 +20,7 @@ export interface F5 {
     remove(files: URI[]): void
     open(file: Path): void
     mkdir(name: string, parent: URI): void
+    write(path: URI, content: string): void
 
     resolve(id: string, action: QueueAction): void
     stop(id: string): void

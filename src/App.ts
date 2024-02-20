@@ -1,7 +1,7 @@
 import { homedir } from 'node:os'
 import { mkdir } from 'node:fs/promises'
 import { readFileSync } from 'node:fs';
-import { join, parse } from 'node:path'
+import { join } from 'node:path'
 import { AppConfig, Path, ConnectionID, ConnectionConfig, URI, Files, Failure, FailureType } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
@@ -32,10 +32,6 @@ export default class App {
        
     static bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter, opener: (file: string) => void) {
 
-        console.log(parse('aa/bb/x.z'))
-        // /aa/bb/cc -  { root: '/', dir: '/aa/bb', base: 'cc', ext: '', name: 'cc' }
-        //                root: '',  dir: 'aa/bb',  base: 'cc', ext: '', name: 'cc'
-
         const dataPath = join(homedir(), '.f5')
         mkdir(join(dataPath, 'connections'), { recursive: true })
         touch(join(dataPath, 'credentials.json')) // TODO write "[]" if empty
@@ -54,9 +50,9 @@ export default class App {
             copy:       ({src, dest}: {src: URI[], dest: URI}) => commands.copy(src, dest),
             remove:     ({files}: {files: URI[]}) => commands.remove(files),
             open:       ({file}: {file: Path}) => opener(file),
-            mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent) && this.remoteWatcher.refresh(parent),
+            mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
             // read
-            // write
+            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content),
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),
             stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))

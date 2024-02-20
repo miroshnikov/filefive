@@ -10,10 +10,15 @@ export default function (path: Path, selected: Path[], onDelete: () => void): Me
         {
             id: 'new-dir',
             label: 'New Folder...',
-            click: () => command$.next(CommandID.NewDir),
+            click: () => command$.next(CommandID.NewDir)
+        },
+        {
+            id: 'new-file',
+            label: 'New File...',
+            click: () => command$.next(CommandID.NewFile),
             separator: true
         },
-         
+
         {
             id: 'copy-path',
             label: 'Copy Path',

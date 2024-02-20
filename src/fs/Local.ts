@@ -1,7 +1,7 @@
 import { FileSystem, FileSystemURI } from '../FileSystem'
 import { pwd, list, copy, del } from '../Local'
 import { Path, LocalFileSystemID, Files } from '../types'
-import { mkdir } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 
 export default class Local extends FileSystem {
     open() {
@@ -32,5 +32,9 @@ export default class Local extends FileSystem {
 
     async mkdir(path: Path): Promise<void> {
         await mkdir(path, { recursive: true })
+    }
+
+    async write(path: Path, data: string): Promise<void> {
+        await writeFile(path, data)
     }
 }

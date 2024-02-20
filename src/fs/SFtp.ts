@@ -105,6 +105,21 @@ export default class SFtp extends FileSystem {
         return new Promise((resolve, reject) => sftp.mkdir(path, e => e ? reject(e) : resolve()))
     }
 
+    async write(path: Path, s: string): Promise<void> {
+        const sftp = await this.open()
+        return new Promise((resolve, reject) => {
+            sftp.open(path, 'w', (e, h) => {
+                if (e) {
+                    reject(e)
+                    return
+                }
+                const data = Buffer.from(s)
+                sftp.write(h, data, 0, data.length, 0, (e) => e ? reject(e) : resolve())
+            })
+    
+        })
+    }
+
 
     private connected: Promise<SFTPWrapper>
     private connection = new Client()

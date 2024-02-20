@@ -4,7 +4,7 @@ import styles from './List.less'
 import { FileInfo, Path, FileState } from '../../../../src/types'
 import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith } from 'ramda'
 import { filter } from 'rxjs/operators'
-import { depth, dirname, parse, childOf, join } from '../../utils/path'
+import { depth, dirname, parse, childOf } from '../../utils/path'
 import { useSet, useKeyHold, useSubscribe } from '../../hooks'
 import setRef from '../../utils/setRef'
 import { CommandID } from '../../commands'
@@ -188,11 +188,12 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
     useSubscribe(
         () => command$.pipe(filter(() => isActive.current)).subscribe(cmd => {
             switch (cmd) {
-                case CommandID.NewDir: {
+                case CommandID.NewDir: 
+                case CommandID.NewFile: {
                     const inDir = dirOf(target, items)
                     if (inDir) {
                         !expanded.includes(inDir.path) && toggle(inDir.path);
-                        createIn({ in: inDir, dir: true })
+                        createIn({ in: inDir, dir: cmd == CommandID.NewDir })
                     }
                     break
                 }
