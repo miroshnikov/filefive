@@ -19,6 +19,7 @@ export interface F5 {
     copy(src: URI[], dest: URI): Promise<string>
     remove(files: URI[]): void
     open(file: Path): void
+    mkdir(name: string, parent: URI): void
 
     resolve(id: string, action: QueueAction): void
     stop(id: string): void

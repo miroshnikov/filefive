@@ -4,15 +4,21 @@ import classNames from 'classnames'
 
 interface Props {
     name: string
+    sublings: string[]
     onOk: (name: string) => void
     onCancel: () => void
 }
 
-export default function ({name, onOk, onCancel}: Props) {
+export default function ({name, sublings, onOk, onCancel}: Props) {
     const inputEl = useRef(null)
     const [newName, setNewName] = useState(name)
     const [error, setError] = useState(false)
     useEffect(() => inputEl.current?.focus(), [])
+
+    const onChange = (name: string) => {
+        setNewName(name)
+        setError(sublings.includes(name))
+    }
 
     const onKey = (key: string) => {
         if (key == 'Escape') {
@@ -28,7 +34,7 @@ export default function ({name, onOk, onCancel}: Props) {
         ref={inputEl}
         className={classNames(styles.root, { error })} 
         value={newName} 
-        onChange={e => setNewName(e.target.value)} 
+        onChange={e => onChange(e.target.value)} 
         onBlur={() => (newName.length && !error) ? onOk(name) : onCancel()}
         onKeyDown={({key}) => onKey(key)}
     />

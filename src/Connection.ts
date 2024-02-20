@@ -1,11 +1,12 @@
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import { FileSystem } from './FileSystem'
-import { URI, ConnectionID } from './types'
+import { URI, ConnectionID, LocalFileSystemID } from './types'
 import { parseURI, connectionID } from './utils/URI'
 import Password from './Password'
 import App from './App'
 import unqid from './utils/uniqid'
 import logger from './log'
+import Local from './fs/Local'
 import SFtp from './fs/SFtp'
 import Ftp from './fs/Ftp'
 
@@ -13,7 +14,7 @@ import Ftp from './fs/Ftp'
 export default class {
 
     static initialize() {
-        // this.shared.set(LocalFileSystemID, new Local)
+        this.shared.set(LocalFileSystemID, new Local)
     }
 
     static async open(scheme: string, user: string, host: string, port: number): Promise<ConnectionID> {

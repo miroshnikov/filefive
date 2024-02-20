@@ -11,6 +11,7 @@ export type URI = `${ConnectionID}/${Path}`
 
 export const FileStateAttr = Symbol.for('state')
 export enum FileState {
+    Creating = 'creating',
     Renaming = 'renaming'
 }
 

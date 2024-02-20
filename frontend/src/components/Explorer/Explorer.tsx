@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import { ConnectionID, URI, FileInfo, Files, Path } from '../../../../src/types'
-import { parseURI } from '../../../../src/utils/URI'
+import { parseURI, createURI } from '../../../../src/utils/URI'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
 import List, { Columns, ColumnType, Items } from '../List/List'
@@ -162,6 +162,12 @@ export default function ({
         }
     }
 
+    const createNew = (name: string, parent: Path, dir: boolean) => {
+        if (dir) {
+            window.f5.mkdir(name, createURI(connection, parent))
+        }
+    }
+
     const onDrop = (URIs: string[], target: string, effect: DropEffect) => {
         console.log(effect, URIs, '->', connection+target)
         window.f5.copy(URIs as URI[], connection+target as URI)
@@ -191,6 +197,7 @@ export default function ({
             onOpen={onOpen}
             onDrop={onDrop}
             onMenu={(path, dir) => onMenu(connection + path as URI, dir)}
+            onNew={createNew}
             root={root}
             tabindex={tabindex}
             parent={parent}

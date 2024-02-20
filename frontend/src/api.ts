@@ -24,7 +24,7 @@ function subscribe<Event extends {}>(channel: string, callback: (event: Event) =
     channels.set(channel, callbacks ? [...callbacks, callback] : [callback])
 }
 
-window.f5 = {   
+window.f5 = {
     config: () => invoke<AppConfig>('config'),
 
     onError: listener => subscribe<any>('error', (error) => listener(error)),
@@ -41,6 +41,7 @@ window.f5 = {
     copy: (src, dest) => invoke<string>('copy', { src, dest }),
     remove: files => invoke<void>('remove', { files }),
     open: file => invoke<void>('open', { file }),
+    mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
 
     resolve: (id, action) => invoke<void>('resolve', { id, action }),
     stop: id => invoke<void>('stop', { id }),

@@ -23,6 +23,12 @@ export function parseURI(uri: URI) {
     }
 }
 
+export function createURI(id: ConnectionID, path: Path): URI {
+    const u = new URL(id)
+    u.pathname = path;
+    return u.toString() as URI
+}
+
 function defaultPort(protocol: string) {
     switch (protocol) {
         case 'ftp:': return 21

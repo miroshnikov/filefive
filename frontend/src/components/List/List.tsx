@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect, forwardRef } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
-import { FileInfo, Path, FileStateAttr, FileState } from '../../../../src/types'
-import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, insert } from 'ramda'
+import { FileInfo, Path, FileState } from '../../../../src/types'
+import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith } from 'ramda'
 import { filter } from 'rxjs/operators'
-import { depth, dirname } from '../../utils/path'
+import { depth, dirname, parse, childOf, join } from '../../utils/path'
 import { useSet, useKeyHold, useSubscribe } from '../../hooks'
 import setRef from '../../utils/setRef'
 import { CommandID } from '../../commands'
@@ -44,8 +44,13 @@ const createDragImage = (text: string) => {
 }
 
 const isDescendant = (path: string, ancestor: string) => path.startsWith(ancestor+'/') || path == ancestor
-const isChild = (path: string, parent: string) => path == parent || dirname(path) == parent
 const dirOf = (item: Item, all: Items) => item.dir ? item : all.find(({path}) => path == dirname(item.path))
+
+const selectChildren = (parent: Path, list: Path[]) => 
+    list.filter(startsWith(parent+'/'))
+        .map(path => path.substring(parent.length+1))
+        .map(path => parse(path)['top'])
+
 
 
 interface ListProps {
@@ -57,12 +62,16 @@ interface ListProps {
     onOpen: (path: string) => void
     onDrop(URIs: string[], target: string, effect: DropEffect): void
     onMenu(path: string, dir: boolean): void
+    onNew(name: string, parent: Path, dir: boolean): void
     root: string
     tabindex: number
     parent?: string,
 }
 
-export default forwardRef<HTMLDivElement, ListProps>(function ({columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, root, tabindex, parent}, fwdRef) {
+export default forwardRef<HTMLDivElement, ListProps>(function (
+    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, root, tabindex, parent}, 
+    fwdRef
+) {
     const rootEl = useRef(null)
 
     const [items, setItems] = useState<Items>([])
@@ -77,27 +86,40 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, files, 
     const metaPressed = useKeyHold('Meta')
     const shiftPressed = useKeyHold('Shift')
 
-    const [adding, addIn] = useState<{in: Item, dir: boolean}>()
+    const [creating, createIn] = useState<{in: Item, dir: boolean}>()
 
     const [dragging, setDragging] = useState(false)
     const [dropTarget, setDropTarget] = useState<string>('')
     const [draggedOver, setDraggedOver] = useState(false)
 
-    useEffect(() => setItems(files), [files])
+    const insertNewItem = (items: Items) => {
+        if (creating) {
+            const i = items.findIndex(({path}) => path == creating.in.path)
+            const parent = items[i]
+            if (i >= 0) {
+                items.splice(i+1, 0, {
+                    ...parent, 
+                    dir: creating.dir,
+                    FileStateAttr: FileState.Creating, 
+                    name: '' 
+                })
+            }
+            return [...items]
+        }
+        return items
+    }
 
-    useEffect(() => {
+    useEffect(() => setItems(insertNewItem(files)), [files])
+
+    useEffect(() => {        
         setItems(items => {
-            items = items.filter(({FileStateAttr}) => FileStateAttr != FileState.Renaming)
-            if (adding) {
-                const i = items.findIndex(({path}) => path == adding.in.path)
-                const parent = items[i]
-                if (i >= 0) {
-                    items.splice(i+1, 0, { ...parent, dir: adding.dir, FileStateAttr: FileState.Renaming, name: '' })    
-                }
+            items = items.filter(({FileStateAttr}) => FileStateAttr != FileState.Creating)
+            if (creating && expanded.includes(creating.in.path)) {
+                insertNewItem(items)
             }
             return items
         })
-    }, [adding]);
+    }, [creating]);
 
     useEffect(() => {
         setSelected([])
@@ -170,7 +192,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, files, 
                     const inDir = dirOf(target, items)
                     if (inDir) {
                         !expanded.includes(inDir.path) && toggle(inDir.path);
-                        addIn({ in: inDir, dir: true })
+                        createIn({ in: inDir, dir: true })
                     }
                     break
                 }
@@ -239,7 +261,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, files, 
             item.kind == 'file' && URIs.push('file://'+(item.getAsFile() as any).path)  // dropped file from outside
         }
 
-        if (!URIs.map(URI => items.find(whereEq({URI}))).filter(identity).some(({path}) => isChild(path, targetDir))) {
+        if (!URIs.map(URI => items.find(whereEq({URI}))).filter(identity).some(({path}) => childOf(targetDir, path))) {
             onDrop(URIs, targetDir, e.dataTransfer.effectAllowed == 'copy' ? DropEffect.Copy : DropEffect.Move)           
         }
 
@@ -287,13 +309,17 @@ export default forwardRef<HTMLDivElement, ListProps>(function ({columns, files, 
                     </tr>
                 }
                 {items.map((item, i) => 
-                    item.FileStateAttr == FileState.Renaming ?
+                    item.FileStateAttr == FileState.Creating ?
                         <tr key='editing'>
-                            <td colSpan={columns.length + 1}>
+                            <td 
+                                colSpan={columns.length + 1}
+                                data-depth={depth(item.path)-rootDepth}
+                            >
                                 <EditFileName 
                                     name = {item.name}
-                                    onOk = {nm => { console.log(nm); addIn(undefined) }}
-                                    onCancel={() => addIn(undefined)}
+                                    sublings = {selectChildren(creating?.in.path, files.map(prop('path')))}
+                                    onOk = {nm => {onNew(nm, creating.in.path, creating.dir); createIn(undefined)}}
+                                    onCancel={() => createIn(undefined)}
                                 />
                             </td>
                             <td></td>

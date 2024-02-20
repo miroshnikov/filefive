@@ -21,7 +21,7 @@ export default class RemoteWatcher {
 
     public refresh(uri: URI) {
         const { id, path } = parseURI(uri)
-        this.watched.has(uri) && Connection.get(id).ls(path).then(files => this.listener(uri, this.transform(files)))
+        this.watched.has(uri) && Connection.get(id)?.ls(path).then(files => this.listener(uri, this.transform(files)))
     }
 
     public touch(uri: URI) {

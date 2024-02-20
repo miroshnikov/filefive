@@ -145,6 +145,9 @@ svg.drag-image text {
     --drop-background: #BEBEBE;
     --dry-control-bg: #1D1F23;
 
+    --dry-error: #FCF3F2;
+    --dry-error-text: #AC352D;
+
     --dry-modal-zindex:    1000;
     --dry-popover-zindex: 10000;
 }
