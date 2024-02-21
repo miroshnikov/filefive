@@ -10,7 +10,7 @@
     --selected-background: #333841;
     --selected-color: #d7dae0;
     --drop-background: #142E48;
-    --primary: #3E7EF3;
+    --primary: #404754;
 
     --dry-bg: var(--background);
     --dry-color: var(--color);
@@ -23,8 +23,8 @@
     --dry-shadow-color: #d9d9d920;
     --dry-shadow: 0 2px 0 var(--dry-shadow-color);
     --dry-primary: var(--primary);
-    --dry-primary-highlight: #3164c2;
+    --dry-primary-highlight: #4d5565;
     --dry-shadow-primary-color: #1f3f79;
     --dry-modal-zindex: 1000;
-    --dry-modal-fade: #00000020;
+    --dry-modal-fade: #00000060;
 }

@@ -7,8 +7,8 @@ import { ConnectionID, LocalFileSystemID, URI, Path } from '../../../../src/type
 import { createURI } from '../../../../src/utils/URI'
 import { ConfigContext } from '../../context/config'
 import { MenuItem } from '../../ui'
-import localFile from '../../menu/localFile'
-import localDir from '../../menu/localDir'
+import localFileMenu from '../../menu/localFile'
+import localDirMenu from '../../menu/localDir'
 
 
 export default function () {
@@ -21,20 +21,10 @@ export default function () {
     const [remoteSelected, setRemoteSelected] = useState<Path[]>([])
     const [showConnections, setShowConnections] = useState(true)
     const [menu, setMenu] = useState<MenuItem[]>([])
-    const [deleting, fileToDelete] = useState<URI|null>(null)
  
     useEffect(() => {
         window.document.body.setAttribute('theme', 'one-dark')
-        // const size = localStorage.getItem('window_size')
-        // if (size) {
-        //     const {width, height} = JSON.parse(size)
-        //     window.resizeTo(width, height)
-        // }
     }, [])
-
-    // useEvent(window, 'resize', () => {
-    //     localStorage.setItem('window_size', JSON.stringify({width: window.outerWidth, height: window.outerHeight}))
-    // }, [])
 
     const openLocal = (path: string) => {
         window.f5.copy(
@@ -138,7 +128,7 @@ export default function () {
     const fileContextMenu = (file: URI, dir: boolean) => {
         const {protocol, pathname} = new URL(file)
         if (protocol == 'file:') {
-            setMenu(dir ? localDir(pathname, localSelected) : localFile(pathname, localSelected))
+            setMenu(dir ? localDirMenu(pathname, localSelected) : localFileMenu(pathname, localSelected))
         } else {
             setMenu([])
         }

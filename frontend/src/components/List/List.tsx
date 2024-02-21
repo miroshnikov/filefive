@@ -44,7 +44,7 @@ const createDragImage = (text: string) => {
 }
 
 const isDescendant = (path: string, ancestor: string) => path.startsWith(ancestor+'/') || path == ancestor
-const dirOf = (item: Item, all: Items) => item.dir ? item : all.find(({path}) => path == dirname(item.path))
+const dirOf = (item: Item, all: Items) => item.dir ? item.path : all.find(({path}) => path == dirname(item.path))?.path
 
 const selectChildren = (parent: Path, list: Path[]) => 
     list.filter(startsWith(parent+'/'))
@@ -86,7 +86,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
     const metaPressed = useKeyHold('Meta')
     const shiftPressed = useKeyHold('Shift')
 
-    const [creating, createIn] = useState<{in: Item, dir: boolean}>()
+    const [creating, createIn] = useState<{in: Path, dir: boolean}>()
 
     const [dragging, setDragging] = useState(false)
     const [dropTarget, setDropTarget] = useState<string>('')
@@ -94,10 +94,13 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
 
     const insertNewItem = (items: Items) => {
         if (creating) {
-            const i = items.findIndex(({path}) => path == creating.in.path)
+            let i = items.findIndex(({path}) => path == creating.in)
+            if (i < 0 && creating.in == root) {
+                i = 0
+            }
             const parent = items[i]
             if (i >= 0) {
-                items.splice(i+1, 0, {
+                items.splice(creating.in == root ? 0 : i+1, 0, {
                     ...parent, 
                     dir: creating.dir,
                     FileStateAttr: FileState.Creating, 
@@ -114,7 +117,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
     useEffect(() => {        
         setItems(items => {
             items = items.filter(({FileStateAttr}) => FileStateAttr != FileState.Creating)
-            if (creating && expanded.includes(creating.in.path)) {
+            if (creating && expanded.includes(creating.in)) {
                 insertNewItem(items)
             }
             return items
@@ -190,16 +193,16 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
             switch (cmd) {
                 case CommandID.NewDir: 
                 case CommandID.NewFile: {
-                    const inDir = dirOf(target, items)
+                    const inDir = dirOf(target, items) || root
                     if (inDir) {
-                        !expanded.includes(inDir.path) && toggle(inDir.path);
+                        !expanded.includes(inDir) && toggle(inDir);
                         createIn({ in: inDir, dir: cmd == CommandID.NewDir })
                     }
                     break
                 }
             }
         }),
-        [target]
+        [target, items, expanded]
     )
 
   
@@ -319,8 +322,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
                             >
                                 <EditFileName 
                                     name = {item.name}
-                                    sublings = {selectChildren(creating?.in.path, files.map(prop('path')))}
-                                    onOk = {nm => {onNew(nm, creating.in.path, creating.dir); createIn(undefined)}}
+                                    sublings = {selectChildren(creating?.in, files.map(prop('path')))}
+                                    onOk = {nm => {onNew(nm, creating.in, creating.dir); createIn(undefined)}}
                                     onCancel={() => createIn(undefined)}
                                 />
                             </td>

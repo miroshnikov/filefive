@@ -70,7 +70,7 @@ export default class SFtp extends FileSystem {
                                 modified: new Date(f.attrs.mtime),
                                 owner: f.attrs.uid,
                                 group: f.attrs.gid,
-                                mode: f.attrs.mode
+                                mode: f.attrs.mode  // rights ?
                             }))
                     )
             })

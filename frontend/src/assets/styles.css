@@ -130,6 +130,20 @@ svg.drag-image text {
     align-items: center;    
 }
 
+.modal-content {
+    padding: 1em;
+    p {
+        padding: .5em 0;
+    }
+    strong {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    i {
+        font-weight: 400;
+    }
+}
+
 :root {
     --font-family: OpenSans;
     --font-size: 13.5px;

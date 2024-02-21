@@ -52,10 +52,10 @@ const onlyVisible = (dirs: string[]) => {
 interface ExplorerProps {
     icon: string
     connection: ConnectionID
-    path: string
-    fixedRoot: string
-    onChange: (dir: string) => void
-    onSelect: (paths: string[]) => void
+    path: Path
+    fixedRoot: Path
+    onChange: (dir: Path) => void
+    onSelect: (paths: Path[]) => void
     onOpen: (path: Path) => void
     onMenu: (item: URI, dir: boolean) => void
     toolbar: ToolbarItem[]
