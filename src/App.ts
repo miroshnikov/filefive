@@ -16,8 +16,6 @@ import transform from './transform'
 import { touch } from './Local'
 
 
-
-
 interface ConnectionSettings {
     scheme: string
     host: string
@@ -48,7 +46,7 @@ export default class App {
             unwatch:    ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.unwatch(parseURI(dir)['path']) : this.remoteWatcher.unwatch(dir),
             refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
             copy:       ({src, dest}: {src: URI[], dest: URI}) => commands.copy(src, dest),
-            remove:     ({files}: {files: URI[]}) => commands.remove(files),
+            remove:     ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force),
             open:       ({file}: {file: Path}) => opener(file),
             mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
             // read
@@ -67,33 +65,9 @@ export default class App {
 
         const emitQueue = emitter<{id: string, event: QueueEvent}>('queue')
         this.onQueueUpdate = (id: string, event: QueueEvent) => emitQueue({id, event})
-
-/* 
-        Object.entries({
-            config:     () => this.config(app),
-            connect:    (file: Path) => this.connect(file),
-            disconnect: (id: ConnectionID) => Connection.close(id),
-            watch:      (dir: URI) => this.watch(dir),
-            unwatch:    (dir: URI) => this.unwatch(dir),
-            execute:    (command: CommandID, args: {}) => (commands as Record<CommandID, Function>)[command](args), // ?
-            refresh:    (dir: URI) => this.remoteWatcher.refresh(dir),
-            // read
-            // write
-            resolve:    (id: string, action: QueueAction) => queues.get(id)?.resolve(action),
-            stop:       (id: string) => queues.get(id)?.close(),
-            fileMenu:   (target: URI, selected: URI[]) => this.fileMenu(target, selected, mainWindow)
-        }).forEach(([name, f]) => ipcMain.handle(name, (_, ...args) => f.apply(this, args)))
-
-        this.onError = (error: any) => { logger.error(error); mainWindow.webContents.send('error', error) }
-        this.onQueueUpdate = (id: string, event: QueueEvent) => mainWindow.webContents.send('queue-update', id, event)
-        
-        const sendDirContent = (uri: URI, files: Files)      => mainWindow.webContents.send('dir-change', uri, files)
-        this.localWatcher = new LocalWatcher((path, files) => sendDirContent('file://'+path as URI, files))
-        this.remoteWatcher = new RemoteWatcher(sendDirContent, transform)
-*/
     }
 
-    public static onError: (error: any) => void
+    public static onError: (error: Failure) => void
     public static onQueueUpdate: (id: string, event: QueueEvent) => void
 
 

@@ -1,10 +1,10 @@
-import { URI, QueueEventType, QueueType } from '../types'
+import { URI, QueueEventType, QueueType, FailureType } from '../types'
 import { rm } from 'node:fs/promises'
 import { isLocal, parseURI } from '../utils/URI'
 import unqid from '../utils/uniqid'
 import Queue, { queues } from '../Queue'
-import App from '../App'
 const trash = import("trash")
+import App from '../App'
 
 
 /*
@@ -38,9 +38,14 @@ const confirmRemoteDelete = (names: string[], window: BrowserWindow) =>
 type RemoveArgs = { paths: URI[], window: BrowserWindow }
 */
 
-export default async function (files: URI[], immediately = false) {
+export default async function (files: URI[], force = false, immediately = false) {
     if (!files.length) {
-        return true
+        return
+    }
+
+    if (!force) {
+        App.onError({ type: FailureType.ConfirmDeletion, files } )
+        return
     }
 
     if (isLocal(files[0])) {
@@ -70,5 +75,4 @@ export default async function (files: URI[], immediately = false) {
         queues.set(id, queue)
         App.onQueueUpdate(id, { type: QueueEventType.Create, queueType: QueueType.Remove, connection: connId })
     }
-    return true
 }

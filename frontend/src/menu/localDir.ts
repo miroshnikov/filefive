@@ -1,11 +1,12 @@
-import { Path, URI, LocalFileSystemID } from '../../../src/types'
+import { Path, LocalFileSystemID } from '../../../src/types'
+import { createURI } from '../../../src/utils/URI'
 import { MenuItem } from '../ui'
 import { basename } from '../utils/path'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'
 
 
-export default function (path: Path, selected: Path[], onDelete: () => void): MenuItem[] {
+export default function (path: Path, selected: Path[]): MenuItem[] {
     return [
         {
             id: 'new-dir',
@@ -39,7 +40,12 @@ export default function (path: Path, selected: Path[], onDelete: () => void): Me
         {
             id: 'delete',
             label: 'Delete',
-            click: onDelete
+            click: () => {
+                window.f5.remove(
+                    ((selected.length && selected.includes(path)) ? selected : [path]).map(p => createURI(LocalFileSystemID, path)),
+                    false
+                )
+            }
         }
     ]
 }

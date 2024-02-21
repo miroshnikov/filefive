@@ -1,6 +1,6 @@
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import { FileSystem } from './FileSystem'
-import { URI, ConnectionID, LocalFileSystemID } from './types'
+import { URI, ConnectionID, LocalFileSystemID, FailureType } from './types'
 import { parseURI, connectionID } from './utils/URI'
 import Password from './Password'
 import App from './App'
@@ -100,7 +100,10 @@ export default class {
                     user, 
                     password,
                     port, 
-                    e => { logger.error('SFTP error:', e);  App.onError(e) }
+                    error => { 
+                        logger.error('SFTP error:', error);  
+                        App.onError({ type: FailureType.RemoteError, id, error }) 
+                    }
                 )
             }
             case 'ftp': {
@@ -109,7 +112,10 @@ export default class {
                     user, 
                     password,
                     port, 
-                    e => { logger.error('FTP error:', e);  App.onError(e) }
+                    error => { 
+                        logger.error('FTP error:', error);  
+                        App.onError({ type: FailureType.RemoteError, id, error })
+                    }
                 )
             }
         }

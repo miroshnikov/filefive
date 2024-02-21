@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { Modal, ModalButtonID } from '../ui'
+import { useSubscribe } from '../hooks'
 import { error$ } from '../observables/error'
 import { FailureType, ConnectionID } from '../../../src/types'
 
@@ -9,14 +10,13 @@ export default function () {
     const [password, setPassword] = useState('')
     const [remember, setRemember] = useState(true)
 
-    useEffect(() => {
-        const subscription = error$.subscribe(error => {
+    useSubscribe(() => 
+        error$.subscribe(error => {
             if (error.type == FailureType.Unauthorized) {
                 setConnectionId(error.id)
             }
         })
-        return () => subscription.unsubscribe()
-    }, [])
+    )
 
     const buttons = [
         {
@@ -36,6 +36,7 @@ export default function () {
         }
         setConnectionId(undefined)
     }
+    
     return <>
         {connectionId && 
             <Modal buttons={buttons} onClose={onClose}>

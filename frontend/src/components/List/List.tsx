@@ -314,7 +314,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
                         <tr key='editing'>
                             <td 
                                 colSpan={columns.length + 1}
-                                data-depth={depth(item.path)-rootDepth}
+                                className={classNames({d: item.dir})}
+                                data-depth={depth(item.path)+1-rootDepth}
                             >
                                 <EditFileName 
                                     name = {item.name}

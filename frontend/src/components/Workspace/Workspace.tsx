@@ -3,11 +3,10 @@ import Split from '../Split/Split'
 import { Spinner } from '../../ui'
 import Explorer from '../Explorer/Explorer'
 import { ToolbarItem } from '../Toolbar/Toolbar'
-import { useEvent } from '../../hooks'
 import { ConnectionID, LocalFileSystemID, URI, Path } from '../../../../src/types'
+import { createURI } from '../../../../src/utils/URI'
 import { ConfigContext } from '../../context/config'
 import { MenuItem } from '../../ui'
-import FileDeleteModal from '../../modals/FileDelete'
 import localFile from '../../menu/localFile'
 import localDir from '../../menu/localDir'
 
@@ -26,16 +25,16 @@ export default function () {
  
     useEffect(() => {
         window.document.body.setAttribute('theme', 'one-dark')
-        const size = localStorage.getItem('window_size')
-        if (size) {
-            const {width, height} = JSON.parse(size)
-            window.resizeTo(width, height)
-        }
+        // const size = localStorage.getItem('window_size')
+        // if (size) {
+        //     const {width, height} = JSON.parse(size)
+        //     window.resizeTo(width, height)
+        // }
     }, [])
 
-    useEvent(window, 'resize', () => {
-        localStorage.setItem('window_size', JSON.stringify({width: window.outerWidth, height: window.outerHeight}))
-    }, [])
+    // useEvent(window, 'resize', () => {
+    //     localStorage.setItem('window_size', JSON.stringify({width: window.outerWidth, height: window.outerHeight}))
+    // }, [])
 
     const openLocal = (path: string) => {
         window.f5.copy(
@@ -74,7 +73,7 @@ export default function () {
             id: 'Delete',
             icon: 'delete',
             disabled: !localSelected.length,
-            onClick: () => window.f5.remove(localSelected.map(path => LocalFileSystemID + path) as URI[])
+            onClick: () => window.f5.remove(localSelected.map(path => createURI(LocalFileSystemID, path)), false)
         }
     ], [localSelected, remotePath])
 
@@ -85,14 +84,14 @@ export default function () {
             disabled: !remoteSelected.length,
             onClick: () => window.f5.copy(
                 remoteSelected.map(path => (connectionId ?? LocalFileSystemID) + path) as URI[], 
-                LocalFileSystemID + localPath as URI
+                createURI(LocalFileSystemID, localPath)
             )
         },
         {
             id: 'Delete',
             icon: 'delete',
             disabled: !remoteSelected.length,
-            onClick: () => window.f5.remove(remoteSelected.map(path => (connectionId ?? LocalFileSystemID) + path) as URI[])
+            onClick: () => window.f5.remove(remoteSelected.map(path => createURI(connectionId ?? LocalFileSystemID, path)), false)
         },
         ...(connectionId ? [
             {
@@ -137,15 +136,9 @@ export default function () {
     ], [remoteToolbar]);
 
     const fileContextMenu = (file: URI, dir: boolean) => {
-
-        // window.f5.remove(selected.length ? selected : [LocalFileSystemID + path as URI] )
-
         const {protocol, pathname} = new URL(file)
         if (protocol == 'file:') {
-            setMenu(dir ? 
-                localDir(pathname, localSelected as URI[], () => fileToDelete(file)) : 
-                localFile(pathname, localSelected as URI[], () => fileToDelete(file))
-            )
+            setMenu(dir ? localDir(pathname, localSelected) : localFile(pathname, localSelected))
         } else {
             setMenu([])
         }
@@ -213,9 +206,6 @@ export default function () {
                         />
             }
         />
-        {/* {deleting &&
-            <FileDeleteModal >
-        } */}
     </>)
 }
 

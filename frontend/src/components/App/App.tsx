@@ -9,6 +9,7 @@ import classNames from "classnames"
 import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'
 import AskForPassword from '../../modals/Password'
+import ConfirmDeletion from '../../modals/Deletion'
 import { ConfigContext } from '../../context/config'
 
 
@@ -48,6 +49,7 @@ export default function () {
                     <Error />
                 </div>
                 <AskForPassword />
+                <ConfirmDeletion />
             </ConfigContext.Provider> : 
             <span>wait...</span>
         }

@@ -89,8 +89,9 @@ export type QueueAction =
 
 
 export enum FailureType {
-    Unauthorized = 'Unauthorized',
-    Connection = 'Connection'
+    Unauthorized = 'unauthorized',
+    ConfirmDeletion = 'confirm-deletion',
+    RemoteError = 'remote-error'
 }
 export type Failure =
     | {
@@ -98,5 +99,11 @@ export type Failure =
         id: ConnectionID
     }
     | {
-        type: FailureType.Connection
+        type: FailureType.ConfirmDeletion
+        files: URI[]
+    }
+    | {
+        type: FailureType.RemoteError
+        id: ConnectionID
+        error: Error
     }
