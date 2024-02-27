@@ -7,37 +7,6 @@ const trash = import("trash")
 import App from '../App'
 
 
-/*
-const confirmLocalDelete = (names: string[], window: BrowserWindow) => 
-    dialog.showMessageBox(window, {
-        type: 'question',
-        message: names.length > 1 ? 
-            `Are you sure you want to delete the following ${names.length} files/directories and their contents?` : 
-            `Are you sure you want to delete '${names[0]}'?`,
-        buttons: ['Delete', 'Cancel'],
-        defaultId: 0,
-        cancelId: 1,
-        checkboxLabel: 'Delete immediately. You can’t undo this action.',
-        detail: `You can restore ${names.length > 1 ? 'these files' : 'this file'} from the Trash.`
-    })
-
-
-const confirmRemoteDelete = (names: string[], window: BrowserWindow) =>
-    dialog.showMessageBox(window, {
-        type: 'question',
-        message: names.length > 1 ? 
-            `Are you sure you want to delete the following ${names.length} files/directories and their contents?` : 
-            `Are you sure you want to delete '${names[0]}'?`,
-        buttons: ['Delete', 'Cancel'],
-        defaultId: 0,
-        cancelId: 1,
-        detail: `You can’t undo this action.`
-    })
-
-
-type RemoveArgs = { paths: URI[], window: BrowserWindow }
-*/
-
 export default async function (files: URI[], force = false, immediately = false) {
     if (!files.length) {
         return

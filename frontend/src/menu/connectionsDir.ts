@@ -12,7 +12,7 @@ export default function (path: Path, selected: Path[]): MenuItem[] {
         {
             id: 'new-file',
             label: 'New Connection...',
-            click: () => command$.next(CommandID.NewFile),
+            click: () => command$.next(CommandID.NewConnection),
             separator: true
         },
         {

@@ -10,6 +10,7 @@ import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'
 import AskForPassword from '../../modals/Password'
 import ConfirmDeletion from '../../modals/Deletion'
+import NewConnection from '../../modals/Connection'
 import { ConfigContext } from '../../context/config'
 
 
@@ -50,6 +51,7 @@ export default function () {
                 </div>
                 <AskForPassword />
                 <ConfirmDeletion />
+                <NewConnection />
             </ConfigContext.Provider> : 
             <span>wait...</span>
         }

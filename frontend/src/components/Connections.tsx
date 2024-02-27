@@ -23,7 +23,7 @@ export default function ({ path, onChange, onSelect, connect, tabindex }: Props)
     const onContextMenu = (file: URI, dir: boolean) => {
         const { path } = parseURI(file)
         setMenu(dir ? dirMenu(path, selected) : fileMenu(path, selected, () => connect(path)))
-    }  
+    }
 
     return <Explorer 
         icon='power_settings_new'

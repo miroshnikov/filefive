@@ -63,6 +63,7 @@ export default function () {
                             }
                         </i>
                     </p>
+                    {/* Delete immediately */}
                 </div>
             </Modal>
         }

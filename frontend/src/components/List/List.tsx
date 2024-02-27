@@ -193,7 +193,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
             switch (cmd) {
                 case CommandID.NewDir: 
                 case CommandID.NewFile: {
-                    const inDir = dirOf(target, items) || root
+                    const inDir = target ? (dirOf(target, items) || root) : root
                     if (inDir) {
                         !expanded.includes(inDir) && toggle(inDir);
                         createIn({ in: inDir, dir: cmd == CommandID.NewDir })

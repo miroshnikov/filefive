@@ -31,7 +31,8 @@ export default class App {
     static bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter, opener: (file: string) => void) {
 
         const dataPath = join(homedir(), '.f5')
-        mkdir(join(dataPath, 'connections'), { recursive: true })
+        const connPath = join(dataPath, 'connections')
+        mkdir(connPath, { recursive: true })
         touch(join(dataPath, 'credentials.json')) // TODO write "[]" if empty
                
         Password.load(dataPath, id => App.onError({ type: FailureType.Unauthorized, id }))
@@ -50,7 +51,7 @@ export default class App {
             open:       ({file}: {file: Path}) => opener(file),
             mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
             // read
-            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content),
+            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content, connPath),
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),
             stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))

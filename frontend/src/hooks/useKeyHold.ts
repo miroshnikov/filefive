@@ -11,13 +11,13 @@ export const useKeyHold = (
     useEvent(
         target, 
         'keydown', 
-        (e: KeyboardEvent) => {e.key==key && (pressed.current = true); console.log('keydown', key)},
+        (e: KeyboardEvent) => {e.key==key && (pressed.current = true)}, //; console.log('keydown', key)
         deps
     )
     useEvent(
         target, 
         'keyup', 
-        (e: KeyboardEvent) => { e.key==key && (pressed.current = false); console.log('keyup', key)},
+        (e: KeyboardEvent) => { e.key==key && (pressed.current = false)},   //; console.log('keyup', key)
         deps
     )
     return pressed

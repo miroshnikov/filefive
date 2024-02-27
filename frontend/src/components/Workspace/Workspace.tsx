@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useMemo } from "react"
 import Split from '../Split/Split'
 import { Spinner } from '../../ui'
 import Explorer from '../Explorer/Explorer'
+import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path } from '../../../../src/types'
 import { createURI } from '../../../../src/utils/URI'
@@ -157,16 +158,11 @@ export default function () {
             }
             right = {
                 showConnections ? 
-                    <Explorer 
-                        icon='power_settings_new'
-                        connection={LocalFileSystemID}
+                    <Connections
                         path={remotePath} 
-                        fixedRoot={config.paths.connections}
                         onChange={setRemotePath} 
                         onSelect={paths => setRemoteSelected(paths)}
-                        onOpen={connect}
-                        onMenu={fileContextMenu}
-                        toolbar={connectionsToolbar}
+                        connect={connect}
                         tabindex={2}
                     /> : 
                     connectionId ? 
