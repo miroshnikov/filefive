@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Modal, ModalButtonID } from '../ui'
+import { Modal, ModalButtonID } from '../ui/components'
 import { URI, FailureType } from '../../../src/types'
 import { parseURI } from '../../../src/utils/URI'
 import { useSubscribe } from '../hooks'

@@ -13,7 +13,7 @@ import { dirname, descendantOf, join } from '../../utils/path'
 import numeral from 'numeral'
 import { DateTime } from "luxon";
 import { DropEffect } from '../List/List'
-import { Menu, MenuItem, ContextMenu } from '../../ui/'
+import { Menu, MenuItem, ContextMenu } from '../../ui/components'
  
 
 const sortFiles = (files: Files) => {

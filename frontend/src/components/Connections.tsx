@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react"
 import { LocalFileSystemID, URI, Path } from '../../../src/types'
 import { ConfigContext } from '../context/config'
-import { MenuItem } from '../ui'
+import { MenuItem } from '../ui/components'
 import { parseURI } from '../../../src/utils/URI'
 import Explorer from './Explorer/Explorer'
 import dirMenu from '../menu/connectionsDir'

@@ -6,7 +6,7 @@ import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, i
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf } from '../../utils/path'
 import { useSet, useKeyHold, useSubscribe } from '../../hooks'
-import setRef from '../../utils/setRef'
+import setRef from '../../ui/setRef'
 import { CommandID } from '../../commands'
 import { command$ } from '../../observables/command'
 import EditFileName from '../EditFileName/EditFileName'

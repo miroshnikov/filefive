@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react"
-import { Modal, ModalButtonID } from '../ui'
 import { FailureType } from '../../../src/types'
 import { useSubscribe } from '../hooks'
 import { error$ } from '../observables/error'
-import { Select, Password } from '../ui'
+import { Modal, ModalButtonID, Select, Password } from '../ui/components'
 
 
 const connTypes = [
@@ -39,7 +38,6 @@ export default function () {
     useSubscribe(() => 
         error$.subscribe(error => {
             if (error.type == FailureType.NewConnection) {
-                console.log('NewConnection!!')
                 setFile(error.file)
             }
         })

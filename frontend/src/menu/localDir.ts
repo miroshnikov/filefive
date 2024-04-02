@@ -1,6 +1,6 @@
 import { Path, LocalFileSystemID } from '../../../src/types'
 import { createURI } from '../../../src/utils/URI'
-import { MenuItem } from '../ui'
+import { MenuItem } from '../ui/components'
 import { basename } from '../utils/path'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'

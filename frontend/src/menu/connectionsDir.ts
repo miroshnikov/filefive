@@ -1,6 +1,6 @@
 import { Path, LocalFileSystemID } from '../../../src/types'
 import { createURI } from '../../../src/utils/URI'
-import { MenuItem } from '../ui'
+import { MenuItem } from '../ui/components'
 import { basename } from '../utils/path'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'
@@ -12,7 +12,7 @@ export default function (path: Path, selected: Path[]): MenuItem[] {
         {
             id: 'new-file',
             label: 'New Connection...',
-            click: () => command$.next(CommandID.NewConnection),
+            click: () => command$.next(CommandID.NewFile),
             separator: true
         },
         {

@@ -1,8 +1,8 @@
 import React, { useState } from "react"
-import { Modal, ModalButtonID } from '../ui'
 import { useSubscribe } from '../hooks'
 import { error$ } from '../observables/error'
 import { FailureType, ConnectionID } from '../../../src/types'
+import { Modal, ModalButtonID, Password } from '../ui/components'
 
 
 export default function () {
@@ -42,7 +42,7 @@ export default function () {
             <Modal buttons={buttons} onClose={onClose}>
                 <div>
                     <p>{connectionId}</p>
-                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+                    <Password onChange={setPassword} />
                     Save: <input type="checkbox" checked={remember} onChange={() => setRemember(remember => !remember)} />
                 </div>
             </Modal>

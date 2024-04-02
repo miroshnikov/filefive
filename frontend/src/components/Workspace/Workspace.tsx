@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext, useMemo } from "react"
 import Split from '../Split/Split'
-import { Spinner } from '../../ui'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path } from '../../../../src/types'
 import { createURI } from '../../../../src/utils/URI'
 import { ConfigContext } from '../../context/config'
-import { MenuItem } from '../../ui'
+import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import localDirMenu from '../../menu/localDir'
 
