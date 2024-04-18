@@ -10,6 +10,9 @@ export function connectionID(scheme: string, user: string, host: string, port:nu
 }
 
 export function parseURI(uri: URI) {
+    // https://url.spec.whatwg.org/#special-scheme
+    // https://jsdom.github.io/whatwg-url/#url=bmF0czovL2xvY2FsaG9zdDo0MjAwLw==&base=ZmlsZTovLy8=
+
     const { protocol, pathname, username, hostname, port: p } = new URL(uri)
     const port = p ? parseInt(p) : defaultPort(protocol)
 
@@ -31,8 +34,8 @@ export function createURI(id: ConnectionID, path: Path): URI {
 
 function defaultPort(protocol: string) {
     switch (protocol) {
-        case 'ftp:': return 21
-        case 'ssh:': return 22
+        case 'ftp:':  return 21
+        case 'sftp:': return 22
     }
     return 80
 }

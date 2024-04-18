@@ -7,9 +7,9 @@ import App from '../App'
 
 export default function (file: URI, content: string, connPath: string) {
     const {id, path} = parseURI(file)
+
     // if (isLocal(file) && path.startsWith(connPath) && !content) {
-    //     App.onError({ type: FailureType.NewConnection, file: path })
-    //     return
+        // TODO add password to credentials
     // }
     Connection.get(id).write(path, content)
     if (!isLocal(file)) {

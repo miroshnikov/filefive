@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { FailureType, Path } from '../../../../src/types'
-import { useSubscribe } from '../../hooks'
-import { error$ } from '../../observables/error'
+import { Path } from '../../../../src/types'
 import { Modal, ModalButtonID, Select, Password } from '../../ui/components'
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import { parse } from '../../utils/path'
 import { LocalFileSystemID } from '../../../../src/types'
-import { parseURI, createURI } from '../../../../src/utils/URI'
+import { createURI } from '../../utils/URI'
 import classNames from "classnames"
 import styles from './Connection.less'
 
@@ -32,7 +30,6 @@ type FormValues = {
 }
 
 export default function ({ file, onConnect, onClose }: { file?: Path, onConnect: (path: Path) => void, onClose: () => void }) {
-    // const [file, setFile] = useState('')
     const [name, setName] = useState('')
     const [scheme, setScheme] = useState('sftp')
 
@@ -67,15 +64,6 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             disabled: !isValid
         } 
     ]
-
-    // useSubscribe(() => 
-    //     error$.subscribe(error => {
-    //         if (error.type == FailureType.NewConnection) {
-    //             setName( parse(error.file).name )
-    //             setFile(error.file)
-    //         }
-    //     })
-    // )
 
     const onModalClose = async (id: string) => {
         if (id == 'save' || id == ModalButtonID.Ok) {

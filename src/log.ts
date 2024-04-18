@@ -53,7 +53,7 @@ export class LogFS extends FileSystem {
     }
 
     async ls(dir: Path) {
-        logger.log(`LIST ${dir}`)
+        logger.log(`LIST ${this.id}${dir}`)
         try {
             return await this.fs.ls(dir)
         } catch (e) {

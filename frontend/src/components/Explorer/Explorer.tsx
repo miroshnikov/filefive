@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react"
 import { ConnectionID, URI, FileInfo, Files, Path } from '../../../../src/types'
-import { parseURI, createURI } from '../../../../src/utils/URI'
+import { parseURI, createURI } from '../../utils/URI'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
 import List, { Columns, ColumnType, Items } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/watch'
-import { filter } from 'rxjs/operators'
+import { filter, tap } from 'rxjs/operators'
 import { useEffectOnUpdate } from '../../hooks'
 import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry } from 'ramda'
 import { dirname, descendantOf, join } from '../../utils/path'

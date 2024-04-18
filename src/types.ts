@@ -91,7 +91,6 @@ export type QueueAction =
 export enum FailureType {
     Unauthorized = 'unauthorized',
     ConfirmDeletion = 'confirm-deletion',
-    NewConnection = 'new-connection',
     RemoteError = 'remote-error'
 }
 export type Failure =
@@ -102,10 +101,6 @@ export type Failure =
     | {
         type: FailureType.ConfirmDeletion
         files: URI[]
-    }
-    | {
-        type: FailureType.NewConnection
-        file: Path
     }
     | {
         type: FailureType.RemoteError

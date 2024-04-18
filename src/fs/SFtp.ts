@@ -4,6 +4,7 @@ import { Path, Files, URI } from '../types'
 import { FileSystem, FileSystemURI } from '../FileSystem'
 
 // https://github.com/mscdex/ssh2/blob/master/SFTP.md
+// https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-13#section-4.3
 
 type OpenSSLExtension = 
     | 'posix-rename@openssh.com'
@@ -20,7 +21,6 @@ type OpenSSLExtension =
 
 interface SFTPExt extends SFTPWrapper {
     _extensions: Record<OpenSSLExtension, '1'|'2'>
-    ext_home_dir(username: string, cb: (err: Error, homeDirectory: string) => void): void
 }
 
 
@@ -47,8 +47,8 @@ export default class SFtp extends FileSystem {
                                 return
                             }
                             this.connection.on('error', this.onError)
-                            this.uri = `ftp://${this.user}@${this.host}:${this.port}`
-                            console.log('Supports: ', (sftp as SFTPExt)._extensions)
+                            this.uri = `sftp://${this.user}@${this.host}:${this.port}`
+                            this.extensions = (sftp as SFTPExt)._extensions
                             resolve(sftp)
                         })
                     })
@@ -58,8 +58,8 @@ export default class SFtp extends FileSystem {
                 host: this.host, 
                 username: this.user, 
                 password: this.password, 
-                port: this.port,
-                debug: s => console.log('DEBUG', s)
+                port: this.port
+                // debug: s => console.log('DEBUG', s)
             })
         }
         return this.connected
@@ -71,7 +71,7 @@ export default class SFtp extends FileSystem {
 
     async pwd(): Promise<Path> {
         const sftp = await this.open()
-        return new Promise((resolve, reject) => (sftp as SFTPExt).ext_home_dir('', (e, home) => e ? reject(e) : resolve(home)))
+        return new Promise((resolve, reject) => sftp.realpath('.', (e, current) => e ? reject(e) : resolve(current)))
     }
     
     async ls(dir: Path): Promise<Files> {
@@ -82,7 +82,7 @@ export default class SFtp extends FileSystem {
                     reject(err) : 
                     resolve(
                         list
-                            .filter(f => f.filename != '.' && f.filename != '..')
+                            // .filter(f => f.filename != '.' && f.filename != '..')
                             .map(f => ({
                                 URI: this.uri+path.join(dir, f.filename) as URI,
                                 path: path.join(dir, f.filename),
@@ -146,4 +146,5 @@ export default class SFtp extends FileSystem {
     private connected: Promise<SFTPWrapper>
     private connection = new Client()
     private uri: FileSystemURI
+    private extensions: Record<OpenSSLExtension, '1'|'2'>
 }

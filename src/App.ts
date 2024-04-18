@@ -11,7 +11,6 @@ import { queues } from './Queue'
 import { QueueEvent, QueueAction } from './types'
 import Password from './Password'
 import { commands } from './commands'
-import logger from './log'
 import transform from './transform'
 import { touch } from './Local'
 

@@ -24,6 +24,11 @@ export default async function (files: URI[], force = false, immediately = false)
         } else {
             (await trash).default(paths)
         }
+        // paths.forEach(path => {
+        //     if (path.startsWith(connPath) && isfile) {
+        //         TODO delete from passwords
+        //     }
+        // })
     } else {
         const connId = parseURI(files[0])['id']
         const id = unqid()
