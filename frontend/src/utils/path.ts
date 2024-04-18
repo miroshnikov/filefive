@@ -25,8 +25,8 @@ export function normalize(path: string): string {
 export function parse(path: string) {
     const base = basename(path)
     const dot = base.lastIndexOf('.')
-    const name = dot ? base.substring(0, dot) : base
-    const ext = dot ? base.substring(dot) : ''
+    const name = dot > 0 ? base.substring(0, dot) : base
+    const ext = dot > 0 ? base.substring(dot) : ''
     const parts = segments(path)
     return {
         dir: dirname(path),

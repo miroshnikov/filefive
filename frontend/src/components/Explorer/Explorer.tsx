@@ -61,6 +61,7 @@ interface ExplorerProps {
     toolbar: ToolbarItem[]
     tabindex: number
     contextMenu?: MenuItem[]
+    onNewFile?: (uri: URI) => void
 }
 
 
@@ -75,7 +76,8 @@ export default function ({
     onMenu, 
     toolbar, 
     tabindex,
-    contextMenu = []
+    contextMenu = [],
+    onNewFile
 }: ExplorerProps) {
     const [columns, setColumns] = useState<Columns>([
         {name: 'size', type: ColumnType.Number, title: 'Size'},
@@ -163,9 +165,12 @@ export default function ({
     }
 
     const createNew = (name: string, parent: Path, dir: boolean) => {
-        dir ?
-            window.f5.mkdir(name, createURI(connection, parent)) :
-            window.f5.write(createURI(connection, join(parent, name)), '')
+        if (dir) {
+            window.f5.mkdir(name, createURI(connection, parent))
+        } else {
+            const uri = createURI(connection, join(parent, name))
+            onNewFile ? onNewFile(uri) : window.f5.write(uri, '')
+        }   
     }
 
     const onDrop = (URIs: string[], target: string, effect: DropEffect) => {

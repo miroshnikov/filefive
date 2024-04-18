@@ -1,11 +1,10 @@
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import { FileSystem } from './FileSystem'
-import { URI, ConnectionID, LocalFileSystemID, FailureType } from './types'
+import { URI, ConnectionID, LocalFileSystemID } from './types'
 import { parseURI, connectionID } from './utils/URI'
 import Password from './Password'
-import App from './App'
 import unqid from './utils/uniqid'
-import logger from './log'
+import logger, { LogFS } from './log'
 import Local from './fs/Local'
 import SFtp from './fs/SFtp'
 import Ftp from './fs/Ftp'
@@ -23,8 +22,8 @@ export default class {
             return id
         }
         const conn = await this.create(id, scheme, user, host, port)
-        this.shared.set(id, conn)
         await conn.open()
+        this.shared.set(id, conn)
         return id
     }
 
@@ -92,7 +91,13 @@ export default class {
     }
 
     private static async create(id: ConnectionID, scheme: string, user: string, host: string, port: number): Promise<FileSystem> {
-        const password = await Password.get(id)
+        return new LogFS(
+            id, 
+            await this.createFS(scheme, user, host, port, await Password.get(id))
+        )
+    }
+
+    private static async createFS(scheme: string, user: string, host: string, port: number, password: string) {
         switch (scheme) {
             case 'sftp': {
                 return new SFtp(
@@ -100,10 +105,7 @@ export default class {
                     user, 
                     password,
                     port, 
-                    error => { 
-                        logger.error('SFTP error:', error);  
-                        App.onError({ type: FailureType.RemoteError, id, error }) 
-                    }
+                    error => logger.error(error)
                 )
             }
             case 'ftp': {
@@ -112,12 +114,11 @@ export default class {
                     user, 
                     password,
                     port, 
-                    error => { 
-                        logger.error('FTP error:', error);  
-                        App.onError({ type: FailureType.RemoteError, id, error })
-                    }
+                    error => logger.error(error) 
                 )
             }
+            default: 
+                throw new Error(`Unsupported scheme ${scheme}`)
         }
     }
 

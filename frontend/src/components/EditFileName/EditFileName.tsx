@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react"
+import React, { useRef, useState, useEffect, KeyboardEvent } from "react"
 import styles from './EditFileName.less'
 import classNames from 'classnames'
 
@@ -20,22 +20,23 @@ export default function ({name, sublings, onOk, onCancel}: Props) {
         setError(sublings.includes(name))
     }
 
-    const onKey = (key: string) => {
-        if (key == 'Escape') {
+    const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
+        e.stopPropagation()
+        if (e.key == 'Escape') {
             onCancel()
             return
         }
-        if (key == 'Enter' && !error) {
+        if (e.key == 'Enter' && !error) {
             newName.length ? onOk(newName) : setError(true)
         }
     }
     
     return <input 
         ref={inputEl}
-        className={classNames(styles.root, { error })} 
+        className={classNames('dry', styles.root, { error })} 
         value={newName} 
         onChange={e => onChange(e.target.value)} 
         onBlur={() => (newName.length && !error) ? onOk(name) : onCancel()}
-        onKeyDown={({key}) => onKey(key)}
+        onKeyDown={onKey}
     />
 }

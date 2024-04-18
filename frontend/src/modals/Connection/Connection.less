@@ -1,0 +1,19 @@
+:local(.root) {
+    width: 30em;
+    > h1 {
+        text-transform: uppercase;
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-bottom: 1em;
+    }
+
+    > ul {
+        display: flex;
+        gap: .5em;
+        li {
+            &:first-child {
+                flex: 80% 0 0;
+            }
+        }
+    }
+}

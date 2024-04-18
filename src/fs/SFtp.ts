@@ -5,9 +5,24 @@ import { FileSystem, FileSystemURI } from '../FileSystem'
 
 // https://github.com/mscdex/ssh2/blob/master/SFTP.md
 
+type OpenSSLExtension = 
+    | 'posix-rename@openssh.com'
+    | 'statvfs@openssh.com'
+    | 'fstatvfs@openssh.com'
+    | 'hardlink@openssh.com'
+    | 'fsync@openssh.com'
+    | 'lsetstat@openssh.com'
+    | 'expand-path@openssh.com'
+    | 'copy-data'
+    | 'home-directory'
+    | 'users-groups-by-id@openssh.com'
+
+
 interface SFTPExt extends SFTPWrapper {
+    _extensions: Record<OpenSSLExtension, '1'|'2'>
     ext_home_dir(username: string, cb: (err: Error, homeDirectory: string) => void): void
 }
+
 
 export default class SFtp extends FileSystem {
     constructor(
@@ -33,12 +48,19 @@ export default class SFtp extends FileSystem {
                             }
                             this.connection.on('error', this.onError)
                             this.uri = `ftp://${this.user}@${this.host}:${this.port}`
+                            console.log('Supports: ', (sftp as SFTPExt)._extensions)
                             resolve(sftp)
                         })
                     })
                     .on('error', err => reject(err))
             })
-            this.connection.connect({ host: this.host, username: this.user, password: this.password, port: this.port })
+            this.connection.connect({ 
+                host: this.host, 
+                username: this.user, 
+                password: this.password, 
+                port: this.port,
+                debug: s => console.log('DEBUG', s)
+            })
         }
         return this.connected
     }

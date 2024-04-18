@@ -57,7 +57,7 @@ export default class App {
         }).forEach(([name, handler]) => handle(name, handler))
 
         const emitError = emitter<Failure>('error')
-        this.onError = (error: Failure) => { logger.error(error); emitError(error) }
+        this.onError = (error: Failure) => emitError(error)
 
         const emitFS = emitter<{uri: URI, files: Files}>('fs')
         const sendDirContent = (uri: URI, files: Files) => emitFS({uri, files})
@@ -82,16 +82,18 @@ export default class App {
         }
     }
 
-    private static async connect(file: Path): Promise<{ id: ConnectionID, config: ConnectionConfig }> {
+    private static async connect(file: Path): Promise<{ id: ConnectionID, config: ConnectionConfig } | false> {
         const {scheme, user, host, port} = JSON.parse( readFileSync(file).toString() ) as ConnectionSettings
         const id = connectionID(scheme, user, host, port)
         await Password.get(id)
         try {
             await Connection.open(scheme, user, host, port)
-        } catch (e) {
-            console.log('connection error: ', e)
+            const pwd = await Connection.get(id).pwd()
+            return { id, config: { pwd } }
+        } catch (error) {
+            App.onError({ type: FailureType.RemoteError, id, error })
+            return false
         }
-        return { id, config: { pwd: await Connection.get(id).pwd() } }
     }
 
     private static localWatcher: LocalWatcher

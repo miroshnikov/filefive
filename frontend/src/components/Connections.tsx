@@ -6,6 +6,8 @@ import { parseURI } from '../../../src/utils/URI'
 import Explorer from './Explorer/Explorer'
 import dirMenu from '../menu/connectionsDir'
 import fileMenu from '../menu/connection'
+import NewConnection from '../modals/Connection/Connection'
+
 
 interface Props {
     path: Path
@@ -19,23 +21,28 @@ export default function ({ path, onChange, onSelect, connect, tabindex }: Props)
     const config = useContext(ConfigContext)
     const [selected, setSelected] = useState<Path[]>([])
     const [menu, setMenu] = useState<MenuItem[]>([])
+    const [newConnection, setNewConnection] = useState<Path>('')
 
     const onContextMenu = (file: URI, dir: boolean) => {
         const { path } = parseURI(file)
         setMenu(dir ? dirMenu(path, selected) : fileMenu(path, selected, () => connect(path)))
     }
 
-    return <Explorer 
-        icon='power_settings_new'
-        connection={LocalFileSystemID}
-        path={path} 
-        fixedRoot={config.paths.connections}
-        onChange={onChange} 
-        onSelect={(paths: Path[]) => {setSelected(paths); onSelect(paths)}}
-        onOpen={connect}
-        onMenu={onContextMenu}
-        contextMenu={menu}
-        toolbar={[]}
-        tabindex={tabindex}
-    /> 
+    return <>
+        <Explorer 
+            icon='power_settings_new'
+            connection={LocalFileSystemID}
+            path={path} 
+            fixedRoot={config.paths.connections}
+            onChange={onChange} 
+            onSelect={(paths: Path[]) => {setSelected(paths); onSelect(paths)}}
+            onOpen={connect}
+            onMenu={onContextMenu}
+            contextMenu={menu}
+            toolbar={[]}
+            tabindex={tabindex}
+            onNewFile={uri => setNewConnection(parseURI(uri).path)}
+        /> 
+        <NewConnection file={newConnection} onConnect={connect} onClose={() => setNewConnection('')} />
+    </>
 }

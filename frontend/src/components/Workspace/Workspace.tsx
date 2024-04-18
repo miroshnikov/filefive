@@ -41,11 +41,14 @@ export default function () {
     }
 
     const connect = (path: string) => {
-        window.f5.connect(path).then(({id, config: { pwd }}) => {
-            localStorage.setItem(id, path)
-            setShowConnections(false)
-            setConnectionId(id)
-            setRemotePath(pwd)
+        window.f5.connect(path).then(connection => {
+            if (connection) {
+                const {id, config: { pwd }} = connection
+                localStorage.setItem(id, path)
+                setShowConnections(false)
+                setConnectionId(id)
+                setRemotePath(pwd)
+            }
         })
     }
 

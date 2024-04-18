@@ -94,6 +94,10 @@ image, picture, svg, video {
     outline: none !important
 }
 
+li {
+    list-style: none;
+}
+
 button {
     background-color: transparent;
 }
@@ -157,13 +161,21 @@ svg.drag-image text {
     --selected-background: #2551C8;
     --selected-color: #fff;
     --drop-background: #BEBEBE;
-    --dry-control-bg: #1D1F23;
-
-    --dry-error: #FCF3F2;
-    --dry-error-text: #AC352D;
-
-    --dry-modal-zindex:    1000;
-    --dry-popover-zindex: 10000;
 }
 
+form {
+    label {
+        display: block;
+        margin: 1em 0 .2em 0;
+    }
+    & input.dry {
+        display: block;
+        width: 100%;
+    }
+    & input.dry::placeholder {
+        font-weight: 400;
+    }
+}
+
+@import "../ui/styles.css";
 @import "themes/one-dark.css";

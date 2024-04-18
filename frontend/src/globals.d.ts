@@ -6,7 +6,7 @@ export interface F5 {
 
     onError(listener: (error: any) => void): void
 
-    connect(file: Path): Promise<{ id: ConnectionID, config: ConnectionConfig }>
+    connect(file: Path): Promise<{ id: ConnectionID, config: ConnectionConfig } | false>
     login(id: ConnectionID, password: string, remember: boolean): Promise<void>
     disconnect(id: ConnectionID): void
 
@@ -20,7 +20,7 @@ export interface F5 {
     remove(files: URI[], force: boolean): void
     open(file: Path): void
     mkdir(name: string, parent: URI): void
-    write(path: URI, content: string): void
+    write(path: URI, content: string): Promise<void>
 
     resolve(id: string, action: QueueAction): void
     stop(id: string): void
