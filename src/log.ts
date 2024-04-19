@@ -4,6 +4,7 @@ import { createWriteStream } from 'node:fs';
 import { Console } from "console"
 import { ConnectionID, Path, Files } from './types'
 import { FileSystem } from './FileSystem'
+const chalk = import('chalk')
 
 
 // const logger = new Console({
@@ -12,6 +13,9 @@ import { FileSystem } from './FileSystem'
 // })
 const logger = console
 export default logger
+
+const cmd = async (cmd: string) => (await chalk).default.bold.bgGreen(cmd)
+const id = async (id: string) => (await chalk).default.yellow(id)
 
 
 export class LogFS extends FileSystem {
@@ -23,10 +27,9 @@ export class LogFS extends FileSystem {
     }
 
     async open(): Promise<void> {
-        logger.log(`Connecting to ${this.id}...`)
+        logger.log(await cmd('CONNECT'), await id(this.id))
         try {
             const res = await this.fs.open()
-            logger.log('...ok')
             return res
         } catch (e) {
             let msg = `Could not connect to ${this.id}`
@@ -43,7 +46,7 @@ export class LogFS extends FileSystem {
     }
 
     async pwd() {
-        logger.log(`PWD ${this.id}`)
+        logger.log(await cmd('PWD'), await id(this.id))
         try {
             return await this.fs.pwd()
         } catch (e) {
@@ -53,7 +56,7 @@ export class LogFS extends FileSystem {
     }
 
     async ls(dir: Path) {
-        logger.log(`LIST ${this.id}${dir}`)
+        logger.log(await cmd('LIST'), await id(this.id) + dir)
         try {
             return await this.fs.ls(dir)
         } catch (e) {
@@ -63,7 +66,7 @@ export class LogFS extends FileSystem {
     }
 
     async get(remote: Path, local: Path) {
-        logger.log(`GET ${remote} -> ${local}`)
+        logger.log(await cmd('GET'), `${local} ←` + await id(this.id) + remote)
         try {
             return await this.fs.get(remote, local)
         } catch (e) {
@@ -73,7 +76,7 @@ export class LogFS extends FileSystem {
     }
 
     async put(local: Path, remote: Path) {
-        logger.log(`PUT ${local} -> ${remote}`)
+        logger.log(await cmd('PUT'), `${local} →` + await id(this.id) + remote)
         try {
             return await this.fs.put(local, remote)
         } catch (e) {
@@ -83,7 +86,7 @@ export class LogFS extends FileSystem {
     }
 
     async rm(path: Path, recursive: boolean) {
-        logger.log(`RM ${this.id}${path}`)
+        logger.log(await cmd('RM'), await id(this.id) + path)
         try {
             return await this.fs.rm(path, recursive)
         } catch (e) {
@@ -93,7 +96,7 @@ export class LogFS extends FileSystem {
     }
 
     async mkdir(path: Path) {
-        logger.log(`MKDIR ${this.id}${path}`)
+        logger.log(await cmd('MKDIR'), await id(this.id) + path)
         try {
             return await this.fs.mkdir(path)
         } catch (e) {
@@ -103,7 +106,7 @@ export class LogFS extends FileSystem {
     }
 
     async write(path: Path, data: string) {
-        logger.log(`WRITE ${this.id}${path}`)
+        logger.log(await cmd('WRITE'), await id(this.id) + path)
         try {
             return await this.fs.write(path, data)
         } catch (e) {

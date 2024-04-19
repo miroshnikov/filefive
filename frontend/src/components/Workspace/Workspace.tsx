@@ -91,7 +91,7 @@ export default function () {
                 id: 'Refresh',
                 icon: 'refresh',
                 disabled: false,
-                onClick: () => window.f5.refresh(remotePath as URI)
+                onClick: () => window.f5.refresh(createURI(connectionId, remotePath))
             },
             {
                 id: 'Disconnect',
