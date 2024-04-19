@@ -1,7 +1,7 @@
 import { homedir } from 'node:os'
 import { normalize, basename, dirname, join } from 'node:path'
 import { readdirSync, statSync, watch as fsWatch, WatchEventType } from 'node:fs';
-import { mkdir, unlink, rename, cp, open, rm } from 'node:fs/promises'
+import { mkdir, unlink, rename, cp, open, rm, readFile } from 'node:fs/promises'
 import { URI, FileInfo } from './types'
 
 
@@ -72,4 +72,8 @@ export async function touch(path: string): Promise<void> {
 export function watch(path: string, listener: (event: WatchEventType, file: string) => void): () => void {
     const watcher = fsWatch(path, listener)
     return () => watcher.close()
+}
+
+export async function read(path: string): Promise<string> {
+    return await readFile(path, { encoding: 'utf8' })
 }

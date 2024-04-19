@@ -1,5 +1,6 @@
 import { URI, QueueEventType, QueueType, FailureType } from '../types'
 import { rm } from 'node:fs/promises'
+import { stat } from '../Local'
 import { isLocal, parseURI } from '../utils/URI'
 import unqid from '../utils/uniqid'
 import Queue, { queues } from '../Queue'
@@ -7,7 +8,7 @@ const trash = import("trash")
 import App from '../App'
 
 
-export default async function (files: URI[], force = false, immediately = false) {
+export default async function (files: URI[], force: boolean, connPath: string, immediately = false) {
     if (!files.length) {
         return
     }
@@ -24,11 +25,11 @@ export default async function (files: URI[], force = false, immediately = false)
         } else {
             (await trash).default(paths)
         }
-        // paths.forEach(path => {
-        //     if (path.startsWith(connPath) && isfile) {
-        //         TODO delete from passwords
-        //     }
-        // })
+        paths.forEach(path => {
+            if (path.startsWith(connPath) && !stat(path).dir) {
+                // TODO delete from passwords
+            }
+        })
     } else {
         const connId = parseURI(files[0])['id']
         const id = unqid()

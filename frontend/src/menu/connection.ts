@@ -1,5 +1,5 @@
 import { Path, LocalFileSystemID } from '../../../src/types'
-import { createURI } from '../../../src/utils/URI'
+import { createURI } from '../utils/URI'
 import { MenuItem } from '../ui/components'
 import { basename } from '../utils/path'
 

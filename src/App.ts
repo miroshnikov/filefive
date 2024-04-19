@@ -46,7 +46,7 @@ export default class App {
             unwatch:    ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.unwatch(parseURI(dir)['path']) : this.remoteWatcher.unwatch(dir),
             refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
             copy:       ({src, dest}: {src: URI[], dest: URI}) => commands.copy(src, dest),
-            remove:     ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force),
+            remove:     ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
             open:       ({file}: {file: Path}) => opener(file),
             mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
             // read

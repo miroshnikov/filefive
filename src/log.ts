@@ -83,7 +83,7 @@ export class LogFS extends FileSystem {
     }
 
     async rm(path: Path, recursive: boolean) {
-        logger.log(`RM ${path}`)
+        logger.log(`RM ${this.id}${path}`)
         try {
             return await this.fs.rm(path, recursive)
         } catch (e) {
@@ -93,7 +93,7 @@ export class LogFS extends FileSystem {
     }
 
     async mkdir(path: Path) {
-        logger.log(`MKDIR ${path}`)
+        logger.log(`MKDIR ${this.id}${path}`)
         try {
             return await this.fs.mkdir(path)
         } catch (e) {
@@ -103,7 +103,7 @@ export class LogFS extends FileSystem {
     }
 
     async write(path: Path, data: string) {
-        logger.log(`WRITE ${path}`)
+        logger.log(`WRITE ${this.id}${path}`)
         try {
             return await this.fs.write(path, data)
         } catch (e) {
