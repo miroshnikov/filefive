@@ -12,6 +12,7 @@
             top: 0;
             th {
                 background-color: var(--background);
+                text-align: left;
                 resize: horizontal;
                 overflow: hidden;
                 white-space: nowrap;
@@ -34,6 +35,20 @@
                 &:last-child {
                     &::after {
                         display: none;
+                    }
+                }
+
+                &.sorted {
+                    padding-right: calc(2em + 5px);
+                }
+                &:not(:last-child) {
+                    cursor: pointer;
+                    > span {
+                        position: absolute;
+                        top: -.1em;
+                        right: 5px;
+                        font-size: 2em;
+                        background-color: var(--background);
                     }
                 }
             }
@@ -90,6 +105,10 @@
                     &:not(:last-child) {
                         padding-right: .5em;
                     }
+
+                    &.type-number {
+                        text-align: right;
+                    }
                 }
 
                 &.selected {
@@ -108,9 +127,6 @@
             white-space: nowrap;
             overflow-x: hidden;
             text-overflow: ellipsis;
-            &.type-number {
-                text-align: right;
-            }
         }
     }
     &.draggedOver {

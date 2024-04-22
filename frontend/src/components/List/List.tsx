@@ -17,10 +17,16 @@ export enum ColumnType {
     Number = 'number'
 }
 
+export enum ColumnSort {
+    Asc = 'asc',
+    Desc = 'desc'
+}
+
 export interface Column {
     name: string
     type: ColumnType
     title: string
+    sort?: ColumnSort
 }
 export type Columns = Column[]
 
@@ -60,16 +66,17 @@ interface ListProps {
     onToggle: (dir: string) => void
     onSelect: (paths: string[]) => void
     onOpen: (path: string) => void
-    onDrop(URIs: string[], target: string, effect: DropEffect): void
-    onMenu(path: string, dir: boolean): void
-    onNew(name: string, parent: Path, dir: boolean): void
+    onDrop: (URIs: string[], target: string, effect: DropEffect) => void
+    onMenu: (path: string, dir: boolean) => void
+    onNew: (name: string, parent: Path, dir: boolean) => void
+    onSort?: (name: string) => void
     root: string
     tabindex: number
     parent?: string,
 }
 
 export default forwardRef<HTMLDivElement, ListProps>(function (
-    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, root, tabindex, parent}, 
+    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onSort, root, tabindex, parent}, 
     fwdRef
 ) {
     const rootEl = useRef(null)
@@ -278,7 +285,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
         setDraggedOver(false)
     }
 
-
     return <div 
         className={classNames(styles.root, 'list', {draggedOver})} 
         ref={setRef(rootEl, fwdRef)}
@@ -294,9 +300,15 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    {columns.map(({name, title}) =>
-                        <th key={name}>{title}</th>
+                    {columns.map(({name, title, sort}) =>
+                        <th key={name} onClick={() => onSort(name)} className={classNames({sorted: !!sort})}>
+                            {title} 
+                            {sort && 
+                                <span className="icon">
+                                    {sort == ColumnSort.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
+                                </span>
+                            }
+                        </th>
                     )}
                     <th></th>
                 </tr>
@@ -309,7 +321,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
                         onDoubleClick={() => onGo(parent)}
                         onContextMenu={e => {e.stopPropagation(); onMenu(parent, true)}}
                     >
-                        <td colSpan={3}>..</td>
+                        <td colSpan={columns.length + 1}>..</td>
                     </tr>
                 }
                 {items.map((item, i) => 
@@ -347,23 +359,23 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
                             onDragLeave={e => dragLeave(item, e)}
                             onDrop={e => dragDrop(item.dir ? item.path : dirname(item.path), e)}
                         >
-                            <td 
-                                className={classNames({d: item.dir})}
-                                title={item.path}
-                                data-depth={depth(item.path)-rootDepth}
-                            >
-                                <div className={classNames({expanded: expanded.includes(item.path)})}>
-                                    {item.dir && 
-                                        <i className="icon">arrow_forward_ios</i>
-                                    }
-                                    <span>{item.name}</span>
-                                </div>
-                            </td>
-                            {columns.map(({name, type}) =>
-                                <td 
-                                    key={name} 
-                                    className={'type-'+type}
-                                >{item[name]}</td>
+                            {columns.map(({name, type}, i) =>
+                                i == 0 ?
+                                    <td key={name}
+                                        className={classNames({d: item.dir})}
+                                        title={item.path}
+                                        data-depth={depth(item.path)-rootDepth}
+                                    >
+                                        <div className={classNames({expanded: expanded.includes(item.path)})}>
+                                            {item.dir && 
+                                                <i className="icon">arrow_forward_ios</i>
+                                            }
+                                            <span>{item[name]}</span>
+                                        </div>
+                                    </td> :
+                                    <td key={name} className={'type-'+type}>
+                                        {item[name]}
+                                    </td>
                             )}
                             <td></td>
                         </tr>

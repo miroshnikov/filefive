@@ -35,7 +35,16 @@ export default function () {
         {config ? 
             <ConfigContext.Provider value={config}>
                 <div className={classNames(styles.root, {hasQueues: queues.size > 0})}>
-                    <Workspace />
+                    <div className={styles.toolbar}>
+                        <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
+                        <span>
+                            <button className="icon">power_settings_new</button>
+                            <button className="icon">settings</button>
+                        </span>
+                    </div>
+                    <div className={styles.workspace}>
+                        <Workspace />
+                    </div>
                     {queues.size > 0 && 
                         <div className={styles.queues}>
                             {Array.from(queues.entries()).map(([id, {type, connection}], i) => 
@@ -45,9 +54,9 @@ export default function () {
                             )}
                         </div>
                     }
-                    <QueueAction />
-                    <Error />
                 </div>
+                <QueueAction />
+                <Error />
                 <AskForPassword />
                 <ConfirmDeletion />
             </ConfigContext.Provider> : 

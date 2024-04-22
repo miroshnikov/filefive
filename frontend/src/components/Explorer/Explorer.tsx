@@ -3,12 +3,12 @@ import { ConnectionID, URI, FileInfo, Files, Path } from '../../../../src/types'
 import { parseURI, createURI } from '../../utils/URI'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
-import List, { Columns, ColumnType, Items } from '../List/List'
+import List, { Column, Columns, ColumnType, ColumnSort, Items } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/watch'
 import { filter, tap } from 'rxjs/operators'
 import { useEffectOnUpdate } from '../../hooks'
-import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry } from 'ramda'
+import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq } from 'ramda'
 import { dirname, descendantOf, join } from '../../utils/path'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
@@ -16,11 +16,13 @@ import { Menu, MenuItem, ContextMenu } from '../../ui/components'
 import { format } from 'date-fns'
  
 
-const sortFiles = (files: Files) => {
-    return sortWith([
-        descend(prop('dir')),
-        ascend(prop('name'))
-    ], files)
+const sortFiles = (files: Files, columns: Columns) => {
+    const sortings = [descend<FileInfo>(prop('dir'))]
+    const sortedBy = columns.find(({sort}) => !!sort)
+    if (sortedBy) {
+        sortings.push(sortedBy.sort == ColumnSort.Asc ? ascend(prop(sortedBy.name)) : descend(prop(sortedBy.name)))
+    }
+    return sortWith(sortings, files)
 }
 
 const formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => any} = {
@@ -29,12 +31,12 @@ const formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => any} = {
 }
 
 const fmt = (name: keyof FileInfo, value: FileInfo[string], isDir: boolean) => 
-    new String(name=='size' && isDir ? '' : name in formatters ? formatters[name](value) : '')
+    new String(name=='size' && isDir ? '' : name in formatters ? formatters[name](value) : value)
 
 
 const toColumns = curry((columns: Columns, files: Files) => {
     return files.map(file => ({
-        ...pick(['URI', 'path', 'name', 'dir'], file),
+        ...pick(['URI', 'path', 'dir'], file),
         ...columns.reduce((props, {name}) => ({...props, 
             [name]: fmt(name, file[name], file.dir)
         }), {})
@@ -80,7 +82,8 @@ export default function ({
     onNewFile
 }: ExplorerProps) {
     const [columns, setColumns] = useState<Columns>([
-        {name: 'size', type: ColumnType.Number, title: 'Size'},
+        {name: 'name',     type: ColumnType.String, title: 'Name', sort: ColumnSort.Asc },
+        {name: 'size',     type: ColumnType.Number, title: 'Size'         },
         {name: 'modified', type: ColumnType.String, title: 'Last Modified'}
     ])
 
@@ -120,9 +123,9 @@ export default function ({
                 sortBy(length),
                 reduce((files, dir) => {
                     const i = files.findIndex(({path}) => path == dir)
-                    return i >= 0 ? insertAll(i+1, sortFiles(folders.current[dir]), files) : files
-                }, sortFiles(folders.current[root] ?? [])),
-                toColumns(columns)
+                    return i >= 0 ? insertAll(i+1, sortFiles(folders.current[dir], columns), files) : files
+                }, sortFiles(folders.current[root] ?? [], columns)),
+                toColumns(columns),
             )(folders.current)
         )
     }
@@ -141,6 +144,8 @@ export default function ({
             })
         return () => subscription.unsubscribe()
     }, [root]) 
+
+    useEffectOnUpdate(() => update(), [columns])
 
 
     const watch = (dirs: string[]) => {
@@ -178,6 +183,12 @@ export default function ({
         window.f5.copy(URIs as URI[], connection+target as URI)
     }
 
+    const sort = (name: Column['name']) => {
+        const toSort = columns.find(whereEq({name}))
+        toSort.sort = toSort.sort === ColumnSort.Asc ? ColumnSort.Desc : ColumnSort.Asc
+        setColumns(columns.map(c => c.name == name ? c : omit(['sort'], c)))
+    }
+
 
     return <div className={styles.root}>
         <header>
@@ -203,6 +214,7 @@ export default function ({
             onDrop={onDrop}
             onMenu={(path, dir) => onMenu(connection + path as URI, dir)}
             onNew={createNew}
+            onSort={sort}
             root={root}
             tabindex={tabindex}
             parent={parent}
