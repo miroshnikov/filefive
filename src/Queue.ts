@@ -2,7 +2,7 @@ import { basename, dirname, join } from 'node:path'
 import { FileInfo, Path, URI, Files, ConnectionID, QueueType, QueueState, QueueActionType, QueueAction } from './types'
 import { FileSystem } from './FileSystem'
 import { stat, touch, list } from './Local'
-import { parseURI } from './utils/URI'
+import { parseURI, createURI } from './utils/URI'
 import { pipe, prop, memoizeWith, identity, whereEq } from 'ramda'
 import { Subject, Subscription } from 'rxjs'
 import Connection from './Connection'
@@ -156,18 +156,28 @@ export default class Queue {
     }
 
     private async remove(paths: Path[]) {
-        const touched = new Set<Path>()
         this.totalCnt = paths.length
+        const touched = new Map<Path, Files|null>()
         paths.forEach(async path => {
-            const [fs, close] = await Connection.transmit(this.connId)
-            await fs.rm(path, true)
-            touched.add(dirname(path))
+            const dir = dirname(path)
+            const [conn, close] = await Connection.transmit(this.connId)
+            if (!touched.has(dir)) {
+                try {
+                    touched.set(dir, await conn.ls(dir)) 
+                } catch(e) {
+                    touched.set(dir, null)
+                }
+            }
+            const name = basename(path)
+            const file = touched.get(dir)?.find(f => f.name == name)
+            if (file) {
+                await conn.rm(path, file.dir)
+            }
             close()
             this.sendState(0)
-
             if (this.doneCnt == this.totalCnt) {
                 this.onComplete()
-                touched.forEach(path => this.watcher.refresh(this.connId + path as URI))
+                touched.forEach((files, dir) => this.watcher.refresh(createURI(this.connId, dir)))
             }
         })
     }

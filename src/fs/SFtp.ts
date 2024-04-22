@@ -82,14 +82,13 @@ export default class SFtp extends FileSystem {
                     reject(err) : 
                     resolve(
                         list
-                            // .filter(f => f.filename != '.' && f.filename != '..')
                             .map(f => ({
                                 URI: this.uri+path.join(dir, f.filename) as URI,
                                 path: path.join(dir, f.filename),
                                 name: f.filename,
                                 dir: f.attrs.isDirectory(),
                                 size: f.attrs.size,
-                                modified: new Date(f.attrs.mtime),
+                                modified: new Date(f.attrs.mtime * 1000),
                                 owner: f.attrs.uid,
                                 group: f.attrs.gid,
                                 mode: f.attrs.mode  // rights ?

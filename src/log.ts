@@ -27,7 +27,7 @@ export class LogFS extends FileSystem {
     }
 
     async open(): Promise<void> {
-        logger.log(await cmd('CONNECT'), await id(this.id))
+        logger.log(await cmd('OPEN'), await id(this.id))
         try {
             const res = await this.fs.open()
             return res
@@ -41,7 +41,8 @@ export class LogFS extends FileSystem {
         }
     }
 
-    close() {
+    async close() {
+        logger.log(await cmd('CLOSE'), await id(this.id))
         this.fs.close()
     }
 
@@ -66,7 +67,7 @@ export class LogFS extends FileSystem {
     }
 
     async get(remote: Path, local: Path) {
-        logger.log(await cmd('GET'), `${local} ←` + await id(this.id) + remote)
+        logger.log(await cmd('GET'), `${local} ← ` + await id(this.id) + remote)
         try {
             return await this.fs.get(remote, local)
         } catch (e) {
@@ -76,7 +77,7 @@ export class LogFS extends FileSystem {
     }
 
     async put(local: Path, remote: Path) {
-        logger.log(await cmd('PUT'), `${local} →` + await id(this.id) + remote)
+        logger.log(await cmd('PUT'), `${local} → ` + await id(this.id) + remote)
         try {
             return await this.fs.put(local, remote)
         } catch (e) {
@@ -86,7 +87,7 @@ export class LogFS extends FileSystem {
     }
 
     async rm(path: Path, recursive: boolean) {
-        logger.log(await cmd('RM'), await id(this.id) + path)
+        logger.log(await cmd(recursive ? 'RMDIR' : 'UNLINK'), await id(this.id) + path)
         try {
             return await this.fs.rm(path, recursive)
         } catch (e) {

@@ -11,9 +11,9 @@ import { useEffectOnUpdate } from '../../hooks'
 import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry } from 'ramda'
 import { dirname, descendantOf, join } from '../../utils/path'
 import numeral from 'numeral'
-import { DateTime } from "luxon";
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
+import { format } from 'date-fns'
  
 
 const sortFiles = (files: Files) => {
@@ -24,7 +24,7 @@ const sortFiles = (files: Files) => {
 }
 
 const formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => any} = {
-    modified: (value: Date) => DateTime.fromJSDate(value).toLocaleString({...DateTime.DATE_SHORT, ...DateTime.TIME_24_SIMPLE}),
+    modified: (value: Date) => format(value, 'yyyy-MM-dd HH:mm'),       // https://date-fns.org/v3.6.0/docs/format
     size: (value: number) => numeral(value).format('0.0 b')
 }
 
