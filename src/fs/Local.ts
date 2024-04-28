@@ -1,7 +1,27 @@
-import { FileSystem, FileSystemURI } from '../FileSystem'
+import { FileSystem, FileSystemURI, FileAttribute, FileAttributeType } from '../FileSystem'
 import { pwd, list, copy, del } from '../Local'
 import { Path, LocalFileSystemID, Files } from '../types'
 import { mkdir, writeFile } from 'node:fs/promises'
+
+
+export const ATTRIBUTES: FileAttribute[] = [
+    {
+        name: "name",     
+        type: FileAttributeType.String, 
+        title: "Name"
+    },
+    {
+        name: "size",     
+        type: FileAttributeType.Number, 
+        title: "Size"
+    },
+    {
+        name: "modified", 
+        type: FileAttributeType.Date, 
+        title: "Last Modified"
+    }
+]
+
 
 export default class Local extends FileSystem {
     open() {

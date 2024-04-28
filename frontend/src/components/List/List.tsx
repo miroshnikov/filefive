@@ -30,7 +30,7 @@ export interface Column {
 }
 export type Columns = Column[]
 
-export type Item = FileInfo //Pick<FileInfo, 'URI'|'path'|'dir'|'name'> & {[key: Column['name']]: string}
+export type Item = FileInfo
 export type Items = Item[]
 
 export enum DropEffect {
@@ -70,13 +70,14 @@ interface ListProps {
     onMenu: (path: string, dir: boolean) => void
     onNew: (name: string, parent: Path, dir: boolean) => void
     onSort?: (name: string) => void
+    onColumnsMenu?: () => void
     root: string
     tabindex: number
     parent?: string,
 }
 
 export default forwardRef<HTMLDivElement, ListProps>(function (
-    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onSort, root, tabindex, parent}, 
+    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onSort, onColumnsMenu, root, tabindex, parent}, 
     fwdRef
 ) {
     const rootEl = useRef(null)
@@ -299,9 +300,9 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
     >
         <table>
             <thead>
-                <tr>
+                <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.() }}>
                     {columns.map(({name, title, sort}) =>
-                        <th key={name} onClick={() => onSort(name)} className={classNames({sorted: !!sort})}>
+                        <th key={name} onClick={() => onSort?.(name)} className={classNames({sorted: !!sort})}>
                             {title} 
                             {sort && 
                                 <span className="icon">

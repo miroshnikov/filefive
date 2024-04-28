@@ -1,4 +1,4 @@
-import { FileSystemURI } from './FileSystem'
+import { FileSystemURI, FileAttribute } from './FileSystem'
 
 export const LocalFileSystemID = 'file://'
 
@@ -24,8 +24,8 @@ export type FileInfo = {
     dir: boolean
     size: number
     modified: Date
-    FileState?: FileState
-    FileTags?: string[]
+    FileStateAttr?: FileState
+    FileTagsAttr?: string[]
 } & {[key: string|symbol]: any}
 
 export type Files = FileInfo[]
@@ -34,8 +34,49 @@ export interface AppConfig {
     paths: Record<'home'|'connections', Path>
 }
 
+export enum ColumnSort {
+    Asc = 'asc',
+    Desc = 'desc'
+}
+
 export interface ConnectionConfig {
+    scheme: string
+    host: string
+    port: number
+    user: string
+    local?: {
+        columns?: { 
+            name: FileAttribute['name']
+            width: number
+        }[]
+        sort?: [FileAttribute['name'], ColumnSort]
+    }
+    remote?: {
+        columns?: { 
+            name: FileAttribute['name']
+            width: number
+        }[]
+        sort?: [FileAttribute['name'], ColumnSort]
+    }
+}
+
+
+export interface ConnectionSettings {
     pwd: Path
+    local: {
+        columns: (FileAttribute & {
+            visible: boolean
+            width: number
+            sort?: ColumnSort
+        })[]
+    }
+    remote: {
+        columns: (FileAttribute & {
+            visible: boolean
+            width: number
+            sort?: ColumnSort
+        })[]
+    }
 }
 
 

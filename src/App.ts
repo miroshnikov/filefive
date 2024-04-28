@@ -1,29 +1,20 @@
 import { homedir } from 'node:os'
 import { mkdir } from 'node:fs/promises'
-import { readFileSync } from 'node:fs';
 import { join } from 'node:path'
-import { AppConfig, Path, ConnectionID, ConnectionConfig, URI, Files, Failure, FailureType } from './types'
+import { AppConfig, Path, ConnectionID, URI, Files, Failure, FailureType, QueueEvent, QueueAction } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
 import RemoteWatcher from './RemoteWatcher'
-import { isLocal, parseURI, connectionID } from './utils/URI'
+import { isLocal, parseURI } from './utils/URI'
 import { queues } from './Queue'
-import { QueueEvent, QueueAction } from './types'
 import Password from './Password'
 import { commands } from './commands'
 import transform from './transform'
 import { touch } from './Local'
 
 
-interface ConnectionSettings {
-    scheme: string
-    host: string
-    port: number
-    user: string
-}
 
 export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
-
 
 export default class App {
        
@@ -39,7 +30,7 @@ export default class App {
 
         Object.entries({
             config:     () => this.config(),
-            connect:    ({file}: {file: Path}) => this.connect(file),
+            connect:    ({file}: {file: Path}) => commands.connect(file, (id, error) => this.onError({ type: FailureType.RemoteError, id, error })),
             login:      ({id, password, remember}: {id: ConnectionID, password: string, remember: boolean}) => Password.set(id, password, remember),
             disconnect: ({id}: {id: ConnectionID}) => Connection.close(id),
             watch:      ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.watch(parseURI(dir)['path']) : this.remoteWatcher.watch(dir),
@@ -71,27 +62,12 @@ export default class App {
     public static onQueueUpdate: (id: string, event: QueueEvent) => void
 
 
-
     private static config(): AppConfig {
         return {
             paths: {
                 home: homedir(),
                 connections: join(homedir(), '.f5', 'connections')
             }
-        }
-    }
-
-    private static async connect(file: Path): Promise<{ id: ConnectionID, config: ConnectionConfig } | false> {
-        const {scheme, user, host, port} = JSON.parse( readFileSync(file).toString() ) as ConnectionSettings
-        const id = connectionID(scheme, user, host, port)
-        await Password.get(id)
-        try {
-            await Connection.open(scheme, user, host, port)
-            const pwd = await Connection.get(id).pwd()
-            return { id, config: { pwd } }
-        } catch (error) {
-            App.onError({ type: FailureType.RemoteError, id, error })
-            return false
         }
     }
 

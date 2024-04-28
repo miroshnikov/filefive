@@ -5,16 +5,26 @@ import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path } from '../../../../src/types'
 import { createURI } from '../../utils/URI'
+import { parse } from "../../utils/path"
 import { ConfigContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import localDirMenu from '../../menu/localDir'
 
+interface Props {
+    onChange: (
+        connectionId: ConnectionID|null,
+        connectionName: string,
+        localPath: Path,
+        remotePath: Path
+    ) => void
+}
 
-export default function () {
+export default function ({onChange}: Props) {
     const config = useContext(ConfigContext)
 
     const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
+    const [connectionName, setConnectionName] = useState('')
     const [localPath, setLocalPath] = useState(config.paths.home)
     const [remotePath, setRemotePath] = useState(config.paths.connections)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
@@ -25,6 +35,12 @@ export default function () {
     useEffect(() => {
         window.document.body.setAttribute('theme', 'one-dark')
     }, [])
+
+    useEffect(
+        () => onChange(connectionId, connectionName, localPath, remotePath), 
+        [connectionId, connectionName, localPath, remotePath]
+    )
+    
 
     const openLocal = (path: string) => {
         window.f5.copy(
@@ -43,11 +59,13 @@ export default function () {
     const connect = (path: string) => {
         window.f5.connect(path).then(connection => {
             if (connection) {
-                const {id, config: { pwd }} = connection
+                console.log('CONNECTED!', connection )
+                const {id, settings: { pwd }} = connection
                 localStorage.setItem(id, path)
                 setShowConnections(false)
                 setConnectionId(id)
                 setRemotePath(pwd)
+                setConnectionName(parse(path).name)
             }
         })
     }
@@ -99,7 +117,8 @@ export default function () {
                 disabled: false,
                 onClick: () => { 
                     window.f5.disconnect(connectionId); 
-                    setConnectionId(null); 
+                    setConnectionId(null)
+                    setConnectionName('')
                     setShowConnections(true)
                     setRemotePath(config.paths.connections)
                 }
@@ -111,17 +130,15 @@ export default function () {
         {
             id: 'Connect',
             icon: 'power_settings_new',
-            disabled: false,
-            onClick: () => { 
-                console.log('connect focused')
-            }
+            disabled: remoteSelected.length != 1,
+            onClick: () => connect(remoteSelected[0])
         },
         ...remoteToolbar,
         {
             id: 'Close',
             icon: 'close',
             disabled: false,
-            onClick: () => { 
+            onClick: () => {
                 setShowConnections(false)
                 setRemotePath(config.paths.home)
             }
@@ -165,6 +182,7 @@ export default function () {
                         onChange={setRemotePath} 
                         onSelect={paths => setRemoteSelected(paths)}
                         connect={connect}
+                        toolbar={connectionsToolbar}
                         tabindex={2}
                     /> : 
                     connectionId ? 

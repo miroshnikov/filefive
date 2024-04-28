@@ -1,13 +1,13 @@
 import ReferenceCountMap from './utils/ReferenceCountMap'
-import { FileSystem } from './FileSystem'
+import { FileSystem, FileAttribute, FileAttributeType } from './FileSystem'
 import { URI, ConnectionID, LocalFileSystemID } from './types'
 import { parseURI, connectionID } from './utils/URI'
 import Password from './Password'
 import unqid from './utils/uniqid'
 import logger, { LogFS } from './log'
 import Local from './fs/Local'
-import SFtp from './fs/SFtp'
-import Ftp from './fs/Ftp'
+import SFtp, { ATTRIBUTES as SFTP_ATTRIBUTES } from './fs/SFtp'
+import Ftp, { ATTRIBUTES as FTP_ATTRIBUTES } from './fs/Ftp'
 
 
 export default class {
@@ -16,15 +16,19 @@ export default class {
         this.shared.set(LocalFileSystemID, new Local)
     }
 
-    static async open(scheme: string, user: string, host: string, port: number): Promise<ConnectionID> {
+    static async open(scheme: string, user: string, host: string, port: number): Promise<Readonly<FileAttribute>[]> {
         const id = connectionID(scheme, user, host, port)
+        const attrs = [
+            {name: 'name', type: FileAttributeType.String, title: "Name" },
+            ...(scheme == 'sftp' ? SFTP_ATTRIBUTES : FTP_ATTRIBUTES)
+        ]
         if (this.shared.inc(id)) {
-            return id
+            return attrs
         }
         const conn = await this.create(id, scheme, user, host, port)
         await conn.open()
         this.shared.set(id, conn)
-        return id
+        return attrs
     }
 
     static get(id: ConnectionID) {

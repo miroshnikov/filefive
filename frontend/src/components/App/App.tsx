@@ -4,13 +4,21 @@ import styles from './App.less'
 import { useMap, useSubscribe } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
-import { QueueEventType, QueueType, ConnectionID, AppConfig } from '../../../../src/types'
+import { QueueEventType, QueueType, ConnectionID, AppConfig, Path } from '../../../../src/types'
+import { parse } from '../../utils/path'
 import classNames from "classnames"
 import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'
 import AskForPassword from '../../modals/Password'
 import ConfirmDeletion from '../../modals/Deletion'
 import { ConfigContext } from '../../context/config'
+
+
+
+function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
+    let title = (connectionName ? connectionName + ' - ' : '') + parse(remotePath).name
+    document.querySelector<HTMLElement>('head > title').innerText = title
+}
 
 
 export default function () {
@@ -43,7 +51,7 @@ export default function () {
                         </span>
                     </div>
                     <div className={styles.workspace}>
-                        <Workspace />
+                        <Workspace onChange={setTitle} />
                     </div>
                     {queues.size > 0 && 
                         <div className={styles.queues}>

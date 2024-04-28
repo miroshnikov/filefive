@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { ConnectionID, URI, FileInfo, Files, Path } from '../../../../src/types'
 import { parseURI, createURI } from '../../utils/URI'
+import { dirname, descendantOf, join } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
 import List, { Column, Columns, ColumnType, ColumnSort, Items } from '../List/List'
@@ -9,7 +10,6 @@ import { dir$ } from '../../observables/watch'
 import { filter, tap } from 'rxjs/operators'
 import { useEffectOnUpdate } from '../../hooks'
 import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq } from 'ramda'
-import { dirname, descendantOf, join } from '../../utils/path'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
@@ -60,6 +60,7 @@ interface ExplorerProps {
     onSelect: (paths: Path[]) => void
     onOpen: (path: Path) => void
     onMenu: (item: URI, dir: boolean) => void
+    onColumnsMenu?: () => void
     toolbar: ToolbarItem[]
     tabindex: number
     contextMenu?: MenuItem[]
@@ -76,6 +77,7 @@ export default function ({
     onSelect, 
     onOpen, 
     onMenu, 
+    onColumnsMenu,
     toolbar, 
     tabindex,
     contextMenu = [],
@@ -147,7 +149,6 @@ export default function ({
 
     useEffectOnUpdate(() => update(), [columns])
 
-
     const watch = (dirs: string[]) => {
         watched.current.push(...dirs)
         dirs.forEach(dir => window.f5.watch(connection+dir as URI))
@@ -215,6 +216,7 @@ export default function ({
             onMenu={(path, dir) => onMenu(connection + path as URI, dir)}
             onNew={createNew}
             onSort={sort}
+            onColumnsMenu={onColumnsMenu}
             root={root}
             tabindex={tabindex}
             parent={parent}

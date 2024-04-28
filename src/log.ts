@@ -57,7 +57,7 @@ export class LogFS extends FileSystem {
     }
 
     async ls(dir: Path) {
-        logger.log(await cmd('LIST'), await id(this.id) + dir)
+        logger.log(await cmd('LS'), await id(this.id) + dir)
         try {
             return await this.fs.ls(dir)
         } catch (e) {
@@ -87,7 +87,7 @@ export class LogFS extends FileSystem {
     }
 
     async rm(path: Path, recursive: boolean) {
-        logger.log(await cmd(recursive ? 'RMDIR' : 'UNLINK'), await id(this.id) + path)
+        logger.log(await cmd(recursive ? 'RMDIR' : 'RM'), await id(this.id) + path)
         try {
             return await this.fs.rm(path, recursive)
         } catch (e) {

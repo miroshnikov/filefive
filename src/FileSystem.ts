@@ -2,6 +2,18 @@ import { Files, Path } from './types'
 
 export type FileSystemURI = `${string}://${string}@${string}:${number}`
 
+export enum FileAttributeType {
+    String = 'string',
+    Number = 'number',
+    Date = 'date'
+}
+
+export interface FileAttribute {
+    name: string
+    type: FileAttributeType
+    title: string
+}
+
 
 export abstract class FileSystem {
     abstract open(): Promise<any>

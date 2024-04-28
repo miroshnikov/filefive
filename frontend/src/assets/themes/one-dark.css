@@ -20,8 +20,8 @@
     --dry-border: var(--dry-border-width) var(--dry-border-style) var(--dry-border-color);
     --dry-border-radius: .3rem;
     --dry-hover-bg: var(--hover-background);
-    --dry-shadow-color: #d9d9d920;
-    --dry-shadow: 0 2px 0 var(--dry-shadow-color);
+    /* --dry-shadow-color: #d9d9d920; */
+    /* --dry-shadow: 0 2px 0 var(--dry-shadow-color); */
     --dry-primary: var(--primary);
     --dry-primary-highlight: #4d5565;
     --dry-shadow-primary-color: #1f3f79;

@@ -1,4 +1,4 @@
-import { URI, AppConfig, ConnectionID, ConnectionConfig, Files, QueueEvent } from '../../src/types'
+import { URI, AppConfig, ConnectionID, ConnectionSettings, Files, QueueEvent } from '../../src/types'
 
 async function invoke<T>(method: string, data: {} = {}): Promise<T> {
     const resp = await fetch(`/api/${method}`, {
@@ -29,7 +29,7 @@ window.f5 = {
 
     onError: listener => subscribe<any>('error', (error) => listener(error)),
 
-    connect: file => invoke<{ id: ConnectionID, config: ConnectionConfig }>('connect', { file }),
+    connect: file => invoke<{ id: ConnectionID, settings: ConnectionSettings }>('connect', { file }),
     login: (id: ConnectionID, password: string, remember: boolean) => invoke<void>('login', { id, password, remember }),
     disconnect: id => invoke<void>('disconnect', { id }),
 

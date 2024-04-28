@@ -2,9 +2,29 @@ import * as path from 'path'
 import * as fs from 'fs'
 import Client from 'ftp'
 import { Path, Files, URI } from '../types'
-import { FileSystem, FileSystemURI } from '../FileSystem'
+import { FileSystem, FileSystemURI, FileAttribute, FileAttributeType } from '../FileSystem'
 
 // https://github.com/mscdex/node-ftp
+
+
+export const ATTRIBUTES: FileAttribute[] = [
+    {
+        name: "name",     
+        type: FileAttributeType.String, 
+        title: "Name"
+    },
+    {
+        name: "size",     
+        type: FileAttributeType.Number, 
+        title: "Size"
+    },
+    {
+        name: "modified", 
+        type: FileAttributeType.Date, 
+        title: "Last Modified"
+    }
+]
+
 
 export default class Ftp extends FileSystem {
     constructor(

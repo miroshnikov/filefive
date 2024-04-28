@@ -7,6 +7,7 @@ import Explorer from './Explorer/Explorer'
 import dirMenu from '../menu/connectionsDir'
 import fileMenu from '../menu/connection'
 import NewConnection from '../modals/Connection/Connection'
+import { ToolbarItem } from './Toolbar/Toolbar'
 
 
 interface Props {
@@ -14,10 +15,11 @@ interface Props {
     onChange: (dir: Path) => void
     onSelect: (paths: Path[]) => void
     connect: (path: Path) => void
+    toolbar: ToolbarItem[]
     tabindex: number
 }
 
-export default function ({ path, onChange, onSelect, connect, tabindex }: Props) {
+export default function ({ path, onChange, onSelect, connect, toolbar, tabindex }: Props) {
     const config = useContext(ConfigContext)
     const [selected, setSelected] = useState<Path[]>([])
     const [menu, setMenu] = useState<MenuItem[]>([])
@@ -39,7 +41,7 @@ export default function ({ path, onChange, onSelect, connect, tabindex }: Props)
             onOpen={connect}
             onMenu={onContextMenu}
             contextMenu={menu}
-            toolbar={[]}
+            toolbar={toolbar}
             tabindex={tabindex}
             onNewFile={uri => setNewConnection(parseURI(uri).path)}
         /> 

@@ -1,4 +1,4 @@
-import { URI, Path, AppConfig, ConnectionID, ConnectionConfig, Files, QueueEvent, QueueAction } from '../../src/types'
+import { URI, Path, AppConfig, ConnectionID, ConnectionSettings, Files, QueueEvent, QueueAction } from '../../src/types'
 
 
 export interface F5 {
@@ -6,7 +6,7 @@ export interface F5 {
 
     onError(listener: (error: any) => void): void
 
-    connect(file: Path): Promise<{ id: ConnectionID, config: ConnectionConfig } | false>
+    connect(file: Path): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false>
     login(id: ConnectionID, password: string, remember: boolean): Promise<void>
     disconnect(id: ConnectionID): void
 

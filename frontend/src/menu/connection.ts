@@ -13,6 +13,8 @@ export default function (path: Path, selected: Path[], connect: () => void): Men
             separator: true
         },
 
+        // TODO: Connect in New Tab / New Window ?
+
         {
             id: 'edit-connection',
             label: 'Edit',
