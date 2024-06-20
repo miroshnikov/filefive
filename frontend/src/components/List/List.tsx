@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, forwardRef } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
-import { FileInfo, Path, FileState } from '../../../../src/types'
+import { FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
 import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith } from 'ramda'
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf } from '../../utils/path'
@@ -17,16 +17,12 @@ export enum ColumnType {
     Number = 'number'
 }
 
-export enum ColumnSort {
-    Asc = 'asc',
-    Desc = 'desc'
-}
-
 export interface Column {
     name: string
     type: ColumnType
     title: string
-    sort?: ColumnSort
+    sort?: SortOrder
+    width?: number
 }
 export type Columns = Column[]
 
@@ -306,7 +302,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
                             {title} 
                             {sort && 
                                 <span className="icon">
-                                    {sort == ColumnSort.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
+                                    {sort == SortOrder.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
                                 </span>
                             }
                         </th>

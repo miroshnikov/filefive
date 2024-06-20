@@ -4,7 +4,7 @@ import styles from './App.less'
 import { useMap, useSubscribe } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
-import { QueueEventType, QueueType, ConnectionID, AppConfig, Path } from '../../../../src/types'
+import { QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
 import { parse } from '../../utils/path'
 import classNames from "classnames"
 import QueueAction from "../QueueAction/QueueAction"
@@ -22,7 +22,7 @@ function setTitle(connectionId: ConnectionID|null, connectionName: string, local
 
 
 export default function () {
-    const [config, setConfig] = useState<AppConfig>(null)
+    const [config, setConfig] = useState<AppSettings>(null)
     useEffect(() => { window.f5.config().then(config => setConfig(config)) }, [])
 
     const [queues, {set: addQueue, del: delQueue}] = useMap<string, {type: QueueType, connection: ConnectionID}>()

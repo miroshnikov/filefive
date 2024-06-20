@@ -1,4 +1,4 @@
-import { FileSystemURI, FileAttribute } from './FileSystem'
+import { FileSystemURI, FileAttribute, FileAttributes } from './FileSystem'
 
 export const LocalFileSystemID = 'file://'
 
@@ -30,53 +30,52 @@ export type FileInfo = {
 
 export type Files = FileInfo[]
 
-export interface AppConfig {
-    paths: Record<'home'|'connections', Path>
+
+
+export type Layout<T> = {
+    local: T
+    remote: T
 }
 
-export enum ColumnSort {
+export enum SortOrder {
     Asc = 'asc',
     Desc = 'desc'
 }
 
-export interface ConnectionConfig {
+export interface ExplorerConfig {
+    columns: {
+        name: FileAttribute['name'],
+        width: number
+    }[]
+    sort: [FileAttribute['name'], SortOrder]
+    path?: Path
+}
+
+export interface Config {
     scheme: string
     host: string
     port: number
     user: string
-    local?: {
-        columns?: { 
-            name: FileAttribute['name']
-            width: number
-        }[]
-        sort?: [FileAttribute['name'], ColumnSort]
-    }
-    remote?: {
-        columns?: { 
-            name: FileAttribute['name']
-            width: number
-        }[]
-        sort?: [FileAttribute['name'], ColumnSort]
-    }
+    layout?: Layout<ExplorerConfig>
 }
 
 
+
+export interface ExplorerSettings {
+    columns: (FileAttribute & { visible: boolean, width: number })[]
+    sort: [FileAttribute['name'], SortOrder]
+}
+
 export interface ConnectionSettings {
-    pwd: Path
-    local: {
-        columns: (FileAttribute & {
-            visible: boolean
-            width: number
-            sort?: ColumnSort
-        })[]
-    }
-    remote: {
-        columns: (FileAttribute & {
-            visible: boolean
-            width: number
-            sort?: ColumnSort
-        })[]
-    }
+    name: string
+    attributes: FileAttributes
+    layout: Layout<ExplorerSettings>
+    paths: Layout<Path|undefined>
+}
+
+export interface AppSettings {
+    paths: Record<'home'|'connections', Path>
+    layout: Layout<ExplorerSettings>
 }
 
 

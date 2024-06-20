@@ -14,6 +14,8 @@ export interface FileAttribute {
     title: string
 }
 
+export type FileAttributes = Readonly<FileAttribute>[]
+
 
 export abstract class FileSystem {
     abstract open(): Promise<any>

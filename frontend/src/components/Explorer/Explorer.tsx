@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react"
-import { ConnectionID, URI, FileInfo, Files, Path } from '../../../../src/types'
+import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
 import { parseURI, createURI } from '../../utils/URI'
 import { dirname, descendantOf, join } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
-import List, { Column, Columns, ColumnType, ColumnSort, Items } from '../List/List'
+import List, { Column, Columns, ColumnType, Items } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/watch'
-import { filter, tap } from 'rxjs/operators'
+import { filter } from 'rxjs/operators'
 import { useEffectOnUpdate } from '../../hooks'
 import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq } from 'ramda'
 import numeral from 'numeral'
@@ -20,7 +20,7 @@ const sortFiles = (files: Files, columns: Columns) => {
     const sortings = [descend<FileInfo>(prop('dir'))]
     const sortedBy = columns.find(({sort}) => !!sort)
     if (sortedBy) {
-        sortings.push(sortedBy.sort == ColumnSort.Asc ? ascend(prop(sortedBy.name)) : descend(prop(sortedBy.name)))
+        sortings.push(sortedBy.sort == SortOrder.Asc ? ascend(prop(sortedBy.name)) : descend(prop(sortedBy.name)))
     }
     return sortWith(sortings, files)
 }
@@ -54,6 +54,7 @@ const onlyVisible = (dirs: string[]) => {
 interface ExplorerProps {
     icon: string
     connection: ConnectionID
+    settings: ExplorerSettings
     path: Path
     fixedRoot: Path
     onChange: (dir: Path) => void
@@ -71,6 +72,7 @@ interface ExplorerProps {
 export default function ({
     icon, 
     connection, 
+    settings,
     path, 
     fixedRoot, 
     onChange, 
@@ -83,11 +85,7 @@ export default function ({
     contextMenu = [],
     onNewFile
 }: ExplorerProps) {
-    const [columns, setColumns] = useState<Columns>([
-        {name: 'name',     type: ColumnType.String, title: 'Name', sort: ColumnSort.Asc },
-        {name: 'size',     type: ColumnType.Number, title: 'Size'         },
-        {name: 'modified', type: ColumnType.String, title: 'Last Modified'}
-    ])
+    const [columns, setColumns] = useState<Columns>([])
 
     const [root, setRoot] = useState<string>(path)
     const [parent, setParent] = useState<string>(null)
@@ -100,6 +98,17 @@ export default function ({
     const expanded = useRef<string[]>([])
 
     const contextMenuTarget = useRef(null)
+
+    useEffect(() => {
+        setColumns(
+            settings.columns.filter(whereEq({visible: true})).map(c => ({
+                name: c.name,
+                type: c.type == 'number' ? ColumnType.Number : ColumnType.String,
+                title: c.title,
+                sort: settings.sort[0] == c.name ? settings.sort[1] : undefined
+            }))
+        )
+    }, [settings])
 
     useEffect(() => setRoot(path), [path])
     
@@ -145,7 +154,7 @@ export default function ({
                 update()
             })
         return () => subscription.unsubscribe()
-    }, [root]) 
+    }, [root, columns]) 
 
     useEffectOnUpdate(() => update(), [columns])
 
@@ -186,9 +195,11 @@ export default function ({
 
     const sort = (name: Column['name']) => {
         const toSort = columns.find(whereEq({name}))
-        toSort.sort = toSort.sort === ColumnSort.Asc ? ColumnSort.Desc : ColumnSort.Asc
+        toSort.sort = toSort.sort === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc
         setColumns(columns.map(c => c.name == name ? c : omit(['sort'], c)))
     }
+
+    // const columnsToolbar = useMemo<ToolbarItem[]>(() => 
 
 
     return <div className={styles.root}>

@@ -2,12 +2,12 @@ import * as path from 'path'
 import * as fs from 'fs'
 import Client from 'ftp'
 import { Path, Files, URI } from '../types'
-import { FileSystem, FileSystemURI, FileAttribute, FileAttributeType } from '../FileSystem'
+import { FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
 
 // https://github.com/mscdex/node-ftp
 
 
-export const ATTRIBUTES: FileAttribute[] = [
+export const ATTRIBUTES: FileAttributes = [
     {
         name: "name",     
         type: FileAttributeType.String, 

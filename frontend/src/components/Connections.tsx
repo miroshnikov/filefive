@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react"
-import { LocalFileSystemID, URI, Path } from '../../../src/types'
+import { LocalFileSystemID, URI, Path, SortOrder, ExplorerSettings } from '../../../src/types'
+import { FileAttributeType } from '../../../src/FileSystem'
 import { ConfigContext } from '../context/config'
 import { MenuItem } from '../ui/components'
 import { parseURI } from '../utils/URI'
@@ -19,6 +20,26 @@ interface Props {
     tabindex: number
 }
 
+const settings: ExplorerSettings = {
+    columns: [
+        {
+            name: "name",     
+            type: FileAttributeType.String, 
+            title: "Name",
+            visible: true,
+            width: 300
+        },
+        {
+            name: "modified", 
+            type: FileAttributeType.Date, 
+            title: "Last Modified",
+            visible: true,
+            width: 300
+        }
+    ],
+    sort: ['name', SortOrder.Asc]
+}
+
 export default function ({ path, onChange, onSelect, connect, toolbar, tabindex }: Props) {
     const config = useContext(ConfigContext)
     const [selected, setSelected] = useState<Path[]>([])
@@ -34,6 +55,7 @@ export default function ({ path, onChange, onSelect, connect, toolbar, tabindex 
         <Explorer 
             icon='power_settings_new'
             connection={LocalFileSystemID}
+            settings={settings}
             path={path} 
             fixedRoot={config.paths.connections}
             onChange={onChange} 

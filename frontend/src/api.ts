@@ -1,4 +1,4 @@
-import { URI, AppConfig, ConnectionID, ConnectionSettings, Files, QueueEvent } from '../../src/types'
+import { URI, AppSettings, ConnectionID, ConnectionSettings, Files, QueueEvent } from '../../src/types'
 
 async function invoke<T>(method: string, data: {} = {}): Promise<T> {
     const resp = await fetch(`/api/${method}`, {
@@ -25,7 +25,7 @@ function subscribe<Event extends {}>(channel: string, callback: (event: Event) =
 }
 
 window.f5 = {
-    config: () => invoke<AppConfig>('config'),
+    config: () => invoke<AppSettings>('config'),
 
     onError: listener => subscribe<any>('error', (error) => listener(error)),
 

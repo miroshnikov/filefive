@@ -1,7 +1,7 @@
 import { homedir } from 'node:os'
-import { mkdir } from 'node:fs/promises'
 import { join } from 'node:path'
-import { AppConfig, Path, ConnectionID, URI, Files, Failure, FailureType, QueueEvent, QueueAction } from './types'
+import { mkdir } from 'node:fs/promises'
+import { Path, ConnectionID, URI, Files, Failure, FailureType, QueueEvent, QueueAction } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
 import RemoteWatcher from './RemoteWatcher'
@@ -23,13 +23,15 @@ export default class App {
         const dataPath = join(homedir(), '.f5')
         const connPath = join(dataPath, 'connections')
         mkdir(connPath, { recursive: true })
-        touch(join(dataPath, 'credentials.json')) // TODO write "[]" if empty
+        touch(join(dataPath, 'credentials.json'), JSON.stringify([]))
+        const settingsPath = join(dataPath, 'settings.json')
+        touch(settingsPath, JSON.stringify({}))
                
         Password.load(dataPath, id => App.onError({ type: FailureType.Unauthorized, id }))
         Connection.initialize()
 
         Object.entries({
-            config:     () => this.config(),
+            config:     () => commands.config(settingsPath),
             connect:    ({file}: {file: Path}) => commands.connect(file, (id, error) => this.onError({ type: FailureType.RemoteError, id, error })),
             login:      ({id, password, remember}: {id: ConnectionID, password: string, remember: boolean}) => Password.set(id, password, remember),
             disconnect: ({id}: {id: ConnectionID}) => Connection.close(id),
@@ -60,16 +62,6 @@ export default class App {
 
     public static onError: (error: Failure) => void
     public static onQueueUpdate: (id: string, event: QueueEvent) => void
-
-
-    private static config(): AppConfig {
-        return {
-            paths: {
-                home: homedir(),
-                connections: join(homedir(), '.f5', 'connections')
-            }
-        }
-    }
 
     private static localWatcher: LocalWatcher
     public static remoteWatcher: RemoteWatcher

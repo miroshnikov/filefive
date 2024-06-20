@@ -1,8 +1,8 @@
-import { URI, Path, AppConfig, ConnectionID, ConnectionSettings, Files, QueueEvent, QueueAction } from '../../src/types'
+import { URI, Path, AppSettings, ConnectionID, ConnectionSettings, Files, QueueEvent, QueueAction } from '../../src/types'
 
 
 export interface F5 {
-    config(): Promise<AppConfig>
+    config(): Promise<AppSettings>
 
     onError(listener: (error: any) => void): void
 

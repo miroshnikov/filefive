@@ -1,7 +1,7 @@
 import { homedir } from 'node:os'
 import { normalize, basename, dirname, join } from 'node:path'
 import { readdirSync, statSync, watch as fsWatch, WatchEventType } from 'node:fs';
-import { mkdir, unlink, rename, cp, open, rm, readFile } from 'node:fs/promises'
+import { mkdir, unlink, rename, cp, open, rm, readFile, writeFile } from 'node:fs/promises'
 import { URI, FileInfo } from './types'
 
 
@@ -64,9 +64,11 @@ export async function del(path: string): Promise<void> {
 }
 
 
-export async function touch(path: string): Promise<void> {
-    await mkdir(dirname(path), { recursive: true })
-    await (await open(path, 'a')).close()
+export async function touch(path: string, data?: string): Promise<void> {
+    if (!stat(path)) {
+        await mkdir(dirname(path), { recursive: true })
+        data !== undefined ? await writeFile(path, data) : await (await open(path, 'a')).close()
+    }
 }
 
 export function watch(path: string, listener: (event: WatchEventType, file: string) => void): () => void {

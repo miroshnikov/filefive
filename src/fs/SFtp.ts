@@ -1,13 +1,13 @@
 import * as path from 'path'
 import { Client, SFTPWrapper } from 'ssh2'
 import { Path, Files, URI } from '../types'
-import { FileSystem, FileSystemURI, FileAttribute, FileAttributeType } from '../FileSystem'
+import { FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
 
 // https://github.com/mscdex/ssh2/blob/master/SFTP.md
 // https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-13#section-4.3
 
 
-export const ATTRIBUTES: FileAttribute[] = [
+export const ATTRIBUTES: FileAttributes = [
     {
         name: "name",     
         type: FileAttributeType.String, 

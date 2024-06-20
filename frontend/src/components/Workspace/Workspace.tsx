@@ -3,13 +3,13 @@ import Split from '../Split/Split'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
-import { ConnectionID, LocalFileSystemID, URI, Path } from '../../../../src/types'
+import { ConnectionID, LocalFileSystemID, URI, Path, ConnectionSettings } from '../../../../src/types'
 import { createURI } from '../../utils/URI'
-import { parse } from "../../utils/path"
 import { ConfigContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import localDirMenu from '../../menu/localDir'
+
 
 interface Props {
     onChange: (
@@ -24,7 +24,7 @@ export default function ({onChange}: Props) {
     const config = useContext(ConfigContext)
 
     const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
-    const [connectionName, setConnectionName] = useState('')
+    const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings>(null)
     const [localPath, setLocalPath] = useState(config.paths.home)
     const [remotePath, setRemotePath] = useState(config.paths.connections)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
@@ -37,8 +37,8 @@ export default function ({onChange}: Props) {
     }, [])
 
     useEffect(
-        () => onChange(connectionId, connectionName, localPath, remotePath), 
-        [connectionId, connectionName, localPath, remotePath]
+        () => onChange(connectionId, connectionSettings?.name, localPath, remotePath), 
+        [connectionId, connectionSettings, localPath, remotePath]
     )
     
 
@@ -59,13 +59,15 @@ export default function ({onChange}: Props) {
     const connect = (path: string) => {
         window.f5.connect(path).then(connection => {
             if (connection) {
-                console.log('CONNECTED!', connection )
-                const {id, settings: { pwd }} = connection
-                localStorage.setItem(id, path)
+                const {id, settings} = connection
+
+                console.log('Connected: ', connection)
+
                 setShowConnections(false)
                 setConnectionId(id)
-                setRemotePath(pwd)
-                setConnectionName(parse(path).name)
+                setLocalPath(path => settings.paths.local ?? path)
+                setRemotePath(settings.paths.remote!)
+                setConnectionSettings(settings)
             }
         })
     }
@@ -118,7 +120,7 @@ export default function ({onChange}: Props) {
                 onClick: () => { 
                     window.f5.disconnect(connectionId); 
                     setConnectionId(null)
-                    setConnectionName('')
+                    setConnectionSettings(null)
                     setShowConnections(true)
                     setRemotePath(config.paths.connections)
                 }
@@ -161,6 +163,7 @@ export default function ({onChange}: Props) {
                     <Explorer 
                         icon='computer'
                         connection={LocalFileSystemID}
+                        settings={connectionSettings?.layout.local ?? config.layout.local}
                         path={localPath} 
                         fixedRoot={'/'}
                         onChange={setLocalPath} 
@@ -189,6 +192,7 @@ export default function ({onChange}: Props) {
                         <Explorer
                             icon='cloud'
                             connection={connectionId}
+                            settings={connectionSettings.layout.remote}
                             path={remotePath}
                             fixedRoot={'/'}
                             onChange={setRemotePath} 
@@ -201,6 +205,7 @@ export default function ({onChange}: Props) {
                         <Explorer 
                             icon='computer'
                             connection={LocalFileSystemID}
+                            settings={config.layout.remote}
                             path={remotePath} 
                             fixedRoot={'/'}
                             onChange={setRemotePath} 

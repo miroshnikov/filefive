@@ -1,38 +1,54 @@
 import { readFileSync } from 'node:fs';
-import { Path, ConnectionID, ConnectionConfig, ConnectionSettings } from '../types'
+import { parse } from 'path'
+import { Path, ConnectionID, Config, ConnectionSettings, ExplorerConfig, ExplorerSettings, SortOrder } from '../types'
+import { FileAttributes } from '../FileSystem'
+import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
 import { connectionID } from '../utils/URI'
 import Connection from '../Connection'
 import Password from '../Password'
-import { whereEq } from 'ramda'
+import { whereEq, isNotNil } from 'ramda'
 
 
+
+function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerSettings {
+        return { 
+            columns:
+                config ? 
+                    [
+                        ...config.columns
+                            .map(({name, width}) => {
+                                const attribute = attributes.find(whereEq({name}))
+                                return attribute ? { ...attribute, visible: true, width } : null
+                            })
+                            .filter(isNotNil),
+                        ...attributes
+                            .filter(({name}) => !config.columns.find(c => name == c.name))
+                            .map(a => ({...a, visible: false, width: 300}))
+                     ] :
+                    attributes.map(a => ({...a, visible: true, width: 300})), 
+            ...(config ? { sort: config.sort } : { sort: ['name', SortOrder.Asc] } ) 
+        }
+}
 
 export default async function (file: Path, onError: (id: ConnectionID, e: any) => void): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false> {
-    const config = JSON.parse( readFileSync(file).toString() ) as ConnectionConfig
+    const config = JSON.parse( readFileSync(file).toString() ) as Config
     const id = connectionID(config.scheme, config.user, config.host, config.port)
     await Password.get(id)
     try {
         const attributes = await Connection.open(config.scheme, config.user, config.host, config.port)
-        const pwd = await Connection.get(id).pwd()
-        const columns: ConnectionSettings['columns'] = 'columns' in config ? 
-            attributes.map(a => {
-                const c = config.columns.find(whereEq({name: a.name}))
-                return {
-                    ...a,
-                    visible: !!c,
-                    width: c?.width ?? 300
-                }                
-            }) :
-            attributes.map(a => ({
-                ...a,
-                visible: true,
-                width: 300
-            }))
-            const sorted = 'sort' in config && columns.find(whereEq({name: config.sort[0]}))
-            if (sorted) {
-                sorted.sort = config.sort[1]
+        const settings: ConnectionSettings = {
+            name: parse(file).name,
+            attributes,
+            layout: {
+                local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
+                remote: explorerSettings(attributes, config.layout?.remote)
+            },
+            paths: {
+                local: config.layout?.local.path,
+                remote: config.layout?.remote.path ?? await Connection.get(id).pwd()
             }
-        return { id, settings: { pwd, columns } }
+        }
+        return { id, settings }
     } catch (error) {
         onError(id, error)
         return false
