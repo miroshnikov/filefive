@@ -9,6 +9,7 @@ import { ConfigContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import localDirMenu from '../../menu/localDir'
+import { assocPath } from 'ramda'
 
 
 interface Props {
@@ -60,9 +61,6 @@ export default function ({onChange}: Props) {
         window.f5.connect(path).then(connection => {
             if (connection) {
                 const {id, settings} = connection
-
-                console.log('Connected: ', connection)
-
                 setShowConnections(false)
                 setConnectionId(id)
                 setLocalPath(path => settings.paths.local ?? path)
@@ -156,6 +154,8 @@ export default function ({onChange}: Props) {
         }
     }
 
+
+
     return (<>
         <Split 
             left = {
@@ -170,6 +170,11 @@ export default function ({onChange}: Props) {
                         onSelect={paths => setLocalSelected(paths)}
                         onOpen={openLocal}
                         onMenu={fileContextMenu}
+                        // onSettingsChange={changed => 
+                        //     connectionId ?
+                        //         setConnectionSettings(settings => assocPath(['layout', 'local'], {...settings.layout.local, ...changed}, settings)):
+                                
+                        // }
                         contextMenu={menu}
                         toolbar={localToolbar}
                         tabindex={1}
@@ -199,6 +204,11 @@ export default function ({onChange}: Props) {
                             onSelect={paths => setRemoteSelected(paths)}
                             onOpen={openRemote}
                             onMenu={fileContextMenu}
+                            onSettingsChange={changed => setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))}
+                            // onSettingsChange={changed => setConnectionSettings(settings => ({
+                            //     ...settings, 
+                            //     layout: { local: settings.layout.local, remote: {...settings.layout.remote, ...changed } }})
+                            // )}
                             toolbar={remoteToolbar}
                             tabindex={2}
                         /> :

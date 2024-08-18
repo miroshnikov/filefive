@@ -22,7 +22,7 @@ export interface Column {
     type: ColumnType
     title: string
     sort?: SortOrder
-    width?: number
+    width: number
 }
 export type Columns = Column[]
 
@@ -296,10 +296,14 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
     >
         <table>
             <thead>
-                <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.() }}>
-                    {columns.map(({name, title, sort}) =>
-                        <th key={name} onClick={() => onSort?.(name)} className={classNames({sorted: !!sort})}>
-                            {title} 
+                <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.(); console.log(e) }}>
+                    {columns.map(({name, title, sort, width}) =>
+                        <th key={name} 
+                            onClick={() => onSort?.(name)} 
+                            className={classNames({sorted: !!sort})}
+                            style={{width}}
+                        >
+                            {title}
                             {sort && 
                                 <span className="icon">
                                     {sort == SortOrder.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}

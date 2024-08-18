@@ -31,6 +31,12 @@ export default function ({left, right} : {left: ReactElement, right: ReactElemen
                 const topRc = root.current.getBoundingClientRect()
                 const leftRc = leftPane.current.getBoundingClientRect()
                 setWidth((x - leftRc.left) / topRc.width * 100)
+                console.log(
+                    x, 
+                    topRc,
+                    leftRc,
+                    (x - leftRc.left) / topRc.width * 100
+                )
             })
     })
 

@@ -47,8 +47,14 @@ export default class<K, V> {
         return this.entries.keys()
     }
 
-    [Symbol.iterator]() {
-
+    public renameKey(from: K, to: K) {
+        if (!this.entries.has(from)) {
+            return
+        }
+        this.entries.has(to) ?
+            this.entries.get(to).count += this.entries.get(from).count :
+            this.entries.set(to, this.entries.get(from))
+        this.entries.delete(from)
     }
 
     private entries = new Map<K, {count: number, value: V}>

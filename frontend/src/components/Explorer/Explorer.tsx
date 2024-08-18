@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, useMemo } from "react"
 import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
 import { parseURI, createURI } from '../../utils/URI'
 import { dirname, descendantOf, join } from '../../utils/path'
@@ -9,7 +9,7 @@ import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/watch'
 import { filter } from 'rxjs/operators'
 import { useEffectOnUpdate } from '../../hooks'
-import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq } from 'ramda'
+import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, assoc } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
@@ -61,7 +61,7 @@ interface ExplorerProps {
     onSelect: (paths: Path[]) => void
     onOpen: (path: Path) => void
     onMenu: (item: URI, dir: boolean) => void
-    onColumnsMenu?: () => void
+    onSettingsChange?: (settings: Partial<ExplorerSettings>) => void
     toolbar: ToolbarItem[]
     tabindex: number
     contextMenu?: MenuItem[]
@@ -79,7 +79,7 @@ export default function ({
     onSelect, 
     onOpen, 
     onMenu, 
-    onColumnsMenu,
+    onSettingsChange,
     toolbar, 
     tabindex,
     contextMenu = [],
@@ -99,12 +99,15 @@ export default function ({
 
     const contextMenuTarget = useRef(null)
 
+    const [showColumnsMenu, setShowColumnsMenu] = useState(false)
+
     useEffect(() => {
         setColumns(
             settings.columns.filter(whereEq({visible: true})).map(c => ({
                 name: c.name,
                 type: c.type == 'number' ? ColumnType.Number : ColumnType.String,
                 title: c.title,
+                width: c.width,
                 sort: settings.sort[0] == c.name ? settings.sort[1] : undefined
             }))
         )
@@ -199,8 +202,19 @@ export default function ({
         setColumns(columns.map(c => c.name == name ? c : omit(['sort'], c)))
     }
 
-    // const columnsToolbar = useMemo<ToolbarItem[]>(() => 
-
+    const columnsMenu = useMemo<MenuItem[]>(() => 
+        settings.columns.map(c => ({
+            id: c.name,
+            label: c.title,
+            checked: c.visible,
+            click: () => {
+                onSettingsChange?.({ 
+                    columns: settings.columns.filter(whereEq({name: c.name})).map(assoc('visible', !c.visible))
+                })
+            }
+        })), 
+        [settings]
+    )
 
     return <div className={styles.root}>
         <header>
@@ -224,10 +238,10 @@ export default function ({
             onSelect={paths => onSelect(selected.current = paths)}
             onOpen={onOpen}
             onDrop={onDrop}
-            onMenu={(path, dir) => onMenu(connection + path as URI, dir)}
+            onMenu={(path, dir) => {setShowColumnsMenu(false); onMenu(connection + path as URI, dir)}}
             onNew={createNew}
             onSort={sort}
-            onColumnsMenu={onColumnsMenu}
+            onColumnsMenu={() => setShowColumnsMenu(true)}
             root={root}
             tabindex={tabindex}
             parent={parent}
@@ -235,8 +249,9 @@ export default function ({
 
         {contextMenuTarget.current &&
             <ContextMenu target={contextMenuTarget.current}>
-                <Menu items={contextMenu} />
+                <Menu items={showColumnsMenu ? columnsMenu : contextMenu} />
             </ContextMenu>
         }
     </div>
 }
+
