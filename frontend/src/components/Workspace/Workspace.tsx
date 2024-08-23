@@ -44,10 +44,11 @@ export default function Workspace({onChange}: Props) {
     
     useEffect(() => {
         if (connectionSettings) {
-            window.f5.write(
-                createURI(LocalFileSystemID, connectionSettings.path), 
-                JSON.stringify(connectionSettings)
-            )
+            console.log(connectionSettings)
+            // window.f5.write(
+            //     createURI(LocalFileSystemID, connectionSettings.path), 
+            //     JSON.stringify(connectionSettings)
+            // )
         }
     }, [connectionSettings])
 
@@ -214,7 +215,10 @@ export default function Workspace({onChange}: Props) {
                             onSelect={paths => setRemoteSelected(paths)}
                             onOpen={openRemote}
                             onMenu={fileContextMenu()}
-                            onSettingsChange={changed => setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))}
+                            onSettingsChange={changed => {
+                                // console.log('changed', changed)
+                                setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))
+                            }}
                             // onSettingsChange={changed => setConnectionSettings(settings => ({
                             //     ...settings, 
                             //     layout: { local: settings.layout.local, remote: {...settings.layout.remote, ...changed } }})

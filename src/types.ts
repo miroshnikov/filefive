@@ -32,7 +32,7 @@ export type Files = FileInfo[]
 
 
 
-export type Layout<T> = {
+export type Twofold<T> = {
     local: T
     remote: T
 }
@@ -55,8 +55,8 @@ export interface Config {
     host: string
     port: number
     user: string
-    layout?: Layout<ExplorerConfig>
-    paths?: Layout<Path|undefined>
+    layout?: Twofold<ExplorerConfig>
+    paths?: Twofold<Path|undefined>
 }
 
 
@@ -69,13 +69,13 @@ export interface ExplorerSettings {
 export interface ConnectionSettings {
     name: string
     attributes: FileAttributes
-    layout: Layout<ExplorerSettings>
-    paths: Layout<Path|undefined>
+    layout: Twofold<ExplorerSettings>
+    paths: Twofold<Path|undefined>
 }
 
 export interface AppSettings {
     paths: Record<'home'|'connections', Path>
-    layout: Layout<ExplorerSettings>
+    layout: Twofold<ExplorerSettings>
 }
 
 

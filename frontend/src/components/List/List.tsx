@@ -10,6 +10,7 @@ import setRef from '../../ui/setRef'
 import { CommandID } from '../../commands'
 import { command$ } from '../../observables/command'
 import EditFileName from '../EditFileName/EditFileName'
+import debounce from '../../utils/debounce'
 
 
 export enum ColumnType {
@@ -67,13 +68,14 @@ interface ListProps {
     onNew: (name: string, parent: Path, dir: boolean) => void
     onSort?: (name: string) => void
     onColumnsMenu?: () => void
+    onColumnsChange?: (columns: {name: string, width: number}[]) => void
     root: string
     tabindex: number
     parent?: string,
 }
 
 export default forwardRef<HTMLDivElement, ListProps>(function List (
-    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onSort, onColumnsMenu, root, tabindex, parent}, 
+    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onSort, onColumnsMenu, onColumnsChange, root, tabindex, parent}, 
     fwdRef
 ) {
     const rootEl = useRef(null)
@@ -141,6 +143,22 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     useEffect(() => 
         setSelected(selected.filter(includes(__, items.map(prop('path'))))
     ), [items])
+
+    useEffect(() => {
+        const dispatch = onColumnsChange ? debounce(onColumnsChange, 500) : undefined
+        const resizeObserver = new ResizeObserver(entries => {
+            entries.forEach(entry => { 
+                const column = columns.find(whereEq({name: entry.target.getAttribute('data-name')}))
+                if (column) {
+                    column.width = entry.borderBoxSize?.[0].inlineSize ?? 300
+                }
+            })
+            dispatch?.(columns)
+        })
+        const cols = Array.from(rootEl.current.querySelectorAll('th:not(:last-child)').values())
+        cols.forEach((el: Element) => resizeObserver.observe(el, { box: 'border-box' }))
+        return () => cols.forEach( (el: Element) => resizeObserver.unobserve(el) )
+    }, [columns])
 
     const toggle = (dir: string) => {
         setExpanded(expanded.includes(dir) ? without([dir], expanded) : [...expanded, dir])
@@ -292,19 +310,21 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     >
         <table>
             <thead>
-                <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.(); console.log(e) }}>
+                <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.()}}>
                     {columns.map(({name, title, sort, width}) =>
                         <th key={name} 
-                            onClick={() => onSort?.(name)} 
                             className={classNames({sorted: !!sort})}
                             style={{width}}
+                            data-name={name}
                         >
-                            {title}
-                            {sort && 
-                                <span className="icon">
-                                    {sort == SortOrder.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
-                                </span>
-                            }
+                            <i onClick={() => onSort?.(name) } >
+                                {title}
+                                {sort && 
+                                    <span className="icon">
+                                        {sort == SortOrder.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
+                                    </span>
+                                }
+                            </i>
                         </th>
                     )}
                     <th></th>

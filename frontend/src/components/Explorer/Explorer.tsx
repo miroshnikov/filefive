@@ -103,7 +103,7 @@ export default function Explorer ({
 
     useEffect(() => {
         setColumns(
-            settings.columns.filter(whereEq({visible: true})).map(c => ({
+            settings.columns.filter(({visible, name}) => visible == true || name == 'name').map(c => ({
                 name: c.name,
                 type: c.type == 'number' ? ColumnType.Number : ColumnType.String,
                 title: c.title,
@@ -221,13 +221,22 @@ export default function Explorer ({
             label: c.title,
             checked: c.visible,
             click: () => {
-                onSettingsChange?.({ 
-                    columns: settings.columns.filter(whereEq({name: c.name})).map(assoc('visible', !c.visible))
-                })
+                c.visible = !c.visible
+                onSettingsChange?.({ columns: settings.columns })
             }
-        })), 
+        })),
         [settings]
     )
+
+    const onColumnsChange = (columns: {name: string, width: number}[]) => {
+        //.sortBy
+        columns.forEach(({name, width}) => {
+            const c = settings.columns.find(whereEq({name}))
+            c && (c.width = width)
+        })
+        console.log('changed to', columns)
+        // onSettingsChange?.({ columns: settings.columns })
+    }
 
     return <div className={styles.root}>
         <header>
@@ -251,10 +260,11 @@ export default function Explorer ({
             onSelect={paths => onSelect(selected.current = paths)}
             onOpen={onOpen}
             onDrop={onDrop}
-            onMenu={(path, dir) => {setShowColumnsMenu(false); onMenu(connection + path as URI, dir)}}
+            onMenu={(path, dir) => {setShowColumnsMenu(false); onMenu(createURI(connection, path), dir)}}
             onNew={createNew}
             onSort={sort}
             onColumnsMenu={() => setShowColumnsMenu(true)}
+            onColumnsChange={onColumnsChange}
             root={root}
             tabindex={tabindex}
             parent={parent}

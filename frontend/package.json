@@ -16,6 +16,7 @@
     "@svgr/webpack": "^8.1.0",
     "@types/classnames": "^2.3.1",
     "@types/eslint__js": "^8.42.3",
+    "@types/lodash": "^4.17.7",
     "@types/numeral": "^2.0.4",
     "@types/ramda": "^0.28.20",
     "@types/react": "^18.2.34",
