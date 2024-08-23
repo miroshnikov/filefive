@@ -8,7 +8,7 @@ export interface ToolbarItem {
     onClick: () => void
 }
 
-export default function ({items}: {items: ToolbarItem[]}) {
+export default function Toolbar({items}: {items: ToolbarItem[]}) {
     return <div className={styles.root}>
         {items.map(item => 
             <button key={item.id}

@@ -48,7 +48,6 @@ export interface ExplorerConfig {
         width: number
     }[]
     sort: [FileAttribute['name'], SortOrder]
-    path?: Path
 }
 
 export interface Config {
@@ -57,6 +56,7 @@ export interface Config {
     port: number
     user: string
     layout?: Layout<ExplorerConfig>
+    paths?: Layout<Path|undefined>
 }
 
 

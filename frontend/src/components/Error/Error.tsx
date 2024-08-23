@@ -4,7 +4,7 @@ import { error$ } from '../../observables/error'
 import { FailureType } from '../../../../src/types'
 
 
-export default function() {
+export default function Error() {
     useSubscribe(() =>
         error$.subscribe(error => {
             if (error.type != FailureType.Unauthorized) {

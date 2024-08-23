@@ -7,7 +7,7 @@ import { error$ } from '../observables/error'
 import { basename } from '../utils/path'
 
 
-export default function () {
+export default function ConfirmDeletion() {
     const [files, setFiles] = useState<URI[]>([])
     const [names, setNames] = useState<string[]>([])
     const [isLocal, setLocal] = useState(true)

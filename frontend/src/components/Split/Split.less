@@ -5,10 +5,15 @@
     height: 100%;
     background-color: var(--background);
     > div {
-        flex: calc(50% - 4px) 1 1;
         overflow-y: auto;
         > * {
             max-height: 100%;
+        }
+        &:first-child {
+            flex: calc(50% - 4px) 0 0;
+        }
+        &:last-child {
+            flex: 100% 1 1;
         }
     }
     > span {

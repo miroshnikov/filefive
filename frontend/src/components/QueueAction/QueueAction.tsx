@@ -16,7 +16,7 @@ interface QueueConflict {
     to: FileInfo
 }
 
-export default function () {
+export default function QueueAction() {
 
     const [conflict, setConflict] = useState<QueueConflict>(null)
     const [conflicts, setConflicts] = useState<QueueConflict[]>([])

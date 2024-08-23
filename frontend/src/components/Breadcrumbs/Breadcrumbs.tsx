@@ -4,7 +4,7 @@ import { segments, join, normalize, basename } from '../../utils/path'
 import { last } from 'ramda'
 
 
-export default function ({icon, path, root, go}: {icon: string, path: string, root: string, go: (path: string) => void }) {
+export default function Breadcrumbs({icon, path, root, go}: {icon: string, path: string, root: string, go: (path: string) => void }) {
 
     const [items, setItems] = useState<string[]>([])
 

@@ -69,7 +69,7 @@ interface ExplorerProps {
 }
 
 
-export default function ({
+export default function Explorer ({
     icon, 
     connection, 
     settings,
@@ -97,7 +97,7 @@ export default function ({
     
     const expanded = useRef<string[]>([])
 
-    const contextMenuTarget = useRef(null)
+    const list = useRef(null)
 
     const [showColumnsMenu, setShowColumnsMenu] = useState(false)
 
@@ -161,6 +161,18 @@ export default function ({
 
     useEffectOnUpdate(() => update(), [columns])
 
+    useEffect(() => {
+        const resizeList = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                setTimeout(() => {
+                    entry.target.scrollLeft = 0
+                }, 200)
+            }
+        })
+        list.current && resizeList.observe(list.current)
+        return () => list.current && resizeList.unobserve(list.current)
+    }, [])
+
     const watch = (dirs: string[]) => {
         watched.current.push(...dirs)
         dirs.forEach(dir => window.f5.watch(connection+dir as URI))
@@ -200,6 +212,7 @@ export default function ({
         const toSort = columns.find(whereEq({name}))
         toSort.sort = toSort.sort === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc
         setColumns(columns.map(c => c.name == name ? c : omit(['sort'], c)))
+        onSettingsChange?.({ sort: [name, toSort.sort] })
     }
 
     const columnsMenu = useMemo<MenuItem[]>(() => 
@@ -230,7 +243,7 @@ export default function ({
             />
         </header>
         <List 
-            ref={contextMenuTarget}
+            ref={list}
             columns={columns}
             files={files} 
             onGo={setRoot}
@@ -247,8 +260,8 @@ export default function ({
             parent={parent}
         />
 
-        {contextMenuTarget.current &&
-            <ContextMenu target={contextMenuTarget.current}>
+        {list.current &&
+            <ContextMenu target={list.current}>
                 <Menu items={showColumnsMenu ? columnsMenu : contextMenu} />
             </ContextMenu>
         }

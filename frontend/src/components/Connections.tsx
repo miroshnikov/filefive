@@ -40,7 +40,7 @@ const settings: ExplorerSettings = {
     sort: ['name', SortOrder.Asc]
 }
 
-export default function ({ path, onChange, onSelect, connect, toolbar, tabindex }: Props) {
+export default function Connections({ path, onChange, onSelect, connect, toolbar, tabindex }: Props) {
     const config = useContext(ConfigContext)
     const [selected, setSelected] = useState<Path[]>([])
     const [menu, setMenu] = useState<MenuItem[]>([])

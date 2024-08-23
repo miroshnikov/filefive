@@ -18,10 +18,7 @@ export default class {
 
     static async open(scheme: string, user: string, host: string, port: number): Promise<FileAttributes> {
         const id = connectionID(scheme, user, host, port)
-        const attrs = [
-            {name: 'name', type: FileAttributeType.String, title: "Name" },
-            ...(scheme == 'sftp' ? SFTP_ATTRIBUTES : FTP_ATTRIBUTES)
-        ]
+        const attrs = (scheme == 'sftp') ? SFTP_ATTRIBUTES : FTP_ATTRIBUTES
         if (this.shared.inc(id)) {
             return attrs
         }

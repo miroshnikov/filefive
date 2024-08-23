@@ -5,7 +5,7 @@ import { FailureType, ConnectionID } from '../../../src/types'
 import { Modal, ModalButtonID, Password } from '../ui/components'
 
 
-export default function () {
+export default function AskForPassword() {
     const [connectionId, setConnectionId] = useState<ConnectionID>()
     const [password, setPassword] = useState('')
     const [remember, setRemember] = useState(true)

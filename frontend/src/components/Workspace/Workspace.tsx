@@ -4,7 +4,7 @@ import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, ConnectionSettings } from '../../../../src/types'
-import { createURI } from '../../utils/URI'
+import { createURI, parseURI } from '../../utils/URI'
 import { ConfigContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
@@ -21,11 +21,11 @@ interface Props {
     ) => void
 }
 
-export default function ({onChange}: Props) {
+export default function Workspace({onChange}: Props) {
     const config = useContext(ConfigContext)
 
     const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
-    const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings>(null)
+    const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings & {path: string}>(null)
     const [localPath, setLocalPath] = useState(config.paths.home)
     const [remotePath, setRemotePath] = useState(config.paths.connections)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
@@ -42,6 +42,14 @@ export default function ({onChange}: Props) {
         [connectionId, connectionSettings, localPath, remotePath]
     )
     
+    useEffect(() => {
+        if (connectionSettings) {
+            window.f5.write(
+                createURI(LocalFileSystemID, connectionSettings.path), 
+                JSON.stringify(connectionSettings)
+            )
+        }
+    }, [connectionSettings])
 
     const openLocal = (path: string) => {
         window.f5.copy(
@@ -65,7 +73,7 @@ export default function ({onChange}: Props) {
                 setConnectionId(id)
                 setLocalPath(path => settings.paths.local ?? path)
                 setRemotePath(settings.paths.remote!)
-                setConnectionSettings(settings)
+                setConnectionSettings({ ...settings, path })
             }
         })
     }
@@ -145,15 +153,17 @@ export default function ({onChange}: Props) {
         }
     ], [remoteToolbar]);
 
-    const fileContextMenu = (file: URI, dir: boolean) => {
-        const {protocol, pathname} = new URL(file)
-        if (protocol == 'file:') {
-            setMenu(dir ? localDirMenu(pathname, localSelected) : localFileMenu(pathname, localSelected))
+    const fileContextMenu = (remote = true) => (file: URI, dir: boolean) => {
+        const {id, path} = parseURI(file)
+        if (id == LocalFileSystemID) {
+            setMenu(dir ? 
+                localDirMenu(path, remote ? remoteSelected : localSelected) : 
+                localFileMenu(path, remote ? remoteSelected : localSelected)
+            )
         } else {
             setMenu([])
         }
     }
-
 
 
     return (<>
@@ -169,7 +179,7 @@ export default function ({onChange}: Props) {
                         onChange={setLocalPath} 
                         onSelect={paths => setLocalSelected(paths)}
                         onOpen={openLocal}
-                        onMenu={fileContextMenu}
+                        onMenu={fileContextMenu(false)}
                         // onSettingsChange={changed => 
                         //     connectionId ?
                         //         setConnectionSettings(settings => assocPath(['layout', 'local'], {...settings.layout.local, ...changed}, settings)):
@@ -203,12 +213,13 @@ export default function ({onChange}: Props) {
                             onChange={setRemotePath} 
                             onSelect={paths => setRemoteSelected(paths)}
                             onOpen={openRemote}
-                            onMenu={fileContextMenu}
+                            onMenu={fileContextMenu()}
                             onSettingsChange={changed => setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))}
                             // onSettingsChange={changed => setConnectionSettings(settings => ({
                             //     ...settings, 
                             //     layout: { local: settings.layout.local, remote: {...settings.layout.remote, ...changed } }})
                             // )}
+                            contextMenu={menu}
                             toolbar={remoteToolbar}
                             tabindex={2}
                         /> :
@@ -221,7 +232,8 @@ export default function ({onChange}: Props) {
                             onChange={setRemotePath} 
                             onSelect={paths => setRemoteSelected(paths)}
                             onOpen={openRemote}
-                            onMenu={fileContextMenu}
+                            onMenu={fileContextMenu()}
+                            contextMenu={menu}
                             toolbar={remoteToolbar}
                             tabindex={2}
                         />

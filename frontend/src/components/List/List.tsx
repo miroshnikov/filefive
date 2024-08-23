@@ -5,7 +5,7 @@ import { FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
 import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith } from 'ramda'
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf } from '../../utils/path'
-import { useSet, useKeyHold, useSubscribe } from '../../hooks'
+import { useSet, useSubscribe } from '../../hooks'
 import setRef from '../../ui/setRef'
 import { CommandID } from '../../commands'
 import { command$ } from '../../observables/command'
@@ -72,7 +72,7 @@ interface ListProps {
     parent?: string,
 }
 
-export default forwardRef<HTMLDivElement, ListProps>(function (
+export default forwardRef<HTMLDivElement, ListProps>(function List (
     {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onSort, onColumnsMenu, root, tabindex, parent}, 
     fwdRef
 ) {
@@ -86,9 +86,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
     const [target, setTarget] = useState<Item>(null)
 
     const isActive = useRef(false)
-
-    const metaPressed = useKeyHold('Meta')
-    const shiftPressed = useKeyHold('Shift')
 
     const [creating, createIn] = useState<{in: Path, dir: boolean}>()
 
@@ -150,22 +147,17 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
         onToggle(dir)
     }
 
-    useEffect(() => {
-        if (clicked) {
-            const timeout = setTimeout((item => () => {
-                item.dir && !metaPressed.current && !shiftPressed.current && toggle(item.path)
-            })(clicked), 250)
-            return () => clearTimeout(timeout)
+    const click = (item: Item, meta: boolean, shift: boolean) => {
+        select(item.path, meta, shift)
+        setClicked(item) 
+        setTarget(item)
+        if (item.dir && !meta && !shift) {
+            toggle(item.path)
         }
-    }, [clicked])
-
-    const doubleClick = (item: Item) => {
-        setClicked(null)
-        item.dir ? onGo(item.path) : onOpen(item.path)
     }
 
-    const select = (path: string) => {
-        if (shiftPressed.current && selected.length) {
+    const select = (path: string, meta: boolean, shift: boolean) => {
+        if (shift && selected.length) {
             if (isSelected(path)) {
                 // TODO remove selection ?
             } else {
@@ -184,12 +176,16 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
                     items.slice(targetIndex, closestIndex)).forEach(({path}) => toggleSelected(path))              
             }
         }
-        else if (metaPressed.current) {
-            console.log('toggle selected because meta is Pressed')
+        else if (meta) {
             toggleSelected(path)
         } else {
             setSelected([path])
         }
+    }
+
+    const doubleClick = (item: Item) => {
+        setClicked(null)
+        item.dir ? onGo(item.path) : onOpen(item.path)
     }
 
     useSubscribe(
@@ -349,7 +345,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function (
                                 dragover: dropTarget && isDescendant(item.path, dropTarget),
                                 target: target?.path == item.path
                             })}
-                            onClick={() => {select(item.path); setClicked(item); setTarget(item)}}
+                            onClick={({metaKey, shiftKey}) => click(item, metaKey, shiftKey)}
                             onDoubleClick={() => doubleClick(item)}
                             onContextMenu={e => {e.stopPropagation(); setTarget(item); onMenu(item.path, item.dir)}}
                             draggable={true}

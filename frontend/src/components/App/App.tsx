@@ -21,7 +21,7 @@ function setTitle(connectionId: ConnectionID|null, connectionName: string, local
 }
 
 
-export default function () {
+export default function App () {
     const [config, setConfig] = useState<AppSettings>(null)
     useEffect(() => { window.f5.config().then(config => setConfig(config)) }, [])
 
