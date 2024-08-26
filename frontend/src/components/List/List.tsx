@@ -83,11 +83,12 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     const [items, setItems] = useState<Items>([])
     const [expanded, setExpanded] = useState<string[]>([])
     const [rootDepth, setRootDepth] = useState(0)
-    const [clicked, setClicked] = useState<Item>(null)
     const [selected, {has: isSelected, reset: setSelected, toggle: toggleSelected}] = useSet<string>([])
     const [target, setTarget] = useState<Item>(null)
 
     const isActive = useRef(false)
+
+    const waitForSecondClick = useRef<ReturnType<typeof setTimeout>>(null)
 
     const [creating, createIn] = useState<{in: Path, dir: boolean}>()
 
@@ -167,11 +168,14 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
 
     const click = (item: Item, meta: boolean, shift: boolean) => {
         select(item.path, meta, shift)
-        setClicked(item) 
         setTarget(item)
-        if (item.dir && !meta && !shift) {
-            toggle(item.path)
-        }
+
+        clearTimeout(waitForSecondClick.current)
+        waitForSecondClick.current = setTimeout(() => {
+            if (item.dir && !meta && !shift) {
+                toggle(item.path)
+            }    
+        }, 400)
     }
 
     const select = (path: string, meta: boolean, shift: boolean) => {
@@ -202,7 +206,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     }
 
     const doubleClick = (item: Item) => {
-        setClicked(null)
+        clearTimeout(waitForSecondClick.current)
         item.dir ? onGo(item.path) : onOpen(item.path)
     }
 

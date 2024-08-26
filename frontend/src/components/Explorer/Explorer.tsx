@@ -234,7 +234,7 @@ export default function Explorer ({
             const c = settings.columns.find(whereEq({name}))
             c && (c.width = width)
         })
-        console.log('changed to', columns)
+        console.log('Explorer:onColumnsChange')
         // onSettingsChange?.({ columns: settings.columns })
     }
 

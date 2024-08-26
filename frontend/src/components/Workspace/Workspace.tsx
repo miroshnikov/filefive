@@ -44,11 +44,11 @@ export default function Workspace({onChange}: Props) {
     
     useEffect(() => {
         if (connectionSettings) {
-            console.log(connectionSettings)
-            // window.f5.write(
-            //     createURI(LocalFileSystemID, connectionSettings.path), 
-            //     JSON.stringify(connectionSettings)
-            // )
+            console.log('update settings', connectionSettings)
+            window.f5.write(
+                createURI(LocalFileSystemID, connectionSettings.path), 
+                JSON.stringify(connectionSettings)
+            )
         }
     }, [connectionSettings])
 
@@ -216,13 +216,10 @@ export default function Workspace({onChange}: Props) {
                             onOpen={openRemote}
                             onMenu={fileContextMenu()}
                             onSettingsChange={changed => {
-                                // console.log('changed', changed)
-                                setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))
-                            }}
-                            // onSettingsChange={changed => setConnectionSettings(settings => ({
-                            //     ...settings, 
-                            //     layout: { local: settings.layout.local, remote: {...settings.layout.remote, ...changed } }})
-                            // )}
+                                    console.log('changed in WS', changed) 
+                                    setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))
+                                }
+                            }
                             contextMenu={menu}
                             toolbar={remoteToolbar}
                             tabindex={2}
