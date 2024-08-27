@@ -4,14 +4,12 @@ import { parseURI, createURI, isLocal } from '../utils/URI'
 import { dirname, join } from 'node:path'
 import { stat } from '../Local'
 import App from '../App'
-import { omit } from 'ramda'
-import { writeFile } from 'node:fs/promises'
 import saveConnection from './saveConnection'
 import createConnection from './createConnection'
+import saveSettings from './saveSettings'
 
 
-
-export default async function (file: URI, content: string, dataPath: string) {
+export default async function (file: URI, content: string, dataPath: string, settingsPath: string) {
     const {id, path} = parseURI(file)
     
     if (isLocal(file)) {
@@ -20,8 +18,8 @@ export default async function (file: URI, content: string, dataPath: string) {
                 saveConnection(path, content):
                 createConnection(path, content)
             return
-        } else if (path == join(dataPath, 'settings.json')) {
-            await writeFile(path, JSON.stringify(omit(['paths'], JSON.parse(content))))
+        } else if (path == settingsPath) {
+            saveSettings(settingsPath, content)
             return
         }
     }

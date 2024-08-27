@@ -50,11 +50,16 @@ export interface ExplorerConfig {
     sort: [FileAttribute['name'], SortOrder]
 }
 
-export interface Config {
+export interface ConnectionConfig {
     scheme: string
     host: string
     port: number
     user: string
+    layout?: Twofold<ExplorerConfig>
+    paths?: Twofold<Path|undefined>
+}
+
+export interface AppConfig {
     layout?: Twofold<ExplorerConfig>
     paths?: Twofold<Path|undefined>
 }
@@ -74,7 +79,10 @@ export interface ConnectionSettings {
 }
 
 export interface AppSettings {
-    paths: Record<'home'|'connections', Path>
+    home: Path
+    settings: Path
+    connections: Path
+    paths: Twofold<Path|undefined>
     layout: Twofold<ExplorerSettings>
 }
 

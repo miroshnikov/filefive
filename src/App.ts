@@ -43,7 +43,7 @@ export default class App {
             open:       ({file}: {file: Path}) => opener(file),
             mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
             // read
-            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content, dataPath),
+            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content, dataPath, settingsPath),
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),
             stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))

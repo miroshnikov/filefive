@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { parse } from 'path'
-import { Path, ConnectionID, Config, ConnectionSettings, ExplorerConfig, ExplorerSettings, SortOrder } from '../types'
+import { Path, ConnectionID, ConnectionConfig, ConnectionSettings, ExplorerConfig, ExplorerSettings, SortOrder } from '../types'
 import { FileAttributes } from '../FileSystem'
 import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
 import { connectionID } from '../utils/URI'
@@ -10,7 +10,7 @@ import { whereEq, isNotNil } from 'ramda'
 
 
 
-function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerSettings {
+export function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerSettings {
         return { 
             columns:
                 config ? 
@@ -31,7 +31,7 @@ function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): 
 }
 
 export default async function (file: Path, onError: (id: ConnectionID, e: any) => void): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false> {
-    const config = JSON.parse( readFileSync(file).toString() ) as Config
+    const config = JSON.parse( readFileSync(file).toString() ) as ConnectionConfig
     const id = connectionID(config.scheme, config.user, config.host, config.port)
     await Password.get(id)
     try {

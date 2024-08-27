@@ -57,7 +57,7 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
             connection={LocalFileSystemID}
             settings={settings}
             path={path} 
-            fixedRoot={config.paths.connections}
+            fixedRoot={config.connections}
             onChange={onChange} 
             onSelect={(paths: Path[]) => {setSelected(paths); onSelect(paths)}}
             onOpen={connect}

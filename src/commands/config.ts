@@ -1,23 +1,22 @@
 import { homedir } from 'node:os'
 import { join } from 'node:path'
-import { AppSettings, ExplorerSettings, SortOrder } from '../types'
+import { AppConfig, AppSettings } from '../types'
 import { read } from '../Local'
 import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
+import { explorerSettings } from './connect'
 
 
 export default async function (path: string): Promise<AppSettings> {
-    const config: Partial<Pick<AppSettings, 'layout'>> = JSON.parse( await read(path) )
-
-    const defaultSettings: ExplorerSettings = {
-        columns: LOCAL_ATTRIBUTES.map(a => ({...a, visible: true, width: 300})),
-        sort: ['name', SortOrder.Asc]
-    }
+    const config: AppConfig = JSON.parse( await read(path) )
 
     return {
-        paths: {
-            home: homedir(),
-            connections: join(homedir(), '.f5', 'connections')
+        home: homedir(),
+        settings: join(homedir(), '.f5', 'settings.json'),
+        connections: join(homedir(), '.f5', 'connections'),
+        layout: {
+            local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
+            remote: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.remote)
         },
-        layout: config.layout ?? { local: defaultSettings, remote: defaultSettings }
+        paths: config.paths ?? { local: homedir(), remote: homedir() }
     }
 }

@@ -3,7 +3,7 @@ import Split from '../Split/Split'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
-import { ConnectionID, LocalFileSystemID, URI, Path, ConnectionSettings } from '../../../../src/types'
+import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings } from '../../../../src/types'
 import { createURI, parseURI } from '../../utils/URI'
 import { ConfigContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
@@ -22,12 +22,12 @@ interface Props {
 }
 
 export default function Workspace({onChange}: Props) {
-    const config = useContext(ConfigContext)
+    const appSettings = useContext(ConfigContext)
 
     const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
     const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings & {path: string}>(null)
-    const [localPath, setLocalPath] = useState(config.paths.home)
-    const [remotePath, setRemotePath] = useState(config.paths.connections)
+    const [localPath, setLocalPath] = useState(appSettings.home)
+    const [remotePath, setRemotePath] = useState(appSettings.connections)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
     const [remoteSelected, setRemoteSelected] = useState<Path[]>([])
     const [showConnections, setShowConnections] = useState(true)
@@ -50,6 +50,14 @@ export default function Workspace({onChange}: Props) {
             )
         }
     }, [connectionSettings])
+
+    const updateSettings = (settings: Pick<AppSettings, 'layout'>) => {
+        console.log('save global', settings)
+        window.f5.write(
+            createURI(LocalFileSystemID, appSettings.settings),
+            JSON.stringify(settings)
+        )
+    }
 
     const openLocal = (path: string) => {
         window.f5.copy(
@@ -128,7 +136,7 @@ export default function Workspace({onChange}: Props) {
                     setConnectionId(null)
                     setConnectionSettings(null)
                     setShowConnections(true)
-                    setRemotePath(config.paths.connections)
+                    setRemotePath(appSettings.connections)
                 }
             }
         ] : [])
@@ -148,7 +156,7 @@ export default function Workspace({onChange}: Props) {
             disabled: false,
             onClick: () => {
                 setShowConnections(false)
-                setRemotePath(config.paths.home)
+                setRemotePath(appSettings.home)
             }
         }
     ], [remoteToolbar]);
@@ -173,7 +181,7 @@ export default function Workspace({onChange}: Props) {
                     <Explorer 
                         icon='computer'
                         connection={LocalFileSystemID}
-                        settings={connectionSettings?.layout.local ?? config.layout.local}
+                        settings={connectionSettings?.layout.local ?? appSettings.layout.local}
                         path={localPath} 
                         fixedRoot={'/'}
                         onChange={setLocalPath} 
@@ -183,7 +191,7 @@ export default function Workspace({onChange}: Props) {
                         onSettingsChange={changed => 
                             connectionId ?
                                 setConnectionSettings(settings => assocPath(['layout', 'local'], {...settings.layout.local, ...changed}, settings)):
-                                console.log('save to global settings')
+                                updateSettings(assocPath(['layout', 'local'], {...appSettings.layout.remote, ...changed}, appSettings))
                         }
                         contextMenu={menu}
                         toolbar={localToolbar}
@@ -224,13 +232,16 @@ export default function Workspace({onChange}: Props) {
                         <Explorer 
                             icon='computer'
                             connection={LocalFileSystemID}
-                            settings={config.layout.remote}
+                            settings={appSettings.layout.remote}
                             path={remotePath} 
                             fixedRoot={'/'}
                             onChange={setRemotePath} 
                             onSelect={paths => setRemoteSelected(paths)}
                             onOpen={openRemote}
                             onMenu={fileContextMenu()}
+                            onSettingsChange={changed => 
+                                updateSettings(assocPath(['layout', 'remote'], {...appSettings.layout.remote, ...changed}, appSettings))
+                            }
                             contextMenu={menu}
                             toolbar={remoteToolbar}
                             tabindex={2}

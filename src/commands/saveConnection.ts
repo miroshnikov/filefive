@@ -4,7 +4,7 @@ import { whereEq } from 'ramda'
 import { writeFile } from 'node:fs/promises'
 
 
-function getLayout(settings: ExplorerSettings): ExplorerConfig {
+export function getLayout(settings: ExplorerSettings): ExplorerConfig {
     return {
         columns: settings.columns.filter(whereEq({visible: true})).map(({name, width}) => ({name, width})),
         sort: settings.sort
