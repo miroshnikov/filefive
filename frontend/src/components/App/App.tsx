@@ -1,17 +1,19 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState } from "react"
 import Workspace from '../Workspace/Workspace'
 import styles from './App.less'
 import { useMap, useSubscribe } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
-import { QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
+import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
 import { parse } from '../../utils/path'
+import { createURI } from '../../utils/URI'
 import classNames from "classnames"
 import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'
 import AskForPassword from '../../modals/Password'
 import ConfirmDeletion from '../../modals/Deletion'
-import { ConfigContext } from '../../context/config'
+import { file$ } from '../../observables/file'
+import { AppSettingsContext } from '../../context/config'
 
 
 
@@ -22,10 +24,22 @@ function setTitle(connectionId: ConnectionID|null, connectionName: string, local
 
 
 export default function App () {
-    const [config, setConfig] = useState<AppSettings>(null)
+    const [appSettings, setAppSettings] = useState<AppSettings>(null)
     useEffect(() => { 
-        window.f5.config().then(config => setConfig(config)) 
+        window.f5.config().then(settings => setAppSettings(settings)) 
     }, [])
+
+    useEffect(() => {
+        if (appSettings) {
+            window.f5.watch(createURI(LocalFileSystemID, appSettings.settings))
+        }
+    }, [appSettings])
+
+    useSubscribe(() =>
+        file$.subscribe(() => 
+            window.f5.config().then(settings => setAppSettings(settings)) 
+        )
+    )
 
     const [queues, {set: addQueue, del: delQueue}] = useMap<string, {type: QueueType, connection: ConnectionID}>()
     useSubscribe(() => 
@@ -42,8 +56,8 @@ export default function App () {
     useEffect(() => setActive(queues.size-1), [queues])
   
     return (<>
-        {config ? 
-            <ConfigContext.Provider value={config}>
+        {appSettings ? 
+            <AppSettingsContext.Provider value={appSettings}>
                 <div className={classNames(styles.root, {hasQueues: queues.size > 0})}>
                     <div className={styles.toolbar}>
                         <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
@@ -69,7 +83,7 @@ export default function App () {
                 <Error />
                 <AskForPassword />
                 <ConfirmDeletion />
-            </ConfigContext.Provider> : 
+            </AppSettingsContext.Provider> : 
             <span>wait...</span>
         }
         </>)

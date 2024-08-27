@@ -5,7 +5,7 @@ import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings } from '../../../../src/types'
 import { createURI, parseURI } from '../../utils/URI'
-import { ConfigContext } from '../../context/config'
+import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import localDirMenu from '../../menu/localDir'
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function Workspace({onChange}: Props) {
-    const appSettings = useContext(ConfigContext)
+    const appSettings = useContext(AppSettingsContext)
 
     const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
     const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings & {path: string}>(null)
@@ -52,7 +52,6 @@ export default function Workspace({onChange}: Props) {
     }, [connectionSettings])
 
     const updateSettings = (settings: Pick<AppSettings, 'layout'>) => {
-        console.log('save global', settings)
         window.f5.write(
             createURI(LocalFileSystemID, appSettings.settings),
             JSON.stringify(settings)

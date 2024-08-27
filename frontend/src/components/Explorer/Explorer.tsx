@@ -6,7 +6,7 @@ import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
 import List, { Column, Columns, ColumnType, Items } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
-import { dir$ } from '../../observables/watch'
+import { dir$ } from '../../observables/dir'
 import { filter } from 'rxjs/operators'
 import { useEffectOnUpdate } from '../../hooks'
 import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, assoc } from 'ramda'

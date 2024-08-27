@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react"
 import { LocalFileSystemID, URI, Path, SortOrder, ExplorerSettings } from '../../../src/types'
 import { FileAttributeType } from '../../../src/FileSystem'
-import { ConfigContext } from '../context/config'
+import { AppSettingsContext } from '../context/config'
 import { MenuItem } from '../ui/components'
 import { parseURI } from '../utils/URI'
 import Explorer from './Explorer/Explorer'
@@ -41,7 +41,7 @@ const settings: ExplorerSettings = {
 }
 
 export default function Connections({ path, onChange, onSelect, connect, toolbar, tabindex }: Props) {
-    const config = useContext(ConfigContext)
+    const appSettings = useContext(AppSettingsContext)
     const [selected, setSelected] = useState<Path[]>([])
     const [menu, setMenu] = useState<MenuItem[]>([])
     const [newConnection, setNewConnection] = useState<Path>('')
@@ -57,7 +57,7 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
             connection={LocalFileSystemID}
             settings={settings}
             path={path} 
-            fixedRoot={config.connections}
+            fixedRoot={appSettings.connections}
             onChange={onChange} 
             onSelect={(paths: Path[]) => {setSelected(paths); onSelect(paths)}}
             onOpen={connect}

@@ -7,7 +7,7 @@ import ReferenceCountMap from './utils/ReferenceCountMap'
 
 
 export default class {
-    constructor(private listener: (file: Path, stat: LocalFileInfo|undefined, event?: WatchEventType, target?: string) => void) {}
+    constructor(private listener: (path: Path, stat: LocalFileInfo|null, event?: WatchEventType) => void) {}
 
     async watch(path: Path) {
         if (this.watched.inc(path)) {
@@ -17,17 +17,16 @@ export default class {
             const ac = new AbortController()
             this.watched.set(path, ac)
             for await (const {eventType, filename} of watch(path, { signal: ac.signal })) {
-                if (eventType == "rename") {
-                    let newPath = path
-                    if (basename(path) !== filename) {
-                        newPath = join(dirname(path), filename)
-                        this.watched.renameKey(path, newPath)
-                    }
-                    try {
-                        this.listener(path, stat(newPath), eventType, filename)
-                    } catch (e) {
-                        this.listener(path, undefined, eventType, filename)
-                    }
+
+                let newPath = path
+                if (eventType == "rename" && basename(path) !== filename) {
+                    newPath = join(dirname(path), filename)
+                    this.watched.renameKey(path, newPath)
+                }
+                try {
+                    this.listener(path, stat(newPath), eventType)
+                } catch (e) {
+                    this.listener(path, null, eventType)
                 }
             }
         } catch(e) {

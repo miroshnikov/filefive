@@ -13,7 +13,7 @@ export function pwd(): string {
     return homedir()
 }
 
-export function stat(path: string): LocalFileInfo|undefined {
+export function stat(path: string): LocalFileInfo|null {
     path = normalize(path)
     try {
         const stat = statSync(path)
@@ -27,7 +27,7 @@ export function stat(path: string): LocalFileInfo|undefined {
             inode: stat.ino
         }
     } catch (e) {
-        return undefined
+        return null
     }
 }
 

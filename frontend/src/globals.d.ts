@@ -1,4 +1,5 @@
 import { URI, Path, AppSettings, ConnectionID, ConnectionSettings, Files, QueueEvent, QueueAction } from '../../src/types'
+import { LocalFileInfo } from '../../src/Local'
 
 
 export interface F5 {
@@ -10,11 +11,12 @@ export interface F5 {
     login(id: ConnectionID, password: string, remember: boolean): Promise<void>
     disconnect(id: ConnectionID): void
 
-
     watch(dir: URI): void
     unwatch(dir: URI): void
     refresh(dir: URI): void
+
     onDirChange(listener: (uri: URI, files: Files) => void): void
+    onFileChange(listener: (path: Path, stat: LocalFileInfo|null) => void): void
 
     copy(src: URI[], dest: URI): Promise<string>
     remove(files: URI[], force: boolean): void

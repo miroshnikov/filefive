@@ -4,14 +4,13 @@ import { mkdir } from 'node:fs/promises'
 import { Path, ConnectionID, URI, Files, Failure, FailureType, QueueEvent, QueueAction } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
+import FileWatcher from './FileWatcher'
 import RemoteWatcher from './RemoteWatcher'
-import { isLocal, parseURI } from './utils/URI'
 import { queues } from './Queue'
 import Password from './Password'
 import { commands } from './commands'
 import transform from './transform'
-import { touch } from './Local'
-
+import { touch, LocalFileInfo } from './Local'
 
 
 export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
@@ -35,8 +34,8 @@ export default class App {
             connect:    ({file}: {file: Path}) => commands.connect(file, (id, error) => this.onError({ type: FailureType.RemoteError, id, error })),
             login:      ({id, password, remember}: {id: ConnectionID, password: string, remember: boolean}) => Password.set(id, password, remember),
             disconnect: ({id}: {id: ConnectionID}) => Connection.close(id),
-            watch:      ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.watch(parseURI(dir)['path']) : this.remoteWatcher.watch(dir),
-            unwatch:    ({dir}: {dir: URI}) => isLocal(dir) ? this.localWatcher.unwatch(parseURI(dir)['path']) : this.remoteWatcher.unwatch(dir),
+            watch:      ({dir}: {dir: URI}) => commands.watch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
+            unwatch:    ({dir}: {dir: URI}) => commands.unwatch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
             refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
             copy:       ({src, dest}: {src: URI[], dest: URI}) => commands.copy(src, dest),
             remove:     ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
@@ -51,10 +50,14 @@ export default class App {
         const emitError = emitter<Failure>('error')
         this.onError = (error: Failure) => emitError(error)
 
-        const emitFS = emitter<{uri: URI, files: Files}>('fs')
-        const sendDirContent = (uri: URI, files: Files) => emitFS({uri, files})
+        const emitDir = emitter<{uri: URI, files: Files}>('dir')
+        const sendDirContent = (uri: URI, files: Files) => emitDir({uri, files})
         this.localWatcher = new LocalWatcher((path, files) => sendDirContent('file://'+path as URI, files))
         this.remoteWatcher = new RemoteWatcher(sendDirContent, transform)
+
+        const emitFile = emitter<{path: Path, stat: LocalFileInfo|null}>('file')
+        const sendFileStat = (path: Path, stat: LocalFileInfo|null) => emitFile({path, stat})
+        this.fileWatcher = new FileWatcher(sendFileStat)
 
         const emitQueue = emitter<{id: string, event: QueueEvent}>('queue')
         this.onQueueUpdate = (id: string, event: QueueEvent) => emitQueue({id, event})
@@ -64,5 +67,6 @@ export default class App {
     public static onQueueUpdate: (id: string, event: QueueEvent) => void
 
     private static localWatcher: LocalWatcher
+    private static fileWatcher: FileWatcher
     public static remoteWatcher: RemoteWatcher
 }
