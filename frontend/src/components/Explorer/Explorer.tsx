@@ -216,7 +216,7 @@ export default function Explorer ({
     }
 
     const columnsMenu = useMemo<MenuItem[]>(() => 
-        settings.columns.map(c => ({
+        settings.columns.slice(1).map(c => ({
             id: c.name,
             label: c.title,
             checked: c.visible,
@@ -229,12 +229,13 @@ export default function Explorer ({
     )
 
     const onColumnsChange = (columns: {name: string, width: number}[]) => {
-        //.sortBy
         columns.forEach(({name, width}) => {
             const c = settings.columns.find(whereEq({name}))
             c && (c.width = width)
         })
-        onSettingsChange?.({ columns: settings.columns })
+        onSettingsChange?.({ 
+            columns: settings.columns.sort(({name: a}, {name: b}) => columns.findIndex(whereEq({name: a})) - columns.findIndex(whereEq({name: b})))
+        })
     }
 
     return <div className={styles.root}>

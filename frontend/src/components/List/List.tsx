@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, forwardRef, useCallback } from "rea
 import classNames from 'classnames'
 import styles from './List.less'
 import { FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
-import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith, update } from 'ramda'
+import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith, update, move } from 'ramda'
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf } from '../../utils/path'
 import { useSet, useSubscribe, useEvent } from '../../hooks'
@@ -300,15 +300,36 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         if (resizing.current !== null && rootEl.current) {
             const target = rootEl.current.querySelector(`th:nth-child(${resizing.current+1})`)
             if (target) {
-                const width = Math.max(20, Math.round(pageX - (target as Element).getBoundingClientRect().left))
+                const width = Math.max(50, Math.round(pageX - (target as Element).getBoundingClientRect().left))
                 if (widths[resizing.current] != width) {
                     setWidths(update(resizing.current, width, widths))
-                    delayedOnChange?.(columns.map(({name}, i) => ({name, width: widths[i]})))
+                    delayedOnChange(columns.map(({name}, i) => ({name, width: widths[i]})))
                 }
             }
         }
     })
-    useEvent(document, 'mouseup', () => resizing.current = null)
+
+    const draggingColumn = useRef<number>(null)
+    const [colDropTarget, setColDropTarget] = useState<number>(null)
+    const onColumnDragOver = (target: number) => () => {
+        if (draggingColumn.current && target != draggingColumn.current) {
+            setColDropTarget(target)
+        }
+    }
+    const onColumnDrop = (target: number) => () => {
+        if (draggingColumn.current && target != draggingColumn.current) {
+            const newWidths = move(draggingColumn.current, target == widths.length-1 ? target : target+1, widths)
+            onColumnsChange?.(
+                move(draggingColumn.current, target == columns.length-1 ? target : target+1, columns)
+                    .map(({name}, i) => ({name, width: newWidths[i]}))  
+            )
+        }
+        setColDropTarget(null)
+    }
+
+    useEvent(document, 'mouseup', () => {
+        resizing.current = draggingColumn.current = null
+    })
 
     return <div 
         className={classNames(styles.root, 'list', {draggedOver})} 
@@ -327,10 +348,14 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                 <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.()}}>
                     {columns.map(({name, title, sort, width}, i) =>
                         <th key={name} 
-                            className={classNames({sorted: !!sort})}
+                            className={classNames({sorted: !!sort, drop: i===colDropTarget})}
                             style={{width: widths[i]}}
                             data-name={name}
-                            onClick={() => onSort?.(name) }
+                            onClick={() => onSort?.(name)}
+                            onMouseDown={() => i && (draggingColumn.current = i)}
+                            onMouseOver={onColumnDragOver(i)}
+                            onMouseOut={() => setColDropTarget(null)}
+                            onMouseUp={onColumnDrop(i)}
                         >
                             {title}
                             {sort && 
@@ -339,7 +364,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                                 </span>
                             }
                             <i
-                                onMouseDown={() => resizing.current = i}
+                                onMouseDown={e => {e.stopPropagation(); resizing.current = i}}
                                 onClick={e => e.stopPropagation()}
                             ></i>
                         </th>
