@@ -13,10 +13,6 @@ export default function Split ({left, right} : {left: ReactElement, right: React
 
     const [width, setWidth] = useState(0)
 
-    useEffect(() => {
-        // leftPane.current.scrollLeft = rightPane.current.scrollLeft = 0       TODO
-    }, [width])
-
     useSubscribe(() => {
         return fromEvent(resizer.current, 'mousedown')
             .pipe( 

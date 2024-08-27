@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect, forwardRef } from "react"
+import React, { useRef, useState, useEffect, forwardRef, useCallback } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
 import { FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
-import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith } from 'ramda'
+import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith, update } from 'ramda'
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf } from '../../utils/path'
-import { useSet, useSubscribe } from '../../hooks'
+import { useSet, useSubscribe, useEvent } from '../../hooks'
 import setRef from '../../ui/setRef'
 import { CommandID } from '../../commands'
 import { command$ } from '../../observables/command'
@@ -145,21 +145,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         setSelected(selected.filter(includes(__, items.map(prop('path'))))
     ), [items])
 
-    useEffect(() => {
-        const dispatch = onColumnsChange ? debounce(onColumnsChange, 500) : undefined
-        const resizeObserver = new ResizeObserver(entries => {
-            entries.forEach(entry => { 
-                const column = columns.find(whereEq({name: entry.target.getAttribute('data-name')}))
-                if (column) {
-                    column.width = entry.borderBoxSize?.[0].inlineSize ?? 300
-                }
-            })
-            dispatch?.(columns)
-        })
-        const cols = Array.from(rootEl.current.querySelectorAll('th:not(:last-child)').values())
-        cols.forEach((el: Element) => resizeObserver.observe(el, { box: 'border-box' }))
-        return () => cols.forEach( (el: Element) => resizeObserver.unobserve(el) )
-    }, [columns])
+    const [widths, setWidths] = useState([]) 
+    useEffect(() => { setWidths(columns.map(prop('width'))) }, [columns])
 
     const toggle = (dir: string) => {
         setExpanded(expanded.includes(dir) ? without([dir], expanded) : [...expanded, dir])
@@ -280,25 +267,48 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         e.stopPropagation()
     
         const data = e.dataTransfer.getData('URIs')
-        const URIs: string[] = data.length ? JSON.parse(data) : []
-       
-        for (let i = 0; i < e.dataTransfer.items.length; i++) {
-            const item = e.dataTransfer.items[i]
-            item.kind == 'file' && URIs.push('file://'+(item.getAsFile() as any).path)  // dropped file from outside
+        if (data) {
+            const URIs: string[] = data.length ? JSON.parse(data) : []
+           
+            for (let i = 0; i < e.dataTransfer.items.length; i++) {
+                const item = e.dataTransfer.items[i]
+                item.kind == 'file' && URIs.push('file://'+(item.getAsFile() as any).path)  // dropped file from outside
+            }
+    
+            if (!URIs.map(URI => items.find(whereEq({URI}))).filter(identity).some(({path}) => childOf(targetDir, path))) {
+                onDrop(URIs, targetDir, e.dataTransfer.effectAllowed == 'copy' ? DropEffect.Copy : DropEffect.Move)           
+            }
+    
+            e.dataTransfer.clearData()
+            e.dataTransfer.items.clear()
+            clearTimeout(dragCounter.current.timeout)
+            dragCounter.current = {path: '', count: 0, timeout: null}
         }
-
-        if (!URIs.map(URI => items.find(whereEq({URI}))).filter(identity).some(({path}) => childOf(targetDir, path))) {
-            onDrop(URIs, targetDir, e.dataTransfer.effectAllowed == 'copy' ? DropEffect.Copy : DropEffect.Move)           
-        }
-
-        e.dataTransfer.clearData()
-        e.dataTransfer.items.clear()
-        clearTimeout(dragCounter.current.timeout)
-        dragCounter.current = {path: '', count: 0, timeout: null}
         setDropTarget('')
         setDragging(false)
         setDraggedOver(false)
     }
+
+    const resizing = useRef<number>(null)
+
+    const delayedOnChange = useCallback(
+        onColumnsChange ? debounce(onColumnsChange, 500) : () => {},
+        [onColumnsChange]
+    )
+
+    useEvent(document, 'mousemove', ({pageX}: MouseEvent) => {
+        if (resizing.current !== null && rootEl.current) {
+            const target = rootEl.current.querySelector(`th:nth-child(${resizing.current+1})`)
+            if (target) {
+                const width = Math.max(20, Math.round(pageX - (target as Element).getBoundingClientRect().left))
+                if (widths[resizing.current] != width) {
+                    setWidths(update(resizing.current, width, widths))
+                    delayedOnChange?.(columns.map(({name}, i) => ({name, width: widths[i]})))
+                }
+            }
+        }
+    })
+    useEvent(document, 'mouseup', () => resizing.current = null)
 
     return <div 
         className={classNames(styles.root, 'list', {draggedOver})} 
@@ -315,20 +325,23 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         <table>
             <thead>
                 <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.()}}>
-                    {columns.map(({name, title, sort, width}) =>
+                    {columns.map(({name, title, sort, width}, i) =>
                         <th key={name} 
                             className={classNames({sorted: !!sort})}
-                            style={{width}}
+                            style={{width: widths[i]}}
                             data-name={name}
+                            onClick={() => onSort?.(name) }
                         >
-                            <i onClick={() => onSort?.(name) } >
-                                {title}
-                                {sort && 
-                                    <span className="icon">
-                                        {sort == SortOrder.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
-                                    </span>
-                                }
-                            </i>
+                            {title}
+                            {sort && 
+                                <span className="icon">
+                                    {sort == SortOrder.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
+                                </span>
+                            }
+                            <i
+                                onMouseDown={() => resizing.current = i}
+                                onClick={e => e.stopPropagation()}
+                            ></i>
                         </th>
                     )}
                     <th></th>

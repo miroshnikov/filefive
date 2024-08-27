@@ -23,7 +23,9 @@ function setTitle(connectionId: ConnectionID|null, connectionName: string, local
 
 export default function App () {
     const [config, setConfig] = useState<AppSettings>(null)
-    useEffect(() => { window.f5.config().then(config => setConfig(config)) }, [])
+    useEffect(() => { 
+        window.f5.config().then(config => setConfig(config)) 
+    }, [])
 
     const [queues, {set: addQueue, del: delQueue}] = useMap<string, {type: QueueType, connection: ConnectionID}>()
     useSubscribe(() => 
@@ -46,7 +48,7 @@ export default function App () {
                     <div className={styles.toolbar}>
                         <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
                         <span>
-                            <button className="icon">power_settings_new</button>
+                            <button className="icon">cloud_upload</button>
                             <button className="icon">settings</button>
                         </span>
                     </div>

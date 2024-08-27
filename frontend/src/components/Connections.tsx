@@ -53,7 +53,7 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
 
     return <>
         <Explorer 
-            icon='power_settings_new'
+            icon='cloud_upload'
             connection={LocalFileSystemID}
             settings={settings}
             path={path} 

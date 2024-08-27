@@ -44,7 +44,6 @@ export default function Workspace({onChange}: Props) {
     
     useEffect(() => {
         if (connectionSettings) {
-            console.log('update settings', connectionSettings)
             window.f5.write(
                 createURI(LocalFileSystemID, connectionSettings.path), 
                 JSON.stringify(connectionSettings)
@@ -181,11 +180,11 @@ export default function Workspace({onChange}: Props) {
                         onSelect={paths => setLocalSelected(paths)}
                         onOpen={openLocal}
                         onMenu={fileContextMenu(false)}
-                        // onSettingsChange={changed => 
-                        //     connectionId ?
-                        //         setConnectionSettings(settings => assocPath(['layout', 'local'], {...settings.layout.local, ...changed}, settings)):
-                                
-                        // }
+                        onSettingsChange={changed => 
+                            connectionId ?
+                                setConnectionSettings(settings => assocPath(['layout', 'local'], {...settings.layout.local, ...changed}, settings)):
+                                console.log('save to global settings')
+                        }
                         contextMenu={menu}
                         toolbar={localToolbar}
                         tabindex={1}
@@ -215,10 +214,8 @@ export default function Workspace({onChange}: Props) {
                             onSelect={paths => setRemoteSelected(paths)}
                             onOpen={openRemote}
                             onMenu={fileContextMenu()}
-                            onSettingsChange={changed => {
-                                    console.log('changed in WS', changed) 
-                                    setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))
-                                }
+                            onSettingsChange={changed =>
+                                setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))
                             }
                             contextMenu={menu}
                             toolbar={remoteToolbar}
