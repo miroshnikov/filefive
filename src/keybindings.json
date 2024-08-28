@@ -1,0 +1,22 @@
+[
+    {
+        "key": "meta+comma",
+        "command": "settings"
+    },
+    {
+        "key": "meta+o",
+        "command": "connections"
+    },
+    {
+        "key": "meta+s",
+        "command": "connections"
+    },
+    {
+        "key": "delete",
+        "command": "delete"
+    },
+    {
+        "key": "meta+a",
+        "command": "select-all"
+    }
+]

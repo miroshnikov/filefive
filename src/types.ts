@@ -82,6 +82,7 @@ export interface AppSettings {
     home: Path
     settings: Path
     connections: Path
+    keybindings: { key: CommandID, command: string }[]
     layout: Twofold<ExplorerSettings>
     path: Twofold<Path|undefined>
 }

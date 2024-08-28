@@ -12,6 +12,8 @@ import { ToolbarItem } from './Toolbar/Toolbar'
 
 
 interface Props {
+    path: Path
+    onChange: (dir: Path) => void
     onSelect: (paths: Path[]) => void
     connect: (path: Path) => void
     toolbar: ToolbarItem[]
@@ -38,10 +40,8 @@ const settings: ExplorerSettings = {
     sort: ['name', SortOrder.Asc]
 }
 
-export default function Connections({ onSelect, connect, toolbar, tabindex }: Props) {
+export default function Connections({ path, onChange, onSelect, connect, toolbar, tabindex }: Props) {
     const appSettings = useContext(AppSettingsContext)
-
-    const [path, setPath] = useState(appSettings.connections)
     const [selected, setSelected] = useState<Path[]>([])
     const [menu, setMenu] = useState<MenuItem[]>([])
     const [newConnection, setNewConnection] = useState<Path>('')
@@ -58,7 +58,7 @@ export default function Connections({ onSelect, connect, toolbar, tabindex }: Pr
             settings={settings}
             path={path} 
             fixedRoot={appSettings.connections}
-            onChange={path => setPath(path)} 
+            onChange={onChange} 
             onSelect={(paths: Path[]) => {setSelected(paths); onSelect(paths)}}
             onOpen={connect}
             onMenu={onContextMenu}

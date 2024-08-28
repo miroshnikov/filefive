@@ -9,8 +9,10 @@ import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import localDirMenu from '../../menu/localDir'
-import { useEffectOnUpdate } from '../../hooks'
+import { useEffectOnUpdate, useSubscribe } from '../../hooks'
 import { assocPath, mergeDeepRight } from 'ramda'
+import { command$ } from '../../observables/command'
+import { CommandID } from '../../commands'
 
 
 interface Props {
@@ -28,7 +30,7 @@ export default function Workspace({onChange}: Props) {
     const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
     const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings & {file: string}>(null)
     const [localPath, setLocalPath] = useState(appSettings.path?.local ?? appSettings.home)
-    const [remotePath, setRemotePath] = useState(appSettings.path?.remote ?? appSettings.home)
+    const [remotePath, setRemotePath] = useState(appSettings.connections)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
     const [remoteSelected, setRemoteSelected] = useState<Path[]>([])
     const [showConnections, setShowConnections] = useState(true)
@@ -77,7 +79,10 @@ export default function Workspace({onChange}: Props) {
                 JSON.stringify(
                     mergeDeepRight(
                         appSettings, {
-                            path: { local: localPath, remote: remotePath }
+                            path: { 
+                                local: localPath, 
+                                remote: showConnections ? (appSettings.path?.remote ?? appSettings.home) : remotePath 
+                            }
                         }
                     )
                 )
@@ -200,6 +205,16 @@ export default function Workspace({onChange}: Props) {
         }
     }
 
+    useSubscribe(() => 
+        command$.subscribe(cmd => {
+            switch (cmd) {
+                case CommandID.Connections: {
+                    console.log('show connections')
+                }
+            }
+        })
+    )
+
 
     return (<>
         <Split 
@@ -231,6 +246,8 @@ export default function Workspace({onChange}: Props) {
             right = {
                 showConnections ? 
                     <Connections
+                        path={remotePath}
+                        onChange={setRemotePath}
                         onSelect={paths => setRemoteSelected(paths)}
                         connect={connect}
                         toolbar={connectionsToolbar}

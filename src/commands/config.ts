@@ -4,6 +4,7 @@ import { AppConfig, AppSettings } from '../types'
 import { read } from '../Local'
 import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
 import { explorerSettings } from './connect'
+import keybindings from '../keybindings.json'
 
 
 export default async function (path: string): Promise<AppSettings> {
@@ -13,6 +14,7 @@ export default async function (path: string): Promise<AppSettings> {
         home: homedir(),
         settings: join(homedir(), '.f5', 'settings.json'),
         connections: join(homedir(), '.f5', 'connections'),
+        keybindings,
         layout: {
             local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
             remote: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.remote)
