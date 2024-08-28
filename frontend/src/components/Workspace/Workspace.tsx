@@ -9,7 +9,8 @@ import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import localDirMenu from '../../menu/localDir'
-import { assocPath } from 'ramda'
+import { useEffectOnUpdate } from '../../hooks'
+import { assocPath, mergeDeepRight } from 'ramda'
 
 
 interface Props {
@@ -25,9 +26,9 @@ export default function Workspace({onChange}: Props) {
     const appSettings = useContext(AppSettingsContext)
 
     const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
-    const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings & {path: string}>(null)
-    const [localPath, setLocalPath] = useState(appSettings.home)
-    const [remotePath, setRemotePath] = useState(appSettings.connections)
+    const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings & {file: string}>(null)
+    const [localPath, setLocalPath] = useState(appSettings.path?.local ?? appSettings.home)
+    const [remotePath, setRemotePath] = useState(appSettings.path?.remote ?? appSettings.home)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
     const [remoteSelected, setRemoteSelected] = useState<Path[]>([])
     const [showConnections, setShowConnections] = useState(true)
@@ -45,7 +46,7 @@ export default function Workspace({onChange}: Props) {
     useEffect(() => {
         if (connectionSettings) {
             window.f5.write(
-                createURI(LocalFileSystemID, connectionSettings.path), 
+                createURI(LocalFileSystemID, connectionSettings.file), 
                 JSON.stringify(connectionSettings)
             )
         }
@@ -57,6 +58,32 @@ export default function Workspace({onChange}: Props) {
             JSON.stringify(settings)
         )
     }
+
+    useEffectOnUpdate(() => {
+        if (connectionId) {
+            window.f5.write(
+                createURI(LocalFileSystemID, connectionSettings.file), 
+                JSON.stringify(
+                    mergeDeepRight(
+                        connectionSettings, {
+                            path: {  local: localPath, remote: remotePath }
+                        }
+                    )
+                )
+            )
+        } else {
+            window.f5.write(
+                createURI(LocalFileSystemID, appSettings.settings),
+                JSON.stringify(
+                    mergeDeepRight(
+                        appSettings, {
+                            path: { local: localPath, remote: remotePath }
+                        }
+                    )
+                )
+            )
+        }
+    }, [remotePath, localPath])
 
     const openLocal = (path: string) => {
         window.f5.copy(
@@ -78,9 +105,9 @@ export default function Workspace({onChange}: Props) {
                 const {id, settings} = connection
                 setShowConnections(false)
                 setConnectionId(id)
-                setLocalPath(path => settings.paths.local ?? path)
-                setRemotePath(settings.paths.remote!)
-                setConnectionSettings({ ...settings, path })
+                setLocalPath(path => settings.path.local ?? path)
+                setRemotePath(settings.path.remote!)
+                setConnectionSettings({ ...settings, file: path })
             }
         })
     }
@@ -134,8 +161,9 @@ export default function Workspace({onChange}: Props) {
                     window.f5.disconnect(connectionId); 
                     setConnectionId(null)
                     setConnectionSettings(null)
+                    setLocalPath(appSettings.path?.local ?? appSettings.home)
+                    setRemotePath(appSettings.path?.remote ?? appSettings.home)
                     setShowConnections(true)
-                    setRemotePath(appSettings.connections)
                 }
             }
         ] : [])
@@ -155,7 +183,7 @@ export default function Workspace({onChange}: Props) {
             disabled: false,
             onClick: () => {
                 setShowConnections(false)
-                setRemotePath(appSettings.home)
+                setRemotePath(appSettings.path?.remote ?? appSettings.home)
             }
         }
     ], [remoteToolbar]);
@@ -203,8 +231,6 @@ export default function Workspace({onChange}: Props) {
             right = {
                 showConnections ? 
                     <Connections
-                        path={remotePath} 
-                        onChange={setRemotePath} 
                         onSelect={paths => setRemoteSelected(paths)}
                         connect={connect}
                         toolbar={connectionsToolbar}

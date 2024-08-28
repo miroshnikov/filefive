@@ -43,9 +43,9 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
                 local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
                 remote: explorerSettings(attributes, config.layout?.remote)
             },
-            paths: {
-                local: config.paths?.local,
-                remote: config.paths?.remote ?? await Connection.get(id).pwd()
+            path: {
+                local: config.path?.local,
+                remote: config.path?.remote ?? await Connection.get(id).pwd()
             }
         }
         return { id, settings }

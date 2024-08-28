@@ -19,7 +19,7 @@ export default async function (path: string, content: string) {
             local: getLayout(settings.layout.local),
             remote: getLayout(settings.layout.remote)
         },
-        paths: settings.paths
+        path: settings.path
     }
     await writeFile(path, JSON.stringify({ ...JSON.parse(await read(path)), ...config }))
 }

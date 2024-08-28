@@ -56,12 +56,12 @@ export interface ConnectionConfig {
     port: number
     user: string
     layout?: Twofold<ExplorerConfig>
-    paths?: Twofold<Path|undefined>
+    path?: Twofold<Path|undefined>
 }
 
 export interface AppConfig {
     layout?: Twofold<ExplorerConfig>
-    paths?: Twofold<Path|undefined>
+    path?: Twofold<Path|undefined>
 }
 
 
@@ -75,15 +75,15 @@ export interface ConnectionSettings {
     name: string
     attributes: FileAttributes
     layout: Twofold<ExplorerSettings>
-    paths: Twofold<Path|undefined>
+    path: Twofold<Path|undefined>
 }
 
 export interface AppSettings {
     home: Path
     settings: Path
     connections: Path
-    paths: Twofold<Path|undefined>
     layout: Twofold<ExplorerSettings>
+    path: Twofold<Path|undefined>
 }
 
 
