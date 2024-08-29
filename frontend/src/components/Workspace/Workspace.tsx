@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import Split from '../Split/Split'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
@@ -27,8 +27,8 @@ interface Props {
 export default function Workspace({onChange}: Props) {
     const appSettings = useContext(AppSettingsContext)
 
-    const [connectionId, setConnectionId] = useState<ConnectionID|null>(null)
-    const [connectionSettings, setConnectionSettings] = useState<ConnectionSettings & {file: string}>(null)
+    const [connection, setConnection] = 
+        useState<ConnectionSettings & {id: ConnectionID, file: string}>(null)
     const [localPath, setLocalPath] = useState(appSettings.path?.local ?? appSettings.home)
     const [remotePath, setRemotePath] = useState(appSettings.connections)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
@@ -41,18 +41,18 @@ export default function Workspace({onChange}: Props) {
     }, [])
 
     useEffect(
-        () => onChange(connectionId, connectionSettings?.name, localPath, remotePath), 
-        [connectionId, connectionSettings, localPath, remotePath]
+        () => onChange(connection?.id, connection?.name, localPath, remotePath), 
+        [connection?.id, connection, localPath, remotePath]
     )
     
     useEffect(() => {
-        if (connectionSettings) {
+        if (connection) {
             window.f5.write(
-                createURI(LocalFileSystemID, connectionSettings.file), 
-                JSON.stringify(connectionSettings)
+                createURI(LocalFileSystemID, connection.file), 
+                JSON.stringify(connection)
             )
         }
-    }, [connectionSettings])
+    }, [connection])
 
     const updateSettings = (settings: Pick<AppSettings, 'layout'>) => {
         window.f5.write(
@@ -62,13 +62,16 @@ export default function Workspace({onChange}: Props) {
     }
 
     useEffectOnUpdate(() => {
-        if (connectionId) {
+        if (connection) {
             window.f5.write(
-                createURI(LocalFileSystemID, connectionSettings.file), 
+                createURI(LocalFileSystemID, connection.file), 
                 JSON.stringify(
                     mergeDeepRight(
-                        connectionSettings, {
-                            path: {  local: localPath, remote: remotePath }
+                        connection, {
+                            path: { 
+                                local: localPath, 
+                                remote: showConnections ? connection.path.remote : remotePath 
+                            }
                         }
                     )
                 )
@@ -93,13 +96,13 @@ export default function Workspace({onChange}: Props) {
     const openLocal = (path: string) => {
         window.f5.copy(
             [LocalFileSystemID + path] as URI[], 
-            (connectionId ?? LocalFileSystemID) + remotePath as URI
+            (connection?.id ?? LocalFileSystemID) + remotePath as URI
         )
     }
 
     const openRemote = (path: string) => {
         window.f5.copy(
-            [(connectionId ?? LocalFileSystemID) + path] as URI[], 
+            [(connection?.id ?? LocalFileSystemID) + path] as URI[], 
             LocalFileSystemID + localPath as URI
         )  
     }
@@ -107,24 +110,23 @@ export default function Workspace({onChange}: Props) {
     const connect = (path: string) => {
         window.f5.connect(path).then(connection => {
             if (connection) {
-                const {id, settings} = connection
                 setShowConnections(false)
-                setConnectionId(id)
+                const {id, settings} = connection
+                setConnection({ ...settings, id, file: path })
                 setLocalPath(path => settings.path.local ?? path)
                 setRemotePath(settings.path.remote!)
-                setConnectionSettings({ ...settings, file: path })
             }
         })
     }
 
-    const localToolbar = useMemo<ToolbarItem[]>(() => [
+    const localToolbar: ToolbarItem[] = [
         {
             id: 'Copy',
-            icon: connectionId ? 'upload' : 'file_copy',
+            icon: connection ? 'upload' : 'file_copy',
             disabled: !localSelected.length,
             onClick: () => window.f5.copy(
                 localSelected.map(path => LocalFileSystemID + path) as URI[], 
-                (connectionId ?? LocalFileSystemID) + remotePath as URI
+                (connection?.id ?? LocalFileSystemID) + remotePath as URI
             )
         },
         {
@@ -133,15 +135,15 @@ export default function Workspace({onChange}: Props) {
             disabled: !localSelected.length,
             onClick: () => window.f5.remove(localSelected.map(path => createURI(LocalFileSystemID, path)), false)
         }
-    ], [localSelected, remotePath])
+    ]
 
-    const remoteToolbar = useMemo<ToolbarItem[]>(() => [
+    const remoteToolbar: ToolbarItem[] = [
         {
             id: 'Copy',
-            icon: connectionId ? 'download' : 'file_copy',
+            icon: connection ? 'download' : 'file_copy',
             disabled: !remoteSelected.length,
             onClick: () => window.f5.copy(
-                remoteSelected.map(path => (connectionId ?? LocalFileSystemID) + path) as URI[], 
+                remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), 
                 createURI(LocalFileSystemID, localPath)
             )
         },
@@ -149,49 +151,66 @@ export default function Workspace({onChange}: Props) {
             id: 'Delete',
             icon: 'delete',
             disabled: !remoteSelected.length,
-            onClick: () => window.f5.remove(remoteSelected.map(path => createURI(connectionId ?? LocalFileSystemID, path)), false)
+            onClick: () => window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
         },
-        ...(connectionId ? [
+        ...(connection ? [
             {
                 id: 'Refresh',
                 icon: 'refresh',
                 disabled: false,
-                onClick: () => window.f5.refresh(createURI(connectionId, remotePath))
+                onClick: () => window.f5.refresh(createURI(connection.id, remotePath))
             },
             {
                 id: 'Disconnect',
                 icon: 'close',
                 disabled: false,
                 onClick: () => { 
-                    window.f5.disconnect(connectionId); 
-                    setConnectionId(null)
-                    setConnectionSettings(null)
+                    window.f5.disconnect(connection.id); 
+                    setConnection(null)
                     setLocalPath(appSettings.path?.local ?? appSettings.home)
-                    setRemotePath(appSettings.path?.remote ?? appSettings.home)
+                    setRemotePath(appSettings.connections)
                     setShowConnections(true)
                 }
             }
         ] : [])
-    ], [remoteSelected, localPath, connectionId])
+    ]
 
-    const connectionsToolbar = useMemo<ToolbarItem[]>(() => [
+    const connectionsToolbar: ToolbarItem[] = [
         {
             id: 'Connect',
             icon: 'power_settings_new',
             disabled: remoteSelected.length != 1,
             onClick: () => connect(remoteSelected[0])
         },
-        ...remoteToolbar,
+        {
+            id: 'Copy',
+            icon: 'file_copy',
+            disabled: !remoteSelected.length,
+            onClick: () => window.f5.copy(
+                remoteSelected.map(path => createURI(LocalFileSystemID, path)), 
+                createURI(LocalFileSystemID, localPath)
+            )
+        },
+        {
+            id: 'Delete',
+            icon: 'delete',
+            disabled: !remoteSelected.length,
+            onClick: () => window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
+        },
         {
             id: 'Close',
             icon: 'close',
             disabled: false,
             onClick: () => {
                 setShowConnections(false)
-                setRemotePath(appSettings.path?.remote ?? appSettings.home)
+                setRemotePath( 
+                    connection ? 
+                        (connection.path?.remote ?? connection.pwd) : 
+                        (appSettings.path?.remote ?? appSettings.home) 
+                    )
             }
         }
-    ], [remoteToolbar]);
+    ]
 
     const fileContextMenu = (remote = true) => (file: URI, dir: boolean) => {
         const {id, path} = parseURI(file)
@@ -209,12 +228,12 @@ export default function Workspace({onChange}: Props) {
         command$.subscribe(cmd => {
             switch (cmd) {
                 case CommandID.Connections: {
-                    console.log('show connections')
+                    setShowConnections(true)
+                    setRemotePath(appSettings.connections)
                 }
             }
         })
     )
-
 
     return (<>
         <Split 
@@ -223,7 +242,7 @@ export default function Workspace({onChange}: Props) {
                     <Explorer 
                         icon='computer'
                         connection={LocalFileSystemID}
-                        settings={connectionSettings?.layout.local ?? appSettings.layout.local}
+                        settings={connection?.layout.local ?? appSettings.layout.local}
                         path={localPath} 
                         fixedRoot={'/'}
                         onChange={setLocalPath} 
@@ -231,8 +250,8 @@ export default function Workspace({onChange}: Props) {
                         onOpen={openLocal}
                         onMenu={fileContextMenu(false)}
                         onSettingsChange={changed => 
-                            connectionId ?
-                                setConnectionSettings(settings => assocPath(['layout', 'local'], {...settings.layout.local, ...changed}, settings)):
+                            connection ?
+                                setConnection(connection => assocPath(['layout', 'local'], {...connection.layout.local, ...changed}, connection)):
                                 updateSettings(assocPath(['layout', 'local'], {...appSettings.layout.remote, ...changed}, appSettings))
                         }
                         contextMenu={menu}
@@ -253,11 +272,11 @@ export default function Workspace({onChange}: Props) {
                         toolbar={connectionsToolbar}
                         tabindex={2}
                     /> : 
-                    connectionId ? 
+                    connection ? 
                         <Explorer
                             icon='cloud'
-                            connection={connectionId}
-                            settings={connectionSettings.layout.remote}
+                            connection={connection.id}
+                            settings={connection.layout.remote}
                             path={remotePath}
                             fixedRoot={'/'}
                             onChange={setRemotePath} 
@@ -265,7 +284,7 @@ export default function Workspace({onChange}: Props) {
                             onOpen={openRemote}
                             onMenu={fileContextMenu()}
                             onSettingsChange={changed =>
-                                setConnectionSettings(settings => assocPath(['layout', 'remote'], {...settings.layout.remote, ...changed}, settings))
+                                setConnection(connection => assocPath(['layout', 'remote'], {...connection.layout.remote, ...changed}, connection))
                             }
                             contextMenu={menu}
                             toolbar={remoteToolbar}

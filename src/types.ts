@@ -73,6 +73,7 @@ export interface ExplorerSettings {
 
 export interface ConnectionSettings {
     name: string
+    pwd: string
     attributes: FileAttributes
     layout: Twofold<ExplorerSettings>
     path: Twofold<Path|undefined>

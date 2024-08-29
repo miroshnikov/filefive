@@ -17,6 +17,4 @@ export const commands: Command[] = [
     { id: CommandID.SelectAll },
     { id: CommandID.NewDir },
     { id: CommandID.NewFile }
-] 
-
-// https://winscp.net/eng/docs/ui_commander_key
+]

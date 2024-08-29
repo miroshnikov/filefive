@@ -62,9 +62,15 @@
     }
     > span:last-child {
         display: flex;
-        gap: .6em;
+        gap: 1em;
         > button {
             font-size: 1.2rem;
+            cursor: pointer;
+            opacity: .6;
+            &:hover {
+                opacity: 1;
+            }
+            transition: all .6s;
         }
     }
 }

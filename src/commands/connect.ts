@@ -36,16 +36,18 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
     await Password.get(id)
     try {
         const attributes = await Connection.open(config.scheme, config.user, config.host, config.port)
+        const pwd = await Connection.get(id).pwd()
         const settings: ConnectionSettings = {
             name: parse(file).name,
             attributes,
+            pwd, 
             layout: {
                 local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
                 remote: explorerSettings(attributes, config.layout?.remote)
             },
             path: {
                 local: config.path?.local,
-                remote: config.path?.remote ?? await Connection.get(id).pwd()
+                remote: config.path?.remote ?? pwd
             }
         }
         return { id, settings }
