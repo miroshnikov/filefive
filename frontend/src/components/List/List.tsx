@@ -200,6 +200,10 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     useSubscribe(
         () => command$.pipe(filter(() => isActive.current)).subscribe(cmd => {
             switch (cmd) {
+                case CommandID.SelectAll: {
+                    setSelected(items.map(prop('path')))
+                    break
+                }
                 case CommandID.NewDir: 
                 case CommandID.NewFile: {
                     const inDir = target ? (dirOf(target, items) || root) : root

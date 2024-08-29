@@ -64,6 +64,8 @@ interface ExplorerProps {
     onSettingsChange?: (settings: Partial<ExplorerSettings>) => void
     toolbar: ToolbarItem[]
     tabindex: number
+    onFocus?: () => {}
+    onBlur?: () => {}
     contextMenu?: MenuItem[]
     onNewFile?: (uri: URI) => void
 }
@@ -82,6 +84,8 @@ export default function Explorer ({
     onSettingsChange,
     toolbar, 
     tabindex,
+    onFocus,
+    onBlur,
     contextMenu = [],
     onNewFile
 }: ExplorerProps) {
@@ -238,7 +242,7 @@ export default function Explorer ({
         })
     }
 
-    return <div className={styles.root}>
+    return <div className={styles.root} onFocus={onFocus} onBlur={onBlur}>
         <header>
             {toolbar.length ? 
                 <Toolbar items={toolbar} /> : 

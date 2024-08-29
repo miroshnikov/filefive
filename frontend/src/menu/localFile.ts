@@ -1,11 +1,23 @@
-import { Path, LocalFileSystemID } from '../../../src/types'
-import { createURI } from '../utils/URI'
+import { Path, LocalFileSystemID, URI } from '../../../src/types'
+import { createURI, parseURI } from '../utils/URI'
 import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
 
 
-export default function (path: Path, selected: Path[]): MenuItem[] {
+export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] {
+    const { id } = parseURI(copyTo)
     return [
+        {
+            id: 'copy-files',
+            label: id == LocalFileSystemID ? 'Copy' : 'Upload',
+            click: () => {
+                window.f5.copy(
+                    (selected.includes(path) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
+                    copyTo
+                )
+            },
+            separator: true
+        },
         {
             id: 'copy-path',
             label: 'Copy Path',
@@ -29,7 +41,7 @@ export default function (path: Path, selected: Path[]): MenuItem[] {
         
         {
             id: 'vscode',
-            label: "Edit in VSCode",
+            label: "Open in VS Code",
             click: () => window.f5.open(`vscode://file${path}`)
             // open files through protocol links
             // vscode://file/<path>

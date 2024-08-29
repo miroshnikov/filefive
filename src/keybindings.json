@@ -18,5 +18,9 @@
     {
         "key": "meta+a",
         "command": "select-all"
+    },
+    {
+        "key": "alt+r",
+        "command": "refresh"
     }
 ]

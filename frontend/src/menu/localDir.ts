@@ -1,13 +1,25 @@
-import { Path, LocalFileSystemID } from '../../../src/types'
-import { createURI } from '../utils/URI'
+import { Path, LocalFileSystemID, URI } from '../../../src/types'
+import { createURI, parseURI } from '../utils/URI'
 import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'
 
 
-export default function (path: Path, selected: Path[]): MenuItem[] {
+export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] {
+    const { id } = parseURI(copyTo)
     return [
+        {
+            id: 'copy-files',
+            label: id == LocalFileSystemID ? 'Copy' : 'Upload',
+            click: () => {
+                window.f5.copy(
+                    (selected.includes(path) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
+                    copyTo
+                )
+            },
+            separator: true
+        },
         {
             id: 'new-dir',
             label: 'New Folder...',
@@ -33,6 +45,17 @@ export default function (path: Path, selected: Path[]): MenuItem[] {
         },
 
         {
+            id: 'vscode',
+            label: "Open in VS Code",
+            click: () => window.f5.open(`vscode://file${path}`)
+        },
+        {
+            id: 'open',
+            label: 'Open in Default App',
+            click: () => window.f5.open(path),
+            separator: true
+        },
+        {
             id: 'rename',
             label: 'Rename...',
             click: () => {}
@@ -42,7 +65,7 @@ export default function (path: Path, selected: Path[]): MenuItem[] {
             label: 'Delete',
             click: () => {
                 window.f5.remove(
-                    ((selected.length && selected.includes(path)) ? selected : [path]).map(p => createURI(LocalFileSystemID, path)),
+                    ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
                     false
                 )
             }

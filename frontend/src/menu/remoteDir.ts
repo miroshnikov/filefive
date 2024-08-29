@@ -2,13 +2,23 @@ import { Path, ConnectionID } from '../../../src/types'
 import { createURI } from '../utils/URI'
 import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
-import { command$ } from '../observables/command'
 import { CommandID } from '../commands'
+import { command$ } from '../observables/command'
 
 
 export default function (id: ConnectionID, path: Path, selected: Path[]): MenuItem[] {
     return [
-        // Download
+        {
+            id: 'new-dir',
+            label: 'New Folder...',
+            click: () => command$.next(CommandID.NewDir)
+        },
+        {
+            id: 'new-file',
+            label: 'New File...',
+            click: () => command$.next(CommandID.NewFile),
+            separator: true
+        },
 
         {
             id: 'copy-path',
@@ -18,16 +28,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[]): MenuIt
         {
             id: 'copy-name',
             label: 'Copy Name',
-            click: () => navigator.clipboard.writeText(basename(path))
-        },
-        {
-            id: 'copy-name-no-ext',
-            label: 'Copy Name w/o Extension',
-            click: () => { 
-                const name = basename(path)
-                const dot = name.lastIndexOf('.')
-                navigator.clipboard.writeText(name.substring(0, dot > 0 ? dot : name.length)) 
-            },
+            click: () => navigator.clipboard.writeText(basename(path)),
             separator: true
         },
 
@@ -54,4 +55,3 @@ export default function (id: ConnectionID, path: Path, selected: Path[]): MenuIt
         }
     ]
 }
-

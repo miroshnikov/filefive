@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect, useContext, useRef } from "react"
 import Split from '../Split/Split'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
@@ -8,7 +8,9 @@ import { createURI, parseURI } from '../../utils/URI'
 import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
+import remoteFileMenu from '../../menu/remoteFile'
 import localDirMenu from '../../menu/localDir'
+import remoteDirMenu from '../../menu/remoteDir'
 import { useEffectOnUpdate, useSubscribe } from '../../hooks'
 import { assocPath, mergeDeepRight } from 'ramda'
 import { command$ } from '../../observables/command'
@@ -35,6 +37,8 @@ export default function Workspace({onChange}: Props) {
     const [remoteSelected, setRemoteSelected] = useState<Path[]>([])
     const [showConnections, setShowConnections] = useState(true)
     const [menu, setMenu] = useState<MenuItem[]>([])
+
+    const focused = useRef<'local'|'remote'|null>(null)
  
     useEffect(() => {
         window.document.body.setAttribute('theme', 'one-dark')
@@ -125,15 +129,15 @@ export default function Workspace({onChange}: Props) {
             icon: connection ? 'upload' : 'file_copy',
             disabled: !localSelected.length,
             onClick: () => window.f5.copy(
-                localSelected.map(path => LocalFileSystemID + path) as URI[], 
-                (connection?.id ?? LocalFileSystemID) + remotePath as URI
+                localSelected.map(path => createURI(LocalFileSystemID, path)), 
+                createURI(connection?.id ?? LocalFileSystemID, remotePath)
             )
         },
         {
             id: 'Delete',
             icon: 'delete',
             disabled: !localSelected.length,
-            onClick: () => window.f5.remove(localSelected.map(path => createURI(LocalFileSystemID, path)), false)
+            onClick: () => command$.next(CommandID.Delete)
         }
     ]
 
@@ -151,7 +155,7 @@ export default function Workspace({onChange}: Props) {
             id: 'Delete',
             icon: 'delete',
             disabled: !remoteSelected.length,
-            onClick: () => window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
+            onClick: () => command$.next(CommandID.Delete)
         },
         ...(connection ? [
             {
@@ -215,12 +219,16 @@ export default function Workspace({onChange}: Props) {
     const fileContextMenu = (remote = true) => (file: URI, dir: boolean) => {
         const {id, path} = parseURI(file)
         if (id == LocalFileSystemID) {
+            const copyTo = remote ? createURI(LocalFileSystemID, localPath) : createURI(connection?.id ?? LocalFileSystemID, remotePath)
             setMenu(dir ? 
-                localDirMenu(path, remote ? remoteSelected : localSelected) : 
-                localFileMenu(path, remote ? remoteSelected : localSelected)
+                localDirMenu(path, remote ? remoteSelected : localSelected, copyTo) : 
+                localFileMenu(path, remote ? remoteSelected : localSelected, copyTo)
             )
         } else {
-            setMenu([])
+            setMenu(dir ? 
+                remoteDirMenu(id, path, remoteSelected) : 
+                remoteFileMenu(id, path, remoteSelected)
+            )
         }
     }
 
@@ -230,9 +238,24 @@ export default function Workspace({onChange}: Props) {
                 case CommandID.Connections: {
                     setShowConnections(true)
                     setRemotePath(appSettings.connections)
+                    break
+                }
+                case CommandID.Refresh: {
+                    if (connection) {
+                        window.f5.refresh(createURI(connection.id, remotePath))
+                    }
+                    break
+                }
+                case CommandID.Delete: {
+                    if (focused.current) {
+                        focused.current == 'local' ?
+                            window.f5.remove(localSelected.map(path => createURI(LocalFileSystemID, path)), false) :
+                            window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
+                    }
                 }
             }
-        })
+        }),
+        [appSettings, connection, localSelected, remoteSelected]
     )
 
     return (<>
@@ -257,6 +280,8 @@ export default function Workspace({onChange}: Props) {
                         contextMenu={menu}
                         toolbar={localToolbar}
                         tabindex={1}
+                        onFocus={() => focused.current = 'local'}
+                        onBlur={() => focused.current = null}
                     /> : 
                     <div className="fill-center">
                         <Spinner radius="2em" />
@@ -289,6 +314,8 @@ export default function Workspace({onChange}: Props) {
                             contextMenu={menu}
                             toolbar={remoteToolbar}
                             tabindex={2}
+                            onFocus={() => focused.current = 'remote'}
+                            onBlur={() => focused.current = null}
                         /> :
                         <Explorer 
                             icon='computer'
@@ -306,6 +333,8 @@ export default function Workspace({onChange}: Props) {
                             contextMenu={menu}
                             toolbar={remoteToolbar}
                             tabindex={2}
+                            onFocus={() => focused.current = 'remote'}
+                            onBlur={() => focused.current = null}
                         />
             }
         />

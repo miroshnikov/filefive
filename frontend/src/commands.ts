@@ -4,7 +4,8 @@ export enum CommandID {
     NewDir = 'new-dir',
     NewFile = 'new-file',
     Settings = 'settings',
-    Connections = 'connections'
+    Connections = 'connections',
+    Refresh = 'refresh'
 }
 
 export interface Command {

@@ -20,7 +20,7 @@ export default function (path: Path, selected: Path[]): MenuItem[] {
             label: 'New Folder...',
             click: () => command$.next(CommandID.NewDir)
         },
-        ...localDir(path, selected).slice(2)    
+        // ...localDir(path, selected).slice(2)     TODO
     ]
     
 }
