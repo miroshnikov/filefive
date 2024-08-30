@@ -47,7 +47,7 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         {
             id: 'vscode',
             label: "Open in VS Code",
-            click: () => window.f5.open(`vscode://file${path}`)
+            click: () => window.f5.open(`vscode://file/${path}`)
         },
         {
             id: 'open',

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react"
+import classNames from 'classnames'
 import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
 import { parseURI, createURI } from '../../utils/URI'
 import { dirname, descendantOf, join } from '../../utils/path'
@@ -90,14 +91,13 @@ export default function Explorer ({
     onNewFile
 }: ExplorerProps) {
     const [columns, setColumns] = useState<Columns>([])
-
     const [root, setRoot] = useState<string>(path)
     const [parent, setParent] = useState<string>(null)
     const [files, setFiles] = useState<Items>([])
-
     const selected = useRef<string[]>([])
     const watched = useRef<string[]>([])
     const folders = useRef<Record<string, Files>>({})
+    const [focused, setFocused] = useState(false)
     
     const expanded = useRef<string[]>([])
 
@@ -242,7 +242,7 @@ export default function Explorer ({
         })
     }
 
-    return <div className={styles.root} onFocus={onFocus} onBlur={onBlur}>
+    return <div className={classNames(styles.root, {focused})} onFocus={() => {setFocused(true); onFocus?.()}} onBlur={() => {setFocused(false); onBlur?.()}}>
         <header>
             {toolbar.length ? 
                 <Toolbar items={toolbar} /> : 

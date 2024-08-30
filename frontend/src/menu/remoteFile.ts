@@ -1,4 +1,4 @@
-import { Path, ConnectionID } from '../../../src/types'
+import { Path, ConnectionID, LocalFileSystemID } from '../../../src/types'
 import { createURI } from '../utils/URI'
 import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
@@ -6,10 +6,20 @@ import { command$ } from '../observables/command'
 import { CommandID } from '../commands'
 
 
-export default function (id: ConnectionID, path: Path, selected: Path[]): MenuItem[] {
+export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path): MenuItem[] {
     return [
-        // Download
-
+        {
+            id: 'download',
+            label: 'Download',
+            click: () => {
+                window.f5.copy(
+                    (selected.includes(path) ? selected : [path]).map(path => createURI(id, path)),
+                    createURI(LocalFileSystemID, copyTo)
+                )
+            },
+            separator: true
+        },
+        
         {
             id: 'copy-path',
             label: 'Copy Path',

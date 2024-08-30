@@ -21,7 +21,5 @@ export default async function (path: string, content: string) {
         },
         path: settings.path
     }
-    console.log('save to', path, config)
-    console.log('existing', await read(path))
     await writeFile(path, JSON.stringify({ ...JSON.parse(await read(path)), ...config }))
 }

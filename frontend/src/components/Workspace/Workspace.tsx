@@ -226,8 +226,8 @@ export default function Workspace({onChange}: Props) {
             )
         } else {
             setMenu(dir ? 
-                remoteDirMenu(id, path, remoteSelected) : 
-                remoteFileMenu(id, path, remoteSelected)
+                remoteDirMenu(id, path, remoteSelected, localPath) : 
+                remoteFileMenu(id, path, remoteSelected, localPath)
             )
         }
     }
