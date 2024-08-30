@@ -221,7 +221,7 @@ export default function Workspace({onChange}: Props) {
         if (id == LocalFileSystemID) {
             const copyTo = remote ? createURI(LocalFileSystemID, localPath) : createURI(connection?.id ?? LocalFileSystemID, remotePath)
             setMenu(dir ? 
-                localDirMenu(path, remote ? remoteSelected : localSelected, copyTo) : 
+                localDirMenu(path, remote ? remoteSelected : localSelected, copyTo, path == localPath) : 
                 localFileMenu(path, remote ? remoteSelected : localSelected, copyTo)
             )
         } else {

@@ -48,7 +48,10 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
 
     const onContextMenu = (file: URI, dir: boolean) => {
         const { path } = parseURI(file)
-        setMenu(dir ? dirMenu(path, selected) : fileMenu(path, selected, () => connect(path)))
+        setMenu(dir ? 
+            dirMenu(path, selected, path == appSettings.connections) : 
+            fileMenu(path, selected, () => connect(path))
+        )
     }
 
     return <>

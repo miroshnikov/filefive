@@ -8,7 +8,7 @@ export default function (path: Path, selected: Path[], connect: () => void): Men
     return [
         {
             id: 'connect',
-            label: 'Connect',
+            label: 'Connect...',
             click: () => connect(),
             separator: true
         },

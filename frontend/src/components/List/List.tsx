@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect, forwardRef, useCallback } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
-import { FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
+import { URI, FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
 import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith, update, move } from 'ramda'
 import { filter } from 'rxjs/operators'
-import { depth, dirname, parse, childOf } from '../../utils/path'
+import { depth, dirname, parse, childOf, join } from '../../utils/path'
 import { useSet, useSubscribe, useEvent } from '../../hooks'
 import setRef from '../../ui/setRef'
 import { CommandID } from '../../commands'
@@ -102,15 +102,19 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
             if (i < 0 && creating.in == root) {
                 i = 0
             }
-            const parent = items[i]
-            if (i >= 0) {
-                items.splice(creating.in == root ? 0 : i+1, 0, {
-                    ...parent, 
-                    dir: creating.dir,
-                    FileStateAttr: FileState.Creating, 
-                    name: '' 
-                })
+            if (i < 0) {
+                return
             }
+            const newItem = {
+                URI: '' as URI,
+                path: items[i]?.path ?? join(root, 'new'),
+                name: '',
+                dir: creating.dir,
+                size: 0,
+                modified: new Date(),
+                FileStateAttr: FileState.Creating
+            }
+            items.splice(creating.in == root ? 0 : i+1, 0, newItem)
             return [...items]
         }
         return items

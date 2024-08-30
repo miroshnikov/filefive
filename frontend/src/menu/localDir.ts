@@ -6,20 +6,22 @@ import { CommandID } from '../commands'
 import { command$ } from '../observables/command'
 
 
-export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] {
+export default function (path: Path, selected: Path[], copyTo: URI, isRoot: boolean): MenuItem[] {
     const { id } = parseURI(copyTo)
     return [
-        {
-            id: 'copy-files',
-            label: id == LocalFileSystemID ? 'Copy' : 'Upload',
-            click: () => {
-                window.f5.copy(
-                    (selected.includes(path) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
-                    copyTo
-                )
+        ...(isRoot ? [] : [           
+            {
+                id: 'copy-files',
+                label: id == LocalFileSystemID ? 'Copy' : 'Upload',
+                click: () => {
+                    window.f5.copy(
+                        (selected.includes(path) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
+                        copyTo
+                    )
+                },
+                separator: true
             },
-            separator: true
-        },
+        ]),
         {
             id: 'new-dir',
             label: 'New Folder...',
@@ -51,24 +53,26 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         },
         {
             id: 'open',
-            label: 'Open in Default App',
+            label: 'Show in Finder',
             click: () => window.f5.open(path),
-            separator: true
+            separator: !isRoot
         },
-        {
-            id: 'rename',
-            label: 'Rename...',
-            click: () => {}
-        },
-        {
-            id: 'delete',
-            label: 'Delete',
-            click: () => {
-                window.f5.remove(
-                    ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
-                    false
-                )
+        ...(isRoot ? [] : [ 
+            {
+                id: 'rename',
+                label: 'Rename...',
+                click: () => {}
+            },
+            {
+                id: 'delete',
+                label: 'Delete',
+                click: () => {
+                    window.f5.remove(
+                        ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
+                        false
+                    )
+                }
             }
-        }
+        ])
     ]
 }
