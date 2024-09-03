@@ -23,12 +23,17 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'copy-path',
             label: 'Copy Path',
-            click: () => navigator.clipboard.writeText(path) 
+            click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(LocalFileSystemID, path) })
+        },
+        {
+            id: 'copy-relative-path',
+            label: 'Copy Relative Path',
+            click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: 'copy-name',
             label: 'Copy Name',
-            click: () => navigator.clipboard.writeText(basename(path))
+            click: () => command$.next({ id: CommandID.CopyName, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: 'copy-name-no-ext',
@@ -60,7 +65,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'refresh',
             label: 'Refresh',
-            click: () => command$.next(CommandID.Refresh)
+            click: () => command$.next({id: CommandID.Refresh})
         }
     ]
 }

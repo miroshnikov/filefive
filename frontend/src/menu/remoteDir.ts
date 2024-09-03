@@ -23,12 +23,12 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'new-dir',
             label: 'New Folder...',
-            click: () => command$.next(CommandID.NewDir)
+            click: () => command$.next({id: CommandID.NewDir})
         },
         {
             id: 'new-file',
             label: 'New File...',
-            click: () => command$.next(CommandID.NewFile),
+            click: () => command$.next({id: CommandID.NewFile}),
             separator: true
         },
 
@@ -64,7 +64,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'refresh',
             label: 'Refresh',
-            click: () => command$.next(CommandID.Refresh)
+            click: () => command$.next({id: CommandID.Refresh})
         }
     ]
 }

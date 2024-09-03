@@ -22,27 +22,33 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
                 separator: true
             },
         ]),
+
         {
             id: 'new-dir',
             label: 'New Folder...',
-            click: () => command$.next(CommandID.NewDir)
+            click: () => command$.next({id: CommandID.NewDir})
         },
         {
             id: 'new-file',
             label: 'New File...',
-            click: () => command$.next(CommandID.NewFile),
+            click: () => command$.next({id: CommandID.NewFile}),
             separator: true
         },
 
         {
             id: 'copy-path',
             label: 'Copy Path',
-            click: () => navigator.clipboard.writeText(path) 
+            click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(LocalFileSystemID, path) })
+        },
+        {
+            id: 'copy-relative-path',
+            label: 'Copy Relative Path',
+            click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: 'copy-name',
             label: 'Copy Name',
-            click: () => navigator.clipboard.writeText(basename(path)),
+            click: () => command$.next({ id: CommandID.CopyName, uri: createURI(LocalFileSystemID, path) }),
             separator: true
         },
 
@@ -57,11 +63,12 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
             click: () => window.f5.open(path),
             separator: !isRoot
         },
+        
         ...(isRoot ? [] : [ 
             {
                 id: 'rename',
                 label: 'Rename...',
-                click: () => {}
+                click: () => command$.next({ id: CommandID.Rename, uri: createURI(LocalFileSystemID, path) })
             },
             {
                 id: 'delete',

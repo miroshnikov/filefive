@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect, KeyboardEvent } from "react"
 import styles from './EditFileName.less'
 import classNames from 'classnames'
+import { parse } from '../../utils/path'
+
 
 interface Props {
     name: string
@@ -13,7 +15,12 @@ export default function ({name, sublings, onOk, onCancel}: Props) {
     const inputEl = useRef(null)
     const [newName, setNewName] = useState(name)
     const [error, setError] = useState(false)
-    useEffect(() => inputEl.current?.focus(), [])
+
+    useEffect(() => {
+        inputEl.current?.focus()
+        const woExt = parse(name).name
+        inputEl.current?.setSelectionRange(0, woExt.length)
+    }, [])
 
     const onChange = (name: string) => {
         setNewName(name)

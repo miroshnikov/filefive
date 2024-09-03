@@ -4,13 +4,14 @@ import styles from './List.less'
 import { URI, FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
 import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith, update, move } from 'ramda'
 import { filter } from 'rxjs/operators'
-import { depth, dirname, parse, childOf, join } from '../../utils/path'
+import { depth, dirname, parse, childOf, join, basename } from '../../utils/path'
 import { useSet, useSubscribe, useEvent } from '../../hooks'
 import setRef from '../../ui/setRef'
 import { CommandID } from '../../commands'
 import { command$ } from '../../observables/command'
 import EditFileName from '../EditFileName/EditFileName'
 import debounce from '../../utils/debounce'
+import { parseURI } from "../../utils/URI"
 
 
 export enum ColumnType {
@@ -65,7 +66,8 @@ interface ListProps {
     onOpen: (path: string) => void
     onDrop: (URIs: string[], target: string, effect: DropEffect) => void
     onMenu: (path: string, dir: boolean) => void
-    onNew: (name: string, parent: Path, dir: boolean) => void
+    onNew?: (name: string, parent: Path, dir: boolean) => void
+    onRename?: (name: string, uri: URI) => void
     onSort?: (name: string) => void
     onColumnsMenu?: () => void
     onColumnsChange?: (columns: {name: string, width: number}[]) => void
@@ -75,7 +77,7 @@ interface ListProps {
 }
 
 export default forwardRef<HTMLDivElement, ListProps>(function List (
-    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onSort, onColumnsMenu, onColumnsChange, root, tabindex, parent}, 
+    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onRename, onSort, onColumnsMenu, onColumnsChange, root, tabindex, parent}, 
     fwdRef
 ) {
     const rootEl = useRef(null)
@@ -90,7 +92,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
 
     const waitForSecondClick = useRef<ReturnType<typeof setTimeout>>(null)
 
-    const [creating, createIn] = useState<{in: Path, dir: boolean}>()
+    const [creating, createIn] = useState<{in: Path, dir: boolean}>(null)
+    const [renaming, rename] = useState<URI>(null)
 
     const [dragging, setDragging] = useState(false)
     const [dropTarget, setDropTarget] = useState<string>('')
@@ -120,17 +123,32 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         return items
     }
 
-    useEffect(() => setItems(insertNewItem(files)), [files])
+    const setRenamingItem = (items: Items) => {
+        if (renaming) {
+            const item = items.find(whereEq({URI: renaming}))
+            item && (item.FileStateAttr = FileState.Renaming)
+            return [...items]
+        }
+        return items
+    }
+
+    useEffect(() => setItems(setRenamingItem(insertNewItem(files))), [files])
 
     useEffect(() => {        
         setItems(items => {
             items = items.filter(({FileStateAttr}) => FileStateAttr != FileState.Creating)
             if (creating && expanded.includes(creating.in)) {
-                insertNewItem(items)
+                return insertNewItem(items)
             }
             return items
         })
-    }, [creating]);
+    }, [creating])
+
+    useEffect(() => {
+        setItems(items =>
+            items.map(item => ({...item, FileStateAttr: item.URI == renaming ? FileState.Renaming : null }))
+        )
+    }, [renaming])
 
     useEffect(() => {
         setSelected([])
@@ -203,7 +221,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
 
     useSubscribe(
         () => command$.pipe(filter(() => isActive.current)).subscribe(cmd => {
-            switch (cmd) {
+            switch (cmd.id) {
                 case CommandID.SelectAll: {
                     setSelected(items.map(prop('path')))
                     break
@@ -213,8 +231,27 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                     const inDir = target ? (dirOf(target, items) || root) : root
                     if (inDir) {
                         !expanded.includes(inDir) && toggle(inDir);
-                        createIn({ in: inDir, dir: cmd == CommandID.NewDir })
+                        createIn({ in: inDir, dir: cmd.id == CommandID.NewDir })
                     }
+                    break
+                }
+                case CommandID.CopyPath: {
+                    const uri = cmd.uri ?? target?.URI
+                    uri && navigator.clipboard.writeText(parseURI(uri).path)
+                    break
+                }
+                case CommandID.CopyRelativePath: {
+                    const uri = cmd.uri ?? target?.URI
+                    uri && navigator.clipboard.writeText(parseURI(uri).path.substring(root.length+1))
+                    break
+                }
+                case CommandID.CopyName: {
+                    const uri = cmd.uri ?? target?.URI
+                    uri && navigator.clipboard.writeText(basename(parseURI(uri).path))
+                    break
+                }
+                case CommandID.Rename: {
+                    rename(cmd.uri ?? target.URI)
                     break
                 }
             }
@@ -392,7 +429,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                     </tr>
                 }
                 {items.map((item, i) => 
-                    item.FileStateAttr == FileState.Creating ?
+                    item.FileStateAttr == FileState.Creating || item.FileStateAttr == FileState.Renaming ?
                         <tr key='editing'>
                             <td 
                                 colSpan={columns.length + 1}
@@ -402,8 +439,12 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                                 <EditFileName 
                                     name = {item.name}
                                     sublings = {selectChildren(creating?.in, files.map(prop('path')))}
-                                    onOk = {nm => {onNew(nm, creating.in, creating.dir); createIn(undefined)}}
-                                    onCancel={() => createIn(undefined)}
+                                    onOk = {nm => {
+                                        creating ? onNew?.(nm, creating.in, creating.dir) : onRename?.(nm, renaming)
+                                        createIn(null)
+                                        rename(null)
+                                    }}
+                                    onCancel={() => { createIn(null); rename(null) }}
                                 />
                             </td>
                             <td></td>

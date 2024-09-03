@@ -20,7 +20,19 @@
         "command": "select-all"
     },
     {
-        "key": "alt+r",
+        "key": "ctrl+r",
         "command": "refresh"
+    },
+    {
+        "key": "alt+meta+c",
+        "command": "copy-path"
+    },
+    {
+        "key": "alt+meta+shift+c",
+        "command": "copy-relative-path"
+    },
+    {
+        "key": "ctrl+meta+c",
+        "command": "copy-name"
     }
 ]

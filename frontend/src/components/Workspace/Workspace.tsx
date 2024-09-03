@@ -137,7 +137,7 @@ export default function Workspace({onChange}: Props) {
             id: 'Delete',
             icon: 'delete',
             disabled: !localSelected.length,
-            onClick: () => command$.next(CommandID.Delete)
+            onClick: () => command$.next({id: CommandID.Delete})
         }
     ]
 
@@ -155,7 +155,7 @@ export default function Workspace({onChange}: Props) {
             id: 'Delete',
             icon: 'delete',
             disabled: !remoteSelected.length,
-            onClick: () => command$.next(CommandID.Delete)
+            onClick: () => command$.next({id: CommandID.Delete})
         },
         ...(connection ? [
             {
@@ -234,7 +234,7 @@ export default function Workspace({onChange}: Props) {
 
     useSubscribe(() => 
         command$.subscribe(cmd => {
-            switch (cmd) {
+            switch (cmd.id) {
                 case CommandID.Connections: {
                     setShowConnections(true)
                     setRemotePath(appSettings.connections)

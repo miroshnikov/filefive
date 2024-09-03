@@ -1,3 +1,6 @@
+import { URI } from '../../src/types'
+
+
 export enum CommandID {
     Delete = 'delete',
     SelectAll = 'select-all',
@@ -5,17 +8,19 @@ export enum CommandID {
     NewFile = 'new-file',
     Settings = 'settings',
     Connections = 'connections',
-    Refresh = 'refresh'
+    Refresh = 'refresh',
+    Rename = 'rename',
+    CopyPath = 'copy-path',
+    CopyRelativePath = 'copy-relative-path',
+    CopyName = 'copy-name'
 }
 
-export interface Command {
-    id: CommandID
-    label?: string
-}
 
-export const commands: Command[] = [
-    { id: CommandID.Delete },
-    { id: CommandID.SelectAll },
-    { id: CommandID.NewDir },
-    { id: CommandID.NewFile }
-]
+export type Command = { label?: string } & (
+    | { id: Exclude<CommandID, CommandID.Rename|CommandID.CopyPath|CommandID.CopyRelativePath|CommandID.CopyName> }
+    | { 
+        id: CommandID.Rename|CommandID.CopyPath|CommandID.CopyRelativePath|CommandID.CopyName, 
+        uri?: URI
+     } 
+)
+

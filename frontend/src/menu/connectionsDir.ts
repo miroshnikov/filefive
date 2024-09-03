@@ -12,12 +12,12 @@ export default function (path: Path, selected: Path[], isRoot: boolean): MenuIte
         {
             id: 'new-file',
             label: 'New Connection...',
-            click: () => command$.next(CommandID.NewFile),
+            click: () => command$.next({id: CommandID.NewFile}),
         },
         {
             id: 'new-dir',
             label: 'New Folder...',
-            click: () => command$.next(CommandID.NewDir),
+            click: () => command$.next({id: CommandID.NewDir}),
             separator: !isRoot
         },
         ...(isRoot ? [] : [ 

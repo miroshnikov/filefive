@@ -75,10 +75,10 @@ export default function App () {
     useEffect(() => {
         if (appSettings) {
             const onKey = (e: KeyboardEvent) => {
-                const cmd = cmdFromKey(e, appSettings.keybindings)
-                if (cmd) {
+                const id = cmdFromKey(e, appSettings.keybindings)
+                if (id) {
                     e.preventDefault()
-                    command$.next(cmd)
+                    command$.next({id})
                 }
             }
             document.addEventListener('keydown', onKey)
@@ -88,7 +88,7 @@ export default function App () {
 
     useSubscribe(() => 
         command$.subscribe(cmd => {
-            switch (cmd) {
+            switch (cmd.id) {
                 case CommandID.Settings: {
                     console.log('show settings')
                 }
@@ -117,10 +117,10 @@ export default function App () {
                     <div className={styles.toolbar}>
                         <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
                         <span>
-                            <button className="icon" onClick={() => command$.next(CommandID.Connections)}>
+                            <button className="icon" onClick={() => command$.next({id: CommandID.Connections})}>
                                 cloud_upload
                             </button>
-                            <button className="icon" onClick={() => command$.next(CommandID.Settings)}>
+                            <button className="icon" onClick={() => command$.next({id: CommandID.Settings})}>
                                 settings
                             </button>
                         </span>

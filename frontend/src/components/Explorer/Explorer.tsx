@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, useMemo } from "react"
+import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
 import classNames from 'classnames'
+import { AppSettingsContext } from '../../context/config'
 import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
 import { parseURI, createURI } from '../../utils/URI'
 import { dirname, descendantOf, join } from '../../utils/path'
@@ -90,6 +91,8 @@ export default function Explorer ({
     contextMenu = [],
     onNewFile
 }: ExplorerProps) {
+    const appSettings = useContext(AppSettingsContext)
+
     const [columns, setColumns] = useState<Columns>([])
     const [root, setRoot] = useState<string>(path)
     const [parent, setParent] = useState<string>(null)
@@ -207,6 +210,10 @@ export default function Explorer ({
         }   
     }
 
+    const rename = (name: string, uri: URI) => {
+        console.log('rename', name, uri)
+    }
+
     const onDrop = (URIs: string[], target: string, effect: DropEffect) => {
         console.log(effect, URIs, '->', connection+target)
         window.f5.copy(URIs as URI[], connection+target as URI)
@@ -266,6 +273,7 @@ export default function Explorer ({
             onDrop={onDrop}
             onMenu={(path, dir) => {setShowColumnsMenu(false); onMenu(createURI(connection, path), dir)}}
             onNew={createNew}
+            onRename={rename}
             onSort={sort}
             onColumnsMenu={() => setShowColumnsMenu(true)}
             onColumnsChange={onColumnsChange}
@@ -276,7 +284,7 @@ export default function Explorer ({
 
         {list.current &&
             <ContextMenu target={list.current}>
-                <Menu items={showColumnsMenu ? columnsMenu : contextMenu} />
+                <Menu items={showColumnsMenu ? columnsMenu : contextMenu} shortcuts={appSettings.keybindings} />
             </ContextMenu>
         }
     </div>

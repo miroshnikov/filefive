@@ -3,7 +3,7 @@ import { curry } from 'ramda'
 export let sep = '/'
 
 export function basename(path: string): string {
-    return segments(path).pop()
+    return segments(path).pop() ?? ''
 }
 
 export function dirname(path: string): string {

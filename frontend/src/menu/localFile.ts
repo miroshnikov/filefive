@@ -2,6 +2,8 @@ import { Path, LocalFileSystemID, URI } from '../../../src/types'
 import { createURI, parseURI } from '../utils/URI'
 import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
+import { CommandID } from '../commands'
+import { command$ } from '../observables/command'
 
 
 export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] {
@@ -18,15 +20,21 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
             },
             separator: true
         },
+        
         {
             id: 'copy-path',
             label: 'Copy Path',
-            click: () => navigator.clipboard.writeText(path) 
+            click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(LocalFileSystemID, path) })
+        },
+        {
+            id: 'copy-relative-path',
+            label: 'Copy Relative Path',
+            click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: 'copy-name',
             label: 'Copy Name',
-            click: () => navigator.clipboard.writeText(basename(path))
+            click: () => command$.next({ id: CommandID.CopyName, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: 'copy-name-no-ext',
@@ -57,7 +65,7 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         {
             id: 'rename',
             label: 'Rename...',
-            click: () => {}
+            click: () => command$.next({ id: CommandID.Rename, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: 'delete',
