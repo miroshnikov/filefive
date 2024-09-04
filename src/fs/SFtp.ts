@@ -1,7 +1,7 @@
-import * as path from 'path'
+import { join, dirname } from 'node:path'
 import { Client, SFTPWrapper } from 'ssh2'
-import { Path, Files, URI } from '../types'
-import { FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
+import { Path } from '../types'
+import { FileSystem, FileItem, FileAttributes, FileAttributeType } from '../FileSystem'
 
 // https://github.com/mscdex/ssh2/blob/master/SFTP.md
 // https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-13#section-4.3
@@ -68,7 +68,6 @@ export default class SFtp extends FileSystem {
                                 return
                             }
                             this.connection.on('error', this.onError)
-                            this.uri = `sftp://${this.user}@${this.host}:${this.port}`
                             this.extensions = (sftp as SFTPExt)._extensions
                             resolve(sftp)
                         })
@@ -95,7 +94,7 @@ export default class SFtp extends FileSystem {
         return new Promise((resolve, reject) => sftp.realpath('.', (e, current) => e ? reject(e) : resolve(current)))
     }
     
-    async ls(dir: Path): Promise<Files> {
+    async ls(dir: Path): Promise<FileItem[]> {
         const sftp = await this.open()
         return new Promise((resolve, reject) => {
             sftp.readdir(dir, (err, list) => {
@@ -104,8 +103,7 @@ export default class SFtp extends FileSystem {
                     resolve(
                         list
                             .map(f => ({
-                                URI: this.uri+path.join(dir, f.filename) as URI,
-                                path: path.join(dir, f.filename),
+                                path: join(dir, f.filename),
                                 name: f.filename,
                                 dir: f.attrs.isDirectory(),
                                 size: f.attrs.size,
@@ -162,9 +160,21 @@ export default class SFtp extends FileSystem {
         })
     }
 
+    async rename(path: Path, name: string): Promise<void> {
+        const sftp = await this.open()
+        return new Promise((resolve, reject) => {
+            sftp.rename(path, join(dirname(path), name), e => {
+                if (e) {
+                    reject(e)
+                    return
+                }
+                resolve()
+            })
+        })
+    }
+
 
     private connected: Promise<SFTPWrapper>
     private connection = new Client()
-    private uri: FileSystemURI
     private extensions: Record<OpenSSLExtension, '1'|'2'>
 }

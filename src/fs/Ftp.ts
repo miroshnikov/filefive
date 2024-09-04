@@ -1,8 +1,8 @@
-import * as path from 'path'
+import { join, dirname } from 'node:path'
 import * as fs from 'fs'
 import Client from 'ftp'
-import { Path, Files, URI } from '../types'
-import { FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
+import { Path } from '../types'
+import { FileItem, FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
 
 // https://github.com/mscdex/node-ftp
 
@@ -62,7 +62,7 @@ export default class Ftp extends FileSystem {
         return new Promise((resolve, reject) => this.connection.pwd((e, pwd) => e ? reject(e) : resolve(pwd)))
     }
 
-    async ls(dir: Path): Promise<Files> {
+    async ls(dir: Path): Promise<FileItem[]> {
         await this.open()
         return new Promise((resolve, reject) => {
             this.connection.list(dir, (err: Error, list: Client.ListingElement[]) => {
@@ -72,8 +72,7 @@ export default class Ftp extends FileSystem {
                         list
                             .filter(f => f.name != '.' && f.name != '..')
                             .map(f => ({
-                                URI: this.uri+path.join(dir, f.name) as URI,
-                                path: path.join(dir, f.name),
+                                path: join(dir, f.name),
                                 name: f.name,
                                 dir: f.type == 'd',
                                 size: f.size,
@@ -126,6 +125,12 @@ export default class Ftp extends FileSystem {
 
     async write(path: Path, s: string): Promise<void> {
         // TODO
+    }
+
+    async rename(path: Path, name: string): Promise<void> {
+        await this.open()
+        return new Promise((resolve, reject) => 
+            this.connection.rename(path, join(dirname(path), name), e => e ? reject(e) : resolve()))
     }
 
     private connected: Promise<FileSystemURI>

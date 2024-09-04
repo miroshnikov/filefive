@@ -1,7 +1,8 @@
-import { FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
+import * as path from 'node:path'
+import { mkdir, writeFile, rename } from 'node:fs/promises'
+import { FileItem, FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
 import { pwd, list, copy, del } from '../Local'
-import { Path, LocalFileSystemID, Files } from '../types'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { Path, LocalFileSystemID } from '../types'
 
 
 export const ATTRIBUTES: FileAttributes = [
@@ -34,7 +35,7 @@ export default class Local extends FileSystem {
         return Promise.resolve(pwd())
     }
 
-    ls(dir: string): Promise<Files> {
+    ls(dir: string): Promise<FileItem[]> {
         return Promise.resolve(list(dir))
     }
 
@@ -56,5 +57,9 @@ export default class Local extends FileSystem {
 
     async write(path: Path, data: string): Promise<void> {
         await writeFile(path, data)
+    }
+
+    async rename(p: Path, name: string): Promise<void> {
+        await rename(p, path.join(path.dirname(p), name))
     }
 }

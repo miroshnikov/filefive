@@ -47,7 +47,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'rename',
             label: 'Rename...',
-            click: () => {}
+            click: () => command$.next({ id: CommandID.Rename, uri: createURI(id, path) })
         },
         {
             id: 'delete',

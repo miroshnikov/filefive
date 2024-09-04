@@ -210,8 +210,8 @@ export default function Explorer ({
         }   
     }
 
-    const rename = (name: string, uri: URI) => {
-        console.log('rename', name, uri)
+    const rename = (path: URI, name: string) => {
+        window.f5.rename(path, name)
     }
 
     const onDrop = (URIs: string[], target: string, effect: DropEffect) => {

@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { FileInfo } from '../../../../src/types'
+import { FileItem } from '../../../../src/FileSystem'
 import { queue$ } from '../../observables/queue'
 import { useSubscribe } from '../../hooks'
 import { QueueEventType, QueueActionType } from '../../../../src/types'
@@ -12,8 +13,8 @@ import { t } from 'i18next'
 
 interface QueueConflict {
     id: string
-    from: FileInfo
-    to: FileInfo
+    from: FileItem
+    to: FileItem
 }
 
 export default function QueueAction() {

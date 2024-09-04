@@ -1,7 +1,7 @@
 import ReferenceCountMap from './utils/ReferenceCountMap'
-import { FileSystem, FileAttributes, FileAttributeType } from './FileSystem'
-import { URI, ConnectionID, LocalFileSystemID } from './types'
-import { parseURI, connectionID } from './utils/URI'
+import { FileSystem, FileAttributes } from './FileSystem'
+import { URI, ConnectionID, LocalFileSystemID, Files, Path } from './types'
+import { createURI, parseURI, connectionID } from './utils/URI'
 import Password from './Password'
 import unqid from './utils/uniqid'
 import logger, { LogFS } from './log'
@@ -35,6 +35,10 @@ export default class {
     static close(id: ConnectionID) {
         logger.log(`close shared ${id} ${this.shared.count(id)}`)
         this.shared.dec(id)?.close()
+    }
+
+    static async list(id: ConnectionID, path: Path): Promise<Files> {
+        return (await this.get(id)?.ls(path)).map(f => ({...f, URI: createURI(id, f.path)}))
     }
 
     static async transmit(id: ConnectionID): Promise<[FileSystem, () => void]> {

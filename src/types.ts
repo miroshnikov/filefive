@@ -1,4 +1,4 @@
-import { FileSystemURI, FileAttribute, FileAttributes } from './FileSystem'
+import { FileItem, FileSystemURI, FileAttribute, FileAttributes } from './FileSystem'
 
 export const LocalFileSystemID = 'file://'
 
@@ -17,16 +17,22 @@ export enum FileState {
 
 export const FileTagsAttr = Symbol.for('tags')
 
-export type FileInfo = {
+
+export type FileInfo = FileItem & {
     URI: URI
-    path: Path
-    name: string
-    dir: boolean
-    size: number
-    modified: Date
     FileStateAttr?: FileState
     FileTagsAttr?: string[]
-} & {[key: string|symbol]: any}
+}
+// export type FileInfo = {
+//     URI: URI
+//     path: Path
+//     name: string
+//     dir: boolean
+//     size: number
+//     modified: Date
+//     FileStateAttr?: FileState
+//     FileTagsAttr?: string[]
+// } & {[key: string|symbol]: any}
 
 export type Files = FileInfo[]
 
@@ -122,7 +128,7 @@ export interface QueueState {
 export type QueueEvent = 
     | { type: QueueEventType.Create, queueType: QueueType, connection: ConnectionID }
     | { type: QueueEventType.Update, state: QueueState }
-    | { type: QueueEventType.Ask, from: FileInfo, to: FileInfo }
+    | { type: QueueEventType.Ask, from: FileItem, to: FileItem }
     | { type: QueueEventType.Complete }
 
 

@@ -19,21 +19,26 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
             },
             separator: true
         },
-        
+
+        {
+            id: 'copy-uri',
+            label: 'Copy URL',
+            click: () => command$.next({ id: CommandID.CopyURI, uri: createURI(id, path) })
+        },
         {
             id: 'copy-path',
             label: 'Copy Path',
-            click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(LocalFileSystemID, path) })
+            click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(id, path) })
         },
         {
             id: 'copy-relative-path',
             label: 'Copy Relative Path',
-            click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
+            click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(id, path) })
         },
         {
             id: 'copy-name',
             label: 'Copy Name',
-            click: () => command$.next({ id: CommandID.CopyName, uri: createURI(LocalFileSystemID, path) })
+            click: () => command$.next({ id: CommandID.CopyName, uri: createURI(id, path) })
         },
         {
             id: 'copy-name-no-ext',
@@ -49,7 +54,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'rename',
             label: 'Rename...',
-            click: () => {}
+            click: () => command$.next({ id: CommandID.Rename, uri: createURI(id, path) })
         },
         {
             id: 'delete',

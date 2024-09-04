@@ -6,15 +6,17 @@ import remove from './remove'
 import mkdir from './mkdir'
 import write from './write'
 import config from './config'
+import rename from './rename'
 
 export const commands = {
-    'connect': connect,
-    'config': config,
-    'watch': watch,
-    'unwatch': unwatch,
-    'copy': copy,
-    'remove': remove,
-    'mkdir': mkdir,
-    'write': write
+    connect,
+    config,
+    watch,
+    unwatch,
+    copy,
+    remove,
+    mkdir,
+    write,
+    rename
 }
 

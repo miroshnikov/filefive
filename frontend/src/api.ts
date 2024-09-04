@@ -47,6 +47,7 @@ window.f5 = {
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
     write: (path, content) => invoke<void>('write', { path, content }),
+    rename: (path, name) => invoke<void>('rename', { path, name }),
 
     resolve: (id, action) => invoke<void>('resolve', { id, action }),
     stop: id => invoke<void>('stop', { id }),

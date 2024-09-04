@@ -2,23 +2,23 @@ import { homedir } from 'node:os'
 import { normalize, basename, dirname, join } from 'node:path'
 import { readdirSync, statSync, watch as fsWatch, WatchEventType } from 'node:fs';
 import { mkdir, unlink, rename, cp, open, rm, readFile, writeFile } from 'node:fs/promises'
-import { URI, FileInfo } from './types'
+import { FileItem } from './FileSystem'
 
 
 
-export type LocalFileInfo = FileInfo & { inode: number }
+export type LocalFileInfo = FileItem & { inode: number }
 export type LocalFiles = LocalFileInfo[]
 
 export function pwd(): string {
     return homedir()
 }
 
+
 export function stat(path: string): LocalFileInfo|null {
     path = normalize(path)
     try {
         const stat = statSync(path)
         return {
-            URI: `file://${path}` as URI,
             path,
             name: basename(path),
             dir: stat.isDirectory(), 

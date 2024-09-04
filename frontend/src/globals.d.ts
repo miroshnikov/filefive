@@ -23,6 +23,7 @@ export interface F5 {
     open(file: Path): void
     mkdir(name: string, parent: URI): void
     write(path: URI, content: string): Promise<void>
+    rename(path: URI, name: string): Promise<void>
 
     resolve(id: string, action: QueueAction): void
     stop(id: string): void

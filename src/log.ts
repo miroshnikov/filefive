@@ -115,4 +115,14 @@ export class LogFS extends FileSystem {
             throw e
         }
     }
+
+    async rename(path: Path, name: string) {
+        logger.log(await cmd('RENAME'), await id(this.id) + path, ' → ', name)
+        try {
+            return await this.fs.rename(path, name)
+        } catch (e) {
+            logger.error(e) 
+            throw e
+        }
+    }
 }

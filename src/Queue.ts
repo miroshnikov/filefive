@@ -1,6 +1,6 @@
 import { basename, dirname, join } from 'node:path'
-import { FileInfo, Path, URI, Files, ConnectionID, QueueType, QueueState, QueueActionType, QueueAction } from './types'
-import { FileSystem } from './FileSystem'
+import { Path, URI, ConnectionID, QueueType, QueueState, QueueActionType, QueueAction } from './types'
+import { FileSystem, FileItem } from './FileSystem'
 import { stat, touch, list } from './Local'
 import { parseURI, createURI } from './utils/URI'
 import { pipe, prop, memoizeWith, identity, whereEq } from 'ramda'
@@ -18,7 +18,7 @@ export default class Queue {
         dest: URI,
         private watcher: RemoteWatcher,
         private onState: (state: QueueState) => void,
-        private onConflict: (src: FileInfo, dest: FileInfo) => void,
+        private onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
         private onComplete: () => void
     ) {
@@ -53,14 +53,13 @@ export default class Queue {
     }
 
     private async download(src: URI[], dest: string) {
-        const conn = Connection.get(this.connId)
         await this.enqueue(
             src.map(pipe(parseURI, prop('path'))), 
             dest,
-            memoizeWith(identity, (path: string) => conn.ls(path))
+            memoizeWith(identity, (path: string) => Connection.list(this.connId, path))
         )
 
-        const transmit = async (fs: FileSystem, from: FileInfo, to: string) => {
+        const transmit = async (fs: FileSystem, from: FileItem, to: Path) => {
             await touch(to)
             logger.log(`start downloading ${from.path} -> ${to}`)
             try {
@@ -105,7 +104,7 @@ export default class Queue {
         )
         this.touched.add(to)
         
-        const transmit = async (fs: FileSystem, from: FileInfo, to: string) => {
+        const transmit = async (fs: FileSystem, from: FileItem, to: string) => {
             if (!(stat(from.path))) {
                 return
             }
@@ -157,7 +156,7 @@ export default class Queue {
 
     private async remove(paths: Path[]) {
         this.totalCnt = paths.length
-        const touched = new Map<Path, Files|null>()
+        const touched = new Map<Path, FileItem[]|null>()
         paths.forEach(async path => {
             const dir = dirname(path)
             const [conn, close] = await Connection.transmit(this.connId)
@@ -191,8 +190,8 @@ export default class Queue {
         }
     }
 
-    private async enqueue(paths: string[], dest: string, ls: (path: string) => Promise<Files>) {
-        const add = async (path: string, to: string) => {
+    private async enqueue(paths: Path[], dest: Path, ls: (path: string) => Promise<FileItem[]>) {
+        const add = async (path: Path, to: Path) => {
             const from = (await ls(dirname(path))).find(whereEq({path}))
             from && (from.dir ? 
                 (await ls(path)).forEach(async f => await add(f.path, join(to, basename(path)))) : 
@@ -207,14 +206,14 @@ export default class Queue {
         this.queue.forEach(({from: {size}}) => { this.totalCnt++; this.totalSize += size })
     }
 
-    private applyAction(action: QueueAction, from: FileInfo, to: FileInfo, transmit: (from: FileInfo, to: string) => Promise<void>) {
+    private applyAction(action: QueueAction, from: FileItem, to: FileItem, transmit: (from: FileItem, to: string) => Promise<void>) {
         switch (action.type) {
             case QueueActionType.Replace:
                 return transmit(from, to.path)
         }
     }
 
-    private putOnHold(src: FileInfo, dest: FileInfo) {
+    private putOnHold(src: FileItem, dest: FileItem) {
         this.pending.push({src, dest})
         if (this.pending.length == 1) {
             this.onConflict(src, dest)
@@ -234,14 +233,14 @@ export default class Queue {
     }
 
 
-    private queue: { from: FileInfo, to: string, action?: QueueAction }[] = []
-    private queue$ = new Subject<{ from: FileInfo, to: string, action?: QueueAction }>()
+    private queue: { from: FileItem, to: Path, action?: QueueAction }[] = []
+    private queue$ = new Subject<{ from: FileItem, to: Path, action?: QueueAction }>()
     private processing: Subscription
     private totalCnt = 0
     private doneCnt = 0
     private totalSize = 0
     private doneSize = 0
-    private pending: { src: FileInfo, dest: FileInfo }[] = []
+    private pending: { src: FileItem, dest: FileItem }[] = []
     private action: QueueAction
     private touched = new Set<Path>()
 }

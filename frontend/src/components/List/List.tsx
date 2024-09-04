@@ -67,7 +67,7 @@ interface ListProps {
     onDrop: (URIs: string[], target: string, effect: DropEffect) => void
     onMenu: (path: string, dir: boolean) => void
     onNew?: (name: string, parent: Path, dir: boolean) => void
-    onRename?: (name: string, uri: URI) => void
+    onRename?: (uri: URI, name: string) => void
     onSort?: (name: string) => void
     onColumnsMenu?: () => void
     onColumnsChange?: (columns: {name: string, width: number}[]) => void
@@ -233,6 +233,11 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                         !expanded.includes(inDir) && toggle(inDir);
                         createIn({ in: inDir, dir: cmd.id == CommandID.NewDir })
                     }
+                    break
+                }
+                case CommandID.CopyURI : {
+                    const uri = cmd.uri ?? target?.URI
+                    navigator.clipboard.writeText(uri ?? '')
                     break
                 }
                 case CommandID.CopyPath: {
@@ -440,7 +445,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                                     name = {item.name}
                                     sublings = {selectChildren(creating?.in, files.map(prop('path')))}
                                     onOk = {nm => {
-                                        creating ? onNew?.(nm, creating.in, creating.dir) : onRename?.(nm, renaming)
+                                        creating ? onNew?.(nm, creating.in, creating.dir) : onRename?.(renaming, nm)
                                         createIn(null)
                                         rename(null)
                                     }}

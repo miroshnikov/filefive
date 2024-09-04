@@ -1,7 +1,7 @@
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { mkdir } from 'node:fs/promises'
-import { Path, ConnectionID, URI, Files, Failure, FailureType, QueueEvent, QueueAction } from './types'
+import { Path, ConnectionID, URI, Files, Failure, FailureType, QueueEvent, QueueAction, LocalFileSystemID } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
 import FileWatcher from './FileWatcher'
@@ -11,6 +11,7 @@ import Password from './Password'
 import { commands } from './commands'
 import transform from './transform'
 import { touch, LocalFileInfo } from './Local'
+import { createURI } from './utils/URI'
 
 
 export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
@@ -43,6 +44,7 @@ export default class App {
             mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
             // read
             write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content, dataPath, settingsPath),
+            rename:     ({path, name}: {path: URI, name: string}) => commands.rename(path, name),
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),
             stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))
@@ -52,7 +54,12 @@ export default class App {
 
         const emitDir = emitter<{uri: URI, files: Files}>('dir')
         const sendDirContent = (uri: URI, files: Files) => emitDir({uri, files})
-        this.localWatcher = new LocalWatcher((path, files) => sendDirContent('file://'+path as URI, files))
+        this.localWatcher = new LocalWatcher((path, files) => 
+            sendDirContent(
+                createURI(LocalFileSystemID, path), 
+                files.map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
+            )
+        )
         this.remoteWatcher = new RemoteWatcher(sendDirContent, transform)
 
         const emitFile = emitter<{path: Path, stat: LocalFileInfo|null}>('file')
