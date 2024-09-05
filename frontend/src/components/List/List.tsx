@@ -11,7 +11,7 @@ import { CommandID } from '../../commands'
 import { command$ } from '../../observables/command'
 import EditFileName from '../EditFileName/EditFileName'
 import debounce from '../../utils/debounce'
-import { parseURI } from "../../utils/URI"
+import { parseURI } from "../../../../src/utils/URI"
 
 
 export enum ColumnType {
@@ -263,8 +263,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         }),
         [target, items, expanded]
     )
-
-  
+ 
     const dragStart = (i: number, e: React.DragEvent<HTMLTableRowElement>) => {
         setDragging(true)       //TODO make an array in useRef() of selected
         e.dataTransfer.effectAllowed = 'copyMove'
@@ -347,7 +346,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     )
 
     useEvent(document, 'mousemove', ({pageX}: MouseEvent) => {
-        if (resizing.current !== null && rootEl.current) {
+        if (resizing.current !== null && rootEl.current && columns.length) {
             const target = rootEl.current.querySelector(`th:nth-child(${resizing.current+1})`)
             if (target) {
                 const width = Math.max(50, Math.round(pageX - (target as Element).getBoundingClientRect().left))
@@ -396,7 +395,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         <table>
             <thead>
                 <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.()}}>
-                    {columns.map(({name, title, sort, width}, i) =>
+                    {columns.map(({name, title, sort}, i) =>
                         <th key={name} 
                             className={classNames({sorted: !!sort, drop: i===colDropTarget})}
                             style={{width: widths[i]}}

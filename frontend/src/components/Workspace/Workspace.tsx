@@ -4,7 +4,7 @@ import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings } from '../../../../src/types'
-import { createURI, parseURI } from '../../utils/URI'
+import { createURI, parseURI } from '../../../../src/utils/URI'
 import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
@@ -134,6 +134,16 @@ export default function Workspace({onChange}: Props) {
             )
         },
         {
+            id: 'New Folder...',
+            icon: 'create_new_folder',
+            onClick: () => command$.next({id: CommandID.NewDir})
+        },
+        {
+            id: 'New File...',
+            icon: 'note_add',
+            onClick: () => command$.next({id: CommandID.NewFile})
+        },
+        {
             id: 'Delete',
             icon: 'delete',
             disabled: !localSelected.length,
@@ -150,6 +160,16 @@ export default function Workspace({onChange}: Props) {
                 remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), 
                 createURI(LocalFileSystemID, localPath)
             )
+        },
+        {
+            id: 'New Folder...',
+            icon: 'create_new_folder',
+            onClick: () => command$.next({id: CommandID.NewDir})
+        },
+        {
+            id: 'New File...',
+            icon: 'note_add',
+            onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
             id: 'Delete',
@@ -185,6 +205,16 @@ export default function Workspace({onChange}: Props) {
             icon: 'power_settings_new',
             disabled: remoteSelected.length != 1,
             onClick: () => connect(remoteSelected[0])
+        },
+        {
+            id: 'New Folder...',
+            icon: 'create_new_folder',
+            onClick: () => command$.next({id: CommandID.NewDir})
+        },
+        {
+            id: 'New File...',
+            icon: 'note_add',
+            onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
             id: 'Copy',

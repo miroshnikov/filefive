@@ -1,6 +1,5 @@
 import { URI, ConnectionID, Path } from '../types'
 
-
 export function isLocal(uri: string) {
     return uri.startsWith('file:')
 }
@@ -8,6 +7,8 @@ export function isLocal(uri: string) {
 export function connectionID(scheme: string, user: string, host: string, port:number): ConnectionID {
     return scheme == 'file' ? 'file://' : `${scheme}://${user}@${host}:${port}` as ConnectionID
 }
+
+// URL is a TypeScript implementation (not equal to Javascript's one!)
 
 export function parseURI(uri: URI) {
     // https://url.spec.whatwg.org/#special-scheme

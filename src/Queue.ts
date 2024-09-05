@@ -1,5 +1,5 @@
 import { basename, dirname, join } from 'node:path'
-import { Path, URI, ConnectionID, QueueType, QueueState, QueueActionType, QueueAction } from './types'
+import { Path, URI, ConnectionID, QueueType, QueueState, QueueActionType, QueueAction, FailureType } from './types'
 import { FileSystem, FileItem } from './FileSystem'
 import { stat, touch, list } from './Local'
 import { parseURI, createURI } from './utils/URI'
@@ -170,7 +170,15 @@ export default class Queue {
             const name = basename(path)
             const file = touched.get(dir)?.find(f => f.name == name)
             if (file) {
-                await conn.rm(path, file.dir)
+                try {
+                    await conn.rm(path, file.dir)
+                } catch (error) {
+                    this.onError({
+                        type: FailureType.RemoteError,
+                        id: this.connId,
+                        error
+                    })
+                }
             }
             close()
             this.sendState(0)

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
 import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
 import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
-import { parseURI, createURI } from '../../utils/URI'
+import { parseURI, createURI } from '../../../../src/utils/URI'
 import { dirname, descendantOf, join } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
@@ -252,7 +252,7 @@ export default function Explorer ({
     return <div className={classNames(styles.root, {focused})} onFocus={() => {setFocused(true); onFocus?.()}} onBlur={() => {setFocused(false); onBlur?.()}}>
         <header>
             {toolbar.length ? 
-                <Toolbar items={toolbar} /> : 
+                <Toolbar items={toolbar} onClick={() => list.current?.focus()} /> : 
                 null 
             }
             <Breadcrumbs 

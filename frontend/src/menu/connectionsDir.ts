@@ -1,10 +1,8 @@
 import { Path, LocalFileSystemID } from '../../../src/types'
-import { createURI } from '../utils/URI'
+import { createURI } from '../../../src/utils/URI'
 import { MenuItem } from '../ui/components'
-import { basename } from '../utils/path'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'
-import localDir from './localDir'
 
 
 export default function (path: Path, selected: Path[], isRoot: boolean): MenuItem[] {
@@ -24,7 +22,7 @@ export default function (path: Path, selected: Path[], isRoot: boolean): MenuIte
             {
                 id: 'rename',
                 label: 'Rename...',
-                click: () => {}
+                click: () => command$.next({ id: CommandID.Rename, uri: createURI(LocalFileSystemID, path) })
             },
             {
                 id: 'delete',

@@ -6,7 +6,7 @@ import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
 import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
 import { parse } from '../../utils/path'
-import { createURI } from '../../utils/URI'
+import { createURI } from '../../../../src/utils/URI'
 import classNames from "classnames"
 import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'

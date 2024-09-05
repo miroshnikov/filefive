@@ -3,7 +3,7 @@ import { LocalFileSystemID, URI, Path, SortOrder, ExplorerSettings } from '../..
 import { FileAttributeType } from '../../../src/FileSystem'
 import { AppSettingsContext } from '../context/config'
 import { MenuItem } from '../ui/components'
-import { parseURI } from '../utils/URI'
+import { parseURI } from '../../../src/utils/URI'
 import Explorer from './Explorer/Explorer'
 import dirMenu from '../menu/connectionsDir'
 import fileMenu from '../menu/connection'

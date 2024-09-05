@@ -62,9 +62,9 @@ export default class SFtp extends FileSystem {
             this.connected = new Promise<SFTPWrapper>((resolve, reject) => {
                 this.connection
                     .on('ready', () => {
-                        this.connection.sftp((err, sftp) => {
-                            if (err) {
-                                reject(err)
+                        this.connection.sftp((e, sftp) => {
+                            if (e) {
+                                reject(this.decodeError(e))
                                 return
                             }
                             this.connection.on('error', this.onError)
@@ -91,7 +91,7 @@ export default class SFtp extends FileSystem {
 
     async pwd(): Promise<Path> {
         const sftp = await this.open()
-        return new Promise((resolve, reject) => sftp.realpath('.', (e, current) => e ? reject(e) : resolve(current)))
+        return new Promise((resolve, reject) => sftp.realpath('.', (e, current) => e ? reject(this.decodeError(e)) : resolve(current)))
     }
     
     async ls(dir: Path): Promise<FileItem[]> {
@@ -99,7 +99,7 @@ export default class SFtp extends FileSystem {
         return new Promise((resolve, reject) => {
             sftp.readdir(dir, (err, list) => {
                 err ? 
-                    reject(err) : 
+                    reject(this.decodeError(err)) : 
                     resolve(
                         list
                             .map(f => ({
@@ -120,24 +120,29 @@ export default class SFtp extends FileSystem {
     async get(fromRemote: Path, toLocal: Path): Promise<void> {
         const sftp = await this.open()
         return new Promise((resolve, reject) => {
-            sftp.fastGet(fromRemote, toLocal, (e) => e ? reject(e) : resolve())
+            sftp.fastGet(fromRemote, toLocal, (e) => e ? reject(this.decodeError(e)) : resolve())
         })
     }
 
     async put(fromLocal: Path, toRemote: Path): Promise<void> {
         const sftp = await this.open() 
         return new Promise((resolve, reject) => {
-            sftp.fastPut(fromLocal, toRemote, e => e ? reject(e) : resolve())
+            sftp.fastPut(fromLocal, toRemote, e => e ? reject(this.decodeError(e)) : resolve())
         })
     }
 
     async rm(path: Path, recursive: boolean): Promise<void> {
         const sftp = await this.open() 
-        return new Promise((resolve, reject) =>
-            recursive ? 
-                sftp.rmdir(path, e => e ? reject(e) : resolve()) : 
-                sftp.unlink(path, e => e ? reject(e) : resolve())
-        )
+        const files = []
+        return new Promise((resolve, reject) => {
+            if (recursive) {
+                // sftp.readdir(path)
+                sftp.rmdir(path, e => e ? reject(this.decodeError(e)) : resolve())
+
+            } else {
+                sftp.unlink(path, e => e ? reject(this.decodeError(e)) : resolve())
+            }
+        })
     }
 
     async mkdir(path: Path): Promise<void> {
@@ -154,7 +159,7 @@ export default class SFtp extends FileSystem {
                     return
                 }
                 const data = Buffer.from(s)
-                sftp.write(h, data, 0, data.length, 0, (e) => e ? reject(e) : resolve())
+                sftp.write(h, data, 0, data.length, 0, (e) => e ? reject(this.decodeError(e)) : resolve())
             })
     
         })
@@ -165,7 +170,7 @@ export default class SFtp extends FileSystem {
         return new Promise((resolve, reject) => {
             sftp.rename(path, join(dirname(path), name), e => {
                 if (e) {
-                    reject(e)
+                    reject(this.decodeError(e))
                     return
                 }
                 resolve()
@@ -173,6 +178,33 @@ export default class SFtp extends FileSystem {
         })
     }
 
+    private decodeError(e: Error & { code?: number }) {
+        const STATUS_CODE = {
+            OK: 0,
+            EOF: 1,
+            NO_SUCH_FILE: 2,
+            PERMISSION_DENIED: 3,
+            FAILURE: 4,
+            BAD_MESSAGE: 5,
+            NO_CONNECTION: 6,
+            CONNECTION_LOST: 7,
+            OP_UNSUPPORTED: 8
+        }
+
+        const STATUS_CODE_STR = {
+            [STATUS_CODE.OK]: 'No error',
+            [STATUS_CODE.EOF]: 'End of file',
+            [STATUS_CODE.NO_SUCH_FILE]: 'No such file or directory',
+            [STATUS_CODE.PERMISSION_DENIED]: 'Permission denied',
+            [STATUS_CODE.FAILURE]: 'Failure',
+            [STATUS_CODE.BAD_MESSAGE]: 'Bad message',
+            [STATUS_CODE.NO_CONNECTION]: 'No connection',
+            [STATUS_CODE.CONNECTION_LOST]: 'Connection lost',
+            [STATUS_CODE.OP_UNSUPPORTED]: 'Operation unsupported',
+        }
+
+        return new Error(e.message ?? ('code' in e ? STATUS_CODE_STR[e['code']] : 'Unknown error') )
+    }
 
     private connected: Promise<SFTPWrapper>
     private connection = new Client()

@@ -1,5 +1,5 @@
 import { Path, ConnectionID, LocalFileSystemID } from '../../../src/types'
-import { createURI } from '../utils/URI'
+import { createURI } from '../../../src/utils/URI'
 import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
 import { command$ } from '../observables/command'

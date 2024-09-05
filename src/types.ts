@@ -147,7 +147,8 @@ export type QueueAction =
 export enum FailureType {
     Unauthorized = 'unauthorized',
     ConfirmDeletion = 'confirm-deletion',
-    RemoteError = 'remote-error'
+    RemoteError = 'remote-error',
+    MissingDir = 'missing-dir'
 }
 export type Failure =
     | {
@@ -157,6 +158,10 @@ export type Failure =
     | {
         type: FailureType.ConfirmDeletion
         files: URI[]
+    }
+    | {
+        type: FailureType.MissingDir
+        uri: URI
     }
     | {
         type: FailureType.RemoteError

@@ -38,7 +38,8 @@ export default class {
     }
 
     static async list(id: ConnectionID, path: Path): Promise<Files> {
-        return (await this.get(id)?.ls(path)).map(f => ({...f, URI: createURI(id, f.path)}))
+        const files = await this.get(id)?.ls(path) || []
+        return files.map(f => ({...f, URI: createURI(id, f.path)}))
     }
 
     static async transmit(id: ConnectionID): Promise<[FileSystem, () => void]> {

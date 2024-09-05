@@ -7,6 +7,7 @@ import { parseURI } from './utils/URI'
 export default class RemoteWatcher {
     constructor(
         private listener: (uri: URI, files: Files) => void,
+        private onMissing: (uri: URI) => void,
         private transform = (files: Files) => files
     ) {}
 
@@ -21,7 +22,15 @@ export default class RemoteWatcher {
 
     public refresh(uri: URI) {
         const { id, path } = parseURI(uri)
-        this.watched.has(uri) && Connection.list(id, path).then(files => this.listener(uri, this.transform(files)))
+        if (this.watched.has(uri)) {
+            try {
+                Connection.list(id, path).then(files => this.listener(uri, this.transform(files)))
+            } catch (e) {
+                this.unwatch(uri)
+                this.onMissing(uri)
+            }
+        }
+            
     }
 
     public touch(uri: URI) {

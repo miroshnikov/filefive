@@ -3,7 +3,7 @@ import { Path } from '../../../../src/types'
 import { Modal, ModalButtonID, Select, Password } from '../../ui/components'
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import { parse } from '../../utils/path'
-import { createURI } from '../../utils/URI'
+import { createURI } from '../../../../src/utils/URI'
 import { LocalFileSystemID } from '../../../../src/types'
 import classNames from "classnames"
 import styles from './Connection.less'

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Modal, ModalButtonID } from '../ui/components'
 import { URI, FailureType } from '../../../src/types'
-import { parseURI } from '../utils/URI'
+import { parseURI } from '../../../src/utils/URI'
 import { useSubscribe } from '../hooks'
 import { error$ } from '../observables/error'
 import { basename } from '../utils/path'

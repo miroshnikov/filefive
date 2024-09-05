@@ -1,5 +1,5 @@
 import { Path, LocalFileSystemID, URI } from '../../../src/types'
-import { createURI, parseURI } from '../utils/URI'
+import { createURI, parseURI } from '../../../src/utils/URI'
 import { MenuItem } from '../ui/components'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'

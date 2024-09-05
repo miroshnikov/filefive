@@ -60,7 +60,7 @@ export default class App {
                 files.map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
             )
         )
-        this.remoteWatcher = new RemoteWatcher(sendDirContent, transform)
+        this.remoteWatcher = new RemoteWatcher(sendDirContent, uri => this.onError({ type: FailureType.MissingDir, uri }), transform)
 
         const emitFile = emitter<{path: Path, stat: LocalFileInfo|null}>('file')
         const sendFileStat = (path: Path, stat: LocalFileInfo|null) => emitFile({path, stat})
