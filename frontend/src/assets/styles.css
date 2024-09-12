@@ -177,5 +177,16 @@ form {
     }
 }
 
+
+/* @keyframes appear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+} */
+
+
 @import "../ui/styles.css";
 @import "themes/one-dark.css";

@@ -30,6 +30,7 @@ export function explorerSettings(attributes: FileAttributes, config?: ExplorerCo
         }
 }
 
+
 export default async function (file: Path, onError: (id: ConnectionID, e: any) => void): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false> {
     const config = JSON.parse( readFileSync(file).toString() ) as ConnectionConfig
     const id = connectionID(config.scheme, config.user, config.host, config.port)

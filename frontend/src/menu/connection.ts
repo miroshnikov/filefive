@@ -18,8 +18,8 @@ export default function (path: Path, selected: Path[], connect: () => void): Men
 
         {
             id: 'edit-connection',
-            label: 'Edit',
-            click: () => {} // issue command that read and then write file
+            label: 'Edit...',
+            click: () => command$.next({ id: CommandID.Edit, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: 'rename',

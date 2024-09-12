@@ -7,8 +7,11 @@ import { parseURI } from '../../../src/utils/URI'
 import Explorer from './Explorer/Explorer'
 import dirMenu from '../menu/connectionsDir'
 import fileMenu from '../menu/connection'
-import NewConnection from '../modals/Connection/Connection'
+import ConnectionForm from '../modals/Connection/Connection'
 import { ToolbarItem } from './Toolbar/Toolbar'
+import { useSubscribe } from '../hooks'
+import { CommandID } from '../commands'
+import { command$ } from '../observables/command'
 
 
 interface Props {
@@ -42,9 +45,19 @@ const settings: ExplorerSettings = {
 
 export default function Connections({ path, onChange, onSelect, connect, toolbar, tabindex }: Props) {
     const appSettings = useContext(AppSettingsContext)
+
     const [selected, setSelected] = useState<Path[]>([])
     const [menu, setMenu] = useState<MenuItem[]>([])
-    const [newConnection, setNewConnection] = useState<Path>('')
+    const [connectionFile, setConnectionFile] = useState<Path>('')
+
+    useSubscribe(() => command$.subscribe(cmd => {
+        if (cmd.id == CommandID.Edit && cmd.uri) {
+            const {id, path} = parseURI(cmd.uri)
+            if (id == LocalFileSystemID && path.startsWith(appSettings.connections)) {
+                setConnectionFile(path)
+            }
+        }
+    }), [])
 
     const onContextMenu = (file: URI, dir: boolean) => {
         const { path } = parseURI(file)
@@ -68,8 +81,8 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
             contextMenu={menu}
             toolbar={toolbar}
             tabindex={tabindex}
-            onNewFile={uri => setNewConnection(parseURI(uri).path)}
+            onNewFile={uri => setConnectionFile(parseURI(uri).path)}
         /> 
-        <NewConnection file={newConnection} onConnect={connect} onClose={() => setNewConnection('')} />
+        <ConnectionForm file={connectionFile} onConnect={connect} onClose={() => setConnectionFile('')} />
     </>
 }

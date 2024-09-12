@@ -9,14 +9,16 @@ export enum CommandID {
     Settings = 'settings',
     Connections = 'connections',
     Refresh = 'refresh',
+    
     Rename = 'rename',
+    Edit = 'edit',
     CopyURI = 'copy-uri',
     CopyPath = 'copy-path',
     CopyRelativePath = 'copy-relative-path',
     CopyName = 'copy-name'
 }
 
-type FileCommand = CommandID.Rename|CommandID.CopyURI|CommandID.CopyPath|CommandID.CopyRelativePath|CommandID.CopyName
+type FileCommand = CommandID.Rename|CommandID.Edit|CommandID.CopyURI|CommandID.CopyPath|CommandID.CopyRelativePath|CommandID.CopyName
 
 export type Command = { label?: string } & (
     | { id: Exclude<CommandID, FileCommand> }

@@ -1,5 +1,6 @@
-import { URI, Path, AppSettings, ConnectionID, ConnectionSettings, Files, QueueEvent, QueueAction } from '../../src/types'
+import { URI, Path, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, QueueAction } from '../../src/types'
 import { LocalFileInfo } from '../../src/Local'
+import { SaveConnectionSettings } from '../../src/commands/saveConnection'
 
 
 export interface F5 {
@@ -22,8 +23,12 @@ export interface F5 {
     remove(files: URI[], force: boolean): void
     open(file: Path): void
     mkdir(name: string, parent: URI): void
+    read(file: URI): Promise<string>
     write(path: URI, content: string): Promise<void>
     rename(path: URI, name: string): Promise<void>
+
+    get(path: Path): Promise<ConnectionConfig>
+    save(path: Path, settings: SaveConnectionSettings): Promise<void>
 
     resolve(id: string, action: QueueAction): void
     stop(id: string): void

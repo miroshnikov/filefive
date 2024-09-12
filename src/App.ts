@@ -12,6 +12,7 @@ import { commands } from './commands'
 import transform from './transform'
 import { touch, LocalFileInfo } from './Local'
 import { createURI } from './utils/URI'
+import { SaveConnectionSettings } from './commands/saveConnection'
 
 
 export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
@@ -35,16 +36,22 @@ export default class App {
             connect:    ({file}: {file: Path}) => commands.connect(file, (id, error) => this.onError({ type: FailureType.RemoteError, id, error })),
             login:      ({id, password, remember}: {id: ConnectionID, password: string, remember: boolean}) => Password.set(id, password, remember),
             disconnect: ({id}: {id: ConnectionID}) => Connection.close(id),
+
             watch:      ({dir}: {dir: URI}) => commands.watch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
             unwatch:    ({dir}: {dir: URI}) => commands.unwatch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
             refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
+
             copy:       ({src, dest}: {src: URI[], dest: URI}) => commands.copy(src, dest),
             remove:     ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
             open:       ({file}: {file: Path}) => opener(file),
             mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
-            // read
-            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content, dataPath, settingsPath),
+            read:       ({file}: {file: URI}) => commands.read(file),
+            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content, dataPath, settingsPath),           
             rename:     ({path, name}: {path: URI, name: string}) => commands.rename(path, name),
+
+            get:        ({path}: {path: Path}) => commands.getConnection(path),
+            save:       ({path, settings}: {path: Path, settings: SaveConnectionSettings}) => commands.saveConnection(path, settings),
+
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),
             stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))

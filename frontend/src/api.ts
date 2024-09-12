@@ -1,4 +1,4 @@
-import { URI, AppSettings, ConnectionID, ConnectionSettings, Files, QueueEvent, Path } from '../../src/types'
+import { URI, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, Path } from '../../src/types'
 import { LocalFileInfo } from '../../src/Local'
 
 
@@ -46,8 +46,12 @@ window.f5 = {
     remove: (files, force) => invoke<void>('remove', { files, force }),
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
+    read: (file) => invoke<string>('read', { file }),
     write: (path, content) => invoke<void>('write', { path, content }),
     rename: (path, name) => invoke<void>('rename', { path, name }),
+
+    get: (path) => invoke<ConnectionConfig>('get', { path }),
+    save: (path, settings) => invoke<void>('save', { path, settings }),
 
     resolve: (id, action) => invoke<void>('resolve', { id, action }),
     stop: id => invoke<void>('stop', { id }),

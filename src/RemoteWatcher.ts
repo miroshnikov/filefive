@@ -22,6 +22,7 @@ export default class RemoteWatcher {
 
     public refresh(uri: URI) {
         const { id, path } = parseURI(uri)
+        console.log('RemoteWatcher:refresh', uri, this.watched.has(uri));
         if (this.watched.has(uri)) {
             try {
                 Connection.list(id, path).then(files => this.listener(uri, this.transform(files)))

@@ -1,4 +1,5 @@
 import { URI, ConnectionID, Path } from '../types'
+import { URL } from 'whatwg-url'
 
 export function isLocal(uri: string) {
     return uri.startsWith('file:')

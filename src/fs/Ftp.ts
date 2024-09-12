@@ -35,7 +35,10 @@ export default class Ftp extends FileSystem {
         private onError: (e: Error) => void
     ) { 
         super()
-        this.connection.on('close', () => { this.connected = undefined })
+        this.connection.on('close', () => { 
+            console.log('close')
+            this.connected = undefined 
+        })
     }
 
     async open(): Promise<FileSystemURI> {

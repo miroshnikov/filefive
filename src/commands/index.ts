@@ -4,9 +4,13 @@ import unwatch from './unwatch'
 import copy from './copy'
 import remove from './remove'
 import mkdir from './mkdir'
+import read from './read'
 import write from './write'
 import config from './config'
 import rename from './rename'
+import getConnection from './getConnection'
+import saveConnection from './saveConnection'
+
 
 export const commands = {
     connect,
@@ -16,7 +20,10 @@ export const commands = {
     copy,
     remove,
     mkdir,
+    read,
     write,
-    rename
+    rename,
+    getConnection,
+    saveConnection
 }
 

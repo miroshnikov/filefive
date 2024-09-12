@@ -51,10 +51,11 @@ export default function Workspace({onChange}: Props) {
     
     useEffect(() => {
         if (connection) {
-            window.f5.write(
-                createURI(LocalFileSystemID, connection.file), 
-                JSON.stringify(connection)
-            )
+            window.f5.save(connection.file, connection)
+            // window.f5.write(
+            //     createURI(LocalFileSystemID, connection.file), 
+            //     JSON.stringify(connection)
+            // )
         }
     }, [connection])
 
@@ -67,19 +68,27 @@ export default function Workspace({onChange}: Props) {
 
     useEffectOnUpdate(() => {
         if (connection) {
-            window.f5.write(
-                createURI(LocalFileSystemID, connection.file), 
-                JSON.stringify(
-                    mergeDeepRight(
-                        connection, {
-                            path: { 
-                                local: localPath, 
-                                remote: showConnections ? connection.path.remote : remotePath 
-                            }
-                        }
-                    )
-                )
+            window.f5.save(
+                connection.file, {
+                    path: { 
+                        local: localPath, 
+                        remote: showConnections ? connection.path.remote : remotePath 
+                    }
+                }
             )
+            // window.f5.write(
+            //     createURI(LocalFileSystemID, connection.file), 
+            //     JSON.stringify(
+            //         mergeDeepRight(
+            //             connection, {
+            //                 path: { 
+            //                     local: localPath, 
+            //                     remote: showConnections ? connection.path.remote : remotePath 
+            //                 }
+            //             }
+            //         )
+            //     )
+            // )
         } else {
             window.f5.write(
                 createURI(LocalFileSystemID, appSettings.settings),

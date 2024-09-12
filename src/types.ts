@@ -23,17 +23,6 @@ export type FileInfo = FileItem & {
     FileStateAttr?: FileState
     FileTagsAttr?: string[]
 }
-// export type FileInfo = {
-//     URI: URI
-//     path: Path
-//     name: string
-//     dir: boolean
-//     size: number
-//     modified: Date
-//     FileStateAttr?: FileState
-//     FileTagsAttr?: string[]
-// } & {[key: string|symbol]: any}
-
 export type Files = FileInfo[]
 
 
@@ -61,6 +50,7 @@ export interface ConnectionConfig {
     host: string
     port: number
     user: string
+    password: string
     layout?: Twofold<ExplorerConfig>
     path?: Twofold<Path|undefined>
 }
@@ -77,12 +67,12 @@ export interface ExplorerSettings {
     sort: [FileAttribute['name'], SortOrder]
 }
 
-export interface ConnectionSettings {
+export interface ConnectionSettings { 
     name: string
     pwd: string
     attributes: FileAttributes
-    layout: Twofold<ExplorerSettings>
-    path: Twofold<Path|undefined>
+    layout?: Twofold<ExplorerSettings>
+    path?: Twofold<Path|undefined>
 }
 
 export interface AppSettings {

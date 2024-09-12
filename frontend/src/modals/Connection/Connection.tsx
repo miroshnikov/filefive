@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react"
 import { Path } from '../../../../src/types'
 import { Modal, ModalButtonID, Select, Password } from '../../ui/components'
-import { useForm, SubmitHandler, Controller } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { parse } from '../../utils/path'
-import { createURI } from '../../../../src/utils/URI'
-import { LocalFileSystemID } from '../../../../src/types'
 import classNames from "classnames"
 import styles from './Connection.less'
+import { evolve, trim } from 'ramda'
 
 
 
-const connTypes = [
+const schemes = [
     {
         value: 'sftp',
         label: 'SFTP'
@@ -32,26 +31,29 @@ type FormValues = {
 export default function ({ file, onConnect, onClose }: { file?: Path, onConnect: (path: Path) => void, onClose: () => void }) {
     const [name, setName] = useState('')
     const [scheme, setScheme] = useState('sftp')
+    const [values, setValues] = useState({ host: '', port: '', user: '', password: '' })
 
     useEffect(() => { 
-        file.length && setName( parse(file).name )
+        if (file.length) {
+            setName( parse(file).name )
+            window.f5.get(file).then(({scheme, host, port, user, password}) => {
+                setScheme(scheme)
+                setValues({host, port: String(port), user, password})
+            })
+        }
     }, [file])
 
     const {
         register,
-        handleSubmit,
         formState: { errors, isValid },
         control,
         getValues
-    } = useForm<FormValues>({ mode: 'all' })
-    const onSubmit: SubmitHandler<FormValues> = (data) => console.log('Form submitted with: ', data)
-
+    } = useForm<FormValues>({ mode: 'all', values })
 
     const buttons = [
         {
             id: ModalButtonID.Cancel,
-            label: 'Cancel',
-
+            label: 'Cancel'
         },
         {
             id: 'save',
@@ -67,11 +69,15 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
 
     const onModalClose = async (id: string) => {
         if (id == 'save' || id == ModalButtonID.Ok) {
-            const data = { scheme, ...getValues() }
+            const data = evolve({
+                host: trim,
+                port: parseInt,
+                user: trim
+            }, { scheme, ...getValues() })
             if (!data.port) {
-                data.port = scheme == 'sftp' ? '22' : '21'
+                data.port = scheme == 'sftp' ? 22 : 21
             }
-            await window.f5.write(createURI(LocalFileSystemID, file), JSON.stringify(data))
+            await window.f5.save(file, data)
         }
         if (id == ModalButtonID.Ok) {
             onConnect(file)            
@@ -82,11 +88,11 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
     return <>
         {file.length > 0 &&
             <Modal buttons={buttons} onClose={onModalClose}>
-                <form className={styles.root} onSubmit={handleSubmit(onSubmit)}>
+                <form className={styles.root} onSubmit={e => e.preventDefault()}>
                     <h1>{name}</h1>
 
                     <label>Protocol:</label>
-                    <Select options={connTypes} onChange={setScheme} />
+                    <Select options={schemes} onChange={setScheme} value={scheme} />
 
                     <ul>
                         <li>

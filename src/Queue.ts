@@ -184,7 +184,9 @@ export default class Queue {
             this.sendState(0)
             if (this.doneCnt == this.totalCnt) {
                 this.onComplete()
-                touched.forEach((files, dir) => this.watcher.refresh(createURI(this.connId, dir)))
+                touched.forEach((files, dir) => {
+                    this.watcher.refresh(createURI(this.connId, dir))
+                })
             }
         })
     }
