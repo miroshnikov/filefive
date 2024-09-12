@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Workspace from '../Workspace/Workspace'
 import styles from './App.less'
-import { useMap, useSubscribe } from '../../hooks'
+import { useMap, useSubscribe, useShortcuts } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
 import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
@@ -16,41 +16,12 @@ import { command$ } from '../../observables/command'
 import { file$ } from '../../observables/file'
 import { CommandID } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
-import { equals, isEmpty, complement, whereEq } from 'ramda'
 
 
 
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
     let title = (connectionName ? connectionName + ' - ' : '') + parse(remotePath).name
     document.querySelector<HTMLElement>('head > title').innerText = title
-}
-
-const codes = [
-    'delete',
-    'backspace',
-    'escape',
-    'equal',
-    'minus',
-    'backslash',
-    'slash',
-    'intlbackslash',
-    'comma',
-    'period',
-    'quote',
-    'backquote',
-    'semicolon',
-    'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12'
-]
-function cmdFromKey(e: KeyboardEvent, shortcuts: AppSettings['keybindings']): CommandID|null {
-    let key = [
-        e.altKey ? 'alt' : '',
-        e.ctrlKey ? 'ctrl' : '',
-        e.metaKey ? 'meta' : '',
-        e.shiftKey ? 'shift' : '',
-        codes.find(equals(e.code)) ?? e.code.replace('Key', '').replace('Digit', '').toLowerCase()
-    ].filter(complement(isEmpty)).join('+')
-    const binding = shortcuts.find(whereEq({key}))
-    return binding ? binding.command as CommandID : null
 }
 
 
@@ -72,19 +43,7 @@ export default function App () {
         )
     )
 
-    useEffect(() => {
-        if (appSettings) {
-            const onKey = (e: KeyboardEvent) => {
-                const id = cmdFromKey(e, appSettings.keybindings)
-                if (id) {
-                    e.preventDefault()
-                    command$.next({id})
-                }
-            }
-            document.addEventListener('keydown', onKey)
-            return () => document.removeEventListener('keydown', onKey)
-        }
-    }, [appSettings])
+    useShortcuts(appSettings?.keybindings ?? [], id => command$.next({id: id as CommandID}), [appSettings])
 
     useSubscribe(() => 
         command$.subscribe(cmd => {
