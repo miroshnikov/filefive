@@ -36,9 +36,12 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
     useEffect(() => { 
         if (file.length) {
             setName( parse(file).name )
-            window.f5.get(file).then(({scheme, host, port, user, password}) => {
-                setScheme(scheme)
-                setValues({host, port: String(port), user, password})
+            window.f5.get(file).then(config => {
+                if (config) {
+                    const {scheme, host, port, user, password} = config
+                    setScheme(scheme)
+                    setValues({host, port: String(port), user, password})
+                }
             })
         }
     }, [file])

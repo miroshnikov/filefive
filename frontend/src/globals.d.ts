@@ -27,7 +27,7 @@ export interface F5 {
     write(path: URI, content: string): Promise<void>
     rename(path: URI, name: string): Promise<void>
 
-    get(path: Path): Promise<ConnectionConfig>
+    get(path: Path): Promise<ConnectionConfig|null>
     save(path: Path, settings: SaveConnectionSettings): Promise<void>
 
     resolve(id: string, action: QueueAction): void

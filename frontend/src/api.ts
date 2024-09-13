@@ -50,7 +50,7 @@ window.f5 = {
     write: (path, content) => invoke<void>('write', { path, content }),
     rename: (path, name) => invoke<void>('rename', { path, name }),
 
-    get: (path) => invoke<ConnectionConfig>('get', { path }),
+    get: (path) => invoke<ConnectionConfig|null>('get', { path }),
     save: (path, settings) => invoke<void>('save', { path, settings }),
 
     resolve: (id, action) => invoke<void>('resolve', { id, action }),
