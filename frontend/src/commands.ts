@@ -2,6 +2,7 @@ import { URI } from '../../src/types'
 
 
 export enum CommandID {
+    Copy = 'copy',
     Delete = 'delete',
     SelectAll = 'select-all',
     NewDir = 'new-dir',
@@ -18,7 +19,13 @@ export enum CommandID {
     CopyName = 'copy-name'
 }
 
-type FileCommand = CommandID.Rename|CommandID.Edit|CommandID.CopyURI|CommandID.CopyPath|CommandID.CopyRelativePath|CommandID.CopyName
+type FileCommand = 
+    |CommandID.Rename
+    |CommandID.Edit
+    |CommandID.CopyURI
+    |CommandID.CopyPath
+    |CommandID.CopyRelativePath
+    |CommandID.CopyName
 
 export type Command = { label?: string } & (
     | { id: Exclude<CommandID, FileCommand> }

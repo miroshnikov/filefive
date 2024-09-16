@@ -27,6 +27,7 @@ i18next
                     "num_of_files_other": "{{count}} files",
                     "downloading": "Downloading $t(num_of_files, {'count': {{count}} }) from <strong>{{- conn}}</strong>",
                     "uploading": "Uploading $t(num_of_files, {'count': {{count}} }) to <strong>{{- conn}}</strong>",
+                    "deleting": "Deleting $t(num_of_files, {'count': {{count}} }) in <strong>{{- conn}}</strong>",
                     "modified": "Modified: {{val, datetime(dateStyle: 'full', timeStyle: 'long')}}"
                 }
             }

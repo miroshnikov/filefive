@@ -4,7 +4,7 @@ import { URI, ConnectionID, LocalFileSystemID, Files, Path } from './types'
 import { createURI, parseURI, connectionID } from './utils/URI'
 import Password from './Password'
 import unqid from './utils/uniqid'
-import logger, { LogFS } from './log'
+import logger, { LogFS, id as logConnectionId } from './log'
 import Local from './fs/Local'
 import SFtp, { ATTRIBUTES as SFTP_ATTRIBUTES } from './fs/SFtp'
 import Ftp, { ATTRIBUTES as FTP_ATTRIBUTES } from './fs/Ftp'
@@ -33,7 +33,6 @@ export default class {
     }
 
     static close(id: ConnectionID) {
-        logger.log(`close shared ${id} ${this.shared.count(id)}`)
         this.shared.dec(id)?.close()
     }
 
@@ -73,7 +72,9 @@ export default class {
                 this.pools[id][poolId] = { fs, idle: false }
                 return [fs, poolId]
             } catch (e) {
-                this.limits.set(id, Object.entries(this.pools[id]).length)
+                const limit = Object.entries(this.pools[id]).length
+                this.limits.set(id, limit)
+                logger.log(`❗ Max number of connections ${limit} reached for `, await logConnectionId(id))
             }
         }
     }
@@ -111,7 +112,7 @@ export default class {
                     user, 
                     password,
                     port, 
-                    error => logger.error(error)
+                    error => logger.error('SFTP error:', error)
                 )
             }
             case 'ftp': {
@@ -120,7 +121,7 @@ export default class {
                     user, 
                     password,
                     port, 
-                    error => logger.error(error) 
+                    error => logger.error('FTP error:', error) 
                 )
             }
             default: 

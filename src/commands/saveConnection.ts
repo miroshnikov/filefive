@@ -21,12 +21,15 @@ export type SaveConnectionSettings =
 
 
 export default async function (path: Path, settings: SaveConnectionSettings) {
+    const content = stat(path) ? await read(path) : null
     if (stat(path)) {
-        console.log('save to existing', path, await read(path))
-    } else {
-        console.log('save to new', path)
+        console.log('save to existing', path, content)
+        if (!content) {
+            throw new Error(`cant read connection file: ${path}`)
+        }
     }
-    let config = stat(path) ? JSON.parse( await read(path) ) as ConnectionConfig : {} as Partial<ConnectionConfig>
+
+    let config = content ? JSON.parse(content) as ConnectionConfig : {} as Partial<ConnectionConfig>
 
     if ('scheme' in settings) {
         config = {...config, ...omit(['password'], settings)}

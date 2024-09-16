@@ -21,6 +21,8 @@ interface Props {
     connect: (path: Path) => void
     toolbar: ToolbarItem[]
     tabindex: number
+    onFocus: () => {}
+    onBlur: () => {}
 }
 
 const settings: ExplorerSettings = {
@@ -43,7 +45,7 @@ const settings: ExplorerSettings = {
     sort: ['name', SortOrder.Asc]
 }
 
-export default function Connections({ path, onChange, onSelect, connect, toolbar, tabindex }: Props) {
+export default function Connections({ path, onChange, onSelect, connect, toolbar, onFocus, onBlur, tabindex }: Props) {
     const appSettings = useContext(AppSettingsContext)
 
     const [selected, setSelected] = useState<Path[]>([])
@@ -82,6 +84,8 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
             toolbar={toolbar}
             tabindex={tabindex}
             onNewFile={uri => setConnectionFile(parseURI(uri).path)}
+            onFocus={onFocus}
+            onBlur={onBlur}
         /> 
         <ConnectionForm file={connectionFile} onConnect={connect} onClose={() => setConnectionFile('')} />
     </>

@@ -50,13 +50,7 @@ export default function Workspace({onChange}: Props) {
     )
     
     useEffect(() => {
-        if (connection) {
-            window.f5.save(connection.file, connection)
-            // window.f5.write(
-            //     createURI(LocalFileSystemID, connection.file), 
-            //     JSON.stringify(connection)
-            // )
-        }
+        connection && window.f5.save(connection.file, connection)
     }, [connection])
 
     const updateSettings = (settings: Pick<AppSettings, 'layout'>) => {
@@ -76,19 +70,6 @@ export default function Workspace({onChange}: Props) {
                     }
                 }
             )
-            // window.f5.write(
-            //     createURI(LocalFileSystemID, connection.file), 
-            //     JSON.stringify(
-            //         mergeDeepRight(
-            //             connection, {
-            //                 path: { 
-            //                     local: localPath, 
-            //                     remote: showConnections ? connection.path.remote : remotePath 
-            //                 }
-            //             }
-            //         )
-            //     )
-            // )
         } else {
             window.f5.write(
                 createURI(LocalFileSystemID, appSettings.settings),
@@ -136,7 +117,7 @@ export default function Workspace({onChange}: Props) {
         {
             id: 'Copy',
             icon: connection ? 'upload' : 'file_copy',
-            disabled: !localSelected.length,
+            disabled: focused.current != 'local' || !localSelected.length,
             onClick: () => window.f5.copy(
                 localSelected.map(path => createURI(LocalFileSystemID, path)), 
                 createURI(connection?.id ?? LocalFileSystemID, remotePath)
@@ -164,7 +145,7 @@ export default function Workspace({onChange}: Props) {
         {
             id: 'Copy',
             icon: connection ? 'download' : 'file_copy',
-            disabled: !remoteSelected.length,
+            disabled: focused.current != 'remote' || !remoteSelected.length,
             onClick: () => window.f5.copy(
                 remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), 
                 createURI(LocalFileSystemID, localPath)
@@ -228,7 +209,7 @@ export default function Workspace({onChange}: Props) {
         {
             id: 'Copy',
             icon: 'file_copy',
-            disabled: !remoteSelected.length,
+            disabled: focused.current != 'remote' || !remoteSelected.length,
             onClick: () => window.f5.copy(
                 remoteSelected.map(path => createURI(LocalFileSystemID, path)), 
                 createURI(LocalFileSystemID, localPath)
@@ -285,11 +266,28 @@ export default function Workspace({onChange}: Props) {
                     }
                     break
                 }
+                case CommandID.Copy: {
+                    if (focused.current) {
+                        focused.current == 'local' ?
+                            window.f5.copy(
+                                localSelected.map(path => createURI(LocalFileSystemID, path)), 
+                                createURI(connection?.id ?? LocalFileSystemID, remotePath)
+                            ) :
+                            window.f5.copy(
+                                remoteSelected.map(path => createURI(showConnections ? LocalFileSystemID : connection?.id ?? LocalFileSystemID, path)), 
+                                createURI(LocalFileSystemID, localPath)
+                            )
+                    }
+                    break
+                }
                 case CommandID.Delete: {
                     if (focused.current) {
                         focused.current == 'local' ?
-                            window.f5.remove(localSelected.map(path => createURI(LocalFileSystemID, path)), false) :
-                            window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
+                            window.f5.remove(localSelected.map(path => createURI(LocalFileSystemID, path)), false) : (
+                                showConnections ? 
+                                    window.f5.remove(remoteSelected.map(path => createURI(LocalFileSystemID, path)), false) : 
+                                    window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
+                            )
                     }
                 }
             }
@@ -335,6 +333,8 @@ export default function Workspace({onChange}: Props) {
                         connect={connect}
                         toolbar={connectionsToolbar}
                         tabindex={2}
+                        onFocus={() => focused.current = 'remote'}
+                        onBlur={() => focused.current = null}
                     /> : 
                     connection ? 
                         <Explorer

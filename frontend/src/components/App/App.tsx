@@ -18,7 +18,6 @@ import { CommandID } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 
 
-
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
     let title = (connectionName ? connectionName + ' - ' : '') + parse(remotePath).name
     document.querySelector<HTMLElement>('head > title').innerText = title

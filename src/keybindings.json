@@ -34,5 +34,9 @@
     {
         "key": "ctrl+meta+c",
         "command": "copy-name"
+    },
+    {
+        "key": "f5",
+        "command": "copy"
     }
 ]

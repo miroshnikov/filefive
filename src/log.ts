@@ -15,7 +15,7 @@ const logger = console
 export default logger
 
 const cmd = async (cmd: string) => (await chalk).default.bold.bgGreen(cmd)
-const id = async (id: string) => (await chalk).default.yellow(id)
+export const id = async (id: string) => (await chalk).default.yellow(id)
 
 
 export class LogFS extends FileSystem {

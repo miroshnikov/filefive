@@ -203,7 +203,7 @@ export default class SFtp extends FileSystem {
             [STATUS_CODE.OP_UNSUPPORTED]: 'Operation unsupported',
         }
 
-        return new Error(e.message ?? ('code' in e ? STATUS_CODE_STR[e['code']] : 'Unknown error') )
+        return new Error(e.message ?? ('code' in e ? (STATUS_CODE_STR[e['code']] ?? `Code: ${e['code']}` ) : 'Unknown error') )
     }
 
     private connected: Promise<SFTPWrapper>

@@ -3,9 +3,11 @@ import { rm } from 'node:fs/promises'
 import { stat } from '../Local'
 import { isLocal, parseURI } from '../utils/URI'
 import unqid from '../utils/uniqid'
-import Queue, { queues } from '../Queue'
+import { queues } from '../queues/Queue'
+import RemoveQueue from '../queues/Remove'
 const trash = import("trash")
 import App from '../App'
+import { pipe, prop } from 'ramda'
 
 
 export default async function (files: URI[], force: boolean, connPath: string, immediately = false) {
@@ -33,21 +35,20 @@ export default async function (files: URI[], force: boolean, connPath: string, i
     } else {
         const connId = parseURI(files[0])['id']
         const id = unqid()
-        const queue = new Queue(
-            QueueType.Remove,
+        const queue = new RemoveQueue(
             connId,
-            files, 
-            '' as URI,
-            App.remoteWatcher,
+            files.map(pipe(parseURI, prop('path'))),
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
-            () => {},
             error => App.onError(error),
-            () => { 
+            () => {
                 queues.delete(id)
                 App.onQueueUpdate(id, { type: QueueEventType.Complete })
-            }
+            },
+            App.remoteWatcher
         )
+
         queues.set(id, queue)
         App.onQueueUpdate(id, { type: QueueEventType.Create, queueType: QueueType.Remove, connection: connId })
+        queue.create()
     }
 }
