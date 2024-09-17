@@ -1,4 +1,4 @@
-import { basename, dirname, join, normalize, sep } from 'node:path'
+import { basename, dirname, normalize, sep } from 'node:path'
 import { Path, QueueState, QueueActionType, QueueAction } from '../types'
 import { FileItem } from '../FileSystem'
 import { whereEq } from 'ramda'
@@ -7,6 +7,7 @@ import { Subject, Subscription } from 'rxjs'
 
 export interface Queue {
     create(): Promise<void>
+    resolve(action: QueueAction, forAll: boolean): void
     close(): void
 } 
 
@@ -20,11 +21,13 @@ export default abstract class TransmitQueue implements Queue {
 
     public abstract create(): Promise<void>
 
-    public close() {
+    public async close() {
         if (this.processing?.closed === false) {
             this.processing?.unsubscribe()
-            this.onComplete()
         }
+        await Promise.allSettled(this.transmits)
+        this.finalize()
+        this.onComplete()
     }
 
     public resolve(action: QueueAction, forAll = false) {
@@ -96,8 +99,12 @@ export default abstract class TransmitQueue implements Queue {
         transmit: (from: FileItem, dirs: string[], to: string) => Promise<void>
     ) {
         switch (action.type) {
-            case QueueActionType.Replace:
-                return transmit(from, dirs, to)
+            case QueueActionType.Replace: {
+                const p = transmit(from, dirs, to)
+                this.transmits.push(p)
+                return p
+            }
+
         }
     }
 
@@ -108,11 +115,14 @@ export default abstract class TransmitQueue implements Queue {
         }
     }
 
+    protected finalize() {}
+
     protected queue$ = new Subject<typeof this.queue[number]>()
     protected processing: Subscription
     private queue: { from: FileItem, dirs: string[], to: Path, action?: QueueAction }[] = []
     private pending: { src: FileItem, dirs: string[], to: Path, dest: FileItem }[] = []
     protected action: QueueAction
+    protected transmits: Promise<void>[] = []
     private totalCnt = 0
     private doneCnt = 0
     private totalSize = 0

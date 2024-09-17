@@ -1,6 +1,6 @@
 import { basename, dirname } from 'node:path'
 import { Queue } from './Queue'
-import { Path, ConnectionID, QueueState, FailureType } from '../types'
+import { Path, ConnectionID, QueueState, FailureType, QueueAction } from '../types'
 import { FileItem } from '../FileSystem'
 import Connection from '../Connection'
 import { createURI } from '../utils/URI'
@@ -70,6 +70,9 @@ export default class RemoveQueue implements Queue {
         this.touched.forEach((files, dir) => {
             this.watcher.refresh(createURI(this.connId, dir))
         })
+    }
+
+    public resolve(action: QueueAction, forAll: boolean): void {
     }
 
     private touched = new Map<Path, FileItem[]|null>()

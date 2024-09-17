@@ -6,7 +6,7 @@ import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
 import FileWatcher from './FileWatcher'
 import RemoteWatcher from './RemoteWatcher'
-import { queues } from './Queue'
+import { queues } from './queues/Queue'
 import Password from './Password'
 import { commands } from './commands'
 import transform from './transform'
@@ -52,7 +52,7 @@ export default class App {
             get:        ({path}: {path: Path}) => commands.getConnection(path),
             save:       ({path, settings}: {path: Path, settings: SaveConnectionSettings}) => commands.saveConnection(path, settings),
 
-            resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action),
+            resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action, false),
             stop:       ({id}: {id: string}) => queues.get(id)?.close()
         }).forEach(([name, handler]) => handle(name, handler))
 

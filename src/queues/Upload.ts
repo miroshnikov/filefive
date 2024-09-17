@@ -44,7 +44,7 @@ export default class UploadQueue extends TransmitQueue {
                         try {
                             await fs.mkdir(targetDir)
                         } catch (e) {}
-                        this.touched.add(dir)
+                        this.touched.add(targetDir)
                     }
                 }
                 await fs.put(from.path, join(...[to, ...dirs, from.name]))
@@ -80,14 +80,14 @@ export default class UploadQueue extends TransmitQueue {
             const [fs, close] = await Connection.transmit(this.connId)
             existing ? 
                 this.applyAction(a, from, dirs, to, existing, transmit.bind(this, fs)).then(close) : 
-                transmit(fs, from, dirs, to).then(close)
+                this.transmits.push( transmit(fs, from, dirs, to).then(close) )
             this.next()
         })
         this.next()
     }
 
-    public close() {
-        super.close()
+    protected finalize() {
+        console.log('CLOSED', this.touched)
         this.touched.forEach(path => this.watcher.refresh(this.connId + path as URI))
     }
 
