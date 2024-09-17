@@ -21,6 +21,13 @@ ws.onmessage = ({data}) => {
     }
 }
 
+let reload: ReturnType<typeof setTimeout> 
+ws.onclose = (e) => {
+    clearTimeout(reload)
+    console.debug('Disconnected. Reloading...')
+    reload = setTimeout(() => window.location.reload(), 2000)
+}
+
 function subscribe<Event extends {}>(channel: string, callback: (event: Event) => void) {
     const callbacks = channels.get(channel)
     channels.set(channel, callbacks ? [...callbacks, callback] : [callback])

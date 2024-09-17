@@ -49,9 +49,20 @@ export default function Workspace({onChange}: Props) {
         [connection?.id, connection, localPath, remotePath]
     )
     
-    useEffect(() => {
-        connection && window.f5.save(connection.file, connection)
-    }, [connection])
+    useEffectOnUpdate(() => {
+        if (connection) {
+            window.f5.save(
+                connection.file, 
+                { 
+                    ...connection,
+                    path: { 
+                        local: localPath, 
+                        remote: showConnections ? connection.path.remote : remotePath 
+                    }
+                }
+            )
+        }
+    }, [connection, remotePath, localPath])
 
     const updateSettings = (settings: Pick<AppSettings, 'layout'>) => {
         window.f5.write(
@@ -61,16 +72,7 @@ export default function Workspace({onChange}: Props) {
     }
 
     useEffectOnUpdate(() => {
-        if (connection) {
-            window.f5.save(
-                connection.file, {
-                    path: { 
-                        local: localPath, 
-                        remote: showConnections ? connection.path.remote : remotePath 
-                    }
-                }
-            )
-        } else {
+        if (!connection) {
             window.f5.write(
                 createURI(LocalFileSystemID, appSettings.settings),
                 JSON.stringify(

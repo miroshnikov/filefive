@@ -30,7 +30,11 @@ export default abstract class TransmitQueue implements Queue {
     public resolve(action: QueueAction, forAll = false) {
         forAll && (this.action = action)
         const drained = !this.queue.length
-        this.queue.push( ...this.pending.splice(0, forAll ? this.pending.length : 1).map(f => ({from: f.src, to: f.dest.path, action})) )
+        this.queue.push(
+            ...this.pending
+                .splice(0, forAll ? this.pending.length : 1)
+                .map(f => ({from: f.src, dirs: f.dirs, to: f.to, action}))
+        )
         drained && this.queue$.next(this.queue.shift())
         if (this.pending.length) {
             const { src, dest } = this.pending[0]
@@ -41,12 +45,19 @@ export default abstract class TransmitQueue implements Queue {
     protected async enqueue(paths: Path[], dest: Path, ls: (path: string) => Promise<FileItem[]>) {
         paths = paths.map(normalize).filter(path => !paths.find(ancestor => path.startsWith(ancestor + sep)))
 
-        const add = async (path: Path, to: Path) => {
-            const from = (await ls(dirname(path))).find(whereEq({path}))
-            from && (from.dir ? 
-                (await ls(path)).forEach(async f => await add(f.path, join(to, basename(path)))) : 
-                this.queue.push({ from, to: join(to, basename(path)) })
-            )
+        const add = async (path: Path, to: Path, dirs: string[] = []) => {
+            const parent = dirname(path)
+            const from = (await ls(parent)).find(whereEq({path}))
+            if (from) {
+                if (from.dir) {
+                    const items = await ls(path)
+                    for (const item of items) {
+                        await add(item.path, to, [...dirs, basename(path)])
+                    }
+                } else {
+                    this.queue.push({ from, to, dirs })
+                }
+            }
         }
 
         for (const path of paths) {
@@ -76,29 +87,36 @@ export default abstract class TransmitQueue implements Queue {
         })
     }
 
-    protected applyAction(action: QueueAction, from: FileItem, to: FileItem, transmit: (from: FileItem, to: string) => Promise<void>) {
+    protected applyAction(
+        action: QueueAction, 
+        from: FileItem, 
+        dirs: string[], 
+        to: string,
+        existing: FileItem, 
+        transmit: (from: FileItem, dirs: string[], to: string) => Promise<void>
+    ) {
         switch (action.type) {
             case QueueActionType.Replace:
-                return transmit(from, to.path)
+                return transmit(from, dirs, to)
         }
     }
 
-    protected putOnHold(src: FileItem, dest: FileItem) {
-        this.pending.push({src, dest})
+    protected putOnHold(src: FileItem, dirs: string[], to: Path, dest: FileItem) {
+        this.pending.push({src, dirs, to, dest})
         if (this.pending.length == 1) {
             this.onConflict(src, dest)
         }
     }
 
-    private queue: { from: FileItem, to: Path, action?: QueueAction }[] = []
-    protected queue$ = new Subject<{ from: FileItem, to: Path, action?: QueueAction }>()
+    protected queue$ = new Subject<typeof this.queue[number]>()
     protected processing: Subscription
+    private queue: { from: FileItem, dirs: string[], to: Path, action?: QueueAction }[] = []
+    private pending: { src: FileItem, dirs: string[], to: Path, dest: FileItem }[] = []
+    protected action: QueueAction
     private totalCnt = 0
     private doneCnt = 0
     private totalSize = 0
     private doneSize = 0
-    private pending: { src: FileItem, dest: FileItem }[] = []
-    protected action: QueueAction
 }
 
 export const queues = new Map<string, Queue>()

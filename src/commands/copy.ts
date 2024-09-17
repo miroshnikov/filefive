@@ -31,7 +31,7 @@ export default function (src: URI[], dest: URI) {
             from,
             to,
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
-            (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, from, to }),
+            (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, queueType: QueueType.Download, from, to }),
             error => App.onError(error),
             () => { 
                 queues.delete(id)
@@ -43,7 +43,7 @@ export default function (src: URI[], dest: URI) {
             from,
             to,
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
-            (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, from, to }),
+            (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, queueType: QueueType.Upload, from, to }),
             error => App.onError(error),
             () => { 
                 queues.delete(id)

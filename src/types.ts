@@ -118,7 +118,7 @@ export interface QueueState {
 export type QueueEvent = 
     | { type: QueueEventType.Create, queueType: QueueType, connection: ConnectionID }
     | { type: QueueEventType.Update, state: QueueState }
-    | { type: QueueEventType.Ask, from: FileItem, to: FileItem }
+    | { type: QueueEventType.Ask, queueType: QueueType, from: FileItem, to: FileItem }
     | { type: QueueEventType.Complete }
 
 

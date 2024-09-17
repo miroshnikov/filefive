@@ -31,7 +31,7 @@ export default class DownloadQueue extends TransmitQueue {
             memoizeWith(identity, (path: string) => Connection.list(this.connId, path))
         )
 
-        const transmit = async (fs: FileSystem, from: FileItem, to: Path) => {
+        const transmit = async (fs: FileSystem, from: FileItem, dirs: string[], to: Path) => {
             await touch(to)
             logger.log(`start downloading ${from.path} -> ${to}`)
             try {
@@ -43,7 +43,7 @@ export default class DownloadQueue extends TransmitQueue {
             this.sendState(from.size)
         }
 
-        this.processing = this.queue$.subscribe(async ({from, to, action}) => {
+        this.processing = this.queue$.subscribe(async ({from, dirs, to, action}) => {
             let a = action ?? this.action
             const existing = stat(to)
             if (existing) {
@@ -53,14 +53,14 @@ export default class DownloadQueue extends TransmitQueue {
                         return this.next()
                     }
                 } else {
-                    this.putOnHold(from, existing)
+                    this.putOnHold(from, dirs, to, existing)
                     return this.next()
                 }                
             }
             const [fs, close] = await Connection.transmit(this.connId)
             existing ? 
-                this.applyAction(a, from, existing, transmit.bind(this, fs)).then(close) : 
-                transmit(fs, from, to).then(close)
+                this.applyAction(a, from, dirs, to, existing, transmit.bind(this, fs)).then(close) : 
+                transmit(fs, from, dirs, to).then(close)
             this.next()
         })
         this.next()
