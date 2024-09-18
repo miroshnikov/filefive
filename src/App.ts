@@ -13,6 +13,7 @@ import transform from './transform'
 import { touch, LocalFileInfo } from './Local'
 import { createURI } from './utils/URI'
 import { SaveConnectionSettings } from './commands/saveConnection'
+import { inspect } from 'node:util'
 
 
 export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
@@ -53,7 +54,7 @@ export default class App {
             save:       ({path, settings}: {path: Path, settings: SaveConnectionSettings}) => commands.saveConnection(path, settings),
 
             resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action, false),
-            stop:       ({id}: {id: string}) => queues.get(id)?.close()
+            stop:       ({id}: {id: string}) => queues.get(id)?.stop()
         }).forEach(([name, handler]) => handle(name, handler))
 
         const emitError = emitter<Failure>('error')

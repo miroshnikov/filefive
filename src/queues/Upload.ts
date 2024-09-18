@@ -6,6 +6,7 @@ import { memoizeWith, identity, whereEq } from 'ramda'
 import Connection from '../Connection'
 import { stat, list } from '../Local'
 import RemoteWatcher from '../RemoteWatcher'
+import { createURI } from '../utils/URI'
 
 
 export default class UploadQueue extends TransmitQueue {
@@ -87,8 +88,7 @@ export default class UploadQueue extends TransmitQueue {
     }
 
     protected finalize() {
-        console.log('CLOSED', this.touched)
-        this.touched.forEach(path => this.watcher.refresh(this.connId + path as URI))
+        this.touched.forEach(path => this.watcher.refresh(createURI(this.connId, path)))
     }
 
     private touched = new Set<Path>()

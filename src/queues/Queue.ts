@@ -8,7 +8,7 @@ import { Subject, Subscription } from 'rxjs'
 export interface Queue {
     create(): Promise<void>
     resolve(action: QueueAction, forAll: boolean): void
-    close(): void
+    stop(): void
 } 
 
 export default abstract class TransmitQueue implements Queue {
@@ -21,13 +21,11 @@ export default abstract class TransmitQueue implements Queue {
 
     public abstract create(): Promise<void>
 
-    public async close() {
-        if (this.processing?.closed === false) {
-            this.processing?.unsubscribe()
+    public stop() {
+        if (!this.stopped) {
+            this.stopped = true
+            this.close()
         }
-        await Promise.allSettled(this.transmits)
-        this.finalize()
-        this.onComplete()
     }
 
     public resolve(action: QueueAction, forAll = false) {
@@ -78,6 +76,15 @@ export default abstract class TransmitQueue implements Queue {
         }
     }
 
+    protected async close() {
+        if (this.processing?.closed === false) {
+            this.processing?.unsubscribe()
+        }
+        await Promise.allSettled(this.transmits)
+        this.finalize()
+        this.onComplete()
+    }
+
     protected sendState(size: number) {
         this.doneCnt++;
         this.doneSize += size;
@@ -123,6 +130,7 @@ export default abstract class TransmitQueue implements Queue {
     private pending: { src: FileItem, dirs: string[], to: Path, dest: FileItem }[] = []
     protected action: QueueAction
     protected transmits: Promise<void>[] = []
+    protected stopped = false
     private totalCnt = 0
     private doneCnt = 0
     private totalSize = 0

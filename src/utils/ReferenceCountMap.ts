@@ -24,10 +24,15 @@ export default class<K, V> {
         if (found) {
             if (--found.count <= 0) {
                 this.entries.delete(key)
-                return found.value
             }
         }
-        return undefined
+        return found?.value
+    }
+
+    public del(key: K): V|undefined {
+        const found = this.entries.get(key)
+        found && this.entries.delete(key)
+        return found?.value
     }
 
     public count(key: K): number|undefined {

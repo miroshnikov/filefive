@@ -1,10 +1,11 @@
-import { basename, dirname } from 'node:path'
+import { basename, dirname, normalize, sep } from 'node:path'
 import { Queue } from './Queue'
 import { Path, ConnectionID, QueueState, FailureType, QueueAction } from '../types'
-import { FileItem } from '../FileSystem'
+import { FileSystem, FileItem } from '../FileSystem'
 import Connection from '../Connection'
 import { createURI } from '../utils/URI'
 import RemoteWatcher from '../RemoteWatcher'
+import { memoizeWith, nthArg } from 'ramda'
 
 
 export default class RemoveQueue implements Queue {
@@ -19,62 +20,93 @@ export default class RemoveQueue implements Queue {
 
 
     public async create() {
-        const totalCnt = this.paths.length
+        const paths = this.paths.map(normalize).filter(path => !this.paths.find(ancestor => path.startsWith(ancestor + sep)))
+
+        interface ItemToRemove {
+            path: string
+            dir: boolean
+            children: ItemToRemove[]
+        }
+
+        const ls = memoizeWith(
+            nthArg(0),
+            async (path: string, conn: FileSystem): Promise<FileItem[]|null> => {
+                try {
+                    return await conn.ls(path)
+                } catch(e) {}
+                return null
+            }
+        )
+
+        let totalCnt = 0
         let doneCnt = 0
 
-        this.paths.forEach(async path => {
-            const dir = dirname(path)
+        const add = async (path: string, tree: ItemToRemove[]): Promise<ItemToRemove[]> => {
             const [conn, close] = await Connection.transmit(this.connId)
-            if (this.closed) {
-                return
+            const file = (await ls(dirname(path), conn))?.find(f => f.name == basename(path))
+            if (!file) {
+                return tree
             }
-            if (!this.touched.has(dir)) {
-                try {
-                    this.touched.set(dir, await conn.ls(dir))
-                } catch(e) {
-                    this.touched.set(dir, null)
-                }
-            }
-            const name = basename(path)
-            const file = this.touched.get(dir)?.find(f => f.name == name)
-            if (file) {
-                try {
-                    await conn.rm(path, file.dir)
-                } catch (error) {
-                    this.onError({
-                        type: FailureType.RemoteError,
-                        id: this.connId,
-                        error
-                    })
+            this.touched.add(dirname(path))
+            const children: ItemToRemove[] = []
+            if (file.dir) {
+                for (const child of await ls(file.path, conn) ?? []) {
+                    children.push(...await add(child.path, []))
                 }
             }
             close()
-            
-            this.onState({
-                totalCnt,
-                doneCnt: ++doneCnt,
-                totalSize: 0,
-                doneSize: 0,
-                pending: 0
-            })
+            totalCnt++
+            return [...tree, { path, dir: file.dir, children }]
+        }
 
-            if (doneCnt == totalCnt) {
-                this.close()
+        const files: ItemToRemove[] = []
+        for (const path of paths) {
+            files.push( ...await add(path, []) )
+        }
+
+        if (this.stopped) {
+            return
+        }
+
+        const rm = async (item: ItemToRemove) => {
+            await Promise.allSettled( item.children.map(child => rm(child)) )
+
+            const [conn, close] = await Connection.transmit(this.connId)
+            if (this.stopped) {
+                return
             }
-        })
-    }
 
-    public close() {
-        this.closed = true
+            try {
+                await conn.rm(item.path, item.dir)
+                this.onState({
+                    totalCnt,
+                    doneCnt: ++doneCnt,
+                    totalSize: 0,
+                    doneSize: 0,
+                    pending: 0
+                })
+            } catch (error) {
+                this.onError({
+                    type: FailureType.RemoteError,
+                    id: this.connId,
+                    error
+                })
+            }
+        }
+
+        await Promise.allSettled( files.map(rm) )
+
+        this.touched.forEach(path => this.watcher.refresh(createURI(this.connId, path)))
+
         this.onComplete()
-        this.touched.forEach((files, dir) => {
-            this.watcher.refresh(createURI(this.connId, dir))
-        })
     }
 
-    public resolve(action: QueueAction, forAll: boolean): void {
+    public stop() {
+        this.stopped = true
     }
 
-    private touched = new Map<Path, FileItem[]|null>()
-    private closed = false
+    public resolve(action: QueueAction, forAll: boolean): void {}
+
+    private touched = new Set<Path>()
+    private stopped = false
 }
