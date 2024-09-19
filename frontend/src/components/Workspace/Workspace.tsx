@@ -119,6 +119,7 @@ export default function Workspace({onChange}: Props) {
         {
             id: 'Copy',
             icon: connection ? 'upload' : 'file_copy',
+            title: connection ? 'Upload Selected' : 'Copy Selected',
             disabled: focused.current != 'local' || !localSelected.length,
             onClick: () => window.f5.copy(
                 localSelected.map(path => createURI(LocalFileSystemID, path)), 
@@ -126,18 +127,21 @@ export default function Workspace({onChange}: Props) {
             )
         },
         {
-            id: 'New Folder...',
+            id: 'New_folder',
             icon: 'create_new_folder',
+            title: 'New Folder...',
             onClick: () => command$.next({id: CommandID.NewDir})
         },
         {
-            id: 'New File...',
+            id: 'New_file',
             icon: 'note_add',
+            title: 'New File...',
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
             id: 'Delete',
             icon: 'delete',
+            title: 'Delete Selected',
             disabled: !localSelected.length,
             onClick: () => command$.next({id: CommandID.Delete})
         }
@@ -145,8 +149,9 @@ export default function Workspace({onChange}: Props) {
 
     const remoteToolbar: ToolbarItem[] = [
         {
-            id: 'Copy',
+            id: 'copy',
             icon: connection ? 'download' : 'file_copy',
+            title: connection ? 'Download Selected' : 'Copy Selected',
             disabled: focused.current != 'remote' || !remoteSelected.length,
             onClick: () => window.f5.copy(
                 remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), 
@@ -154,31 +159,36 @@ export default function Workspace({onChange}: Props) {
             )
         },
         {
-            id: 'New Folder...',
+            id: 'new_folder',
             icon: 'create_new_folder',
+            title: 'New Folder...',
             onClick: () => command$.next({id: CommandID.NewDir})
         },
         {
-            id: 'New File...',
+            id: 'new_file',
             icon: 'note_add',
+            title: 'New File...',
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
             id: 'Delete',
             icon: 'delete',
+            title: 'Delete',
             disabled: !remoteSelected.length,
             onClick: () => command$.next({id: CommandID.Delete})
         },
         ...(connection ? [
             {
-                id: 'Refresh',
+                id: 'refresh',
                 icon: 'refresh',
+                title: 'Refresh',
                 disabled: false,
                 onClick: () => window.f5.refresh(createURI(connection.id, remotePath))
             },
             {
-                id: 'Disconnect',
+                id: 'disconnect',
                 icon: 'close',
+                title: 'Disconnect',
                 disabled: false,
                 onClick: () => { 
                     window.f5.disconnect(connection.id); 
@@ -193,24 +203,28 @@ export default function Workspace({onChange}: Props) {
 
     const connectionsToolbar: ToolbarItem[] = [
         {
-            id: 'Connect',
+            id: 'connect',
             icon: 'power_settings_new',
+            title: 'Connect',
             disabled: remoteSelected.length != 1,
             onClick: () => connect(remoteSelected[0])
         },
         {
-            id: 'New Folder...',
+            id: 'new_folder',
             icon: 'create_new_folder',
+            title: 'New Folder...',
             onClick: () => command$.next({id: CommandID.NewDir})
         },
         {
-            id: 'New File...',
+            id: 'new_file',
             icon: 'note_add',
+            title: 'New File...',
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
-            id: 'Copy',
+            id: 'copy',
             icon: 'file_copy',
+            title: 'Copy Selected',
             disabled: focused.current != 'remote' || !remoteSelected.length,
             onClick: () => window.f5.copy(
                 remoteSelected.map(path => createURI(LocalFileSystemID, path)), 
@@ -220,12 +234,14 @@ export default function Workspace({onChange}: Props) {
         {
             id: 'Delete',
             icon: 'delete',
+            title: 'Delete Selected',
             disabled: !remoteSelected.length,
             onClick: () => window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
         },
         {
             id: 'Close',
             icon: 'close',
+            title: 'Close Connections',
             disabled: false,
             onClick: () => {
                 setShowConnections(false)

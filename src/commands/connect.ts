@@ -52,8 +52,8 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
             }
         }
         return { id, settings }
-    } catch (error) {
-        onError(id, error)
+    } catch (e) {
+        onError(id, e)
         return false
     }
 }

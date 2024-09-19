@@ -2,7 +2,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { createWriteStream } from 'node:fs';
 import { Console } from "console"
-import { ConnectionID, Path, Files } from './types'
+import { ConnectionID, Path } from './types'
 import { FileSystem } from './FileSystem'
 const chalk = import('chalk')
 
@@ -27,9 +27,10 @@ export class LogFS extends FileSystem {
     }
 
     async open(): Promise<void> {
-        logger.log(await cmd('OPEN'), await id(this.id))
+        logger.log(await cmd('CONNECT'), await id(this.id), '...')
         try {
             const res = await this.fs.open()
+            logger.log(await cmd('CONNECTED'), await id(this.id))
             return res
         } catch (e) {
             let msg = `Could not connect to ${this.id}`

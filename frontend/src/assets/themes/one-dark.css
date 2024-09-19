@@ -27,4 +27,7 @@
     --dry-shadow-primary-color: #1f3f79;
     --dry-modal-zindex: 1000;
     --dry-modal-fade: #00000060;
+
+    --dry-tooltip-bg: var(#000);
+    --dry-tooltop-color: var(#ffffffcc);
 }

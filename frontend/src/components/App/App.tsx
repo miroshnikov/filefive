@@ -16,6 +16,7 @@ import { command$ } from '../../observables/command'
 import { file$ } from '../../observables/file'
 import { CommandID } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
+import { Tooltips } from '../../ui/components/Tooltips/Tooltips'
 
 
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
@@ -72,20 +73,24 @@ export default function App () {
         {appSettings ? 
             <AppSettingsContext.Provider value={appSettings}>
                 <div className={classNames(styles.root, {hasQueues: queues.size > 0})}>
-                    <div className={styles.toolbar}>
-                        <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
-                        <span>
-                            <button className="icon" onClick={() => command$.next({id: CommandID.Connections})}>
-                                cloud_upload
-                            </button>
-                            <button className="icon" onClick={() => command$.next({id: CommandID.Settings})}>
-                                settings
-                            </button>
-                        </span>
-                    </div>
+                    <Tooltips>
+                        <div className={styles.toolbar}>
+                            <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
+                            <span>
+                                <button className="icon" data-tooltip="Connections..." onClick={() => command$.next({id: CommandID.Connections})}>
+                                    cloud_upload
+                                </button>
+                                <button className="icon" data-tooltip="Settings..." onClick={() => command$.next({id: CommandID.Settings})}>
+                                    settings
+                                </button>
+                            </span>
+                        </div>
+                    </Tooltips>
+
                     <div className={styles.workspace}>
                         <Workspace onChange={setTitle} />
                     </div>
+
                     {queues.size > 0 && 
                         <div className={styles.queues}>
                             {Array.from(queues.entries()).map(([id, {type, connection}], i) => 

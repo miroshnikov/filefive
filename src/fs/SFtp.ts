@@ -54,13 +54,18 @@ export default class SFtp extends FileSystem {
         private onError: (e: Error) => void
     ) { 
         super()
-        this.connection.on('close', () => { this.connected = undefined })
     }
 
     async open(): Promise<SFTPWrapper> {
         if (this.connected === undefined) {
             this.connected = new Promise<SFTPWrapper>((resolve, reject) => {
                 this.connection
+                    .on('close', () => { 
+                        if (this.connected) {
+                            reject(new Error('Remote side unexpectedly closed network connection'))
+                        }
+                        this.connected = undefined
+                    })
                     .on('ready', () => {
                         this.connection.sftp((e, sftp) => {
                             if (e) {
@@ -78,8 +83,8 @@ export default class SFtp extends FileSystem {
                 host: this.host, 
                 username: this.user, 
                 password: this.password, 
-                port: this.port
-                // debug: s => console.log('DEBUG', s)
+                port: this.port,
+                debug: s => console.log('DEBUG', s)
             })
         }
         return this.connected
