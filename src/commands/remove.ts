@@ -27,7 +27,7 @@ export default async function (files: URI[], force: boolean, connPath: string, i
         } else {
             (await trash).default(paths)
         }
-        paths.forEach(path => {
+         paths.forEach(path => {
             if (path.startsWith(connPath) && !stat(path).dir) {
                 // TODO delete from credentials
             }

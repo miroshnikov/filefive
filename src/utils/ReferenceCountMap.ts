@@ -24,9 +24,10 @@ export default class<K, V> {
         if (found) {
             if (--found.count <= 0) {
                 this.entries.delete(key)
+                return found.value
             }
         }
-        return found?.value
+        return undefined
     }
 
     public del(key: K): V|undefined {

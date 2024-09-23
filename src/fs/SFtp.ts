@@ -6,6 +6,8 @@ import { FileSystem, FileItem, FileAttributes, FileAttributeType } from '../File
 // https://github.com/mscdex/ssh2/blob/master/SFTP.md
 // https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-13#section-4.3
 
+// see also https://github.com/theophilusx/ssh2-sftp-client
+
 
 export const ATTRIBUTES: FileAttributes = [
     {
@@ -84,7 +86,7 @@ export default class SFtp extends FileSystem {
                 username: this.user, 
                 password: this.password, 
                 port: this.port,
-                debug: s => console.log('DEBUG', s)
+                // debug: s => console.log('DEBUG', s)
             })
         }
         return this.connected

@@ -6,7 +6,7 @@ import { parseURI, createURI } from '../../../../src/utils/URI'
 import { dirname, descendantOf, join } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
-import List, { Column, Columns, ColumnType, Items } from '../List/List'
+import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
 import { filter, tap } from 'rxjs/operators'
@@ -16,6 +16,7 @@ import numeral from 'numeral'
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
 import { format } from 'date-fns'
+import { t } from 'i18next'
  
 
 const sortFiles = (files: Files, columns: Columns) => {
@@ -39,6 +40,7 @@ const fmt = (name: keyof FileInfo, value: FileInfo[string], isDir: boolean) =>
 const toColumns = curry((columns: Columns, files: Files) => {
     return files.map(file => ({
         ...pick(['URI', 'path', 'dir'], file),
+        ...{ rawSize: file.size },
         ...columns.reduce((props, {name}) => ({...props, 
             [name]: fmt(name, file[name], file.dir)
         }), {})
@@ -96,11 +98,12 @@ export default function Explorer ({
     const [columns, setColumns] = useState<Columns>([])
     const [root, setRoot] = useState<string>(path)
     const [parent, setParent] = useState<string>(null)
-    const [files, setFiles] = useState<Items>([])
+    const [files, setFiles] = useState<(Item & {rawSize: number})[]>([])
     const selected = useRef<string[]>([])
     const watched = useRef<string[]>([])
     const folders = useRef<Record<string, Files>>({})
     const [focused, setFocused] = useState(false)
+    const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
     
     const expanded = useRef<string[]>([])
 
@@ -249,6 +252,38 @@ export default function Explorer ({
         })
     }
 
+    useEffect(() => {
+        if (selected.current?.length) {
+            setStat(
+                selected.current.reduce(
+                    (stat, selected) => {
+                        const file = files.find(({path}) => path == selected)
+                        if (file) {
+                            return { 
+                                dirs: Number(stat.dirs + Number(file.dir)), 
+                                files: stat.files + Number(!file.dir),
+                                size: stat.size + file.rawSize
+                            }
+                        }
+                        return stat
+                    },
+                    {files: 0, dirs: 0, size: 0}
+                )
+            )
+        } else {
+            setStat(
+                files.reduce(
+                    (stat, f) => ({ 
+                        dirs: stat.dirs + Number(f.dir), 
+                        files: stat.files + Number(!f.dir),
+                        size: stat.size + f.rawSize
+                    }), 
+                    {files: 0, dirs: 0, size: 0}
+                )
+            )
+        }
+    }, [files, selected.current])
+
     return <div className={classNames(styles.root, {focused})} onFocus={() => {setFocused(true); onFocus?.()}} onBlur={() => {setFocused(false); onBlur?.()}}>
         <header>
             {toolbar.length ? 
@@ -281,7 +316,13 @@ export default function Explorer ({
             tabindex={tabindex}
             parent={parent}
         />
-
+        <footer>
+            {(stat.files || stat.dirs) && 
+                t('selected', {'count': selected.current?.length ?? 0 }) +
+                t('stat', {files: stat.files, dirs: stat.dirs, joinArrays: (stat.files && stat.dirs) ? ', ' : ''}) + '. ' +
+                t('size', {size: numeral(stat.size).format('0.0 b')})
+            }
+        </footer>
         {list.current &&
             <ContextMenu target={list.current}>
                 <Menu items={showColumnsMenu ? columnsMenu : contextMenu} shortcuts={appSettings.keybindings} />

@@ -73,6 +73,7 @@ export default class RemoveQueue implements Queue {
 
             const [conn, close] = await Connection.transmit(this.connId)
             if (this.stopped) {
+                close()
                 return
             }
 
@@ -91,6 +92,8 @@ export default class RemoveQueue implements Queue {
                     id: this.connId,
                     error
                 })
+            } finally {
+                close()
             }
         }
 

@@ -385,7 +385,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         ref={setRef(rootEl, fwdRef)}
         onFocus={() => isActive.current = true}
         onBlur={() => isActive.current = false}
-        onContextMenu={() => onMenu(root, true)}
+        onClick={e => e.target == rootEl.current && setTarget(null)}
+        onContextMenu={() => { setTarget(null); onMenu(root, true)}}
         onDragOver={e => parent && e.preventDefault()}
         onDragEnter={() => setDraggedOver(true)}
         onDragLeave={() => setDraggedOver(false)}
