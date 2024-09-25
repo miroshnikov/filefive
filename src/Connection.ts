@@ -4,7 +4,7 @@ import { URI, ConnectionID, LocalFileSystemID, Files, Path } from './types'
 import { createURI, parseURI, connectionID } from './utils/URI'
 import Password from './Password'
 import unqid from './utils/uniqid'
-import logger, { LogFS, id as logConnectionId } from './log'
+import logger, { LogFS } from './log'
 import Local from './fs/Local'
 import SFtp, { ATTRIBUTES as SFTP_ATTRIBUTES } from './fs/SFtp'
 import Ftp, { ATTRIBUTES as FTP_ATTRIBUTES } from './fs/Ftp'
@@ -47,9 +47,7 @@ export default class {
             return Promise.resolve([conn[0], () => this.release(id, conn[1])])
         }
         return new Promise((resolve) => {
-            console.log('Cant connect, put on hold', Object.entries(this.pools[id]).length)
             const onRelease = (poolId: string) => {
-                console.log('reuse connection', Object.entries(this.pools[id]).length)
                 const { fs } = this.pools[id][poolId]
                 resolve([fs, () => this.release(id, poolId)])
             }
@@ -60,26 +58,52 @@ export default class {
     private static async hold(id: ConnectionID): Promise<[FileSystem, string]|undefined> {
         !(id in this.pools) && (this.pools[id] = {})
         const pool = Object.entries(this.pools[id])
-        const conn = pool.find(([, { idle }]) => idle !== false)
+        const conn = this.getIdle(id)
+        if (conn) {
+            return conn
+        }
+        if (pool.length < this.getLimit(id)) {
+            return new Promise((resolve) => {
+                const connect = async () => {
+                    const conn = this.getIdle(id)
+                    if (conn) {
+                        resolve(conn)
+                        return
+                    }
+                    const poolId = unqid()
+                    try {
+                        const fs = await this.createFromId(id)
+                        await fs.open()
+                        this.pools[id][poolId] = { fs, idle: false }
+                        resolve([fs, poolId])
+                    } catch (e) {}
+                    resolve(undefined)
+                }
+                this.queue.push( connect )
+                if (this.queue.length == 1) {
+                    this.connectNext()
+                }
+            })
+        }
+        return undefined
+    }
+
+    private static getIdle(id: ConnectionID): [FileSystem, string]|null {
+        const conn = Object.entries(this.pools[id]).find(([, { idle }]) => idle !== false)
         if (conn) {
             conn[1].idle !== false && clearTimeout(conn[1].idle)
             conn[1].idle = false
+            console.log('Reuse connection')
             return [conn[1].fs, conn[0]]
         }
-        if (pool.length < this.getLimit(id)) {
-            const poolId = unqid()
-            try {
-                const fs = await this.createFromId(id)
-                await fs.open()
-                this.pools[id][poolId] = { fs, idle: false }
-                return [fs, poolId]
-            } catch (e) {
-                // const limit = Object.entries(this.pools[id]).length
-                // this.limits.set(id, limit)
-                // logger.log(`❗ Max number of connections ${limit} reached for `, await logConnectionId(id))
-            }
-        }
+        return null
+    }
 
+    private static async connectNext() {
+        while (this.queue.length) {
+            await this.queue[0]()
+            this.queue.shift()
+        }
     }
 
     private static release(id: ConnectionID, poolId: string) {
@@ -139,6 +163,7 @@ export default class {
 
     private static shared = new ReferenceCountMap<ConnectionID, FileSystem>
     private static pools: Record<string, Record<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = {}
+    private static queue: Function[] = []
     private static pending: Record<string, ((id: string) => void)[]> = {}
     private static limits = new Map<ConnectionID, number>()
 }

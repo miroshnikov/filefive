@@ -30,10 +30,14 @@ export default class RemoveQueue implements Queue {
 
         const ls = memoizeWith(
             nthArg(0),
-            async (path: string, conn: FileSystem): Promise<FileItem[]|null> => {
+            async (path: string): Promise<FileItem[]|null> => {
+                const [conn, close] = await Connection.transmit(this.connId)
                 try {
                     return await conn.ls(path)
-                } catch(e) {}
+                } catch(e) {
+                } finally {
+                    close()
+                }
                 return null
             }
         )
@@ -42,23 +46,18 @@ export default class RemoveQueue implements Queue {
         let doneCnt = 0
 
         const add = async (path: string, tree: ItemToRemove[]): Promise<ItemToRemove[]> => {
-            const [conn, close] = await Connection.transmit(this.connId)
-            const file = (await ls(dirname(path), conn))?.find(f => f.name == basename(path))
+            const parent = dirname(path)
+            const file = (await ls(parent))?.find(f => f.name == basename(path))
             if (!file) {
                 return tree
             }
-            this.touched.add(dirname(path))
+            this.touched.add(parent)
             let children: ItemToRemove[] = []
             if (file.dir) {
                 children = (await Promise.all(
-                    (await ls(file.path, conn) ?? []).map(({path}) => add(path, []))
+                    (await ls(file.path) ?? []).map(({path}) => add(path, []))
                 )).flat(1)
-
-                // for (const child of await ls(file.path, conn) ?? []) {
-                //     children.push(...await add(child.path, []))
-                // }
             }
-            close()
             totalCnt++
             return [...tree, { path, dir: file.dir, children }]
         }

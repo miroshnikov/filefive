@@ -1,6 +1,6 @@
 import TransmitQueue from './Queue'
 import { dirname, join } from 'node:path'
-import { Path, URI, ConnectionID, QueueState, QueueActionType } from '../types'
+import { Path, ConnectionID, QueueState, QueueActionType } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import { memoizeWith, identity, whereEq } from 'ramda'
 import Connection from '../Connection'
@@ -31,7 +31,7 @@ export default class UploadQueue extends TransmitQueue {
             this.dest,
             path => Promise.resolve(list(path))
         )
-        this.touched.add(this.dest)
+        this.touched.set(this.dest, Promise.resolve())
         
         const transmit = async (fs: FileSystem, from: FileItem, dirs: string[], to: string) => {
             if (!(stat(from.path))) {
@@ -43,25 +43,28 @@ export default class UploadQueue extends TransmitQueue {
                     targetDir = join(targetDir, dir)
                     if (!this.touched.has(targetDir)) {
                         try {
-                            await fs.mkdir(targetDir)
+                            this.touched.set(targetDir, fs.mkdir(targetDir))
                         } catch (e) {}
-                        this.touched.add(targetDir)
-                        console.log('TOCHED: ', this.touched)
                     }
+                    await this.touched.get(targetDir)
                 }
-                await fs.put(from.path, join(to, ...dirs, from.name))
-            } catch(error) { 
+                await fs.put(from.path, join(targetDir, from.name))
+            } catch(error) {
                 this.onError(error) 
             }
             this.sendState(from.size)
         }
 
-        const ls = memoizeWith(identity, async (path: string) => {
-            try {
-                return await conn.ls(path)
-            } catch(e) {}
-            return []
-        })
+        const ls = memoizeWith(
+            identity, 
+            async (path: string) => {
+                try {
+                    return await conn.ls(path)
+                } catch(e) {}
+                return []
+            }
+        )
+
         const exists = async (path: string) => (await ls(dirname(path))).find(whereEq({path}))
 
         this.processing = this.queue$.subscribe(async ({from, dirs, to, action}) => {
@@ -89,8 +92,12 @@ export default class UploadQueue extends TransmitQueue {
     }
 
     protected finalize() {
-        this.touched.forEach(path => this.watcher.refresh(createURI(this.connId, path)))
+        Array.from(this.touched.keys()).forEach(path => 
+            this.watcher.refresh(createURI(this.connId, path))
+        )
+        // this.touched.forEach(path => this.watcher.refresh(createURI(this.connId, path)))
     }
 
-    private touched = new Set<Path>()
+    private touched = new Map<Path, Promise<void>>()
+    // private touched = new Set<Path>()
 }

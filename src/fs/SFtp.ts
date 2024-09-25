@@ -71,7 +71,7 @@ export default class SFtp extends FileSystem {
                     .on('ready', () => {
                         this.connection.sftp((e, sftp) => {
                             if (e) {
-                                reject(this.decodeError(e))
+                                reject(new Error(this.decodeError(e)))
                                 return
                             }
                             this.connection.on('error', this.onError)
@@ -98,15 +98,19 @@ export default class SFtp extends FileSystem {
 
     async pwd(): Promise<Path> {
         const sftp = await this.open()
-        return new Promise((resolve, reject) => sftp.realpath('.', (e, current) => e ? reject(this.decodeError(e)) : resolve(current)))
+        return new Promise((resolve, reject) => 
+            sftp.realpath('.', (e, current) => e ? 
+                reject(new Error(this.decodeError(e))) : 
+                resolve(current))
+        )
     }
     
     async ls(dir: Path): Promise<FileItem[]> {
         const sftp = await this.open()
         return new Promise((resolve, reject) => {
-            sftp.readdir(dir, (err, list) => {
-                err ? 
-                    reject(this.decodeError(err)) : 
+            sftp.readdir(dir, (e, list) => {
+                e ? 
+                    reject(new Error(`LS: Can't get contents of ${dir} ` + this.decodeError(e))) :
                     resolve(
                         list
                             .map(f => ({
@@ -127,14 +131,14 @@ export default class SFtp extends FileSystem {
     async get(fromRemote: Path, toLocal: Path): Promise<void> {
         const sftp = await this.open()
         return new Promise((resolve, reject) => {
-            sftp.fastGet(fromRemote, toLocal, (e) => e ? reject(this.decodeError(e)) : resolve())
+            sftp.fastGet(fromRemote, toLocal, (e) => e ? reject(new Error(this.decodeError(e))) : resolve())
         })
     }
 
     async put(fromLocal: Path, toRemote: Path): Promise<void> {
         const sftp = await this.open() 
         return new Promise((resolve, reject) => {
-            sftp.fastPut(fromLocal, toRemote, e => e ? reject(this.decodeError(e)) : resolve())
+            sftp.fastPut(fromLocal, toRemote, e => e ? reject(new Error(this.decodeError(e))) : resolve())
         })
     }
 
@@ -143,18 +147,21 @@ export default class SFtp extends FileSystem {
         const files = []
         return new Promise((resolve, reject) => {
             if (recursive) {
-                // sftp.readdir(path)
-                sftp.rmdir(path, e => e ? reject(this.decodeError(e)) : resolve())
-
+                sftp.rmdir(path, e => e ? reject(new Error(this.decodeError(e))) : resolve())
             } else {
-                sftp.unlink(path, e => e ? reject(this.decodeError(e)) : resolve())
+                sftp.unlink(path, e => e ? reject(new Error(this.decodeError(e))) : resolve())
             }
         })
     }
 
     async mkdir(path: Path): Promise<void> {
         const sftp = await this.open() 
-        return new Promise((resolve, reject) => sftp.mkdir(path, e => e ? reject(e) : resolve()))
+        return new Promise((resolve, reject) => sftp.mkdir(
+            path, 
+            e => e ? 
+                reject(new Error(`MKDIR: Can't create directory ${path} `+ this.decodeError(e))) :
+                resolve()
+        ))
     }
 
     async write(path: Path, s: string): Promise<void> {
@@ -166,7 +173,7 @@ export default class SFtp extends FileSystem {
                     return
                 }
                 const data = Buffer.from(s)
-                sftp.write(h, data, 0, data.length, 0, (e) => e ? reject(this.decodeError(e)) : resolve())
+                sftp.write(h, data, 0, data.length, 0, (e) => e ? reject(new Error(this.decodeError(e))) : resolve())
             })
     
         })
@@ -177,7 +184,7 @@ export default class SFtp extends FileSystem {
         return new Promise((resolve, reject) => {
             sftp.rename(path, join(dirname(path), name), e => {
                 if (e) {
-                    reject(this.decodeError(e))
+                    reject(new Error(this.decodeError(e)))
                     return
                 }
                 resolve()
@@ -214,7 +221,7 @@ export default class SFtp extends FileSystem {
                 (e['code'] in STATUS_CODE_STR ? STATUS_CODE_STR[e['code']] : `Code: ${e['code']}`) : 
                 'Unknown error'
         )
-        return new Error(msg)
+        return msg
     }
 
     private connected: Promise<SFTPWrapper>
