@@ -209,8 +209,12 @@ export default class SFtp extends FileSystem {
             [STATUS_CODE.CONNECTION_LOST]: 'Connection lost',
             [STATUS_CODE.OP_UNSUPPORTED]: 'Operation unsupported',
         }
-
-        return new Error(e.message ?? ('code' in e ? (STATUS_CODE_STR[e['code']] ?? `Code: ${e['code']}` ) : 'Unknown error') )
+        let msg = e.message || (
+            ('code' in e) ?
+                (e['code'] in STATUS_CODE_STR ? STATUS_CODE_STR[e['code']] : `Code: ${e['code']}`) : 
+                'Unknown error'
+        )
+        return new Error(msg)
     }
 
     private connected: Promise<SFTPWrapper>

@@ -29,8 +29,8 @@ export default function ({id, type, connection, active}: {id: string, type: Queu
                 if (event.type == QueueEventType.Update) {
                     const { totalCnt, doneCnt, totalSize, doneSize } = event.state
                     setCount(totalCnt-doneCnt)
-                    setTotal(totalSize)
-                    setDone(doneSize)
+                    setTotal(type == QueueType.Remove ? totalCnt : totalSize)
+                    setDone(type == QueueType.Remove ? doneCnt : doneSize)
                 }
             }),
         [id]

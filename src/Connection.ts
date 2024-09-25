@@ -47,7 +47,9 @@ export default class {
             return Promise.resolve([conn[0], () => this.release(id, conn[1])])
         }
         return new Promise((resolve) => {
+            console.log('Cant connect, put on hold', Object.entries(this.pools[id]).length)
             const onRelease = (poolId: string) => {
+                console.log('reuse connection', Object.entries(this.pools[id]).length)
                 const { fs } = this.pools[id][poolId]
                 resolve([fs, () => this.release(id, poolId)])
             }
@@ -72,11 +74,12 @@ export default class {
                 this.pools[id][poolId] = { fs, idle: false }
                 return [fs, poolId]
             } catch (e) {
-                const limit = Object.entries(this.pools[id]).length
-                this.limits.set(id, limit)
-                logger.log(`❗ Max number of connections ${limit} reached for `, await logConnectionId(id))
+                // const limit = Object.entries(this.pools[id]).length
+                // this.limits.set(id, limit)
+                // logger.log(`❗ Max number of connections ${limit} reached for `, await logConnectionId(id))
             }
         }
+
     }
 
     private static release(id: ConnectionID, poolId: string) {

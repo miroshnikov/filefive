@@ -30,4 +30,7 @@
 
     --dry-tooltip-bg: var(#000);
     --dry-tooltop-color: var(#ffffffcc);
+
+    --dry-progress-color: var(--primary);
+    --dry-progress-bg: var(--background);
 }

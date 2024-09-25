@@ -253,8 +253,8 @@ export default function Explorer ({
     }
 
     useEffect(() => {
-        if (selected.current?.length) {
-            setStat(
+        setStat(
+            selected.current?.length ?
                 selected.current.reduce(
                     (stat, selected) => {
                         const file = files.find(({path}) => path == selected)
@@ -262,26 +262,22 @@ export default function Explorer ({
                             return { 
                                 dirs: Number(stat.dirs + Number(file.dir)), 
                                 files: stat.files + Number(!file.dir),
-                                size: stat.size + file.rawSize
+                                size: stat.size + (file.dir ? 0 : file.rawSize)
                             }
                         }
                         return stat
                     },
                     {files: 0, dirs: 0, size: 0}
-                )
-            )
-        } else {
-            setStat(
+                ) :
                 files.reduce(
                     (stat, f) => ({ 
                         dirs: stat.dirs + Number(f.dir), 
                         files: stat.files + Number(!f.dir),
-                        size: stat.size + f.rawSize
+                        size: stat.size + (f.dir ? 0 : f.rawSize)
                     }), 
                     {files: 0, dirs: 0, size: 0}
                 )
-            )
-        }
+        )
     }, [files, selected.current])
 
     return <div className={classNames(styles.root, {focused})} onFocus={() => {setFocused(true); onFocus?.()}} onBlur={() => {setFocused(false); onBlur?.()}}>
@@ -317,10 +313,10 @@ export default function Explorer ({
             parent={parent}
         />
         <footer>
-            {(stat.files || stat.dirs) && 
+            {(stat.files || stat.dirs) ?  
                 t('selected', {'count': selected.current?.length ?? 0 }) +
                 t('stat', {files: stat.files, dirs: stat.dirs, joinArrays: (stat.files && stat.dirs) ? ', ' : ''}) + '. ' +
-                t('size', {size: numeral(stat.size).format('0.0 b')})
+                t('size', {size: numeral(stat.size).format('0.0 b')}) : ''
             }
         </footer>
         {list.current &&

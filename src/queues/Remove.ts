@@ -48,11 +48,15 @@ export default class RemoveQueue implements Queue {
                 return tree
             }
             this.touched.add(dirname(path))
-            const children: ItemToRemove[] = []
+            let children: ItemToRemove[] = []
             if (file.dir) {
-                for (const child of await ls(file.path, conn) ?? []) {
-                    children.push(...await add(child.path, []))
-                }
+                children = (await Promise.all(
+                    (await ls(file.path, conn) ?? []).map(({path}) => add(path, []))
+                )).flat(1)
+
+                // for (const child of await ls(file.path, conn) ?? []) {
+                //     children.push(...await add(child.path, []))
+                // }
             }
             close()
             totalCnt++
@@ -69,7 +73,9 @@ export default class RemoveQueue implements Queue {
         }
 
         const rm = async (item: ItemToRemove) => {
-            await Promise.allSettled( item.children.map(child => rm(child)) )
+            for (const child of item.children) {
+                await rm(child)
+            }
 
             const [conn, close] = await Connection.transmit(this.connId)
             if (this.stopped) {
@@ -78,7 +84,7 @@ export default class RemoveQueue implements Queue {
             }
 
             try {
-                await conn.rm(item.path, item.dir)
+                conn.rm(item.path, item.dir)
                 this.onState({
                     totalCnt,
                     doneCnt: ++doneCnt,

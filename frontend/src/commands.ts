@@ -10,6 +10,7 @@ export enum CommandID {
     Settings = 'settings',
     Connections = 'connections',
     Refresh = 'refresh',
+    CollapseAll = 'collapse-all',
     
     Rename = 'rename',
     Edit = 'edit',
@@ -20,12 +21,12 @@ export enum CommandID {
 }
 
 type FileCommand = 
-    |CommandID.Rename
-    |CommandID.Edit
-    |CommandID.CopyURI
-    |CommandID.CopyPath
-    |CommandID.CopyRelativePath
-    |CommandID.CopyName
+    | CommandID.Rename
+    | CommandID.Edit
+    | CommandID.CopyURI
+    | CommandID.CopyPath
+    | CommandID.CopyRelativePath
+    | CommandID.CopyName
 
 export type Command = { label?: string } & (
     | { id: Exclude<CommandID, FileCommand> }

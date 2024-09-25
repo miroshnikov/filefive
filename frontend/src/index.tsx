@@ -39,7 +39,7 @@ i18next
                         "$t(num_of_files, {'count': {{files}} })", 
                         "$t(num_of_dirs, {'count': {{dirs}} })"
                     ],
-                    "size": "Files' size: {{size}}"
+                    "size": "Files size: {{size}}"
                 }
             }
         }

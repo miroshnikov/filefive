@@ -46,9 +46,10 @@ export default class UploadQueue extends TransmitQueue {
                             await fs.mkdir(targetDir)
                         } catch (e) {}
                         this.touched.add(targetDir)
+                        console.log('TOCHED: ', this.touched)
                     }
                 }
-                await fs.put(from.path, join(...[to, ...dirs, from.name]))
+                await fs.put(from.path, join(to, ...dirs, from.name))
             } catch(error) { 
                 this.onError(error) 
             }

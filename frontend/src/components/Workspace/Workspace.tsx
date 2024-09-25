@@ -139,6 +139,12 @@ export default function Workspace({onChange}: Props) {
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
+            id: 'Collapse_all',
+            icon: 'unfold_less',
+            title: 'Collapse All Folders',
+            onClick: () => command$.next({id: CommandID.CollapseAll})
+        },
+        {
             id: 'Delete',
             icon: 'delete',
             title: 'Delete Selected',
@@ -169,6 +175,12 @@ export default function Workspace({onChange}: Props) {
             icon: 'note_add',
             title: 'New File...',
             onClick: () => command$.next({id: CommandID.NewFile})
+        },
+        {
+            id: 'Collapse_all',
+            icon: 'unfold_less',
+            title: 'Collapse All Folders',
+            onClick: () => command$.next({id: CommandID.CollapseAll})
         },
         {
             id: 'Delete',
@@ -230,6 +242,12 @@ export default function Workspace({onChange}: Props) {
                 remoteSelected.map(path => createURI(LocalFileSystemID, path)), 
                 createURI(LocalFileSystemID, localPath)
             )
+        },
+        {
+            id: 'Collapse_all',
+            icon: 'unfold_less',
+            title: 'Collapse All Folders',
+            onClick: () => command$.next({id: CommandID.CollapseAll})
         },
         {
             id: 'Delete',

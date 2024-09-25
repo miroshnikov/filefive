@@ -226,6 +226,11 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                     setSelected(items.map(prop('path')))
                     break
                 }
+                case CommandID.CollapseAll: {
+                    expanded.forEach(onToggle)
+                    setExpanded([])
+                    break
+                }
                 case CommandID.NewDir: 
                 case CommandID.NewFile: {
                     const inDir = target ? (dirOf(target, items) || root) : root

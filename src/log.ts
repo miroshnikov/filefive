@@ -16,6 +16,7 @@ export default logger
 
 const cmd = async (cmd: string) => (await chalk).default.bold.bgGreen(cmd)
 export const id = async (id: string) => (await chalk).default.yellow(id)
+export const err = async (error: string) => (await chalk).default.red('⚠ ' + error)
 
 
 export class LogFS extends FileSystem {
@@ -37,7 +38,7 @@ export class LogFS extends FileSystem {
             if ('message' in e) {
                 msg += ': ' + e.message
             }
-            logger.error(e) 
+            logger.error(await err(msg))
             throw msg
         }
     }
