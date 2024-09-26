@@ -47,6 +47,9 @@ export default abstract class TransmitQueue implements Queue {
         paths = paths.map(normalize).filter(path => !paths.find(ancestor => path.startsWith(ancestor + sep)))
 
         const add = async (path: Path, to: Path, dirs: string[] = []) => {
+            if (this.stopped) {
+                return
+            }
             const parent = dirname(path)
             const from = (await ls(parent)).find(whereEq({path}))
             if (from) {
@@ -126,8 +129,8 @@ export default abstract class TransmitQueue implements Queue {
 
     protected queue$ = new Subject<typeof this.queue[number]>()
     protected processing: Subscription
-    private queue: { from: FileItem, dirs: string[], to: Path, action?: QueueAction }[] = []
-    private pending: { src: FileItem, dirs: string[], to: Path, dest: FileItem }[] = []
+    protected queue: { from: FileItem, dirs: string[], to: Path, action?: QueueAction }[] = []
+    protected pending: { src: FileItem, dirs: string[], to: Path, dest: FileItem }[] = []
     protected action: QueueAction
     protected transmits: Promise<void>[] = []
     protected stopped = false

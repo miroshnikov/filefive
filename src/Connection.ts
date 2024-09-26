@@ -100,11 +100,14 @@ export default class {
     }
 
     private static async connectNext() {
-        while (this.queue.length) {
-            await this.queue[0]()
-            this.queue.shift()
-        }
+        this.queue
+            .splice(0, Math.max(this.maxStartups - this.numOfStartups, 0))
+            .map(connect => async () => { await connect(); this.numOfStartups--; this.connectNext() })
+            .forEach(f => { this.numOfStartups++; f() })
     }
+
+    private static numOfStartups = 0
+    private static maxStartups = 7      // for SFTP see MaxStartups in /etc/ssh/sshd_config
 
     private static release(id: ConnectionID, poolId: string) {
         const conn = this.pools[id]?.[poolId]

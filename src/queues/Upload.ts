@@ -26,6 +26,7 @@ export default class UploadQueue extends TransmitQueue {
 
     public async create() {
         const conn = Connection.get(this.connId)
+
         await this.enqueue(
             this.src, 
             this.dest,
@@ -48,9 +49,11 @@ export default class UploadQueue extends TransmitQueue {
                     }
                     await this.touched.get(targetDir)
                 }
-                await fs.put(from.path, join(targetDir, from.name))
+                if (!this.stopped) {
+                    await fs.put(from.path, join(targetDir, from.name))
+                }
             } catch(error) {
-                this.onError(error) 
+                this.onError(error)
             }
             this.sendState(from.size)
         }
@@ -64,6 +67,10 @@ export default class UploadQueue extends TransmitQueue {
                 return []
             }
         )
+
+        if (this.stopped) {
+            return
+        }
 
         const exists = async (path: string) => (await ls(dirname(path))).find(whereEq({path}))
 
@@ -95,9 +102,7 @@ export default class UploadQueue extends TransmitQueue {
         Array.from(this.touched.keys()).forEach(path => 
             this.watcher.refresh(createURI(this.connId, path))
         )
-        // this.touched.forEach(path => this.watcher.refresh(createURI(this.connId, path)))
     }
 
     private touched = new Map<Path, Promise<void>>()
-    // private touched = new Set<Path>()
 }

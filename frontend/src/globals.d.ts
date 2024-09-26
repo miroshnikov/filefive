@@ -30,7 +30,7 @@ export interface F5 {
     get(path: Path): Promise<ConnectionConfig|null>
     save(path: Path, settings: SaveConnectionSettings): Promise<void>
 
-    resolve(id: string, action: QueueAction): void
+    resolve(id: string, action: QueueAction, forAll: boolean): void
     stop(id: string): void
     onQueueUpdate(listener: (id: string, event: QueueEvent) => void): void
 }

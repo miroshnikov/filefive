@@ -60,7 +60,7 @@ window.f5 = {
     get: (path) => invoke<ConnectionConfig|null>('get', { path }),
     save: (path, settings) => invoke<void>('save', { path, settings }),
 
-    resolve: (id, action) => invoke<void>('resolve', { id, action }),
+    resolve: (id, action, forAll) => invoke<void>('resolve', { id, action, forAll }),
     stop: id => invoke<void>('stop', { id }),
     onQueueUpdate: listener => subscribe<{id: string, event: QueueEvent}>('queue', ({id, event}) => listener(id, event))
 }

@@ -1,12 +1,10 @@
-import { basename, dirname, join } from 'node:path'
+import { join } from 'node:path'
 import TransmitQueue from './Queue'
-import { Path, URI, ConnectionID, QueueType, QueueState, QueueActionType, QueueAction, FailureType } from '../types'
+import { Path, ConnectionID, QueueState, QueueActionType } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
-import { stat, touch, list } from '../Local'
+import { stat, touch } from '../Local'
 import Connection from '../Connection'
-import { parseURI, createURI } from '../utils/URI'
-import { pipe, prop, memoizeWith, identity, whereEq } from 'ramda'
-import logger from '../log'
+import { lsRemote } from './Remove'
 
 
 export default class DownloadQueue extends TransmitQueue {
@@ -28,24 +26,27 @@ export default class DownloadQueue extends TransmitQueue {
         await this.enqueue(
             this.src, 
             this.dest,
-            memoizeWith(identity, (path: string) => Connection.list(this.connId, path))
+            lsRemote(this.connId)
         )
 
         const transmit = async (fs: FileSystem, from: FileItem, dirs: string[], to: Path) => {
-            await touch(to)
-            logger.log(`start downloading ${from.path} -> ${to}`)
+            const dest = join(to, ...dirs, from.name)
+            await touch(dest)
             try {
-                await fs.get(from.path, to)
+                await fs.get(from.path, dest)
             } catch(error) { 
                 this.onError(error) 
             }
-            logger.log(`end downloading ${from.path}`)
             this.sendState(from.size)
+        }
+
+        if (this.stopped) {
+            return
         }
 
         this.processing = this.queue$.subscribe(async ({from, dirs, to, action}) => {
             let a = action ?? this.action
-            const existing = stat(to)
+            const existing = stat(join(to, ...dirs, from.name))
             if (existing) {
                 if (a) {
                     if (a.type == QueueActionType.Skip) {

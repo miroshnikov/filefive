@@ -1,9 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { FileItem } from '../../../../src/FileSystem'
 import { queue$ } from '../../observables/queue'
 import { useSubscribe } from '../../hooks'
 import { QueueEventType, QueueActionType, QueueType } from '../../../../src/types'
-import { Modal } from '../../ui/components'
+import { Modal, Checkbox } from '../../ui/components'
 import { dirname, basename } from '../../utils/path'
 import styles from './QueueAction.less'
 import numeral from 'numeral'
@@ -20,12 +20,15 @@ export default function QueueAction() {
 
     const [conflict, setConflict] = useState<QueueConflict>(null)
     const [conflicts, setConflicts] = useState<QueueConflict[]>([])
+    const forAll = useRef(false)
 
     const proceed = (id: string) => {
         if (id == 'ok') {
-            window.f5.resolve(conflict.id, { type: QueueActionType.Replace })
+            window.f5.resolve(conflict.id, { type: QueueActionType.Replace }, forAll.current)
+        } else if (id == 'cancel') {
+            window.f5.resolve(conflict.id, { type: QueueActionType.Skip }, forAll.current)
         } else {
-            window.f5.resolve(conflict.id, { type: QueueActionType.Skip })
+            window.f5.stop(conflict.id)
         }
         conflicts.length ?
             setConflicts(conflicts => { 
@@ -48,7 +51,7 @@ export default function QueueAction() {
 
     return <>
         {conflict &&
-            <Modal onClose={proceed} buttons={[{id: 'cancel', label: 'Skip'}, {id: 'ok', label: 'Replace'}]}>
+            <Modal onClose={proceed} buttons={[{id: 'stop', label: 'Stop'}, {id: 'cancel', label: 'Skip'}, {id: 'ok', label: 'Replace'}]}>
                 <div className={styles.root}>
                     <p>The destination already contains a file called <strong>{basename(conflict.to.path)}</strong></p>
                     <p>Would you like to replace the existing file in <strong>{dirname(conflict.to.path)}</strong></p>
@@ -70,6 +73,9 @@ export default function QueueAction() {
                             Modified: {new Date(conflict?.from.modified).toLocaleString()}
                         </></p>
                     </div>
+                    <Checkbox value={forAll.current} onChange={() => forAll.current = !forAll.current}>
+                        Apply chosen action to the rest of files
+                    </Checkbox>
                 </div>
             </Modal> 
         }

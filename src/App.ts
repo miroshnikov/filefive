@@ -53,7 +53,7 @@ export default class App {
             get:        ({path}: {path: Path}) => commands.getConnection(path),
             save:       ({path, settings}: {path: Path, settings: SaveConnectionSettings}) => commands.saveConnection(path, settings),
 
-            resolve:    ({id, action}: {id: string, action: QueueAction}) => queues.get(id)?.resolve(action, false),
+            resolve:    ({id, action, forAll}: {id: string, action: QueueAction, forAll: boolean}) => queues.get(id)?.resolve(action, forAll),
             stop:       ({id}: {id: string}) => queues.get(id)?.stop()
         }).forEach(([name, handler]) => handle(name, handler))
 
