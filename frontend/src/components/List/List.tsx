@@ -12,6 +12,7 @@ import { command$ } from '../../observables/command'
 import EditFileName from '../EditFileName/EditFileName'
 import debounce from '../../utils/debounce'
 import { parseURI } from "../../../../src/utils/URI"
+import { Tooltips } from '../../ui/components'
 
 
 export enum ColumnType {
@@ -398,6 +399,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         onDrop={e => dragDrop(root, e)}
         tabIndex={tabindex}
     >
+        <Tooltips delay={800}>
         <table>
             <thead>
                 <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.()}}>
@@ -481,8 +483,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                                 i == 0 ?
                                     <td key={name}
                                         className={classNames({d: item.dir})}
-                                        title={item.path}
                                         data-depth={depth(item.path)-rootDepth}
+                                        data-tooltip={item.path}
                                     >
                                         <div className={classNames({expanded: expanded.includes(item.path)})}>
                                             {item.dir && 
@@ -500,5 +502,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                 )}
             </tbody>
         </table>
+        </Tooltips>
     </div>
 })

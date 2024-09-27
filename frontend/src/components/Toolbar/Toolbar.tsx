@@ -1,6 +1,8 @@
-import React from "react"
-import { Tooltips } from '../../ui/components/Tooltips/Tooltips'
+import React, { useContext } from "react"
+import { Tooltips, getTooltipShortcut } from '../../ui/components/Tooltips/Tooltips'
 import styles from './Toolbar.less'
+import { AppSettingsContext } from '../../context/config'
+
 
 export interface ToolbarItem {
     id: string
@@ -11,16 +13,24 @@ export interface ToolbarItem {
 }
 
 export default function Toolbar({items, onClick}: {items: ToolbarItem[], onClick?: (id: ToolbarItem['id']) => void}) {
-    return <Tooltips>
-        <div className={styles.root}>
-            {items.map(item => 
-                <button key={item.id}
-                    className="icon" 
-                    disabled={item.disabled ?? false}
-                    onClick={e => { e.preventDefault(); e.stopPropagation(); onClick?.(item.id); item.onClick() }}
-                    data-tooltip={item.title}
-                >{item.icon}</button>
-            )}
-        </div>
-    </Tooltips>
+    const appSettings = useContext(AppSettingsContext)
+
+    if (!appSettings) {
+        return <></>
+    }
+
+    return (
+        <Tooltips>
+            <div className={styles.root}>
+                {items.map(item => 
+                    <button key={item.id}
+                        className="icon" 
+                        disabled={item.disabled ?? false}
+                        onClick={e => { e.preventDefault(); e.stopPropagation(); onClick?.(item.id); item.onClick() }}
+                        data-tooltip={item.title + getTooltipShortcut(item.id, appSettings.keybindings)}
+                    >{item.icon}</button>
+                )}
+            </div>
+        </Tooltips>
+    )
 }

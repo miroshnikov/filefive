@@ -16,7 +16,7 @@ import { command$ } from '../../observables/command'
 import { file$ } from '../../observables/file'
 import { CommandID } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
-import { Tooltips } from '../../ui/components/Tooltips/Tooltips'
+import { Tooltips, getTooltipShortcut } from '../../ui/components'
 
 
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
@@ -77,10 +77,18 @@ export default function App () {
                         <div className={styles.toolbar}>
                             <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
                             <span>
-                                <button className="icon" data-tooltip="Connections..." onClick={() => command$.next({id: CommandID.Connections})}>
+                                <button 
+                                    className="icon" 
+                                    data-tooltip={"Connections..." + getTooltipShortcut(CommandID.Connections, appSettings.keybindings)}
+                                    onClick={() => command$.next({id: CommandID.Connections})}
+                                >
                                     cloud_upload
                                 </button>
-                                <button className="icon" data-tooltip="Settings..." onClick={() => command$.next({id: CommandID.Settings})}>
+                                <button 
+                                    className="icon" 
+                                    data-tooltip={"Settings..." + getTooltipShortcut(CommandID.Settings, appSettings.keybindings)}
+                                    onClick={() => command$.next({id: CommandID.Settings})}
+                                >
                                     settings
                                 </button>
                             </span>

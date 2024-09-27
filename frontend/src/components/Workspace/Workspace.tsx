@@ -117,7 +117,7 @@ export default function Workspace({onChange}: Props) {
 
     const localToolbar: ToolbarItem[] = [
         {
-            id: 'Copy',
+            id: CommandID.Copy,
             icon: connection ? 'upload' : 'file_copy',
             title: connection ? 'Upload Selected' : 'Copy Selected',
             disabled: focused.current != 'local' || !localSelected.length,
@@ -127,25 +127,25 @@ export default function Workspace({onChange}: Props) {
             )
         },
         {
-            id: 'New_folder',
+            id: CommandID.NewDir,
             icon: 'create_new_folder',
             title: 'New Folder...',
             onClick: () => command$.next({id: CommandID.NewDir})
         },
         {
-            id: 'New_file',
+            id: CommandID.NewFile,
             icon: 'note_add',
             title: 'New File...',
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
-            id: 'Collapse_all',
+            id: CommandID.CollapseAll,
             icon: 'unfold_less',
             title: 'Collapse All Folders',
             onClick: () => command$.next({id: CommandID.CollapseAll})
         },
         {
-            id: 'Delete',
+            id: CommandID.Delete,
             icon: 'delete',
             title: 'Delete Selected',
             disabled: !localSelected.length,
@@ -155,7 +155,7 @@ export default function Workspace({onChange}: Props) {
 
     const remoteToolbar: ToolbarItem[] = [
         {
-            id: 'copy',
+            id: CommandID.Copy,
             icon: connection ? 'download' : 'file_copy',
             title: connection ? 'Download Selected' : 'Copy Selected',
             disabled: focused.current != 'remote' || !remoteSelected.length,
@@ -165,25 +165,25 @@ export default function Workspace({onChange}: Props) {
             )
         },
         {
-            id: 'new_folder',
+            id: CommandID.NewDir,
             icon: 'create_new_folder',
             title: 'New Folder...',
             onClick: () => command$.next({id: CommandID.NewDir})
         },
         {
-            id: 'new_file',
+            id: CommandID.NewFile,
             icon: 'note_add',
             title: 'New File...',
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
-            id: 'Collapse_all',
+            id: CommandID.CollapseAll,
             icon: 'unfold_less',
             title: 'Collapse All Folders',
             onClick: () => command$.next({id: CommandID.CollapseAll})
         },
         {
-            id: 'Delete',
+            id: CommandID.Delete,
             icon: 'delete',
             title: 'Delete',
             disabled: !remoteSelected.length,
@@ -191,7 +191,7 @@ export default function Workspace({onChange}: Props) {
         },
         ...(connection ? [
             {
-                id: 'refresh',
+                id: CommandID.Refresh,
                 icon: 'refresh',
                 title: 'Refresh',
                 disabled: false,
@@ -222,19 +222,19 @@ export default function Workspace({onChange}: Props) {
             onClick: () => connect(remoteSelected[0])
         },
         {
-            id: 'new_folder',
+            id: CommandID.NewDir,
             icon: 'create_new_folder',
             title: 'New Folder...',
             onClick: () => command$.next({id: CommandID.NewDir})
         },
         {
-            id: 'new_file',
+            id: CommandID.NewFile,
             icon: 'note_add',
             title: 'New File...',
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
-            id: 'copy',
+            id: CommandID.Copy,
             icon: 'file_copy',
             title: 'Copy Selected',
             disabled: focused.current != 'remote' || !remoteSelected.length,
@@ -244,13 +244,13 @@ export default function Workspace({onChange}: Props) {
             )
         },
         {
-            id: 'Collapse_all',
+            id: CommandID.CollapseAll,
             icon: 'unfold_less',
             title: 'Collapse All Folders',
             onClick: () => command$.next({id: CommandID.CollapseAll})
         },
         {
-            id: 'Delete',
+            id: CommandID.Delete,
             icon: 'delete',
             title: 'Delete Selected',
             disabled: !remoteSelected.length,
