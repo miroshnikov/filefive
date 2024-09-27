@@ -11,7 +11,7 @@ import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
 import { filter, tap } from 'rxjs/operators'
 import { useEffectOnUpdate } from '../../hooks'
-import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, assoc } from 'ramda'
+import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, toLower } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
@@ -23,7 +23,11 @@ const sortFiles = (files: Files, columns: Columns) => {
     const sortings = [descend<FileInfo>(prop('dir'))]
     const sortedBy = columns.find(({sort}) => !!sort)
     if (sortedBy) {
-        sortings.push(sortedBy.sort == SortOrder.Asc ? ascend(prop(sortedBy.name)) : descend(prop(sortedBy.name)))
+        const getLowerName = pipe(prop(sortedBy.name), toLower)
+        sortings.push(sortedBy.sort == SortOrder.Asc ? 
+            ascend(getLowerName) : 
+            descend(getLowerName)
+        )
     }
     return sortWith(sortings, files)
 }

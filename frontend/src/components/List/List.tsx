@@ -278,7 +278,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         const dragImage = createDragImage(dragged.length == 1 ? items[i].name : ''+dragged.length)
         e.dataTransfer.setDragImage(dragImage, 0, 0)
         setTimeout(() => document.body.removeChild(dragImage), 0)
-        // TODO window.electronAPI.startDrag(items[i].path)      // https://www.electronjs.org/docs/latest/tutorial/native-file-drag-drop
     }
 
     const dragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {

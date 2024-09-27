@@ -62,13 +62,19 @@ export default class App {
 
         const emitDir = emitter<{uri: URI, files: Files}>('dir')
         const sendDirContent = (uri: URI, files: Files) => emitDir({uri, files})
-        this.localWatcher = new LocalWatcher((path, files) => 
-            sendDirContent(
-                createURI(LocalFileSystemID, path), 
-                files.map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
-            )
+        this.localWatcher = new LocalWatcher(
+            (path, files) => 
+                sendDirContent(
+                    createURI(LocalFileSystemID, path), 
+                    files.map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
+                ),
+            path => this.onError({ type: FailureType.MissingDir, uri: createURI(LocalFileSystemID, path) }), 
         )
-        this.remoteWatcher = new RemoteWatcher(sendDirContent, uri => this.onError({ type: FailureType.MissingDir, uri }), transform)
+        this.remoteWatcher = new RemoteWatcher(
+            sendDirContent, 
+            uri => this.onError({ type: FailureType.MissingDir, uri }), 
+            transform
+        )
 
         const emitFile = emitter<{path: Path, stat: LocalFileInfo|null}>('file')
         const sendFileStat = (path: Path, stat: LocalFileInfo|null) => emitFile({path, stat})
