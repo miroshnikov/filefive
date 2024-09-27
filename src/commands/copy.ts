@@ -13,19 +13,14 @@ export default function (src: URI[], dest: URI) {
     if (!src.length) {
         return
     }
-
-    if (isLocal(src[0]) && isLocal(dest)) {
-        console.log('TODO local copy (as upload?)')
-        return
-    }
-    
-    const queueType = isLocal(dest) ? QueueType.Download : QueueType.Upload
+   
+    const queueType = isLocal(dest) ? (isLocal(src[0]) ? QueueType.Copy : QueueType.Download) : QueueType.Upload
     const connId = parseURI(queueType == QueueType.Download ? src[0] : dest)['id']
     const from = src.map(pipe(parseURI, prop('path')))
     const to = parseURI(dest).path 
     const id = unqid()
 
-    const queue = queueType == QueueType.Download ?
+    const queue = queueType == QueueType.Download || queueType == QueueType.Copy ?
         new DownloadQueue(
             connId,
             from,

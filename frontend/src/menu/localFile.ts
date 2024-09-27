@@ -75,6 +75,17 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
                     ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
                     false
                 )
+            },
+            separator: true
+        },
+        {
+            id: 'clear',
+            label: 'Clear Content',
+            click: () => {
+                window.f5.write(
+                    createURI(LocalFileSystemID, path),
+                    ''
+                )
             }
         }
     ]

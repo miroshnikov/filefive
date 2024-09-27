@@ -42,6 +42,10 @@ export default class {
     }
 
     static async transmit(id: ConnectionID): Promise<[FileSystem, () => void]> {
+        if (id == LocalFileSystemID) {
+            return [new Local, () => {}]
+        }
+
         const conn = await this.hold(id)
         if (conn) {
             return Promise.resolve([conn[0], () => this.release(id, conn[1])])

@@ -95,6 +95,7 @@ export type Command1 = (args: CommandArgs) => Promise<CommandResult>
 
 
 export enum QueueType {
+    Copy = 'copy',
     Download = 'download',
     Upload = 'upload',
     Remove = 'remove'
@@ -123,8 +124,8 @@ export type QueueEvent =
 
 
 export enum QueueActionType {
-    Skip,
-    Replace
+    Skip = 'skip',
+    Replace = 'replace'
     // Rename
 }
 
