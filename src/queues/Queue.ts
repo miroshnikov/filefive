@@ -46,7 +46,7 @@ export default abstract class TransmitQueue implements Queue {
     protected async enqueue(paths: Path[], dest: Path, ls: (path: string) => Promise<FileItem[]>) {
         paths = paths.map(normalize).filter(path => !paths.find(ancestor => path.startsWith(ancestor + sep)))
 
-        const add = async (path: Path, to: Path, dirs: string[] = []) => {
+        const add = async (path: Path, to: Path, dirs: string[] = []): Promise<any> => {
             if (this.stopped) {
                 return
             }
@@ -54,23 +54,20 @@ export default abstract class TransmitQueue implements Queue {
             const from = (await ls(parent)).find(whereEq({path}))
             if (from) {
                 if (from.dir) {
-                    const items = await ls(path)
-                    for (const item of items) {
-                        await add(item.path, to, [...dirs, basename(path)])
-                    }
+                    return Promise.all(
+                        (await ls(from.path)).map(child => add(child.path, to, [...dirs, basename(path)]))
+                    )
                 } else {
                     this.queue.push({ from, to, dirs })
+                    this.totalCnt++
+                    this.totalSize += from.size
                 }
             }
         }
 
-        for (const path of paths) {
-            await add(path, dest)
-        }
-
-        this.queue.forEach(({from: {size}}) => { this.totalCnt++; this.totalSize += size })
+        return Promise.all(paths.map(path => add(path, dest)))
     }
-
+   
     protected next() {
         if (this.queue.length) {
             this.queue$.next(this.queue.shift())
