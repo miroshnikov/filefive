@@ -1,8 +1,9 @@
 import { basename, dirname, normalize, sep } from 'node:path'
-import { Path, QueueState, QueueActionType, QueueAction } from '../types'
+import { Path, ConnectionID, QueueState, QueueActionType, QueueAction } from '../types'
 import { FileItem } from '../FileSystem'
-import { whereEq } from 'ramda'
 import { Subject, Subscription } from 'rxjs'
+import { whereEq, memoizeWith, nthArg } from 'ramda'
+import Connection from '../Connection'
 
 
 export interface Queue {
@@ -10,6 +11,21 @@ export interface Queue {
     resolve(action: QueueAction, forAll: boolean): void
     stop(): void
 } 
+
+export const lsRemote = (connId: ConnectionID) => 
+    memoizeWith(
+        nthArg(0),
+        async (path: string): Promise<FileItem[]|null> => {
+            const [conn, close] = await Connection.transmit(connId)
+            try {
+                return await conn.ls(path)
+            } catch(e) {
+            } finally {
+                close()
+            }
+            return null
+        }
+    )
 
 export default abstract class TransmitQueue implements Queue {
 
@@ -111,7 +127,6 @@ export default abstract class TransmitQueue implements Queue {
                 this.transmits.push(p)
                 return p
             }
-
         }
     }
 
@@ -131,10 +146,10 @@ export default abstract class TransmitQueue implements Queue {
     protected action: QueueAction
     protected transmits: Promise<void>[] = []
     protected stopped = false
-    private totalCnt = 0
-    private doneCnt = 0
-    private totalSize = 0
-    private doneSize = 0
+    protected totalCnt = 0
+    protected doneCnt = 0
+    protected totalSize = 0
+    protected doneSize = 0
 }
 
 export const queues = new Map<string, Queue>()

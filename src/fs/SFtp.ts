@@ -159,9 +159,38 @@ export default class SFtp extends FileSystem {
         return new Promise((resolve, reject) => sftp.mkdir(
             path, 
             e => e ? 
-                reject(new Error(`MKDIR: Can't create directory ${path} `+ this.decodeError(e))) :
+                reject(new Error(`MKDIR: Can't create directory ${path} ` + this.decodeError(e))) :
                 resolve()
         ))
+    }
+
+    async mv(from: Path, to: Path): Promise<void> {
+        const sftp = await this.open()
+        // return new Promise((resolve, reject) => 
+        //     this.connection.exec(`mv ${from} ${to}`, (e, stream) => {
+        //         if (e) {
+        //             reject(new Error(`MV: Can't move ${from} -> ${to} ` + this.decodeError(e)))
+        //             return
+        //         }
+        //         stream.on('exit', (code) => {
+        //             if (code) {
+        //                 reject(new Error(`MV: Can't move ${from} -> ${to} the process's return code is ${code}`))
+        //             }
+        //             resolve()
+        //         }).stderr.on('data', data => {
+        //             reject(new Error(`MV: Can't move ${from} -> ${to} ${data}`))
+        //         })
+        //     })
+        // )
+        return new Promise((resolve, reject) => {
+            sftp.rename(from, to, e => {
+                if (e) {
+                    reject(new Error(this.decodeError(e)))
+                    return
+                }
+                resolve()
+            })
+        })
     }
 
     async write(path: Path, s: string): Promise<void> {
@@ -179,18 +208,7 @@ export default class SFtp extends FileSystem {
         })
     }
 
-    async rename(path: Path, name: string): Promise<void> {
-        const sftp = await this.open()
-        return new Promise((resolve, reject) => {
-            sftp.rename(path, join(dirname(path), name), e => {
-                if (e) {
-                    reject(new Error(this.decodeError(e)))
-                    return
-                }
-                resolve()
-            })
-        })
-    }
+
 
     private decodeError(e: Error & { code?: number }) {
         const STATUS_CODE = {

@@ -64,6 +64,16 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
                     ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(id, path)),
                     false
                 )
+            }
+        },
+        {
+            id: 'clear',
+            label: 'Clear Content',
+            click: () => {
+                window.f5.write(
+                    createURI(id, path),
+                    ''
+                )
             },
             separator: true
         },

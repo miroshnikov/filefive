@@ -96,6 +96,7 @@ export type Command1 = (args: CommandArgs) => Promise<CommandResult>
 
 export enum QueueType {
     Copy = 'copy',
+    Move = 'move',
     Download = 'download',
     Upload = 'upload',
     Remove = 'remove'

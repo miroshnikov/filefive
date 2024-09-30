@@ -1,4 +1,3 @@
-import * as path from 'node:path'
 import { mkdir, writeFile, rename } from 'node:fs/promises'
 import { FileItem, FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
 import { pwd, list, copy, del } from '../Local'
@@ -55,11 +54,14 @@ export default class Local extends FileSystem {
         await mkdir(path, { recursive: true })
     }
 
-    async write(path: Path, data: string): Promise<void> {
-        await writeFile(path, data)
+    async mv(from: Path, to: Path): Promise<void> {
+        try {
+            await del(to)
+        } catch (e) {}
+        await rename(from, to)
     }
 
-    async rename(p: Path, name: string): Promise<void> {
-        await rename(p, path.join(path.dirname(p), name))
+    async write(path: Path, data: string): Promise<void> {
+        await writeFile(path, data)
     }
 }

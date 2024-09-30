@@ -108,20 +108,20 @@ export class LogFS extends FileSystem {
         }
     }
 
-    async write(path: Path, data: string) {
-        logger.log(await cmd('WRITE'), await id(this.id) + path)
+    async mv(from: Path, to: Path) {
+        logger.log(await cmd('MV'), await id(this.id) + from, ' → ', to)
         try {
-            return await this.fs.write(path, data)
+            return await this.fs.mv(from, to)
         } catch (e) {
             logger.error(e) 
             throw e
         }
     }
 
-    async rename(path: Path, name: string) {
-        logger.log(await cmd('RENAME'), await id(this.id) + path, ' → ', name)
+    async write(path: Path, data: string) {
+        logger.log(await cmd('WRITE'), await id(this.id) + path)
         try {
-            return await this.fs.rename(path, name)
+            return await this.fs.write(path, data)
         } catch (e) {
             logger.error(e) 
             throw e

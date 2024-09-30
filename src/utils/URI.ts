@@ -1,4 +1,4 @@
-import { URI, ConnectionID, Path } from '../types'
+import { URI, ConnectionID, Path, LocalFileSystemID } from '../types'
 import { URL } from 'whatwg-url'
 
 export function isLocal(uri: string) {
@@ -6,15 +6,14 @@ export function isLocal(uri: string) {
 }
 
 export function connectionID(scheme: string, user: string, host: string, port:number): ConnectionID {
-    return scheme == 'file' ? 'file://' : `${scheme}://${user}@${host}:${port}` as ConnectionID
+    return scheme == 'file' ? LocalFileSystemID : `${scheme}://${user}@${host}:${port}` as ConnectionID
 }
 
-// URL is a TypeScript implementation (not equal to Javascript's one!)
+
+// https://url.spec.whatwg.org/#special-scheme
+// https://jsdom.github.io/whatwg-url/#url=bmF0czovL2xvY2FsaG9zdDo0MjAwLw==&base=ZmlsZTovLy8=
 
 export function parseURI(uri: URI) {
-    // https://url.spec.whatwg.org/#special-scheme
-    // https://jsdom.github.io/whatwg-url/#url=bmF0czovL2xvY2FsaG9zdDo0MjAwLw==&base=ZmlsZTovLy8=
-
     const { protocol, pathname, username, hostname, port: p } = new URL(uri)
     const port = p ? parseInt(p) : defaultPort(protocol)
 

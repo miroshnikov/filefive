@@ -223,7 +223,7 @@ export default function Explorer ({
 
     const onDrop = (URIs: string[], target: string, effect: DropEffect) => {
         console.log(effect, URIs, '->', connection+target)
-        window.f5.copy(URIs as URI[], connection+target as URI)
+        window.f5.copy(URIs as URI[], createURI(connection, target), effect == DropEffect.Move)
     }
 
     const sort = (name: Column['name']) => {

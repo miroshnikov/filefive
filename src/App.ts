@@ -42,7 +42,7 @@ export default class App {
             unwatch:    ({dir}: {dir: URI}) => commands.unwatch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
             refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
 
-            copy:       ({src, dest}: {src: URI[], dest: URI}) => commands.copy(src, dest),
+            copy:       ({src, dest, move}: {src: URI[], dest: URI, move: boolean}) => commands.copy(src, dest, move),
             remove:     ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
             open:       ({file}: {file: Path}) => opener(file),
             mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),

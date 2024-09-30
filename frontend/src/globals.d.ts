@@ -19,7 +19,7 @@ export interface F5 {
     onDirChange(listener: (uri: URI, files: Files) => void): void
     onFileChange(listener: (path: Path, stat: LocalFileInfo|null) => void): void
 
-    copy(src: URI[], dest: URI): Promise<string>
+    copy(src: URI[], dest: URI, move?: boolean): Promise<string>
     remove(files: URI[], force: boolean): void
     open(file: Path): void
     mkdir(name: string, parent: URI): void

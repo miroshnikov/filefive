@@ -1,5 +1,5 @@
-import TransmitQueue from './Queue'
 import { dirname, join } from 'node:path'
+import TransmitQueue from './Queue'
 import { Path, ConnectionID, QueueState, QueueActionType } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import { memoizeWith, identity, whereEq } from 'ramda'

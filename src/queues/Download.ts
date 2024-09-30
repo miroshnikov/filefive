@@ -4,7 +4,7 @@ import { Path, ConnectionID, QueueState, QueueActionType } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import { stat, touch } from '../Local'
 import Connection from '../Connection'
-import { lsRemote } from './Remove'
+import { lsRemote } from './Queue'
 
 
 export default class DownloadQueue extends TransmitQueue {

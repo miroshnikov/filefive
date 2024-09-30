@@ -96,7 +96,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     const [creating, createIn] = useState<{in: Path, dir: boolean}>(null)
     const [renaming, rename] = useState<URI>(null)
 
-    const [dragging, setDragging] = useState(false)
+    // const [dragging, setDragging] = useState(false)
+    const dragging = useRef(false)
     const [dropTarget, setDropTarget] = useState<string>('')
     const [draggedOver, setDraggedOver] = useState(false)
 
@@ -271,7 +272,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     )
  
     const dragStart = (i: number, e: React.DragEvent<HTMLTableRowElement>) => {
-        setDragging(true)       //TODO make an array in useRef() of selected
+        dragging.current = true  //TODO make an array in useRef() of selected
         e.dataTransfer.effectAllowed = 'copyMove'
         const dragged = selected.includes(items[i].path) ? selected.map(path => items.find(whereEq({path})).URI) : [items[i].URI]
         e.dataTransfer.setData('URIs', JSON.stringify(dragged))   //"text/uri-list" format only allows one URI
@@ -281,7 +282,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     }
 
     const dragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {
-        setDragging(false)
+        dragging.current = false
         e.dataTransfer.clearData()
         e.dataTransfer.items.clear()
     }
@@ -300,6 +301,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     }
 
     const dragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
+        e.dataTransfer.dropEffect = dragging.current ? (e.altKey ? 'copy' : 'move') : 'copy'
         e.preventDefault()
     }
 
@@ -330,7 +332,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
             }
     
             if (!URIs.map(URI => items.find(whereEq({URI}))).filter(identity).some(({path}) => childOf(targetDir, path))) {
-                onDrop(URIs, targetDir, e.dataTransfer.effectAllowed == 'copy' ? DropEffect.Copy : DropEffect.Move)           
+                onDrop(URIs, targetDir, e.altKey ? DropEffect.Copy : DropEffect.Move)           
             }
     
             e.dataTransfer.clearData()
@@ -339,7 +341,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
             dragCounter.current = {path: '', count: 0, timeout: null}
         }
         setDropTarget('')
-        setDragging(false)
+        dragging.current = false
         setDraggedOver(false)
     }
 

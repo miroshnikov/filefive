@@ -49,7 +49,7 @@ window.f5 = {
     onDirChange: listener => subscribe<{uri: URI, files: Files}>('dir', ({uri, files}) => listener(uri, files)),
     onFileChange: listener => subscribe<{path: Path, stat: LocalFileInfo|null}>('file', ({path, stat}) => listener(path, stat)),
 
-    copy: (src, dest) => invoke<string>('copy', { src, dest }),
+    copy: (src, dest, move = false) => invoke<string>('copy', { src, dest, move }),
     remove: (files, force) => invoke<void>('remove', { files, force }),
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
