@@ -1,11 +1,27 @@
 import { basename, dirname, normalize, sep } from 'node:path'
 import { Queue } from './Queue'
 import { Path, ConnectionID, QueueState, FailureType, QueueAction } from '../types'
+import { FileItem } from '../FileSystem'
 import Connection from '../Connection'
 import { createURI } from '../utils/URI'
 import RemoteWatcher from '../RemoteWatcher'
-import { lsRemote } from './Queue'
+import { memoizeWith, nthArg } from 'ramda'
 
+
+export const lsRemote = (connId: ConnectionID) => 
+    memoizeWith(
+        nthArg(0),
+        async (path: string): Promise<FileItem[]|null> => {
+            const [conn, close] = await Connection.transmit(connId)
+            try {
+                return await conn.ls(path)
+            } catch(e) {
+            } finally {
+                close()
+            }
+            return null
+        }
+    )
 
 
 export default class RemoveQueue implements Queue {

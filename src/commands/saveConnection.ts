@@ -23,7 +23,6 @@ export type SaveConnectionSettings =
 export default async function (path: Path, settings: SaveConnectionSettings) {
     const content = stat(path) ? await read(path) : null
     if (stat(path)) {
-        console.log(new Date(), 'save to existing', path, content)
         if (!content) {
             throw new Error(`cant read connection file: ${path}`)
         }

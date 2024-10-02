@@ -1,9 +1,10 @@
-import { basename, dirname, normalize, sep } from 'node:path'
-import { Path, ConnectionID, QueueState, QueueActionType, QueueAction } from '../types'
-import { FileItem } from '../FileSystem'
+import { basename, dirname, normalize, join, sep } from 'node:path'
+import { Path, ConnectionID, QueueState, QueueActionType, QueueAction, LocalFileSystemID } from '../types'
+import { FileSystem, FileItem } from '../FileSystem'
 import { Subject, Subscription } from 'rxjs'
 import { whereEq, memoizeWith, nthArg } from 'ramda'
 import Connection from '../Connection'
+import { stat as localStat } from '../Local'
 
 
 export interface Queue {
@@ -12,30 +13,79 @@ export interface Queue {
     stop(): void
 } 
 
-export const lsRemote = (connId: ConnectionID) => 
-    memoizeWith(
-        nthArg(0),
-        async (path: string): Promise<FileItem[]|null> => {
-            const [conn, close] = await Connection.transmit(connId)
-            try {
-                return await conn.ls(path)
-            } catch(e) {
-            } finally {
-                close()
-            }
-            return null
-        }
-    )
 
 export default abstract class TransmitQueue implements Queue {
 
     constructor(
+        protected from: ConnectionID,
+        protected to: ConnectionID,
+        protected src: Path[],
+        protected dest: Path,
         private onState: (state: QueueState) => void,
         private onConflict: (src: FileItem, dest: FileItem) => void,
         private onComplete: () => void
     ) {}
 
-    public abstract create(): Promise<void>
+    public async create() {
+        await this.enqueue(this.src, this.dest)
+
+        if (this.stopped) {
+            return
+        }
+
+        const stat = this.stat(this.to)
+
+        this.processing = this.queue$.subscribe(async ({from, dirs, to, action}) => {
+            let a = action ?? this.action
+            const existing = await stat(join(to, from.name))
+            if (existing) {
+                if (a) {
+                    if (a.type == QueueActionType.Skip) {
+                        this.sendState(from.size)
+                        return this.next()
+                    }
+                } else {
+                    this.putOnHold(from, dirs, to, existing)
+                    return this.next()
+                }                
+            }
+            const [fs, close] = await Connection.transmit(this.from != LocalFileSystemID ? this.from : this.to)
+            existing ? 
+                this.applyAction(a, from, dirs, to, existing, this.transmit.bind(this, fs)).then(close) : 
+                this.transmit(fs, from, dirs, to).then(close)
+            this.next()
+        })
+        this.next()
+    }
+
+    protected async enqueue(paths: Path[], dest: Path) {
+        const ls = this.ls(this.from)
+
+        paths = paths.map(normalize).filter(path => !paths.find(ancestor => path.startsWith(ancestor + sep)))
+
+        const add = async (path: Path, to: Path, dirs: string[] = []): Promise<any> => {
+            if (this.stopped) {
+                return
+            }
+            const parent = dirname(path)
+            const from = (await ls(parent))?.find(whereEq({path}))
+            if (from) {
+                if (from.dir) {
+                    return Promise.all(
+                        (await ls(from.path))?.map(child => add(child.path, to, [...dirs, basename(path)]))
+                    )
+                } else {
+                    this.queue.push({ from, to, dirs })
+                    this.totalCnt++
+                    this.totalSize += from.size
+                }
+            }
+        }
+
+        await Promise.all(paths.map(path => add(path, dest)))
+    }
+
+    protected abstract transmit(fs: FileSystem, from: FileItem, dirs: string[], to: Path): Promise<void>
 
     public stop() {
         if (!this.stopped) {
@@ -58,32 +108,7 @@ export default abstract class TransmitQueue implements Queue {
             this.onConflict(src, dest)
         }
     }
-
-    protected async enqueue(paths: Path[], dest: Path, ls: (path: string) => Promise<FileItem[]>) {
-        paths = paths.map(normalize).filter(path => !paths.find(ancestor => path.startsWith(ancestor + sep)))
-
-        const add = async (path: Path, to: Path, dirs: string[] = []): Promise<any> => {
-            if (this.stopped) {
-                return
-            }
-            const parent = dirname(path)
-            const from = (await ls(parent)).find(whereEq({path}))
-            if (from) {
-                if (from.dir) {
-                    return Promise.all(
-                        (await ls(from.path)).map(child => add(child.path, to, [...dirs, basename(path)]))
-                    )
-                } else {
-                    this.queue.push({ from, to, dirs })
-                    this.totalCnt++
-                    this.totalSize += from.size
-                }
-            }
-        }
-
-        return Promise.all(paths.map(path => add(path, dest)))
-    }
-   
+ 
     protected next() {
         if (this.queue.length) {
             this.queue$.next(this.queue.shift())
@@ -137,7 +162,33 @@ export default abstract class TransmitQueue implements Queue {
         }
     }
 
-    protected finalize() {}
+    protected ls(connId: ConnectionID): (path: string) => Promise<FileItem[]|null> {
+        return connId == LocalFileSystemID ? 
+            (dir: string) => Connection.get(connId).ls(dir) : 
+            memoizeWith(
+                nthArg(0),
+                async (path: string): Promise<FileItem[]|null> => {
+                    const [conn, close] = await Connection.transmit(connId)
+                    try {
+                        return await conn.ls(path)
+                    } catch(e) {
+                    } finally {
+                        close()
+                    }
+                    return null
+                }
+            )
+    }
+
+    protected stat(connId: ConnectionID): (path: string) => Promise<FileItem|null> {
+        if (connId == LocalFileSystemID) {
+            return (path: string) => Promise.resolve(localStat(path))
+        }
+        const ls = this.ls(connId)
+        return async (path: string) => (await ls(dirname(path)))?.find(whereEq({path}))
+    }
+
+    protected async finalize() {}
 
     protected queue$ = new Subject<typeof this.queue[number]>()
     protected processing: Subscription

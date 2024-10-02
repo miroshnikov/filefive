@@ -226,6 +226,8 @@ export default class SFtp extends FileSystem {
                         reject(new Error(`${cmd}: the process's return code is ${code}`))
                     }
                     resolve()
+                }).on('data', (data: any) => {
+                    console.log(`${cmd}: ${data}`)
                 }).stderr.on('data', data => {
                     reject(new Error(`${cmd}: ${data}`))
                 })

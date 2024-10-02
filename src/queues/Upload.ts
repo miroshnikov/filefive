@@ -1,10 +1,8 @@
-import { dirname, join } from 'node:path'
+import { join } from 'node:path'
 import TransmitQueue from './Queue'
-import { Path, ConnectionID, QueueState, QueueActionType } from '../types'
+import { LocalFileSystemID, Path, ConnectionID, QueueState } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
-import { memoizeWith, identity, whereEq } from 'ramda'
-import Connection from '../Connection'
-import { stat, list } from '../Local'
+import { stat } from '../Local'
 import RemoteWatcher from '../RemoteWatcher'
 import { createURI } from '../utils/URI'
 
@@ -12,95 +10,51 @@ import { createURI } from '../utils/URI'
 export default class UploadQueue extends TransmitQueue {
 
     constructor(
-        private connId: ConnectionID,
-        private src: Path[],
-        private dest: Path,
+        connId: ConnectionID,
+        src: Path[],
+        dest: Path,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
         onComplete: () => void,
         private watcher: RemoteWatcher
     ) {
-        super(onState, onConflict, onComplete)
+        super(LocalFileSystemID, connId, src, dest, onState, onConflict, onComplete)
     }
 
-    public async create() {
-        const conn = Connection.get(this.connId)
-
-        await this.enqueue(
-            this.src, 
-            this.dest,
-            path => Promise.resolve(list(path))
-        )
-        this.touched.set(this.dest, Promise.resolve())
-        
-        const transmit = async (fs: FileSystem, from: FileItem, dirs: string[], to: string) => {
-            if (!(stat(from.path))) {
-                return
-            }
-            try {
-                let targetDir = to
-                for (const dir of dirs) {
-                    targetDir = join(targetDir, dir)
-                    if (!this.touched.has(targetDir)) {
-                        try {
-                            this.touched.set(targetDir, fs.mkdir(targetDir))
-                        } catch (e) {}
-                    }
-                    await this.touched.get(targetDir)
-                }
-                if (!this.stopped) {
-                    await fs.put(from.path, join(targetDir, from.name))
-                }
-            } catch(error) {
-                this.onError(error)
-            }
-            this.sendState(from.size)
-        }
-
-        const ls = memoizeWith(
-            identity, 
-            async (path: string) => {
-                try {
-                    return await conn.ls(path)
-                } catch(e) {}
-                return []
-            }
-        )
-
+    protected async transmit(fs: FileSystem, from: FileItem, dirs: string[], to: Path) {
         if (this.stopped) {
             return
         }
 
-        const exists = async (path: string) => (await ls(dirname(path))).find(whereEq({path}))
-
-        this.processing = this.queue$.subscribe(async ({from, dirs, to, action}) => {
-            let a = action ?? this.action
-            const dest = join(...[to, ...dirs, from.name])
-            const existing = await exists(dest)
-            if (existing) {
-                if (a) {
-                    if (a.type == QueueActionType.Skip) {
-                        this.sendState(from.size)
-                        return this.next()
-                    }
-                } else {
-                    this.putOnHold(from, dirs, to, existing)
-                    return this.next()
-                }                
+        if (!(stat(from.path))) {
+            return
+        }
+        try {
+            let targetDir = to
+            for (const dir of dirs) {
+                targetDir = join(targetDir, dir)
+                if (!this.touched.has(targetDir)) {
+                    try {
+                        this.touched.set(targetDir, fs.mkdir(targetDir))
+                    } catch (e) {}
+                }
+                await this.touched.get(targetDir)
             }
-            const [fs, close] = await Connection.transmit(this.connId)
-            existing ? 
-                this.applyAction(a, from, dirs, to, existing, transmit.bind(this, fs)).then(close) : 
-                this.transmits.push( transmit(fs, from, dirs, to).then(close) )
-            this.next()
-        })
-        this.next()
+            if (!this.stopped) {
+                await fs.put(from.path, join(targetDir, from.name))
+            }
+        } catch(error) {
+            this.onError(error)
+        }
+        this.sendState(from.size)
     }
 
-    protected finalize() {
+    protected async finalize() {
+        this.touched.set(this.dest, Promise.resolve())
+        await Promise.all(Array.from(this.touched.values()))
         Array.from(this.touched.keys()).forEach(path => 
-            this.watcher.refresh(createURI(this.connId, path))
+            this.watcher.refresh(createURI(this.to, path))
         )
     }
 

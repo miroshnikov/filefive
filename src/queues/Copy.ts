@@ -1,20 +1,16 @@
 import { dirname, join } from 'node:path'
 import TransmitQueue from './Queue'
-import { Path, ConnectionID, QueueState, LocalFileSystemID, QueueActionType } from '../types'
+import { Path, ConnectionID, QueueState, LocalFileSystemID } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
-import { stat as localStat } from '../Local'
-import Connection from '../Connection'
-import { lsRemote } from './Queue'
-import { whereEq } from 'ramda'
 import RemoteWatcher from '../RemoteWatcher'
 import { createURI } from '../utils/URI'
 
 
 export default class CopyQueue extends TransmitQueue {
     constructor(
-        private connId: ConnectionID,
-        private src: Path[],
-        private dest: Path,
+        connId: ConnectionID,
+        src: Path[],
+        dest: Path,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
@@ -22,19 +18,13 @@ export default class CopyQueue extends TransmitQueue {
         private watcher: RemoteWatcher,
         private move: boolean
     ) {
-        super(onState, onConflict, onComplete)
+        super(connId, connId, src, dest, onState, onConflict, onComplete)
     }
 
-    public async create() {
-
-        const stat = async (path: string) => {
-            return this.connId == LocalFileSystemID ?
-                localStat(path) :
-                (await lsRemote(this.connId)(dirname(path))).find(whereEq({path}))
-        }
-
+    protected async enqueue(paths: Path[], dest: Path) {
+        const stat = this.stat(this.from)
         await Promise.all(
-            this.src.filter(path => dirname(path) != this.dest).map(async path => {
+            paths.filter(path => dirname(path) != dest).map(async path => {
                 const from = await stat(path)
                 if (from) {
                     this.queue.push({
@@ -47,53 +37,37 @@ export default class CopyQueue extends TransmitQueue {
                 }
             })
         )
+    }
 
-        const transmit = async (fs: FileSystem, from: FileItem, dirs: string[], to: string) => {
-            if (this.stopped) {
-                return
-            }
-            try {
-                if (this.move) {
-                    this.connId != LocalFileSystemID && this.touched.add(dirname(from.path))
-                    await fs.mv(from.path, join(to, from.name))
-                } else {
-                    await fs.cp(from.path, join(to, from.name), from.dir)
-                }
-                this.connId != LocalFileSystemID && this.touched.add(to)
-            } catch(error) { 
-                this.onError(error) 
-            }
-            this.sendState(1)
+    protected async transmit(fs: FileSystem, from: FileItem, dirs: string[], to: Path) {
+        if (this.stopped) {
+            return
         }
-
-        this.processing = this.queue$.subscribe(async ({from, dirs, to, action}) => {
-            let a = action ?? this.action
-            const existing = await stat(join(to, from.name))
-            if (existing) {
-                if (a) {
-                    if (a.type == QueueActionType.Skip) {
-                        this.sendState(1)
-                        return this.next()
-                    }
-                } else {
-                    this.putOnHold(from, dirs, to, existing)
-                    return this.next()
-                }                
+        try {
+            let p: Promise<void>
+            if (this.move) {
+                p = fs.mv(from.path, join(to, from.name))
+                const parent = dirname(from.path)
+                this.touched.set(parent, [ ...(this.touched.get(parent) ?? []), p])
+            } else {
+                p = fs.cp(from.path, join(to, from.name), from.dir)
             }
-            const [fs, close] = await Connection.transmit(this.connId)
-            existing ? 
-                this.applyAction(a, from, dirs, to, existing, transmit.bind(this, fs)).then(close) : 
-                transmit(fs, from, dirs, to).then(close)
-            this.next()
-        })
-        this.next()
+            this.touched.set(to, [ ...(this.touched.get(to) ?? []), p])
+            await p
+        } catch(error) { 
+            this.onError(error) 
+        }
+        this.sendState(1)
     }
 
-    protected finalize() {
-        Array.from(this.touched.keys()).forEach(path => 
-            this.watcher.refresh(createURI(this.connId, path))
-        )
+    protected async finalize() {
+        if (this.to != LocalFileSystemID) {
+            await Promise.all(Array.from(this.touched.values()).flat())
+            Array.from(this.touched.keys()).forEach(path => 
+                this.watcher.refresh(createURI(this.to, path))
+            )
+        }
     }
 
-    private touched = new Set<Path>()
+    private touched = new Map<Path, Promise<void>[]>()
 }
