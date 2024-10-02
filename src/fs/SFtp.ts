@@ -164,24 +164,8 @@ export default class SFtp extends FileSystem {
     }
 
     async mv(from: Path, to: Path): Promise<void> {
-        return this.exec(`mv -f ${from} ${to}`)
-        // await this.open()
-        // return new Promise((resolve, reject) => 
-        //     this.connection.exec(`mv ${from} ${to}`, (e, stream) => {
-        //         if (e) {
-        //             reject(new Error(`MV: Can't move ${from} -> ${to} ` + this.decodeError(e)))
-        //             return
-        //         }
-        //         stream.on('exit', (code) => {
-        //             if (code) {
-        //                 reject(new Error(`MV: Can't move ${from} -> ${to} the process's return code is ${code}`))
-        //             }
-        //             resolve()
-        //         }).stderr.on('data', data => {
-        //             reject(new Error(`MV: Can't move ${from} -> ${to} ${data}`))
-        //         })
-        //     })
-        // )
+        await this.exec(`rm -Rf '${to}'`)
+        return this.exec(`mv -f '${from}' '${to}'`)
         // return new Promise((resolve, reject) => {
         //     sftp.rename(from, to, e => {
         //         if (e) {
@@ -194,7 +178,8 @@ export default class SFtp extends FileSystem {
     }
 
     async cp(from: Path, to: Path, recursive: boolean): Promise<void> {
-        return this.exec(`cp -f${recursive ? 'R' : ''} ${from} ${to}`)
+        await this.exec(`rm -Rf '${to}'`)
+        return this.exec(`cp -f${recursive ? 'R' : ''} '${from}' '${to}'`)
     }
 
     async write(path: Path, s: string): Promise<void> {

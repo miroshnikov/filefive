@@ -109,7 +109,7 @@ export class LogFS extends FileSystem {
     }
 
     async mv(from: Path, to: Path) {
-        logger.log(await cmd('MV'), await id(this.id) + from, ' → ', to)
+        logger.log(await cmd('MV'), await id(this.id) + from, ' → ', await id(this.id) + to)
         try {
             return await this.fs.mv(from, to)
         } catch (e) {
