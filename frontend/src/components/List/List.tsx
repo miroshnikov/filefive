@@ -65,7 +65,7 @@ interface ListProps {
     onToggle: (dir: string) => void
     onSelect: (paths: string[]) => void
     onOpen: (path: string) => void
-    onDrop: (URIs: string[], target: string, effect: DropEffect) => void
+    onDrop: (URIs: string[]|File[], target: string, effect: DropEffect) => void
     onMenu: (path: string, dir: boolean) => void
     onNew?: (name: string, parent: Path, dir: boolean) => void
     onRename?: (uri: URI, name: string) => void
@@ -96,7 +96,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     const [creating, createIn] = useState<{in: Path, dir: boolean}>(null)
     const [renaming, rename] = useState<URI>(null)
 
-    // const [dragging, setDragging] = useState(false)
     const dragging = useRef(false)
     const [dropTarget, setDropTarget] = useState<string>('')
     const [draggedOver, setDraggedOver] = useState(false)
@@ -321,25 +320,35 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     const dragDrop = (targetDir: string, e: React.DragEvent<HTMLTableRowElement|HTMLDivElement>) => {
         e.preventDefault()
         e.stopPropagation()
-    
+   
+        let URIs: string[] = []
         const data = e.dataTransfer.getData('URIs')
-        if (data) {
-            const URIs: string[] = data.length ? JSON.parse(data) : []
-           
-            for (let i = 0; i < e.dataTransfer.items.length; i++) {
-                const item = e.dataTransfer.items[i]
-                item.kind == 'file' && URIs.push('file://'+(item.getAsFile() as any).path)  // dropped file from outside
-            }
-    
-            if (!URIs.map(URI => items.find(whereEq({URI}))).filter(identity).some(({path}) => childOf(targetDir, path))) {
+        if (data && data.length) {
+            URIs = JSON.parse(data)
+        }
+
+        if (URIs.length) {
+            if (!URIs
+                    .map(URI => items.find(whereEq({URI})))
+                    .filter(identity)
+                    .some(({path}) => childOf(targetDir, path))
+            ) {
                 onDrop(URIs, targetDir, e.altKey ? DropEffect.Copy : DropEffect.Move)           
             }
-    
-            e.dataTransfer.clearData()
-            e.dataTransfer.items.clear()
-            clearTimeout(dragCounter.current.timeout)
-            dragCounter.current = {path: '', count: 0, timeout: null}
+        } else if (e.dataTransfer.items.length) {
+            const files: File[] = []
+            for (let i = 0; i < e.dataTransfer.items.length; i++) {     // dropped from outside
+                const item = e.dataTransfer.items[i]
+                item.kind == 'file' && files.push(item.getAsFile())
+            }
+            files.length && onDrop(files, targetDir, DropEffect.Copy) 
         }
+
+        e.dataTransfer.clearData()
+        e.dataTransfer.items.clear()
+        clearTimeout(dragCounter.current.timeout)
+        dragCounter.current = { path: '', count: 0, timeout: null }
+
         setDropTarget('')
         dragging.current = false
         setDraggedOver(false)

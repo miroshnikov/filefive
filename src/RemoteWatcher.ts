@@ -30,7 +30,6 @@ export default class RemoteWatcher {
                 }
             })
         }
-            
     }
 
     private list(uri: URI) {

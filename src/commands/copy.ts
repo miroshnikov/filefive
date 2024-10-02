@@ -10,7 +10,7 @@ import App from '../App'
 import { pipe, prop } from 'ramda'
 
 
-export default function (src: URI[], dest: URI, move: boolean) {
+export default function (src: URI[], dest: URI, move: boolean, onComplete = () => {}) {
     if (!src.length) {
         return
     }
@@ -37,6 +37,7 @@ export default function (src: URI[], dest: URI, move: boolean) {
             () => { 
                 queues.delete(id)
                 App.onQueueUpdate(id, { type: QueueEventType.Complete })
+                onComplete()
             },
             App.remoteWatcher,
             move
@@ -55,6 +56,7 @@ export default function (src: URI[], dest: URI, move: boolean) {
                 () => { 
                     queues.delete(id)
                     App.onQueueUpdate(id, { type: QueueEventType.Complete })
+                    onComplete()
                 }
             ) : 
             new UploadQueue(
@@ -67,6 +69,7 @@ export default function (src: URI[], dest: URI, move: boolean) {
                 () => { 
                     queues.delete(id)
                     App.onQueueUpdate(id, { type: QueueEventType.Complete })
+                    onComplete()
                 },
                 App.remoteWatcher
             )

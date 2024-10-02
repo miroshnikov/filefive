@@ -3,7 +3,7 @@ import Split from '../Split/Split'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
-import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings } from '../../../../src/types'
+import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType } from '../../../../src/types'
 import { createURI, parseURI } from '../../../../src/utils/URI'
 import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
@@ -15,6 +15,8 @@ import { useEffectOnUpdate, useSubscribe } from '../../hooks'
 import { assocPath, mergeDeepRight } from 'ramda'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
+import { error$ } from '../../observables/error'
+import { basename, dirname } from '../../utils/path'
 
 
 interface Props {
@@ -37,6 +39,7 @@ export default function Workspace({onChange}: Props) {
     const [remoteSelected, setRemoteSelected] = useState<Path[]>([])
     const [showConnections, setShowConnections] = useState(true)
     const [menu, setMenu] = useState<MenuItem[]>([])
+    const [connecting, setConnecting] = useState('')
 
     const focused = useRef<'local'|'remote'|null>(null)
  
@@ -104,15 +107,29 @@ export default function Workspace({onChange}: Props) {
     }
 
     const connect = (path: string) => {
-        window.f5.connect(path).then(connection => {
-            if (connection) {
-                setShowConnections(false)
-                const {id, settings} = connection
-                setConnection({ ...settings, id, file: path })
-                setLocalPath(path => settings.path.local ?? path)
-                setRemotePath(settings.path.remote!)
-            }
-        })
+        setConnecting(basename(path))
+        window.f5.connect(path)
+            .then(connection => {
+                if (connection) {
+                    setShowConnections(false)
+                    const {id, settings} = connection
+                    setConnection({ ...settings, id, file: path })
+                    setLocalPath(path => settings.path.local ?? path)
+                    setRemotePath(settings.path.remote!)
+                }
+            })
+            .finally(() => setConnecting(''))
+    }
+
+    const disconnect = () => {
+        if (!connection) {
+            return
+        }
+        window.f5.disconnect(connection.id)
+        setConnection(null)
+        setLocalPath(appSettings.path?.local ?? appSettings.home)
+        setRemotePath(appSettings.connections)
+        setShowConnections(true)
     }
 
     const localToolbar: ToolbarItem[] = [
@@ -202,13 +219,7 @@ export default function Workspace({onChange}: Props) {
                 icon: 'close',
                 title: 'Disconnect',
                 disabled: false,
-                onClick: () => { 
-                    window.f5.disconnect(connection.id); 
-                    setConnection(null)
-                    setLocalPath(appSettings.path?.local ?? appSettings.home)
-                    setRemotePath(appSettings.connections)
-                    setShowConnections(true)
-                }
+                onClick: () => disconnect()
             }
         ] : [])
     ]
@@ -277,7 +288,7 @@ export default function Workspace({onChange}: Props) {
         if (id == LocalFileSystemID) {
             const copyTo = remote ? createURI(LocalFileSystemID, localPath) : createURI(connection?.id ?? LocalFileSystemID, remotePath)
             setMenu(dir ? 
-                localDirMenu(path, remote ? remoteSelected : localSelected, copyTo, path == localPath) : 
+                localDirMenu(path, remote ? remoteSelected : localSelected, copyTo, path == (remote ? remotePath : localPath)) : 
                 localFileMenu(path, remote ? remoteSelected : localSelected, copyTo)
             )
         } else {
@@ -331,6 +342,25 @@ export default function Workspace({onChange}: Props) {
         [appSettings, connection, localSelected, remoteSelected]
     )
 
+    useSubscribe(() => 
+        error$.subscribe(error => {
+            if (error.type == FailureType.MissingDir) {
+                const {id, path} = parseURI(error.uri)
+                if (id == LocalFileSystemID) {
+                    if (path == localPath) {
+                        setLocalPath(dirname(localPath))
+                    }
+                    if (!connection && path == remotePath) {
+                        setRemotePath(dirname(remotePath))
+                    }
+                } else if (id == connection.id && path == remotePath) {
+                    setRemotePath(dirname(remotePath))
+                }
+            }
+        }),
+        [connection, localPath, remotePath]
+    )
+
     return (<>
         <Split 
             left = {
@@ -361,56 +391,63 @@ export default function Workspace({onChange}: Props) {
                     </div>
             }
             right = {
-                showConnections ? 
-                    <Connections
-                        path={remotePath}
-                        onChange={setRemotePath}
-                        onSelect={paths => setRemoteSelected(paths)}
-                        connect={connect}
-                        toolbar={connectionsToolbar}
-                        tabindex={2}
-                        onFocus={() => focused.current = 'remote'}
-                        onBlur={() => focused.current = null}
-                    /> : 
-                    connection ? 
-                        <Explorer
-                            icon='cloud'
-                            connection={connection.id}
-                            settings={connection.layout.remote}
+                connecting.length ? 
+                    <div className="fill-center">
+                        <div className="center">
+                            <Spinner radius="2em" />
+                            <p>Connecting {connecting}...</p>
+                        </div>
+                    </div> :
+                    showConnections ? 
+                        <Connections
                             path={remotePath}
-                            fixedRoot={'/'}
-                            onChange={setRemotePath} 
+                            onChange={setRemotePath}
                             onSelect={paths => setRemoteSelected(paths)}
-                            onOpen={openRemote}
-                            onMenu={fileContextMenu()}
-                            onSettingsChange={changed =>
-                                setConnection(connection => assocPath(['layout', 'remote'], {...connection.layout.remote, ...changed}, connection))
-                            }
-                            contextMenu={menu}
-                            toolbar={remoteToolbar}
+                            connect={connect}
+                            toolbar={connectionsToolbar}
                             tabindex={2}
                             onFocus={() => focused.current = 'remote'}
                             onBlur={() => focused.current = null}
-                        /> :
-                        <Explorer 
-                            icon='computer'
-                            connection={LocalFileSystemID}
-                            settings={appSettings.layout.remote}
-                            path={remotePath} 
-                            fixedRoot={'/'}
-                            onChange={setRemotePath} 
-                            onSelect={paths => setRemoteSelected(paths)}
-                            onOpen={openRemote}
-                            onMenu={fileContextMenu()}
-                            onSettingsChange={changed => 
-                                updateSettings(assocPath(['layout', 'remote'], {...appSettings.layout.remote, ...changed}, appSettings))
-                            }
-                            contextMenu={menu}
-                            toolbar={remoteToolbar}
-                            tabindex={2}
-                            onFocus={() => focused.current = 'remote'}
-                            onBlur={() => focused.current = null}
-                        />
+                        /> : 
+                        connection ? 
+                            <Explorer
+                                icon='cloud'
+                                connection={connection.id}
+                                settings={connection.layout.remote}
+                                path={remotePath}
+                                fixedRoot={'/'}
+                                onChange={setRemotePath} 
+                                onSelect={paths => setRemoteSelected(paths)}
+                                onOpen={openRemote}
+                                onMenu={fileContextMenu()}
+                                onSettingsChange={changed =>
+                                    setConnection(connection => assocPath(['layout', 'remote'], {...connection.layout.remote, ...changed}, connection))
+                                }
+                                contextMenu={menu}
+                                toolbar={remoteToolbar}
+                                tabindex={2}
+                                onFocus={() => focused.current = 'remote'}
+                                onBlur={() => focused.current = null}
+                            /> :
+                            <Explorer 
+                                icon='computer'
+                                connection={LocalFileSystemID}
+                                settings={appSettings.layout.remote}
+                                path={remotePath} 
+                                fixedRoot={'/'}
+                                onChange={setRemotePath} 
+                                onSelect={paths => setRemoteSelected(paths)}
+                                onOpen={openRemote}
+                                onMenu={fileContextMenu()}
+                                onSettingsChange={changed => 
+                                    updateSettings(assocPath(['layout', 'remote'], {...appSettings.layout.remote, ...changed}, appSettings))
+                                }
+                                contextMenu={menu}
+                                toolbar={remoteToolbar}
+                                tabindex={2}
+                                onFocus={() => focused.current = 'remote'}
+                                onBlur={() => focused.current = null}
+                            />
             }
         />
     </>)

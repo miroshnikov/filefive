@@ -47,7 +47,7 @@ export default class App {
             open:       ({file}: {file: Path}) => opener(file),
             mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
             read:       ({file}: {file: URI}) => commands.read(file),
-            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content, dataPath, settingsPath),           
+            write:      ({path, content}: {path: URI, content: string}) => commands.write(path, content),           
             rename:     ({path, name}: {path: URI, name: string}) => commands.rename(path, name),
 
             get:        ({path}: {path: Path}) => commands.getConnection(path),

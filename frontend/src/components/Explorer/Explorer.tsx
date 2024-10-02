@@ -221,9 +221,18 @@ export default function Explorer ({
         window.f5.rename(path, name)
     }
 
-    const onDrop = (URIs: string[], target: string, effect: DropEffect) => {
-        console.log(effect, URIs, '->', connection+target)
-        window.f5.copy(URIs as URI[], createURI(connection, target), effect == DropEffect.Move)
+    const onDrop = (items: string[]|File[], target: Path, effect: DropEffect) => {
+        console.log(effect, items, '->', connection+target)
+        if (items.length) {
+            if (typeof items[0] == 'string') {
+                window.f5.copy(items as URI[], createURI(connection, target), effect == DropEffect.Move)
+            } else {
+                const data = new FormData()
+                data.append('to', createURI(connection, target));
+                (items as File[]).forEach(async file => data.append('files', file))
+                fetch('/api/upload', { method: 'POST', body: data })
+            }
+        }
     }
 
     const sort = (name: Column['name']) => {
