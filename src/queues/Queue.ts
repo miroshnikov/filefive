@@ -50,9 +50,20 @@ export default abstract class TransmitQueue implements Queue {
                 }                
             }
             const [fs, close] = await Connection.transmit(this.from != LocalFileSystemID ? this.from : this.to)
-            existing ? 
-                this.applyAction(a, from, dirs, to, existing, this.transmit.bind(this, fs)).then(close) : 
-                this.transmit(fs, from, dirs, to).then(close)
+            this.transmits++
+            (new Promise((resolve) =>
+                resolve(
+                    existing ? 
+                        this.applyAction(a, from, dirs, to, existing, this.transmit.bind(this, fs)) : 
+                        this.transmit(fs, from, dirs, to)
+                )
+            )).then(() => {
+                close()
+                if (--this.transmits == 0 && this.closed) {
+                    this.close()
+                }
+            })
+
             this.next()
         })
         this.next()
@@ -90,6 +101,7 @@ export default abstract class TransmitQueue implements Queue {
     public stop() {
         if (!this.stopped) {
             this.stopped = true
+            this.pending = []
             this.close()
         }
     }
@@ -121,9 +133,11 @@ export default abstract class TransmitQueue implements Queue {
         if (this.processing?.closed === false) {
             this.processing?.unsubscribe()
         }
-        await Promise.allSettled(this.transmits)
-        this.finalize()
-        this.onComplete()
+        this.closed = true
+        if (this.transmits == 0) {
+            this.finalize()
+            this.onComplete()
+        }
     }
 
     protected sendState(size: number) {
@@ -138,7 +152,7 @@ export default abstract class TransmitQueue implements Queue {
         })
     }
 
-    protected applyAction(
+    protected async applyAction(
         action: QueueAction, 
         from: FileItem, 
         dirs: string[], 
@@ -148,9 +162,7 @@ export default abstract class TransmitQueue implements Queue {
     ) {
         switch (action.type) {
             case QueueActionType.Replace: {
-                const p = transmit(from, dirs, to)
-                this.transmits.push(p)
-                return p
+                await transmit(from, dirs, to)
             }
         }
     }
@@ -195,12 +207,13 @@ export default abstract class TransmitQueue implements Queue {
     protected queue: { from: FileItem, dirs: string[], to: Path, action?: QueueAction }[] = []
     protected pending: { src: FileItem, dirs: string[], to: Path, dest: FileItem }[] = []
     protected action: QueueAction
-    protected transmits: Promise<void>[] = []
     protected stopped = false
     protected totalCnt = 0
     protected doneCnt = 0
     protected totalSize = 0
     protected doneSize = 0
+    private transmits = 0
+    private closed = false
 }
 
 export const queues = new Map<string, Queue>()

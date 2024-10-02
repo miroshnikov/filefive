@@ -38,24 +38,11 @@ app.post('/api/upload', upload.array('files'), async function (req, res) {
             await rename(path, fnm)
             src.push(fnm)
         }
-
-        console.log(
-            req.body['to'],
-            req.files,
-            src,
-            src.map(path => createURI(LocalFileSystemID, path))
-        )
-
         commands.copy(
             src.map(path => createURI(LocalFileSystemID, path)), 
             req.body['to'], 
             true,
-            () => { 
-                src.forEach(path => { 
-                    console.log('RM ', path)
-                    rm(path, { force: true }) 
-                })
-            }
+            () => src.forEach(path => rm(path, { force: true }))
         )
     }
     res.json(true)
