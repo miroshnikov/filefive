@@ -10,13 +10,15 @@ import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
 import { filter, tap } from 'rxjs/operators'
-import { useEffectOnUpdate } from '../../hooks'
+import { useEffectOnUpdate, useSubscribe } from '../../hooks'
 import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, toLower } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
 import { format } from 'date-fns'
 import { t } from 'i18next'
+import { command$ } from '../../observables/command'
+import { CommandID } from '../../commands'
  
 
 const sortFiles = (files: Files, columns: Columns) => {
@@ -104,6 +106,7 @@ export default function Explorer ({
     const [parent, setParent] = useState<string>(null)
     const [files, setFiles] = useState<(Item & {rawSize: number})[]>([])
     const selected = useRef<string[]>([])
+    const target = useRef<Path>(null)
     const watched = useRef<string[]>([])
     const folders = useRef<Record<string, Files>>({})
     const [focused, setFocused] = useState(false)
@@ -158,20 +161,19 @@ export default function Explorer ({
         )
     }
 
-    useEffect(() => {
-        const subscription = dir$
-            .pipe(
-                filter(({dir}) => {
-                    const { id, path } = parseURI(dir)
-                    return connection == id && watched.current.includes(path)
-                }),
-            )
-            .subscribe(({dir, files}) => {
-                folders.current[parseURI(dir)['path']] = files
-                update()
-            })
-        return () => subscription.unsubscribe()
-    }, [root, columns]) 
+    useSubscribe(() => 
+        dir$.pipe(
+            filter(({dir}) => {
+                const { id, path } = parseURI(dir)
+                return connection == id && watched.current.includes(path)
+            }),
+        )
+        .subscribe(({dir, files}) => {
+            folders.current[parseURI(dir)['path']] = files
+            update()
+        }), 
+        [root, columns]
+    ) 
 
     useEffectOnUpdate(() => update(), [columns])
 
@@ -186,6 +188,18 @@ export default function Explorer ({
         list.current && resizeList.observe(list.current)
         return () => list.current && resizeList.unobserve(list.current)
     }, [])
+
+    useSubscribe(() => 
+        command$.pipe(filter(() => focused)).subscribe(cmd => {
+            switch (cmd.id) {
+                case CommandID.Paste: {
+                    uploadFiles(cmd.files, target.current ?? root)
+                    break
+                }
+            }
+        }), 
+        [focused]
+    )
 
     const watch = (dirs: string[]) => {
         watched.current.push(...dirs)
@@ -221,19 +235,23 @@ export default function Explorer ({
         window.f5.rename(path, name)
     }
 
+    const uploadFiles = (files: File[], target: Path) => {
+        const data = new FormData()
+        data.append('to', createURI(connection, target));
+        files.forEach(async file => data.append('files', file))
+        fetch('/api/upload', { method: 'POST', body: data })
+    }
+
     const onDrop = (items: string[]|File[], target: Path, effect: DropEffect) => {
         console.log(effect, items, '->', connection+target)
         if (items.length) {
-            if (typeof items[0] == 'string') {
-                window.f5.copy(items as URI[], createURI(connection, target), effect == DropEffect.Move)
-            } else {
-                const data = new FormData()
-                data.append('to', createURI(connection, target));
-                (items as File[]).forEach(async file => data.append('files', file))
-                fetch('/api/upload', { method: 'POST', body: data })
-            }
+            typeof items[0] == 'string' ? 
+                window.f5.copy(items as URI[], createURI(connection, target), effect == DropEffect.Move) :
+                uploadFiles(items as File[], target)
         }
     }
+
+
 
     const sort = (name: Column['name']) => {
         const toSort = columns.find(whereEq({name}))
@@ -312,7 +330,7 @@ export default function Explorer ({
             files={files} 
             onGo={setRoot}
             onToggle={toggle}
-            onSelect={paths => onSelect(selected.current = paths)}
+            onSelect={(paths, t) => { onSelect(selected.current = paths); target.current = t }}
             onOpen={onOpen}
             onDrop={onDrop}
             onMenu={(path, dir) => {setShowColumnsMenu(false); onMenu(createURI(connection, path), dir)}}

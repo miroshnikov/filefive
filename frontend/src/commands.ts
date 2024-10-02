@@ -17,8 +17,20 @@ export enum CommandID {
     CopyURI = 'copy-uri',
     CopyPath = 'copy-path',
     CopyRelativePath = 'copy-relative-path',
-    CopyName = 'copy-name'
+    CopyName = 'copy-name',
+    Paste = 'paste'
 }
+
+export type KeyShortcutCommand = 
+    | CommandID.Copy
+    | CommandID.Delete
+    | CommandID.SelectAll
+    | CommandID.NewDir
+    | CommandID.NewFile
+    | CommandID.Settings
+    | CommandID.Connections
+    | CommandID.Refresh
+    | CommandID.CollapseAll
 
 type FileCommand = 
     | CommandID.Rename
@@ -29,10 +41,11 @@ type FileCommand =
     | CommandID.CopyName
 
 export type Command = { label?: string } & (
-    | { id: Exclude<CommandID, FileCommand> }
+    | { id: KeyShortcutCommand }
     | { 
         id: FileCommand, 
         uri?: URI
-     } 
+      } 
+    | { id: CommandID.Paste, files: File[] }
 )
 

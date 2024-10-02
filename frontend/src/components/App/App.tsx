@@ -14,7 +14,7 @@ import AskForPassword from '../../modals/Password'
 import ConfirmDeletion from '../../modals/Deletion'
 import { command$ } from '../../observables/command'
 import { file$ } from '../../observables/file'
-import { CommandID } from '../../commands'
+import { CommandID, KeyShortcutCommand } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 import { Tooltips, getTooltipShortcut } from '../../ui/components'
 
@@ -37,13 +37,28 @@ export default function App () {
         }
     }, [appSettings])
 
+    useEffect(() => {
+        const onPaste = (e: ClipboardEvent) => {
+            if (e.clipboardData.files.length) {
+                const files: File[] = []
+                for (let i=0; i<e.clipboardData.files.length; i++) {
+                    files.push(e.clipboardData.files.item(i))
+                }
+                command$.next({ id: CommandID.Paste, files })
+            }
+            // console.log(e.clipboardData.getData())
+        }
+        document.documentElement.addEventListener("paste", onPaste)
+        return () => document.documentElement.removeEventListener("paste", onPaste)
+    })
+
     useSubscribe(() =>
         file$.subscribe(() => 
             window.f5.config().then(settings => setAppSettings(settings)) 
         )
     )
 
-    useShortcuts(appSettings?.keybindings ?? [], id => command$.next({id: id as CommandID}), [appSettings])
+    useShortcuts(appSettings?.keybindings ?? [], id => command$.next({id: id as KeyShortcutCommand}), [appSettings])
 
     useSubscribe(() => 
         command$.subscribe(cmd => {

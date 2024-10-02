@@ -63,7 +63,7 @@ interface ListProps {
     files: Items
     onGo: (dir: string) => void
     onToggle: (dir: string) => void
-    onSelect: (paths: string[]) => void
+    onSelect: (paths: string[], target: Path|null) => void
     onOpen: (path: string) => void
     onDrop: (URIs: string[]|File[], target: string, effect: DropEffect) => void
     onMenu: (path: string, dir: boolean) => void
@@ -162,7 +162,9 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         setRootDepth(first ? depth(first.path) : 0)
     }, [items])
 
-    useEffect(() => { onSelect(selected) }, [selected])
+    useEffect(() => { 
+        onSelect(selected, target?.path) 
+    }, [selected, target])
 
     useEffect(() => 
         setSelected(selected.filter(includes(__, items.map(prop('path'))))
