@@ -144,7 +144,6 @@ export default class SFtp extends FileSystem {
 
     async rm(path: Path, recursive: boolean): Promise<void> {
         const sftp = await this.open() 
-        const files = []
         return new Promise((resolve, reject) => {
             if (recursive) {
                 sftp.rmdir(path, e => e ? reject(new Error(this.decodeError(e))) : resolve())
@@ -165,7 +164,8 @@ export default class SFtp extends FileSystem {
     }
 
     async mv(from: Path, to: Path): Promise<void> {
-        const sftp = await this.open()
+        return this.exec(`mv -f ${from} ${to}`)
+        // await this.open()
         // return new Promise((resolve, reject) => 
         //     this.connection.exec(`mv ${from} ${to}`, (e, stream) => {
         //         if (e) {
@@ -182,15 +182,19 @@ export default class SFtp extends FileSystem {
         //         })
         //     })
         // )
-        return new Promise((resolve, reject) => {
-            sftp.rename(from, to, e => {
-                if (e) {
-                    reject(new Error(this.decodeError(e)))
-                    return
-                }
-                resolve()
-            })
-        })
+        // return new Promise((resolve, reject) => {
+        //     sftp.rename(from, to, e => {
+        //         if (e) {
+        //             reject(new Error(this.decodeError(e)))
+        //             return
+        //         }
+        //         resolve()
+        //     })
+        // })
+    }
+
+    async cp(from: Path, to: Path, recursive: boolean): Promise<void> {
+        return this.exec(`cp -f${recursive ? 'R' : ''} ${from} ${to}`)
     }
 
     async write(path: Path, s: string): Promise<void> {
@@ -209,6 +213,25 @@ export default class SFtp extends FileSystem {
     }
 
 
+    private async exec(cmd: string): Promise<void> {
+        await this.open()
+        return new Promise((resolve, reject) => 
+            this.connection.exec(cmd, (e, stream) => {
+                if (e) {
+                    reject(new Error(cmd + ': ' + this.decodeError(e)))
+                    return
+                }
+                stream.on('exit', (code) => {
+                    if (code) {
+                        reject(new Error(`${cmd}: the process's return code is ${code}`))
+                    }
+                    resolve()
+                }).stderr.on('data', data => {
+                    reject(new Error(`${cmd}: ${data}`))
+                })
+            })
+        )
+    }
 
     private decodeError(e: Error & { code?: number }) {
         const STATUS_CODE = {

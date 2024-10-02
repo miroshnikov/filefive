@@ -1,3 +1,4 @@
+import { sep }  from 'node:path'
 import { URI, Files } from './types'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import Connection from './Connection'
@@ -21,26 +22,25 @@ export default class RemoteWatcher {
     }
 
     public refresh(uri: URI) {
-        const { id, path } = parseURI(uri)
         if (this.watched.has(uri)) {
-            Connection.list(id, path)
-                .then(files => this.listener(uri, this.transform(files)))
-                .catch(e => {
-                    this.watched.del(uri)
-                    this.onMissing(uri)
-                })
+            this.list(uri)
+            Array.from(this.watched.keys()).forEach(dir => {
+                if (dir.startsWith(uri + sep)) {
+                    this.list(dir)
+                }
+            })
         }
             
     }
 
-    public touch(uri: URI) {
-        this.watched.modify(uri, true)
-    }
-
-    public refreshTouched() {
-        // TODO ?
-        // ...refresh()
-        // set all to false
+    private list(uri: URI) {
+        const { id, path } = parseURI(uri)
+        Connection.list(id, path)
+            .then(files => this.listener(uri, this.transform(files)))
+            .catch(e => {
+                this.watched.del(uri)
+                this.onMissing(uri)
+            })
     }
 
     private watched = new ReferenceCountMap<URI, boolean>

@@ -57,7 +57,7 @@ export default class CopyQueue extends TransmitQueue {
                     this.connId != LocalFileSystemID && this.touched.add(dirname(from.path))
                     await fs.mv(from.path, join(to, from.name))
                 } else {
-                    // TODO:  copy remote files
+                    await fs.cp(from.path, join(to, from.name), from.dir)
                 }
                 this.connId != LocalFileSystemID && this.touched.add(to)
             } catch(error) { 

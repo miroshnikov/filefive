@@ -131,6 +131,10 @@ export default class Ftp extends FileSystem {
         return new Promise((resolve, reject) => this.connection.rename(from, to, e => e ? reject(e) : resolve()))
     }
 
+    async cp(from: Path, to: Path, recursive: boolean): Promise<void> {
+        throw new Error("FTP doesn't support remote duplication")
+    }
+
     async write(path: Path, s: string): Promise<void> {
         // TODO
     }
