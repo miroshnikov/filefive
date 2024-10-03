@@ -1,5 +1,5 @@
 import { URI, ConnectionID, Path, LocalFileSystemID } from '../types'
-import { URL } from 'whatwg-url'
+import { URL, parseURL, serializeURL } from 'whatwg-url'
 
 export function isLocal(uri: string) {
     return uri.startsWith('file:')
@@ -15,7 +15,7 @@ export function connectionID(scheme: string, user: string, host: string, port:nu
 
 export function parseURI(uri: URI) {
     const { protocol, pathname, username, hostname, port: p } = new URL(uri)
-    const port = p ? parseInt(p) : defaultPort(protocol)
+    const port = p ? parseInt(p) : defaultPort(protocol.slice(0,-1))
 
     return {
         id: connectionID(protocol.slice(0,-1), username, hostname, port),
@@ -28,15 +28,21 @@ export function parseURI(uri: URI) {
 }
 
 export function createURI(id: ConnectionID, path: Path): URI {
-    const u = new URL(id)
-    u.pathname = path;
-    return u.toString() as URI
+    const u = parseURL(id)
+    u.path = path
+    if (!u.port) {
+        u.port = defaultPort(u.scheme)
+    }
+    return serializeURL(u) as URI
 }
 
 function defaultPort(protocol: string) {
     switch (protocol) {
-        case 'ftp:':  return 21
-        case 'sftp:': return 22
+        case 'ftp':  return 21
+        case 'sftp': return 22
+        case 'http': return 80
     }
-    return 80
+    return null
 }
+
+
