@@ -1,15 +1,24 @@
-import { URI, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, Path } from '../../src/types'
+import { URI, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, Path, Failure, FailureType } from '../../src/types'
 import { LocalFileInfo } from '../../src/Local'
+import { error$ } from './observables/error'
 
 
 async function invoke<T>(method: string, data: {} = {}): Promise<T> {
-    const resp = await fetch(`/api/${method}`, {
+    return fetch(`/api/${method}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     })
-    const txt = await resp.text()
-    return txt ? JSON.parse(txt) : null
+    .then(resp => {
+        if (!resp.ok) {
+            return resp.json().then(error => {
+                const message = 'message' in error ? error.message : String(error)
+                error$.next({ type: FailureType.APIError, message }) 
+                throw new Error(message)
+            })
+        }
+        return resp.json()
+    })
 }
 
 const channels = new Map<string, ((event: {}) => void)[]>
@@ -64,3 +73,5 @@ window.f5 = {
     stop: id => invoke<void>('stop', { id }),
     onQueueUpdate: listener => subscribe<{id: string, event: QueueEvent}>('queue', ({id, event}) => listener(id, event))
 }
+
+window.f5.onError((error: Failure) => error$.next(error))

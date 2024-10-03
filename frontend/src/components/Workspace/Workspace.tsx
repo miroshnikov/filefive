@@ -54,6 +54,7 @@ export default function Workspace({onChange}: Props) {
     
     useEffectOnUpdate(() => {
         if (connection) {
+            console.log('save conn')
             window.f5.save(
                 connection.file, 
                 { 
@@ -118,6 +119,7 @@ export default function Workspace({onChange}: Props) {
                     setRemotePath(settings.path.remote!)
                 }
             })
+            .catch(e => {})
             .finally(() => setConnecting(''))
     }
 

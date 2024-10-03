@@ -24,7 +24,7 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
     const content = stat(path) ? await read(path) : null
     if (stat(path)) {
         if (!content) {
-            throw new Error(`cant read connection file: ${path}`)
+            throw new Error(`Cant read connection file: ${path}`)
         }
     }
 
@@ -49,31 +49,9 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
         }
     }
 
+    if (!config) {
+        throw new Error(`Save invalid config into ${path}`)
+    }
+
     await writeFile(path, JSON.stringify(config))
 }
-
-/*
-import { connectionID } from '../utils/URI'
-import Password from '../Password'
-import { omit } from 'ramda'
-import { writeFile } from 'node:fs/promises'
-
-
-export interface Session {
-    scheme: string
-    host: string
-    port: number
-    user: string
-    password: string
-}
-
-export default async function (path: string, content: string) {
-    const connection: Session = JSON.parse(content)
-    Password.set(
-        connectionID(connection.scheme, connection.user, connection.host, connection.port), 
-        connection.password, 
-        true
-    )
-    writeFile(path, JSON.stringify(omit(['password'], connection)))
-}
-*/

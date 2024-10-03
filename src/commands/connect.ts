@@ -6,7 +6,7 @@ import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
 import { connectionID } from '../utils/URI'
 import Connection from '../Connection'
 import Password from '../Password'
-import { whereEq, isNotNil } from 'ramda'
+import { where, whereEq, isNotNil, isNotEmpty } from 'ramda'
 
 
 
@@ -32,7 +32,22 @@ export function explorerSettings(attributes: FileAttributes, config?: ExplorerCo
 
 
 export default async function (file: Path, onError: (id: ConnectionID, e: any) => void): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false> {
-    const config = JSON.parse( readFileSync(file).toString() ) as ConnectionConfig
+    let config: ConnectionConfig
+    try {
+        config = JSON.parse( readFileSync(file).toString() ) as ConnectionConfig
+    } catch (e) {
+        throw new Error(`Invalid connection file ${file}`)
+    }
+
+    if (!where({
+        scheme: isNotEmpty,
+        user: isNotEmpty,
+        host: isNotEmpty,
+        port: isNotEmpty
+    }, config)) {
+        throw new Error(`Invalid connection file ${file}`)
+    }
+
     const id = connectionID(config.scheme, config.user, config.host, config.port)
     await Password.get(id)
     try {

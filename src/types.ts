@@ -139,8 +139,9 @@ export type QueueAction =
 export enum FailureType {
     Unauthorized = 'unauthorized',
     ConfirmDeletion = 'confirm-deletion',
+    MissingDir = 'missing-dir',
     RemoteError = 'remote-error',
-    MissingDir = 'missing-dir'
+    APIError = 'api-error'
 }
 export type Failure =
     | {
@@ -159,4 +160,8 @@ export type Failure =
         type: FailureType.RemoteError
         id: ConnectionID
         error: Error
+    }
+    | {
+        type: FailureType.APIError
+        message: string
     }

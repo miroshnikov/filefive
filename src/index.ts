@@ -24,8 +24,13 @@ const server = app.listen(port, () => {
 
 const handle = async (name: string, handler: (args: {}) => any) => {
     app.post(`/api/${name}`, async (req, res) => {
-        const result = await handler(req.body)
-        res.json(result)
+        try {
+            const result = await handler(req.body)
+            res.json(result ?? null)
+        } catch (e) {
+            res.status(400)
+            res.json({ message: 'message' in e ? e.message : String(e) })
+        }
     })
 }
 
