@@ -48,8 +48,9 @@ export default class {
 
         const conn = await this.hold(id)
         if (conn) {
-            return Promise.resolve([conn[0], () => this.release(id, conn[1])])
+            return [conn[0], () => this.release(id, conn[1])]
         }
+
         return new Promise((resolve) => {
             const onRelease = (poolId: string) => {
                 const { fs } = this.pools[id][poolId]
@@ -59,7 +60,7 @@ export default class {
         })
     }
 
-    private static async hold(id: ConnectionID): Promise<[FileSystem, string]|undefined> {
+    private static async hold(id: ConnectionID): Promise<[FileSystem, string]|null> {
         !(id in this.pools) && (this.pools[id] = {})
         const pool = Object.entries(this.pools[id])
         const conn = this.getIdle(id)
@@ -68,6 +69,7 @@ export default class {
         }
         if (pool.length < this.getLimit(id)) {
             return new Promise((resolve) => {
+
                 const connect = async () => {
                     const conn = this.getIdle(id)
                     if (conn) {
@@ -81,15 +83,17 @@ export default class {
                         this.pools[id][poolId] = { fs, idle: false }
                         resolve([fs, poolId])
                     } catch (e) {}
-                    resolve(undefined)
+
+                    resolve(null)
                 }
+
                 this.queue.push( connect )
                 if (this.queue.length == 1) {
                     this.connectNext()
                 }
             })
         }
-        return undefined
+        return null
     }
 
     private static getIdle(id: ConnectionID): [FileSystem, string]|null {

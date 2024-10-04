@@ -18,7 +18,8 @@ export enum CommandID {
     CopyPath = 'copy-path',
     CopyRelativePath = 'copy-relative-path',
     CopyName = 'copy-name',
-    Paste = 'paste'
+    Paste = 'paste',
+    CopyToClipboard = 'copy-clipboard'
 }
 
 export type KeyShortcutCommand = 
@@ -46,6 +47,7 @@ export type Command = { label?: string } & (
         id: FileCommand, 
         uri?: URI
       } 
-    | { id: CommandID.Paste, files: File[] }
+    | { id: CommandID.Paste, files?: File[], uris?: URI[] }
+    | { id: CommandID.CopyToClipboard, data: DataTransfer }
 )
 

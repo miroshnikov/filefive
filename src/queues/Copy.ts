@@ -24,18 +24,20 @@ export default class CopyQueue extends TransmitQueue {
     protected async enqueue(paths: Path[], dest: Path) {
         const stat = this.stat(this.from)
         await Promise.all(
-            paths.filter(path => dirname(path) != dest).map(async path => {
-                const from = await stat(path)
-                if (from) {
-                    this.queue.push({
-                        from,
-                        dirs: [],
-                        to: this.dest
-                    })
-                    this.totalCnt++
-                    this.totalSize++
-                }
-            })
+            paths
+                .filter(path => path != dest && dirname(path) != dest)
+                .map(async path => {
+                    const from = await stat(path)
+                    if (from) {
+                        this.queue.push({
+                            from,
+                            dirs: [],
+                            to: this.dest
+                        })
+                        this.totalCnt++
+                        this.totalSize++
+                    }
+                })
         )
     }
 

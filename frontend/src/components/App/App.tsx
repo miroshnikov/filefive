@@ -45,11 +45,25 @@ export default function App () {
                     files.push(e.clipboardData.files.item(i))
                 }
                 command$.next({ id: CommandID.Paste, files })
+            } else {
+                const data = e.clipboardData.getData('URIs')
+                if (data && data.length) {
+                    command$.next({ id: CommandID.Paste, uris: JSON.parse(data) })
+                }
             }
-            // console.log(e.clipboardData.getData())
         }
         document.documentElement.addEventListener("paste", onPaste)
-        return () => document.documentElement.removeEventListener("paste", onPaste)
+
+        const onCopy = (e: ClipboardEvent) => {
+            e.preventDefault()
+            command$.next({ id: CommandID.CopyToClipboard, data: e.clipboardData })
+        }
+        document.documentElement.addEventListener("copy", onCopy)
+
+        return () => {
+            document.documentElement.removeEventListener("paste", onPaste)
+            document.documentElement.removeEventListener("copy", onCopy)
+        }
     })
 
     useSubscribe(() =>

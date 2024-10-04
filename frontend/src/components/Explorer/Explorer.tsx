@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
 import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
-import { dirname, descendantOf, join } from '../../utils/path'
+import { dirname, descendantOf, join, childOf } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
 import List, { Column, Columns, ColumnType, Item } from '../List/List'
@@ -11,7 +11,7 @@ import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
 import { filter, tap } from 'rxjs/operators'
 import { useEffectOnUpdate, useSubscribe } from '../../hooks'
-import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, toLower } from 'ramda'
+import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, toLower, complement } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
@@ -193,7 +193,19 @@ export default function Explorer ({
         command$.pipe(filter(() => focused)).subscribe(cmd => {
             switch (cmd.id) {
                 case CommandID.Paste: {
-                    uploadFiles(cmd.files, target.current ?? root)
+                    if (cmd.files) {
+                        uploadFiles(cmd.files, target.current ?? root)
+                    } else if (cmd.uris) {
+                        if (!cmd.uris.length) {
+                            return
+                        }
+                        window.f5.copy(cmd.uris, createURI(connection, target.current ?? root))
+                    }
+                    break
+                }
+                case CommandID.CopyToClipboard: {
+                    const uris = selected.current?.map(path => createURI(connection, path))
+                    uris && cmd.data.setData('URIs', JSON.stringify(uris))
                     break
                 }
             }
@@ -231,10 +243,6 @@ export default function Explorer ({
         }   
     }
 
-    const rename = (path: URI, name: string) => {
-        window.f5.rename(path, name)
-    }
-
     const uploadFiles = (files: File[], target: Path) => {
         const data = new FormData()
         data.append('to', createURI(connection, target));
@@ -250,8 +258,6 @@ export default function Explorer ({
                 uploadFiles(items as File[], target)
         }
     }
-
-
 
     const sort = (name: Column['name']) => {
         const toSort = columns.find(whereEq({name}))
@@ -335,7 +341,7 @@ export default function Explorer ({
             onDrop={onDrop}
             onMenu={(path, dir) => {setShowColumnsMenu(false); onMenu(createURI(connection, path), dir)}}
             onNew={createNew}
-            onRename={rename}
+            onRename={(path, name) => window.f5.rename(path, name)}
             onSort={sort}
             onColumnsMenu={() => setShowColumnsMenu(true)}
             onColumnsChange={onColumnsChange}
