@@ -9,7 +9,7 @@ import { command$ } from '../observables/command'
 export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path): MenuItem[] {
     return [
         {
-            id: 'download',
+            id: CommandID.Transfer,
             label: 'Download',
             click: () => {
                 window.f5.copy(
@@ -33,14 +33,29 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         },
 
         {
-            id: 'copy-path',
-            label: 'Copy Path',
-            click: () => navigator.clipboard.writeText(path) 
+            id: CommandID.TriggerCopy,
+            label: 'Copy',
+            click: () => command$.next({ id: CommandID.TriggerCopy }),
         },
         {
-            id: 'copy-name',
+            id: CommandID.CopyURI,
+            label: 'Copy URL',
+            click: () => command$.next({ id: CommandID.CopyURI, uri: createURI(id, path) })
+        },
+        {
+            id: CommandID.CopyPath,
+            label: 'Copy Path',
+            click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(id, path) })
+        },
+        {
+            id: CommandID.CopyRelativePath,
+            label: 'Copy Relative Path',
+            click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
+        },
+        {
+            id: CommandID.CopyName,
             label: 'Copy Name',
-            click: () => navigator.clipboard.writeText(basename(path)),
+            click: () => command$.next({ id: CommandID.CopyName, uri: createURI(id, path) }),
             separator: true
         },
 

@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
 import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
-import { dirname, descendantOf, join, childOf } from '../../utils/path'
+import { dirname, descendantOf, join, basename } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
 import List, { Column, Columns, ColumnType, Item } from '../List/List'
@@ -192,6 +192,11 @@ export default function Explorer ({
     useSubscribe(() => 
         command$.pipe(filter(() => focused)).subscribe(cmd => {
             switch (cmd.id) {
+                case CommandID.Copy: {
+                    const uris = selected.current?.map(path => createURI(connection, path))
+                    uris && cmd.data.setData('URIs', JSON.stringify(uris))
+                    break
+                }
                 case CommandID.Paste: {
                     if (cmd.files) {
                         uploadFiles(cmd.files, target.current ?? root)
@@ -203,9 +208,56 @@ export default function Explorer ({
                     }
                     break
                 }
-                case CommandID.CopyToClipboard: {
-                    const uris = selected.current?.map(path => createURI(connection, path))
-                    uris && cmd.data.setData('URIs', JSON.stringify(uris))
+                case CommandID.CopyURI : {
+                    const uri = cmd.uri ?? (target.current ? createURI(connection, target.current) : null)
+                    if (uri) {
+                        const uris = selected.current?.map(path => createURI(connection, path))
+                        navigator.clipboard.writeText((uris.includes(uri) ? uris : [uri]).join(' '))
+                    }
+                    break
+                }
+                case CommandID.CopyPath: {
+                    const path = cmd.uri ? parseURI(cmd.uri).path : target.current
+                    if (path) {
+                        navigator.clipboard.writeText((selected.current?.includes(path) ? selected.current : [path]).join(' '))
+                    }
+                    break
+                }
+                case CommandID.CopyRelativePath: {
+                    const path = cmd.uri ? parseURI(cmd.uri).path : target.current
+                    if (path) {
+                        navigator.clipboard.writeText(
+                            (selected.current?.includes(path) ? selected.current : [path])
+                                .map(path => path.substring(root.length+1))
+                                .join(' ')
+                        )
+                    }
+                    break
+                }
+                case CommandID.CopyName: {
+                    const path = cmd.uri ? parseURI(cmd.uri).path : target.current
+                    if (path) {
+                        navigator.clipboard.writeText(
+                            (selected.current.includes(path) ? selected.current : [path])
+                                .map(path => basename(path))
+                                .join(' ')
+                        )
+                    }
+                    break
+                }
+                case CommandID.CopyNameNoExt: {
+                    const path = cmd.uri ? parseURI(cmd.uri).path : target.current
+                    if (path) {
+                        navigator.clipboard.writeText(
+                            (selected.current.includes(path) ? selected.current : [path])
+                                .map(path => {
+                                    const name = basename(path)
+                                    const dot = name.lastIndexOf('.')
+                                    return name.substring(0, dot > 0 ? dot : name.length)
+                                })
+                                .join(' ')
+                        )
+                    }
                     break
                 }
             }

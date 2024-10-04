@@ -56,9 +56,11 @@ export default function App () {
 
         const onCopy = (e: ClipboardEvent) => {
             e.preventDefault()
-            command$.next({ id: CommandID.CopyToClipboard, data: e.clipboardData })
+            command$.next({ id: CommandID.Copy, data: e.clipboardData })
         }
         document.documentElement.addEventListener("copy", onCopy)
+
+        document.documentElement.addEventListener("keypress", console.log)
 
         return () => {
             document.documentElement.removeEventListener("paste", onPaste)
@@ -79,6 +81,12 @@ export default function App () {
             switch (cmd.id) {
                 case CommandID.Settings: {
                     console.log('show settings')
+                    break
+                }
+                case CommandID.TriggerCopy: {
+                    document.execCommand('copy')
+                    // document.execCommand('paste') is not supported
+                    break
                 }
             }
         })

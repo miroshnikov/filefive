@@ -4,14 +4,13 @@ import styles from './List.less'
 import { URI, FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
 import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith, update, move } from 'ramda'
 import { filter } from 'rxjs/operators'
-import { depth, dirname, parse, childOf, join, basename } from '../../utils/path'
+import { depth, dirname, parse, childOf, join } from '../../utils/path'
 import { useSet, useSubscribe, useEvent } from '../../hooks'
 import setRef from '../../ui/setRef'
 import { CommandID } from '../../commands'
 import { command$ } from '../../observables/command'
 import EditFileName from '../EditFileName/EditFileName'
 import debounce from '../../utils/debounce'
-import { parseURI } from "../../../../src/utils/URI"
 import { Tooltips } from '../../ui/components'
 
 
@@ -241,26 +240,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                         !expanded.includes(inDir) && toggle(inDir);
                         createIn({ in: inDir, dir: cmd.id == CommandID.NewDir })
                     }
-                    break
-                }
-                case CommandID.CopyURI : {
-                    const uri = cmd.uri ?? target?.URI
-                    navigator.clipboard.writeText(uri ?? '')
-                    break
-                }
-                case CommandID.CopyPath: {
-                    const uri = cmd.uri ?? target?.URI
-                    uri && navigator.clipboard.writeText(parseURI(uri).path)
-                    break
-                }
-                case CommandID.CopyRelativePath: {
-                    const uri = cmd.uri ?? target?.URI
-                    uri && navigator.clipboard.writeText(parseURI(uri).path.substring(root.length+1))
-                    break
-                }
-                case CommandID.CopyName: {
-                    const uri = cmd.uri ?? target?.URI
-                    uri && navigator.clipboard.writeText(basename(parseURI(uri).path))
                     break
                 }
                 case CommandID.Rename: {

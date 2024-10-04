@@ -7,11 +7,11 @@ import { command$ } from '../observables/command'
 
 
 export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] {
-    const { id } = parseURI(copyTo)
+    const { id, path: to } = parseURI(copyTo)
     return [
         {
-            id: 'copy-files',
-            label: id == LocalFileSystemID ? 'Copy' : 'Upload',
+            id: CommandID.Transfer,
+            label: id == LocalFileSystemID ? `Copy to ${basename(to)}` : 'Upload',
             click: () => {
                 window.f5.copy(
                     (selected.includes(path) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
@@ -20,30 +20,31 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
             },
             separator: true
         },
-        
+
         {
-            id: 'copy-path',
+            id: CommandID.TriggerCopy,
+            label: 'Copy',
+            click: () => command$.next({ id: CommandID.TriggerCopy }),
+        },       
+        {
+            id: CommandID.CopyPath,
             label: 'Copy Path',
             click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(LocalFileSystemID, path) })
         },
         {
-            id: 'copy-relative-path',
+            id: CommandID.CopyRelativePath,
             label: 'Copy Relative Path',
             click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
         },
         {
-            id: 'copy-name',
+            id: CommandID.CopyName,
             label: 'Copy Name',
             click: () => command$.next({ id: CommandID.CopyName, uri: createURI(LocalFileSystemID, path) })
         },
         {
-            id: 'copy-name-no-ext',
+            id: CommandID.CopyNameNoExt,
             label: 'Copy Name w/o Extension',
-            click: () => { 
-                const name = basename(path)
-                const dot = name.lastIndexOf('.')
-                navigator.clipboard.writeText(name.substring(0, dot > 0 ? dot : name.length)) 
-            },
+            click: () => command$.next({ id: CommandID.CopyNameNoExt, uri: createURI(LocalFileSystemID, path) }),
             separator: true
         },
         
@@ -63,12 +64,12 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         },
 
         {
-            id: 'rename',
+            id: CommandID.Rename,
             label: 'Rename...',
             click: () => command$.next({ id: CommandID.Rename, uri: createURI(LocalFileSystemID, path) })
         },
         {
-            id: 'delete',
+            id: CommandID.Delete,
             label: 'Delete',
             click: () => {
                 window.f5.remove(

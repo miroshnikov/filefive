@@ -1,6 +1,5 @@
 import { Path, ConnectionID, LocalFileSystemID } from '../../../src/types'
 import { createURI } from '../../../src/utils/URI'
-import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
 import { command$ } from '../observables/command'
 import { CommandID } from '../commands'
@@ -9,7 +8,7 @@ import { CommandID } from '../commands'
 export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path): MenuItem[] {
     return [
         {
-            id: 'download',
+            id: CommandID.Transfer,
             label: 'Download',
             click: () => {
                 window.f5.copy(
@@ -21,33 +20,34 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         },
 
         {
-            id: 'copy-uri',
+            id: CommandID.TriggerCopy,
+            label: 'Copy',
+            click: () => command$.next({ id: CommandID.TriggerCopy }),
+        },
+        {
+            id: CommandID.CopyURI,
             label: 'Copy URL',
             click: () => command$.next({ id: CommandID.CopyURI, uri: createURI(id, path) })
         },
         {
-            id: 'copy-path',
+            id: CommandID.CopyPath,
             label: 'Copy Path',
             click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(id, path) })
         },
         {
-            id: 'copy-relative-path',
+            id: CommandID.CopyRelativePath,
             label: 'Copy Relative Path',
             click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(id, path) })
         },
         {
-            id: 'copy-name',
+            id: CommandID.CopyName,
             label: 'Copy Name',
             click: () => command$.next({ id: CommandID.CopyName, uri: createURI(id, path) })
         },
         {
-            id: 'copy-name-no-ext',
+            id: CommandID.CopyNameNoExt,
             label: 'Copy Name w/o Extension',
-            click: () => { 
-                const name = basename(path)
-                const dot = name.lastIndexOf('.')
-                navigator.clipboard.writeText(name.substring(0, dot > 0 ? dot : name.length)) 
-            },
+            click: () => command$.next({ id: CommandID.CopyNameNoExt, uri: createURI(LocalFileSystemID, path) }),
             separator: true
         },
 

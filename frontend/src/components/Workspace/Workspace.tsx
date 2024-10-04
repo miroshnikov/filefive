@@ -136,7 +136,7 @@ export default function Workspace({onChange}: Props) {
 
     const localToolbar: ToolbarItem[] = [
         {
-            id: CommandID.Copy,
+            id: CommandID.Transfer,
             icon: connection ? 'upload' : 'file_copy',
             title: connection ? 'Upload Selected' : 'Copy Selected',
             disabled: focused.current != 'local' || !localSelected.length,
@@ -174,7 +174,7 @@ export default function Workspace({onChange}: Props) {
 
     const remoteToolbar: ToolbarItem[] = [
         {
-            id: CommandID.Copy,
+            id: CommandID.Transfer,
             icon: connection ? 'download' : 'file_copy',
             title: connection ? 'Download Selected' : 'Copy Selected',
             disabled: focused.current != 'remote' || !remoteSelected.length,
@@ -247,7 +247,7 @@ export default function Workspace({onChange}: Props) {
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
-            id: CommandID.Copy,
+            id: CommandID.Transfer,
             icon: 'file_copy',
             title: 'Copy Selected',
             disabled: focused.current != 'remote' || !remoteSelected.length,
@@ -315,7 +315,7 @@ export default function Workspace({onChange}: Props) {
                     }
                     break
                 }
-                case CommandID.Copy: {
+                case CommandID.Transfer: {
                     if (focused.current) {
                         focused.current == 'local' ?
                             window.f5.copy(

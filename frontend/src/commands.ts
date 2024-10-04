@@ -2,7 +2,7 @@ import { URI } from '../../src/types'
 
 
 export enum CommandID {
-    Copy = 'copy',
+    Transfer = 'transfer',
     Delete = 'delete',
     SelectAll = 'select-all',
     NewDir = 'new-dir',
@@ -18,12 +18,15 @@ export enum CommandID {
     CopyPath = 'copy-path',
     CopyRelativePath = 'copy-relative-path',
     CopyName = 'copy-name',
+    CopyNameNoExt = 'copy-name-no-ext',
     Paste = 'paste',
-    CopyToClipboard = 'copy-clipboard'
+    Copy = 'copy',
+    TriggerCopy = 'trigger-copy',
+    TriggerPaste = 'trigger-paste'
 }
 
 export type KeyShortcutCommand = 
-    | CommandID.Copy
+    | CommandID.Transfer
     | CommandID.Delete
     | CommandID.SelectAll
     | CommandID.NewDir
@@ -32,6 +35,8 @@ export type KeyShortcutCommand =
     | CommandID.Connections
     | CommandID.Refresh
     | CommandID.CollapseAll
+    | CommandID.TriggerCopy
+    | CommandID.TriggerPaste
 
 type FileCommand = 
     | CommandID.Rename
@@ -40,6 +45,7 @@ type FileCommand =
     | CommandID.CopyPath
     | CommandID.CopyRelativePath
     | CommandID.CopyName
+    | CommandID.CopyNameNoExt
 
 export type Command = { label?: string } & (
     | { id: KeyShortcutCommand }
@@ -48,6 +54,6 @@ export type Command = { label?: string } & (
         uri?: URI
       } 
     | { id: CommandID.Paste, files?: File[], uris?: URI[] }
-    | { id: CommandID.CopyToClipboard, data: DataTransfer }
+    | { id: CommandID.Copy, data: DataTransfer }
 )
 

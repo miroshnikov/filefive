@@ -12,5 +12,6 @@ export default function Error() {
             }
         })
     )
+    // TODO report issue on Github
     return <></>
 }

@@ -37,6 +37,6 @@
     },
     {
         "key": "f5",
-        "command": "copy"
+        "command": "transfer"
     }
 ]
