@@ -415,6 +415,7 @@ export default function Workspace({onChange}: Props) {
                             <Explorer
                                 icon='cloud'
                                 connection={connection.id}
+                                connectionName={basename(connection.file)}
                                 settings={connection.layout.remote}
                                 path={remotePath}
                                 fixedRoot={'/'}

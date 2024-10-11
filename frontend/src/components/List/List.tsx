@@ -280,7 +280,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         }
     }
 
-    const dragOver = (e: React.DragEvent<HTMLTableRowElement>) => {
+    const dragOver = (e: React.DragEvent<HTMLTableRowElement|HTMLDivElement>) => {
         e.dataTransfer.dropEffect = dragging.current ? (e.altKey ? 'copy' : 'move') : 'copy'
         e.preventDefault()
     }
@@ -384,7 +384,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         onBlur={() => isActive.current = false}
         onClick={e => e.target == rootEl.current && setTarget(null)}
         onContextMenu={() => { setTarget(null); onMenu(root, true)}}
-        onDragOver={e => parent && e.preventDefault()}
+        onDragOver={dragOver}
         onDragEnter={() => setDraggedOver(true)}
         onDragLeave={() => setDraggedOver(false)}
         onDrop={e => dragDrop(root, e)}
@@ -464,8 +464,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                             onContextMenu={e => {e.stopPropagation(); setTarget(item); onMenu(item.path, item.dir)}}
                             draggable={true}
                             onDragStart={e => dragStart(i, e)}
-                            onDragEnd={e => dragEnd(e)}
-                            onDragOver={e => dragOver(e)}
+                            onDragEnd={dragEnd}
+                            onDragOver={dragOver}
                             onDragEnter={e => dragEnter(item, e)}
                             onDragLeave={e => dragLeave(item, e)}
                             onDrop={e => dragDrop(item.dir ? item.path : dirname(item.path), e)}

@@ -11,7 +11,6 @@ i18next
         type: 'postProcessor',
         name: 'test',
         process: function(value: any, key: any, options: any, translator: any) {
-            console.log('use: ', {value, key, options, translator})
             return value;
         }
     })

@@ -60,8 +60,6 @@ export default function App () {
         }
         document.documentElement.addEventListener("copy", onCopy)
 
-        document.documentElement.addEventListener("keypress", console.log)
-
         return () => {
             document.documentElement.removeEventListener("paste", onPaste)
             document.documentElement.removeEventListener("copy", onCopy)

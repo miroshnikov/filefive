@@ -1,3 +1,10 @@
+.sep {
+    font-family: 'Material Icons';
+    font-size: 1.2em;
+    opacity: .6;
+    content: "chevron_right";
+}
+
 :local(.root) {
     background-color: var(--bar-background);
     user-select: none;
@@ -6,29 +13,43 @@
         align-items: center;
         background-color: var(--background);
         color: var(--color);
+        font-size: 1.1em;
         margin: .4em;
         padding: .2em .4em;
         border-radius: 6px;
-        > i {
-            color: var(--bar-color);
-            padding-right: .5em;
+        em {
+            background-color: var(--selected-background);
+            border-radius: 6px;
+            margin: 1px;
+            display: flex;
+            align-items: center;
+            gap: .3em;
+            padding: 0 .4em;
             cursor: pointer;
-            &:hover {
-                color: var(--color);
+            > span {
+                overflow-x: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
             }
+        }
+        i {
+            font-size: 1.1em;
+            padding-right: .2em;
+            cursor: pointer;
         }
         > div {
             white-space: nowrap;
             overflow-x: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: .2em;
             &::after {
-                padding: 0 .2em;
-                content: "/";
+                .sep;
             }
-            &:first-child::before {
-                padding-right: .2em;
-                content: "/";
+            &:first-of-type::before {
+                .sep;
             }
             &:last-child::after {
                 display: none;

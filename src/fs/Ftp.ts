@@ -1,4 +1,6 @@
-import { join, dirname } from 'node:path'
+import { join, dirname, basename } from 'node:path'
+import { tmpdir } from 'node:os'
+import { writeFile, rm } from 'node:fs/promises'
 import * as fs from 'fs'
 import Client from 'ftp'
 import { Path } from '../types'
@@ -136,7 +138,10 @@ export default class Ftp extends FileSystem {
     }
 
     async write(path: Path, s: string): Promise<void> {
-        // TODO
+        const tmp = join(tmpdir(), basename(path))
+        await writeFile(tmp, s)
+        await this.put(tmp, path)
+        rm(tmp)
     }
 
 

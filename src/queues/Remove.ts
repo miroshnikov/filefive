@@ -85,7 +85,7 @@ export default class RemoveQueue implements Queue {
             }
 
             try {
-                conn.rm(item.path, item.dir)
+                await conn.rm(item.path, item.dir)
                 this.onState({
                     totalCnt,
                     doneCnt: ++doneCnt,

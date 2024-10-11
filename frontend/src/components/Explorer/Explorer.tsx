@@ -64,6 +64,7 @@ const onlyVisible = (dirs: string[]) => {
 interface ExplorerProps {
     icon: string
     connection: ConnectionID
+    connectionName?: string
     settings: ExplorerSettings
     path: Path
     fixedRoot: Path
@@ -84,6 +85,7 @@ interface ExplorerProps {
 export default function Explorer ({
     icon, 
     connection, 
+    connectionName,
     settings,
     path, 
     fixedRoot, 
@@ -369,7 +371,11 @@ export default function Explorer ({
         )
     }, [files, selected.current])
 
-    return <div className={classNames(styles.root, {focused})} onFocus={() => {setFocused(true); onFocus?.()}} onBlur={() => {setFocused(false); onBlur?.()}}>
+    return <div 
+            className={classNames(styles.root, {focused})} 
+            onFocus={() => {setFocused(true); onFocus?.()}} 
+            onBlur={() => {setFocused(false); onBlur?.()}}
+        >
         <header>
             {toolbar.length ? 
                 <Toolbar items={toolbar} onClick={() => list.current?.focus()} /> : 
@@ -380,6 +386,7 @@ export default function Explorer ({
                 path={root}
                 root={fixedRoot}
                 go={setRoot}
+                connection={connectionName ? { id: connection, name: connectionName } : null}
             />
         </header>
         <List 
