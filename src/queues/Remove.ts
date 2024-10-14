@@ -1,27 +1,10 @@
 import { basename, dirname, normalize, sep } from 'node:path'
 import { Queue } from './Queue'
 import { Path, ConnectionID, QueueState, FailureType, QueueAction } from '../types'
-import { FileItem } from '../FileSystem'
 import Connection from '../Connection'
 import { createURI } from '../utils/URI'
 import RemoteWatcher from '../RemoteWatcher'
-import { memoizeWith, nthArg } from 'ramda'
-
-
-export const lsRemote = (connId: ConnectionID) => 
-    memoizeWith(
-        nthArg(0),
-        async (path: string): Promise<FileItem[]|null> => {
-            const [conn, close] = await Connection.transmit(connId)
-            try {
-                return await conn.ls(path)
-            } catch(e) {
-            } finally {
-                close()
-            }
-            return null
-        }
-    )
+import { lsRemote } from './Queue'
 
 
 export default class RemoveQueue implements Queue {
@@ -47,9 +30,11 @@ export default class RemoveQueue implements Queue {
         let totalCnt = 0
         let doneCnt = 0
 
+        const ls = lsRemote(this.connId)
+
         const add = async (path: string, tree: ItemToRemove[]): Promise<ItemToRemove[]> => {
             const parent = dirname(path)
-            const file = (await lsRemote(this.connId)(parent))?.find(f => f.name == basename(path))
+            const file = (await ls(parent))?.find(f => f.name == basename(path))
             if (!file) {
                 return tree
             }
@@ -57,7 +42,7 @@ export default class RemoveQueue implements Queue {
             let children: ItemToRemove[] = []
             if (file.dir) {
                 children = (await Promise.all(
-                    (await lsRemote(this.connId)(file.path) ?? []).map(({path}) => add(path, []))
+                    (await ls(file.path) ?? []).map(({path}) => add(path, []))
                 )).flat(1)
             }
             totalCnt++
