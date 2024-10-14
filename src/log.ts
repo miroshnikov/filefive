@@ -48,6 +48,10 @@ export class LogFS extends FileSystem {
         this.fs.close()
     }
 
+    opened() { 
+        return this.fs.opened()   
+    }
+
     async pwd() {
         logger.log(await cmd('PWD'), await id(this.id))
         try {

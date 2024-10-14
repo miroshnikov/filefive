@@ -53,7 +53,7 @@ export default class {
 
         return new Promise((resolve) => {
             const onRelease = (poolId: string) => {
-                const { fs } = this.pools[id][poolId]
+                const { fs } = this.pools.get(id).get(poolId)
                 resolve([fs, () => this.release(id, poolId)])
             }
             id in this.pending ? this.pending[id].push(onRelease) : (this.pending[id] = [onRelease])
@@ -61,13 +61,13 @@ export default class {
     }
 
     private static async hold(id: ConnectionID): Promise<[FileSystem, string]|null> {
-        !(id in this.pools) && (this.pools[id] = {})
-        const pool = Object.entries(this.pools[id])
+        !this.pools.has(id) && this.pools.set(id, new Map())
+        const pool = this.pools.get(id)
         const conn = this.getIdle(id)
         if (conn) {
             return conn
         }
-        if (pool.length < this.getLimit(id)) {
+        if (pool.size < this.getLimit(id)) {
             return new Promise((resolve) => {
 
                 const connect = async () => {
@@ -78,12 +78,18 @@ export default class {
                     }
                     const poolId = unqid()
                     try {
-                        const fs = await this.createFromId(id)
+                        const onClose = () => this.pools.get(id)?.delete(poolId)
+                        const fs = await this.createFromId(id, onClose)
                         await fs.open()
-                        this.pools[id][poolId] = { fs, idle: false }
+                        this.pools.get(id).set(poolId, { fs, idle: false })
                         resolve([fs, poolId])
-                    } catch (e) {}
-
+                    } catch (e) {
+                        const conn = this.getIdle(id)
+                        if (conn) {
+                            resolve(conn)
+                            return
+                        }
+                    }
                     resolve(null)
                 }
 
@@ -97,11 +103,10 @@ export default class {
     }
 
     private static getIdle(id: ConnectionID): [FileSystem, string]|null {
-        const conn = Object.entries(this.pools[id]).find(([, { idle }]) => idle !== false)
+        const conn = Array.from(this.pools.get(id)?.entries() || []).find(([,{ idle }]) => idle !== false)
         if (conn) {
             conn[1].idle !== false && clearTimeout(conn[1].idle)
             conn[1].idle = false
-            console.log('Reuse connection')
             return [conn[1].fs, conn[0]]
         }
         return null
@@ -118,31 +123,31 @@ export default class {
     private static maxStartups = 7      // for SFTP see MaxStartups in /etc/ssh/sshd_config
 
     private static release(id: ConnectionID, poolId: string) {
-        const conn = this.pools[id]?.[poolId]
+        const conn = this.pools.get(id)?.get(poolId)
         if (conn) {
             if (this.pending[id]?.length) {
                 this.pending[id].shift()(poolId)
             } else {
                 conn.idle = setTimeout(() => {
                     conn.fs.close()
-                    delete this.pools[id][poolId]
+                    this.pools.get(id)?.delete(poolId)
                 }, 2000)
             }
         }
     }
 
     private static getLimit(id: ConnectionID) {
-        return this.limits.has(id) ? this.limits.get(id) : 1024
+        return this.limits.has(id) ? this.limits.get(id) : 1024     // for vsftpd max_per_ip in /etc/vsftpd.conf
     }
 
-    private static async create(id: ConnectionID, scheme: string, user: string, host: string, port: number): Promise<FileSystem> {
+    private static async create(id: ConnectionID, scheme: string, user: string, host: string, port: number, onClose = () => {}): Promise<FileSystem> {
         return new LogFS(
             id, 
-            await this.createFS(scheme, user, host, port, await Password.get(id))
+            await this.createFS(scheme, user, host, port, await Password.get(id), onClose)
         )
     }
 
-    private static async createFS(scheme: string, user: string, host: string, port: number, password: string) {
+    private static async createFS(scheme: string, user: string, host: string, port: number, password: string, onClose: () => void) {
         switch (scheme) {
             case 'sftp': {
                 return new SFtp(
@@ -150,7 +155,8 @@ export default class {
                     user, 
                     password,
                     port, 
-                    error => logger.error('SFTP error:', error)
+                    error => logger.error('SFTP error:', error),
+                    onClose
                 )
             }
             case 'ftp': {
@@ -159,7 +165,8 @@ export default class {
                     user, 
                     password,
                     port, 
-                    error => logger.error('FTP error:', error) 
+                    error => logger.error('FTP error:', error),
+                    onClose
                 )
             }
             default: 
@@ -167,13 +174,14 @@ export default class {
         }
     }
 
-    private static async createFromId(id: ConnectionID): Promise<FileSystem> {
+    private static async createFromId(id: ConnectionID, onClose = () => {}): Promise<FileSystem> {
         const { scheme, user, host, port } = parseURI(id as URI)
-        return this.create(id, scheme, user, host, port)
+        return this.create(id, scheme, user, host, port, onClose)
     }
 
     private static shared = new ReferenceCountMap<ConnectionID, FileSystem>
-    private static pools: Record<string, Record<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = {}
+    // private static pools: Record<string, Record<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = {}
+    private static pools: Map<string, Map<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = new Map()
     private static queue: Function[] = []
     private static pending: Record<string, ((id: string) => void)[]> = {}
     private static limits = new Map<ConnectionID, number>()

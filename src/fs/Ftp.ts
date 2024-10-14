@@ -34,12 +34,13 @@ export default class Ftp extends FileSystem {
         private user: string, 
         private password: string, 
         private port = 21,
-        private onError: (e: Error) => void
+        private onError: (e: Error) => void,
+        private onClose = () => {}
     ) { 
         super()
         this.connection.on('close', () => { 
-            console.log('close')
             this.connected = undefined 
+            this.onClose()
         })
     }
 
@@ -59,7 +60,11 @@ export default class Ftp extends FileSystem {
     }
 
     close() {
-        this.connection.end()
+        this.connected != undefined && this.connection.end()
+    }
+
+    opened() { 
+        return this.connected != undefined
     }
 
     async pwd(): Promise<Path> {

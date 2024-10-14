@@ -28,6 +28,7 @@ export type FileAttributes = Readonly<FileAttribute>[]
 export abstract class FileSystem {
     abstract open(): Promise<any>
     abstract close(): void
+    abstract opened(): boolean
     abstract pwd(): Promise<Path>
     abstract ls(dir: Path): Promise<FileItem[]>
     abstract get(remote: Path, local: Path): Promise<void>

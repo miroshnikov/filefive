@@ -28,6 +28,8 @@ export default class Local extends FileSystem {
         return Promise.resolve(LocalFileSystemID as FileSystemURI)
     }
 
+    opened() { return true }
+
     close(): void {}
 
     pwd(): Promise<string> {

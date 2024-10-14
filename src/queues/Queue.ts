@@ -11,7 +11,28 @@ export interface Queue {
     create(): Promise<void>
     resolve(action: QueueAction, forAll: boolean): void
     stop(): void
-} 
+}
+
+
+export const lsRemote = (connId: ConnectionID) => {
+    const cache = new Map<string, Promise<FileItem[]|null>>()
+    return async (path: string): Promise<FileItem[]|null> => {
+        if (cache.has(path)) {
+            return cache.get(path)
+        }
+        const [conn, close] = await Connection.transmit(connId)
+        try {
+            const list = conn.ls(path)
+            cache.set(path, list)
+            return list
+        } catch(e) {
+            cache.set(path, null)
+        } finally {
+            close()
+        }
+        return null
+    }
+}
 
 
 export default abstract class TransmitQueue implements Queue {
@@ -49,7 +70,9 @@ export default abstract class TransmitQueue implements Queue {
                     return this.next()
                 }                
             }
+
             const [fs, close] = await Connection.transmit(this.from != LocalFileSystemID ? this.from : this.to)
+
             this.transmits++
             (new Promise((resolve) =>
                 resolve(
@@ -177,19 +200,20 @@ export default abstract class TransmitQueue implements Queue {
     protected ls(connId: ConnectionID): (path: string) => Promise<FileItem[]|null> {
         return connId == LocalFileSystemID ? 
             (dir: string) => Connection.get(connId).ls(dir) : 
-            memoizeWith(
-                nthArg(0),
-                async (path: string): Promise<FileItem[]|null> => {
-                    const [conn, close] = await Connection.transmit(connId)
-                    try {
-                        return await conn.ls(path)
-                    } catch(e) {
-                    } finally {
-                        close()
-                    }
-                    return null
-                }
-            )
+            lsRemote(connId)
+            // memoizeWith(
+            //     nthArg(0),
+            //     async (path: string): Promise<FileItem[]|null> => {
+            //         const [conn, close] = await Connection.transmit(connId)
+            //         try {
+            //             return await conn.ls(path)
+            //         } catch(e) {
+            //         } finally {
+            //             close()
+            //         }
+            //         return null
+            //     }
+            // )
     }
 
     protected stat(connId: ConnectionID): (path: string) => Promise<FileItem|null> {
