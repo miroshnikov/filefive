@@ -17,6 +17,7 @@ import { file$ } from '../../observables/file'
 import { CommandID, KeyShortcutCommand } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 import { Tooltips, getTooltipShortcut } from '../../ui/components'
+import Settings from '../../modals/Settings/Settings'
 
 
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
@@ -67,9 +68,11 @@ export default function App () {
     })
 
     useSubscribe(() =>
-        file$.subscribe(() => 
-            window.f5.config().then(settings => setAppSettings(settings)) 
-        )
+        file$.subscribe(() => {
+            window.f5.config().then(settings => {
+                setAppSettings(settings)
+            }) 
+        })
     )
 
     useShortcuts(appSettings?.keybindings ?? [], id => command$.next({id: id as KeyShortcutCommand}), [appSettings])
@@ -77,10 +80,6 @@ export default function App () {
     useSubscribe(() => 
         command$.subscribe(cmd => {
             switch (cmd.id) {
-                case CommandID.Settings: {
-                    console.log('show settings')
-                    break
-                }
                 case CommandID.TriggerCopy: {
                     document.execCommand('copy')
                     // document.execCommand('paste') is not supported
@@ -103,7 +102,7 @@ export default function App () {
 
     const [active, setActive] = useState(0)
     useEffect(() => setActive(queues.size-1), [queues])
-  
+ 
     return (<>
         {appSettings ? 
             <AppSettingsContext.Provider value={appSettings}>
@@ -148,6 +147,7 @@ export default function App () {
                 <Error />
                 <AskForPassword />
                 <ConfirmDeletion />
+                <Settings />
             </AppSettingsContext.Provider> : 
             <span>wait...</span>
         }

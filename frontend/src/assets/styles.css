@@ -169,6 +169,7 @@ svg.drag-image text {
     --selected-background: #2551C8;
     --selected-color: #fff;
     --drop-background: #BEBEBE;
+    --link: #1976d2;
 }
 
 form {
@@ -182,6 +183,13 @@ form {
     }
     & input.dry::placeholder {
         font-weight: 400;
+    }
+    > p {
+        display: flex;
+        justify-content: right;
+        > a {
+            color: var(--link);
+        }
     }
 }
 

@@ -15,6 +15,8 @@ export default async function (path: string): Promise<AppSettings> {
         settings: join(homedir(), '.f5', 'settings.json'),
         connections: join(homedir(), '.f5', 'connections'),
         keybindings,
+        timeFmt: config.timeFmt ?? 'yyyy-MM-dd HH:mm',
+        sizeFmt: config.sizeFmt ?? '0.0 b',
         layout: {
             local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
             remote: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.remote)

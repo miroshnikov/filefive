@@ -34,21 +34,12 @@ const sortFiles = (files: Files, columns: Columns) => {
     return sortWith(sortings, files)
 }
 
-const formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => any} = {
-    modified: (value: Date) => format(value, 'yyyy-MM-dd HH:mm'),       // https://date-fns.org/v3.6.0/docs/format
-    size: (value: number) => numeral(value).format('0.0 b')
-}
-
-const fmt = (name: keyof FileInfo, value: FileInfo[string], isDir: boolean) => 
-    new String(name=='size' && isDir ? '' : name in formatters ? formatters[name](value) : value)
-
-
-const toColumns = curry((columns: Columns, files: Files) => {
+const toColumns = curry((columns: Columns, formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => string}, files: Files) => {
     return files.map(file => ({
         ...pick(['URI', 'path', 'dir'], file),
         ...{ rawSize: file.size },
         ...columns.reduce((props, {name}) => ({...props, 
-            [name]: fmt(name, file[name], file.dir)
+            [name]: new String(name=='size' && file.dir ? '' : name in formatters ? formatters[name](file[name]) : file[name])
         }), {})
     }))
 })
@@ -147,6 +138,11 @@ export default function Explorer ({
 
     useEffectOnUpdate(() => onChange(root), [root])
 
+    const formatters = {
+        modified: (value: Date) => format(value, appSettings.timeFmt),
+        size: (value: number) => numeral(value).format(appSettings.sizeFmt)
+    }
+
     const update = () => {
         folders.current = pick(watched.current, folders.current)
         setFiles(
@@ -158,7 +154,7 @@ export default function Explorer ({
                     const i = files.findIndex(({path}) => path == dir)
                     return i >= 0 ? insertAll(i+1, sortFiles(folders.current[dir], columns), files) : files
                 }, sortFiles(folders.current[root] ?? [], columns)),
-                toColumns(columns),
+                toColumns(columns, formatters),
             )(folders.current)
         )
     }
