@@ -1,10 +1,9 @@
-[theme="one-dark"] {
+[data-theme="black"] {
     --background: #1F2227;
     --color: #abb2bf;
     --bar-background: #24272D;
     --bar-color: #6C6E74;
     --border-color: #373A40; 
-    /* #181A1F; */
     --active-border-color: #3F4451;
     --hover-background: #2D3139;
     --selected-background: #333841;
@@ -30,6 +29,9 @@
 
     --dry-tooltip-bg: var(#000);
     --dry-tooltop-color: var(#ffffffcc);
+
+    --dry-resizer-color: var(--border-color);
+    --dry-resizer-width: 4px;
 
     --dry-progress-color: var(--primary);
     --dry-progress-bg: var(--background);

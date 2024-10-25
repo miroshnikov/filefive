@@ -186,7 +186,12 @@ form {
     }
     > p {
         display: flex;
-        justify-content: right;
+        align-items: center;
+        opacity: .6;
+        font-size: .9em;
+        > .icon {
+            margin-right: .4em;
+        }
         > a {
             color: var(--link);
         }
@@ -195,4 +200,4 @@ form {
 
 
 @import "../ui/styles.css";
-@import "themes/one-dark.css";
+@import "themes/black.css";

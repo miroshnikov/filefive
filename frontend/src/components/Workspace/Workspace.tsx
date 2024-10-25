@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
-import Split from '../Split/Split'
+import { Split } from '../../ui/components'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
@@ -44,7 +44,7 @@ export default function Workspace({onChange}: Props) {
     const focused = useRef<'local'|'remote'|null>(null)
  
     useEffect(() => {
-        window.document.body.setAttribute('theme', 'one-dark')
+        window.document.body.setAttribute('data-theme', 'black')
     }, [])
 
     useEffect(

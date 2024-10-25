@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Workspace from '../Workspace/Workspace'
 import styles from './App.less'
-import { useMap, useSubscribe, useShortcuts } from '../../hooks'
+import { useMap, useSubscribe, useShortcuts, useMode } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
 import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
@@ -16,7 +16,7 @@ import { command$ } from '../../observables/command'
 import { file$ } from '../../observables/file'
 import { CommandID, KeyShortcutCommand } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
-import { Tooltips, getTooltipShortcut } from '../../ui/components'
+import { Tooltips, getTooltipShortcut, Spinner } from '../../ui/components'
 import Settings from '../../modals/Settings/Settings'
 
 
@@ -37,6 +37,13 @@ export default function App () {
             window.f5.watch(createURI(LocalFileSystemID, appSettings.settings))
         }
     }, [appSettings])
+
+    const defaultMode = useMode()
+    useEffect(() => {
+        if (appSettings) {
+            document.firstElementChild.setAttribute('data-mode', appSettings.mode == 'system' ? defaultMode : appSettings.mode)            
+        }
+    }, [appSettings, defaultMode])
 
     useEffect(() => {
         const onPaste = (e: ClipboardEvent) => {
@@ -149,7 +156,11 @@ export default function App () {
                 <ConfirmDeletion />
                 <Settings />
             </AppSettingsContext.Provider> : 
-            <span>wait...</span>
+            <div className="fill-center">
+                <div className="center">
+                    <Spinner radius="3em" />
+                </div>
+            </div>
         }
         </>)
 }

@@ -7,7 +7,7 @@ import { CommandID } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 import { createURI } from '../../../../src/utils/URI'
 import { mergeRight } from 'ramda'
-import { LocalFileSystemID } from '../../../../src/types'
+import { LocalFileSystemID, AppSettings } from '../../../../src/types'
 import styles from './Settings.less'
 
 
@@ -26,6 +26,7 @@ export default function Settings() {
     const appSettings = useContext(AppSettingsContext)
 
     const [shown, show] = useState(false)
+    const [mode, setMode] = useState<AppSettings['mode']>(appSettings.mode)
     const [timeFmt, setTimeFmt] = useState(appSettings.timeFmt)
     const [sizeFmt, setSizeFmt] = useState(appSettings.sizeFmt)
 
@@ -45,13 +46,23 @@ export default function Settings() {
         if (id == ModalButtonID.Ok) {
             window.f5.write(
                 createURI(LocalFileSystemID, appSettings.settings),
-                JSON.stringify( mergeRight(appSettings, { timeFmt, sizeFmt }) )
+                JSON.stringify( mergeRight(appSettings, { mode, timeFmt, sizeFmt }) )
             )
         }
     }
 
     return shown && <Modal buttons={buttons} onClose={onClose}>
         <form className={styles.form} onSubmit={e => e.preventDefault()}>
+            <label>Mode:</label>
+            <div className="dry-buttons">
+                <button onClick={() => setMode('light')}  data-checked={mode=='light'}>Light</button>
+                <button onClick={() => setMode('system')} data-checked={mode=='system'}>System</button>
+                <button onClick={() => setMode('dark')}   data-checked={mode=='dark'}>Dark</button>
+            </div>
+
+            <label>Color Theme:</label>
+            <div></div>
+
             <label>Date/time format:</label>
             <input className={classNames('dry')} 
                 name="date-time-fmt"
@@ -60,7 +71,7 @@ export default function Settings() {
                 placeholder="e.g. yyyy-MM-dd HH:mm" 
             />
             <p>
-                <a href="https://date-fns.org/v3.6.0/docs/format" target="_blank">See all formats</a>
+                <i className="icon">info</i><a href="https://date-fns.org/v3.6.0/docs/format" target="_blank">See all formats</a>
             </p>
 
             <label>Filesize format:</label>
@@ -70,6 +81,9 @@ export default function Settings() {
                 onChange={e => setSizeFmt(e.target.value)}
                 placeholder="e.g. 0.0 b" 
             />
+            <p>
+                <i className="icon">info</i><a href="http://numeraljs.com/#format-bytes" target="_blank">See all formats</a>
+            </p>
         </form>
     </Modal>
 }
