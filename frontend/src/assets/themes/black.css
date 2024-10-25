@@ -1,15 +1,40 @@
-[data-theme="black"] {
-    --background: #1F2227;
-    --color: #abb2bf;
-    --bar-background: #24272D;
-    --bar-color: #6C6E74;
-    --border-color: #373A40; 
-    --active-border-color: #3F4451;
-    --hover-background: #2D3139;
-    --selected-background: #333841;
-    --selected-color: #d7dae0;
-    --drop-background: #142E48;
-    --primary: #404754;
+:root[data-theme="black"] {
+    &[data-mode="dark"] {
+        --background: #1F2227;
+        --color: #abb2bf;
+        --bar-background: #24272D;
+        --bar-color: #6C6E74;
+        --border-color: #373A40; 
+        --active-border-color: #3F4451;
+        --hover-background: #2D3139;
+        --selected-background: #333841;
+        --selected-color: #d7dae0;
+        --drop-background: #142E48;
+        --primary: #404754;
+
+        --dry-tooltip-bg: #000;
+        --dry-tooltip-color: #ffffffcc;
+        --dry-primary-highlight: #4d5565;
+        --dry-modal-fade: #00000060;   
+    }
+    &[data-mode="light"] {
+        --background: #fff;
+        --color: #1F2227; 
+        --bar-background: #F7F8FA;
+        --bar-color: #676D75;
+        --border-color: #D2D7DE;
+        --active-border-color: #373A40;
+        --hover-background: #d1d3d6;
+        --selected-background: #E9EBEE;
+        --selected-color: #15181c;
+        --drop-background: #b8c0c8;
+        --primary: #404754;
+
+        --dry-tooltip-bg: #757575;
+        --dry-tooltip-color: #e5e5e5;
+        --dry-primary-highlight: #8c9098;
+        --dry-modal-fade: #ffffff60; 
+    }
 
     --dry-bg: var(--background);
     --dry-color: var(--color);
@@ -19,20 +44,11 @@
     --dry-border: var(--dry-border-width) var(--dry-border-style) var(--dry-border-color);
     --dry-border-radius: .3rem;
     --dry-hover-bg: var(--hover-background);
-    /* --dry-shadow-color: #d9d9d920; */
-    /* --dry-shadow: 0 2px 0 var(--dry-shadow-color); */
     --dry-primary: var(--primary);
-    --dry-primary-highlight: #4d5565;
-    --dry-shadow-primary-color: #1f3f79;
-    --dry-modal-zindex: 1000;
-    --dry-modal-fade: #00000060;
-
-    --dry-tooltip-bg: var(#000);
-    --dry-tooltop-color: var(#ffffffcc);
 
     --dry-resizer-color: var(--border-color);
     --dry-resizer-width: 4px;
-
     --dry-progress-color: var(--primary);
     --dry-progress-bg: var(--background);
+    --dry-modal-zindex: 1000;
 }

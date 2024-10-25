@@ -43,10 +43,6 @@ export default function Workspace({onChange}: Props) {
 
     const focused = useRef<'local'|'remote'|null>(null)
  
-    useEffect(() => {
-        window.document.body.setAttribute('data-theme', 'black')
-    }, [])
-
     useEffect(
         () => onChange(connection?.id, connection?.name, localPath, remotePath), 
         [connection?.id, connection, localPath, remotePath]

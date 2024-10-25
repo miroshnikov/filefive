@@ -41,7 +41,8 @@ export default function App () {
     const defaultMode = useMode()
     useEffect(() => {
         if (appSettings) {
-            document.firstElementChild.setAttribute('data-mode', appSettings.mode == 'system' ? defaultMode : appSettings.mode)            
+            document.documentElement.setAttribute('data-mode', appSettings.mode == 'system' ? defaultMode : appSettings.mode)            
+            document.documentElement.setAttribute('data-theme', appSettings.theme)            
         }
     }, [appSettings, defaultMode])
 

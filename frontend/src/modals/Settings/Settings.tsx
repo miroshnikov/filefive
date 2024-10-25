@@ -27,6 +27,7 @@ export default function Settings() {
 
     const [shown, show] = useState(false)
     const [mode, setMode] = useState<AppSettings['mode']>(appSettings.mode)
+    const [theme, setTheme] = useState(appSettings.theme)
     const [timeFmt, setTimeFmt] = useState(appSettings.timeFmt)
     const [sizeFmt, setSizeFmt] = useState(appSettings.sizeFmt)
 
@@ -46,11 +47,11 @@ export default function Settings() {
         if (id == ModalButtonID.Ok) {
             window.f5.write(
                 createURI(LocalFileSystemID, appSettings.settings),
-                JSON.stringify( mergeRight(appSettings, { mode, timeFmt, sizeFmt }) )
+                JSON.stringify( mergeRight(appSettings, { mode, theme, timeFmt, sizeFmt }) )
             )
         }
     }
-
+    
     return shown && <Modal buttons={buttons} onClose={onClose}>
         <form className={styles.form} onSubmit={e => e.preventDefault()}>
             <label>Mode:</label>
@@ -61,7 +62,16 @@ export default function Settings() {
             </div>
 
             <label>Color Theme:</label>
-            <div></div>
+            <div className={styles.themes}>
+                {['black'].map(t => 
+                    <span 
+                        data-mode="dark"
+                        data-theme={t}
+                        data-active={t==theme} 
+                        onClick={() => setTheme(t)}
+                    ></span>
+                )}
+            </div>
 
             <label>Date/time format:</label>
             <input className={classNames('dry')} 

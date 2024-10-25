@@ -57,6 +57,7 @@ export interface ConnectionConfig {
 
 export interface AppConfig {
     mode?: 'light'|'system'|'dark'
+    theme?: string
     timeFmt?: string
     sizeFmt?: string
     layout?: Twofold<ExplorerConfig>
@@ -84,6 +85,7 @@ export interface AppSettings {
     connections: Path
     keybindings: { key: CommandID, command: string }[]
     mode: AppConfig['mode']
+    theme: string
     timeFmt: string
     sizeFmt: string
     layout: Twofold<ExplorerSettings>

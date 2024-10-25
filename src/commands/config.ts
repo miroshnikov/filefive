@@ -16,6 +16,7 @@ export default async function (path: string): Promise<AppSettings> {
         connections: join(homedir(), '.f5', 'connections'),
         keybindings,
         mode: config.mode ?? 'system',
+        theme: config.theme ?? 'black',
         timeFmt: config.timeFmt ?? 'yyyy-MM-dd HH:mm',
         sizeFmt: config.sizeFmt ?? '0.0 b',
         layout: {
