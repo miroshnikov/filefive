@@ -63,7 +63,7 @@ export default function Settings() {
 
             <label>Color Theme:</label>
             <div className={styles.themes}>
-                {['black'].map(t => 
+                {['black', 'green'].map(t => 
                     <span 
                         data-mode="dark"
                         data-theme={t}

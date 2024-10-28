@@ -201,3 +201,22 @@ form {
 
 @import "../ui/styles.css";
 @import "themes/black.css";
+@import "themes/green.css";
+
+:root {
+    --dry-bg: var(--background);
+    --dry-color: var(--color);
+    --dry-border-color: var(--border-color);
+    --dry-border-width: 1px;
+    --dry-border-style: solid;
+    --dry-border: var(--dry-border-width) var(--dry-border-style) var(--dry-border-color);
+    --dry-border-radius: .3rem;
+    --dry-hover-bg: var(--hover-background);
+    --dry-primary: var(--primary);
+    
+    --dry-resizer-color: var(--border-color);
+    --dry-resizer-width: 4px;
+    --dry-progress-color: var(--primary);
+    --dry-progress-bg: var(--background);
+    --dry-modal-zindex: 1000;
+}
