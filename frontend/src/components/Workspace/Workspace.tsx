@@ -113,6 +113,7 @@ export default function Workspace({onChange}: Props) {
                     setConnection({ ...settings, id, file: path })
                     setLocalPath(path => settings.path.local ?? path)
                     setRemotePath(settings.path.remote!)
+                    document.documentElement.setAttribute('data-theme', settings.theme) 
                 }
             })
             .catch(e => {})
@@ -127,6 +128,7 @@ export default function Workspace({onChange}: Props) {
         setConnection(null)
         setLocalPath(appSettings.path?.local ?? appSettings.home)
         setRemotePath(appSettings.connections)
+        document.documentElement.setAttribute('data-theme', appSettings.theme) 
         setShowConnections(true)
     }
 

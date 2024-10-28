@@ -51,6 +51,7 @@ export interface ConnectionConfig {
     port: number
     user: string
     password: string
+    theme: string
     layout?: Twofold<ExplorerConfig>
     path?: Twofold<Path|undefined>
 }
@@ -75,6 +76,7 @@ export interface ConnectionSettings {
     name: string
     pwd: string
     attributes: FileAttributes
+    theme: string
     layout?: Twofold<ExplorerSettings>
     path?: Twofold<Path|undefined>
 }

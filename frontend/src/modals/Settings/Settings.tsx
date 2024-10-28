@@ -10,6 +10,8 @@ import { mergeRight } from 'ramda'
 import { LocalFileSystemID, AppSettings } from '../../../../src/types'
 import styles from './Settings.less'
 
+export const themes = ['black', 'green']
+
 
 const buttons = [
     {
@@ -63,7 +65,7 @@ export default function Settings() {
 
             <label>Color Theme:</label>
             <div className={styles.themes}>
-                {['black', 'green'].map(t => 
+                {themes.map(t => 
                     <span 
                         data-mode="dark"
                         data-theme={t}

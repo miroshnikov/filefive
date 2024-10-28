@@ -57,6 +57,7 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
             name: parse(file).name,
             attributes,
             pwd, 
+            theme: config.theme ?? 'black',
             layout: {
                 local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
                 remote: explorerSettings(attributes, config.layout?.remote)

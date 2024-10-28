@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { Path } from '../../../../src/types'
 import { Modal, ModalButtonID, Select, Password } from '../../ui/components'
 import { useForm, Controller } from "react-hook-form"
 import { parse } from '../../utils/path'
 import classNames from "classnames"
-import styles from './Connection.less'
 import { evolve, trim } from 'ramda'
+import { themes } from '../Settings/Settings'
+import { AppSettingsContext } from '../../context/config'
+import styles from './Connection.less'
+import themesStyle from '../Settings/Settings.less'
 
 
 
@@ -29,9 +32,13 @@ type FormValues = {
 }
 
 export default function ({ file, onConnect, onClose }: { file?: Path, onConnect: (path: Path) => void, onClose: () => void }) {
+
+    const appSettings = useContext(AppSettingsContext)
+
     const [name, setName] = useState('')
     const [scheme, setScheme] = useState('sftp')
     const [values, setValues] = useState({ host: '', port: '', user: '', password: '' })
+    const [theme, setTheme] = useState(appSettings.theme)
 
     useEffect(() => { 
         if (file.length) {
@@ -41,6 +48,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                     const {scheme, host, port, user, password} = config
                     setScheme(scheme)
                     setValues({host, port: String(port), user, password})
+                    setTheme(config.theme ?? appSettings.theme)
                 }
             })
         }
@@ -76,7 +84,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                 host: trim,
                 port: parseInt,
                 user: trim
-            }, { scheme, ...getValues() })
+            }, { scheme, ...getValues(), theme })
             if (!data.port) {
                 data.port = scheme == 'sftp' ? 22 : 21
             }
@@ -129,6 +137,18 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         control={control}
                         render={({field}) => <Password {...field} placeholder="Ask if empty" autoComplete="off" />}
                     />
+
+                    <label>Color Theme:</label>
+                    <div className={themesStyle.themes}>
+                        {themes.map(t => 
+                            <span 
+                                data-mode="dark"
+                                data-theme={t}
+                                data-active={t==theme} 
+                                onClick={() => setTheme(t)}
+                            ></span>
+                        )}
+                    </div>
                 </form>
             </Modal>
         }
