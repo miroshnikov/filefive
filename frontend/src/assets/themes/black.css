@@ -1,4 +1,5 @@
 [data-theme="black"] {
+    --primary: #404754;
     &[data-mode="dark"] {
         --background: #1F2227;
         --color: #abb2bf;
@@ -10,12 +11,6 @@
         --selected-background: #333841;
         --selected-color: #d7dae0;
         --drop-background: #142E48;
-        --primary: #404754;
-
-        --dry-tooltip-bg: #000;
-        --dry-tooltip-color: #ffffffcc;
-        --dry-primary-highlight: #4d5565;
-        --dry-modal-fade: #00000060;   
     }
     &[data-mode="light"] {
         --background: #fff;
@@ -28,11 +23,5 @@
         --selected-background: #E9EBEE;
         --selected-color: #15181c;
         --drop-background: #b8c0c8;
-        --primary: #404754;
-
-        --dry-tooltip-bg: #757575;
-        --dry-tooltip-color: #e5e5e5;
-        --dry-primary-highlight: #8c9098;
-        --dry-modal-fade: #ffffff60; 
     }
 }

@@ -201,6 +201,7 @@ form {
 
 @import "../ui/styles.css";
 @import "themes/black.css";
+@import "themes/blue.css";
 @import "themes/green.css";
 
 :root {
@@ -219,4 +220,17 @@ form {
     --dry-progress-color: var(--primary);
     --dry-progress-bg: var(--background);
     --dry-modal-zindex: 1000;
+}
+
+&[data-mode="dark"] {
+    --dry-tooltip-bg: #000;
+    --dry-tooltip-color: #ffffffcc;
+    --dry-primary-highlight: #4d5565;
+    --dry-modal-fade: #00000060;   
+}
+&[data-mode="light"] {
+    --dry-tooltip-bg: #757575;
+    --dry-tooltip-color: #e5e5e5;
+    --dry-primary-highlight: #8c9098;
+    --dry-modal-fade: #ffffff60; 
 }

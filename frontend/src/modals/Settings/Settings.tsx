@@ -10,7 +10,7 @@ import { mergeRight } from 'ramda'
 import { LocalFileSystemID, AppSettings } from '../../../../src/types'
 import styles from './Settings.less'
 
-export const themes = ['black', 'green']
+export const themes = ['black', 'blue', 'green']
 
 
 const buttons = [
