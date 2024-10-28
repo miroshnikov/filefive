@@ -47,6 +47,13 @@ export default function Workspace({onChange}: Props) {
         () => onChange(connection?.id, connection?.name, localPath, remotePath), 
         [connection?.id, connection, localPath, remotePath]
     )
+
+    useEffect(() => {
+        const u = new URL(window.location.toString())
+        if (u.searchParams.has('connect')) {
+            connect(u.searchParams.get('connect'))
+        }
+    }, [])
     
     useEffectOnUpdate(() => {
         if (connection) {
@@ -114,6 +121,9 @@ export default function Workspace({onChange}: Props) {
                     setLocalPath(path => settings.path.local ?? path)
                     setRemotePath(settings.path.remote!)
                     document.documentElement.setAttribute('data-theme', settings.theme) 
+                    const u = new URL(window.location.toString())
+                    u.searchParams.set('connect', path)
+                    history.replaceState(null, '', u.toString())
                 }
             })
             .catch(e => {})
@@ -129,6 +139,9 @@ export default function Workspace({onChange}: Props) {
         setLocalPath(appSettings.path?.local ?? appSettings.home)
         setRemotePath(appSettings.connections)
         document.documentElement.setAttribute('data-theme', appSettings.theme) 
+        const u = new URL(window.location.toString())
+        u.searchParams.delete('connect')
+        history.replaceState(null, '', u.toString())
         setShowConnections(true)
     }
 

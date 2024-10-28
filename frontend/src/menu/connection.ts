@@ -10,11 +10,18 @@ export default function (path: Path, selected: Path[], connect: () => void): Men
         {
             id: 'connect',
             label: 'Connect...',
-            click: () => connect(),
+            click: () => connect()
+        },
+        {
+            id: 'connect-new-tab',
+            label: 'Connect in New Tab...',
+            click: () => {
+                const u = new URL(window.location.origin)
+                u.searchParams.append('connect', path)
+                window.open(u.toString(), '_blank');
+            },
             separator: true
         },
-
-        // TODO: Connect in New Tab / New Window ?
 
         {
             id: 'edit-connection',
