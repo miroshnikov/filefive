@@ -36,17 +36,6 @@ export enum DropEffect {
     Move = 'move'
 }
 
-const createDragImage = (text: string) => {
-    const dragImage = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    dragImage.setAttribute('class', 'drag-image')
-    dragImage.setAttribute('viewBox', `0 0 ${text.length*15+10} 20`)
-    dragImage.setAttribute('width', `${text.length*15+10}`)
-    dragImage.setAttribute('height', '20')
-    dragImage.innerHTML = `<text x=15 y=15>${text}</text>`
-    document.body.appendChild(dragImage)
-    return dragImage
-}
-
 const isDescendant = (path: string, ancestor: string) => path.startsWith(ancestor+'/') || path == ancestor
 const dirOf = (item: Item, all: Items) => item.dir ? item.path : all.find(({path}) => path == dirname(item.path))?.path
 
@@ -64,6 +53,9 @@ interface ListProps {
     onToggle: (dir: string) => void
     onSelect: (paths: string[], target: Path|null) => void
     onOpen: (path: string) => void
+    onDragStart?: (dragged: URI[], e: React.DragEvent<HTMLElement>) => void
+    onDragEnd?: (e: React.DragEvent<HTMLElement>) => void
+    onDragOver?: (e: React.DragEvent<HTMLElement>) => void
     onDrop: (URIs: string[]|File[], target: string, effect: DropEffect) => void
     onMenu: (path: string, dir: boolean) => void
     onNew?: (name: string, parent: Path, dir: boolean) => void
@@ -76,8 +68,27 @@ interface ListProps {
     parent?: string,
 }
 
-export default forwardRef<HTMLDivElement, ListProps>(function List (
-    {columns, files, onGo, onToggle, onSelect, onOpen, onDrop, onMenu, onNew, onRename, onSort, onColumnsMenu, onColumnsChange, root, tabindex, parent}, 
+export default forwardRef<HTMLDivElement, ListProps>(function List ({   
+        columns, 
+        files, 
+        onGo, 
+        onToggle, 
+        onSelect, 
+        onOpen, 
+        onDragStart, 
+        onDragEnd, 
+        onDragOver, 
+        onDrop,
+        onMenu, 
+        onNew, 
+        onRename, 
+        onSort, 
+        onColumnsMenu, 
+        onColumnsChange, 
+        root, 
+        tabindex, 
+        parent
+    }, 
     fwdRef
 ) {
     const rootEl = useRef(null)
@@ -95,7 +106,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
     const [creating, createIn] = useState<{in: Path, dir: boolean}>(null)
     const [renaming, rename] = useState<URI>(null)
 
-    const dragging = useRef(false)
     const [dropTarget, setDropTarget] = useState<string>('')
     const [draggedOver, setDraggedOver] = useState(false)
 
@@ -251,25 +261,18 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         [target, items, expanded]
     )
  
-    const dragStart = (i: number, e: React.DragEvent<HTMLTableRowElement>) => {
-        dragging.current = true  //TODO make an array in useRef() of selected
-        e.dataTransfer.effectAllowed = 'copyMove'
-        const dragged = selected.includes(items[i].path) ? selected.map(path => items.find(whereEq({path})).URI) : [items[i].URI]
-        e.dataTransfer.setData('URIs', JSON.stringify(dragged))   //"text/uri-list" format only allows one URI
-        const dragImage = createDragImage(dragged.length == 1 ? items[i].name : ''+dragged.length)
-        e.dataTransfer.setDragImage(dragImage, 0, 0)
-        setTimeout(() => document.body.removeChild(dragImage), 0)
-    }
-
-    const dragEnd = (e: React.DragEvent<HTMLTableRowElement>) => {
-        dragging.current = false
-        e.dataTransfer.clearData()
-        e.dataTransfer.items.clear()
+    const dragStart = (i: number, e: React.DragEvent<HTMLElement>) => {
+        onDragStart?.(
+            selected.includes(items[i].path) ? 
+                selected.map(path => items.find(whereEq({path})).URI) : 
+                [items[i].URI],
+            e
+        )
     }
 
     const dragCounter = useRef({path: '', count: 0, timeout: null})
 
-    const dragEnter = (item: Item, e: React.DragEvent<HTMLTableRowElement>) => {
+    const dragEnter = (item: Item, e: React.DragEvent<HTMLElement>) => {
         const path = item.dir ? item.path : dirname(item.path)
         if (dragCounter.current.path == path) {
             dragCounter.current.count++
@@ -280,12 +283,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         }
     }
 
-    const dragOver = (e: React.DragEvent<HTMLTableRowElement|HTMLDivElement>) => {
-        e.dataTransfer.dropEffect = dragging.current ? (e.altKey ? 'copy' : 'move') : 'copy'
-        e.preventDefault()
-    }
-
-    const dragLeave = (item: Item, e: React.DragEvent<HTMLTableRowElement>) => {
+    const dragLeave = (item: Item, e: React.DragEvent<HTMLElement>) => {
         const path = item.dir ? item.path : dirname(item.path)
         if (dragCounter.current.path == path) {
             if (dragCounter.current.count > 1) {
@@ -298,7 +296,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         }
     }
 
-    const dragDrop = (targetDir: string, e: React.DragEvent<HTMLTableRowElement|HTMLDivElement>) => {
+    const dragDrop = (targetDir: string, e: React.DragEvent<HTMLElement>) => {
         e.preventDefault()
         e.stopPropagation()
    
@@ -316,9 +314,9 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
             ) {
                 onDrop(URIs, targetDir, e.altKey ? DropEffect.Copy : DropEffect.Move)           
             }
-        } else if (e.dataTransfer.items.length) {
+        } else if (e.dataTransfer.items.length) {               // dropped from outside
             const files: File[] = []
-            for (let i = 0; i < e.dataTransfer.items.length; i++) {     // dropped from outside
+            for (let i = 0; i < e.dataTransfer.items.length; i++) {
                 const item = e.dataTransfer.items[i]
                 item.kind == 'file' && files.push(item.getAsFile())
             }
@@ -331,7 +329,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         dragCounter.current = { path: '', count: 0, timeout: null }
 
         setDropTarget('')
-        dragging.current = false
         setDraggedOver(false)
     }
 
@@ -383,8 +380,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
         onFocus={() => isActive.current = true}
         onBlur={() => isActive.current = false}
         onClick={e => e.target == rootEl.current && setTarget(null)}
-        onContextMenu={() => { setTarget(null); onMenu(root, true)}}
-        onDragOver={dragOver}
+        onContextMenu={() => {setTarget(null); onMenu(root, true)}}
+        onDragOver={e => onDragOver?.(e)}
         onDragEnter={() => setDraggedOver(true)}
         onDragLeave={() => setDraggedOver(false)}
         onDrop={e => dragDrop(root, e)}
@@ -464,8 +461,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List (
                             onContextMenu={e => {e.stopPropagation(); setTarget(item); onMenu(item.path, item.dir)}}
                             draggable={true}
                             onDragStart={e => dragStart(i, e)}
-                            onDragEnd={dragEnd}
-                            onDragOver={dragOver}
+                            onDragEnd={e => onDragEnd?.(e)}
+                            onDragOver={e => onDragOver?.(e)}
                             onDragEnter={e => dragEnter(item, e)}
                             onDragLeave={e => dragLeave(item, e)}
                             onDrop={e => dragDrop(item.dir ? item.path : dirname(item.path), e)}

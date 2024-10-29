@@ -19,7 +19,18 @@ import { format } from 'date-fns'
 import { t } from 'i18next'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
- 
+
+
+const createDragImage = (text: string) => {
+    const dragImage = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    dragImage.setAttribute('class', 'drag-image')
+    dragImage.setAttribute('viewBox', `0 0 ${text.length*15+10} 20`)
+    dragImage.setAttribute('width', `${text.length*15+10}`)
+    dragImage.setAttribute('height', '20')
+    dragImage.innerHTML = `<text x=15 y=15>${text}</text>`
+    document.body.appendChild(dragImage)
+    return dragImage
+}
 
 const sortFiles = (files: Files, columns: Columns) => {
     const sortings = [descend<FileInfo>(prop('dir'))]
@@ -300,6 +311,28 @@ export default function Explorer ({
         fetch('/api/upload', { method: 'POST', body: data })
     }
 
+    const onDragStart = (dragged: URI[], e: React.DragEvent<HTMLElement>) => {
+        e.dataTransfer.effectAllowed = 'copyMove'
+        e.dataTransfer.setData('URIs', JSON.stringify(dragged))   //"text/uri-list" format only allows one URI
+        e.dataTransfer.items.add('source', connection)
+        const caption = dragged.length == 1 ? basename(parseURI(dragged[0]).path) : ''+dragged.length
+        const dragImage = createDragImage(caption)
+        e.dataTransfer.setDragImage(dragImage, 0, 0)
+        setTimeout(() => document.body.removeChild(dragImage), 0)
+    }
+
+    const onDragEnd = (e: React.DragEvent<HTMLElement>) => {
+        e.dataTransfer.clearData()
+        e.dataTransfer.items.clear()
+    }
+
+    const onDragOver = (e: React.DragEvent<HTMLElement>) => {
+        // The data store is in protected mode, hence the dataTransfer is not available for security reasons.
+        e.preventDefault()
+        const sameSource = e.dataTransfer.types.includes(connection)
+        e.dataTransfer.dropEffect = sameSource ? (e.altKey ? 'copy' : 'move') : 'copy'
+    }
+
     const onDrop = (items: string[]|File[], target: Path, effect: DropEffect) => {
         console.log(effect, items, '->', connection+target)
         if (items.length) {
@@ -393,6 +426,9 @@ export default function Explorer ({
             onToggle={toggle}
             onSelect={(paths, t) => { onSelect(selected.current = paths); target.current = t }}
             onOpen={onOpen}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onDragOver={onDragOver}
             onDrop={onDrop}
             onMenu={(path, dir) => {setShowColumnsMenu(false); onMenu(createURI(connection, path), dir)}}
             onNew={createNew}
