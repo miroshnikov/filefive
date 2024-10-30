@@ -4,7 +4,10 @@ import { Tooltips } from '../../ui/components'
 import styles from './Filter.less'
 
 export function escapeRegExp(s: string) {
-    return s.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&')
+    let re = s.replace(/[/\-\\^$+.()|[\]{}]/g, '\\$&')
+    re = re.replaceAll('*', '.*')
+    re = re.replaceAll('?', '.{1}')
+    return re
 }
 
 
@@ -25,11 +28,16 @@ export default function Filter({ onChange, onClose }: FilterProps) {
     useEffect(() => input.current?.focus(), [])
 
     useEffect(() => {   // TODO
+        setPlaceholder(
+            useRe ?
+                'e.g. \.(png|jpe?g|gif)$, image\d{1,2}\..*' :
+                'Wildcards * and ? may be used, e.g. *.png, image-?.*'
+        )
         // setPlaceholder('File name ' + (
         //     useRe ? `${whole ? 'matches RegExp' : 'has a substring that matches RegExp'}` :
         //     `${whole ? 'is equal to string' : 'contains substring'} ${matchCase ? 'matching case' : ''}`)
         // )
-    }, [matchCase, whole])
+    }, [matchCase, whole, useRe])
 
     useEffect(() => {
         if (text.length) {

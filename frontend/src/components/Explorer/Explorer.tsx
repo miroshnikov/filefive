@@ -230,9 +230,11 @@ export default function Explorer ({
         command$.pipe(filter(() => focused)).subscribe(cmd => {
             switch (cmd.id) {
                 case CommandID.Copy: {
-                    cmd.e.preventDefault()
                     const uris = selected.current?.map(path => createURI(connection, path))
-                    uris && cmd.e.clipboardData.setData('URIs', JSON.stringify(uris))
+                    if (uris.length) {
+                        cmd.e.preventDefault()
+                        cmd.e.clipboardData.setData('URIs', JSON.stringify(uris))
+                    }
                     break
                 }
                 case CommandID.Paste: {
@@ -299,7 +301,6 @@ export default function Explorer ({
                     break
                 }
                 case CommandID.ShowFilter: {
-                    console.log('show filter', showFilter)
                     setShowFilter(showFilter => !showFilter)
                     break
                 }

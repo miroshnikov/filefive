@@ -38,5 +38,9 @@
     {
         "key": "f5",
         "command": "transfer"
+    },
+    {
+        "key": "ctrl+f",
+        "command": "show-filter"
     }
 ]
