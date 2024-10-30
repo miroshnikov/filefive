@@ -48,7 +48,7 @@ window.f5 = {
     onError: listener => subscribe<any>('error', (error) => listener(error)),
 
     connect: file => invoke<{ id: ConnectionID, settings: ConnectionSettings }>('connect', { file }),
-    login: (id: ConnectionID, password: string, remember: boolean) => invoke<void>('login', { id, password, remember }),
+    login: (id: ConnectionID, password: string|false, remember: boolean) => invoke<void>('login', { id, password, remember }),
     disconnect: id => invoke<void>('disconnect', { id }),
 
     watch: dir => invoke<void>('watch', { dir }),

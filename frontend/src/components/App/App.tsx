@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Workspace from '../Workspace/Workspace'
 import styles from './App.less'
-import { useMap, useSubscribe, useShortcuts, useMode } from '../../hooks'
+import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
 import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
@@ -46,8 +46,9 @@ export default function App () {
         }
     }, [appSettings, defaultMode])
 
-    useEffect(() => {
-        const onPaste = (e: ClipboardEvent) => {
+    useCopyPaste(
+        (e: ClipboardEvent) => command$.next({ id: CommandID.Copy, e }),
+        (e: ClipboardEvent) => {
             if (e.clipboardData.files.length) {
                 const files: File[] = []
                 for (let i=0; i<e.clipboardData.files.length; i++) {
@@ -61,19 +62,7 @@ export default function App () {
                 }
             }
         }
-        document.documentElement.addEventListener("paste", onPaste)
-
-        const onCopy = (e: ClipboardEvent) => {
-            e.preventDefault()
-            command$.next({ id: CommandID.Copy, data: e.clipboardData })
-        }
-        document.documentElement.addEventListener("copy", onCopy)
-
-        return () => {
-            document.documentElement.removeEventListener("paste", onPaste)
-            document.documentElement.removeEventListener("copy", onCopy)
-        }
-    })
+    )
 
     useSubscribe(() =>
         file$.subscribe(() => {

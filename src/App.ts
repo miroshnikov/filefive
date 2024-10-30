@@ -35,7 +35,7 @@ export default class App {
         Object.entries({
             config:     () => commands.config(settingsPath),
             connect:    ({file}: {file: Path}) => commands.connect(file, (id, error) => this.onError({ type: FailureType.RemoteError, id, error })),
-            login:      ({id, password, remember}: {id: ConnectionID, password: string, remember: boolean}) => Password.set(id, password, remember),
+            login:      ({id, password, remember}: {id: ConnectionID, password: string|false, remember: boolean}) => Password.set(id, password, remember),
             disconnect: ({id}: {id: ConnectionID}) => Connection.close(id),
 
             watch:      ({dir}: {dir: URI}) => commands.watch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),

@@ -54,6 +54,6 @@ export type Command = { label?: string } & (
         uri?: URI
       } 
     | { id: CommandID.Paste, files?: File[], uris?: URI[] }
-    | { id: CommandID.Copy, data: DataTransfer }
+    | { id: CommandID.Copy, e: ClipboardEvent }
 )
 

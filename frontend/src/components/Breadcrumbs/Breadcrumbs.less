@@ -37,9 +37,7 @@
             cursor: pointer;
         }
         > div {
-            white-space: nowrap;
             overflow-x: hidden;
-            text-overflow: ellipsis;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -54,6 +52,9 @@
                 display: none;
             }
             > span {
+                white-space: nowrap;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
                 &:hover {
                     text-decoration: underline;
                 }

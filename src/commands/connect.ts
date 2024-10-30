@@ -49,7 +49,12 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
     }
 
     const id = connectionID(config.scheme, config.user, config.host, config.port)
-    await Password.get(id)
+    try {
+        await Password.get(id)
+    } catch(e) {
+        return false
+    }
+
     try {
         const attributes = await Connection.open(config.scheme, config.user, config.host, config.port)
         const pwd = await Connection.get(id).pwd()
@@ -69,6 +74,7 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
         }
         return { id, settings }
     } catch (e) {
+        Password.delete(id, false)
         onError(id, e)
         return false
     }

@@ -21,8 +21,8 @@ interface Props {
     connect: (path: Path) => void
     toolbar: ToolbarItem[]
     tabindex: number
-    onFocus: () => {}
-    onBlur: () => {}
+    onFocus: () => void
+    onBlur: () => void
 }
 
 const settings: ExplorerSettings = {

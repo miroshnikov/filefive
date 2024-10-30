@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { useSubscribe } from '../hooks'
 import { error$ } from '../observables/error'
 import { FailureType, ConnectionID } from '../../../src/types'
-import { Modal, ModalButtonID, Password } from '../ui/components'
+import { Modal, ModalButtonID, Password, Checkbox } from '../ui/components'
 
 
 export default function AskForPassword() {
@@ -31,20 +31,20 @@ export default function AskForPassword() {
     ]
 
     const onClose = (id: ModalButtonID) => {
-        if (id == ModalButtonID.Ok) {
-            window.f5.login(connectionId, password, remember)
-        }
+        window.f5.login(connectionId, id == ModalButtonID.Ok ? password : false, remember)
         setConnectionId(undefined)
     }
     
     return <>
         {connectionId && 
             <Modal buttons={buttons} onClose={onClose}>
-                <div>
-                    <p>{connectionId}</p>
-                    <Password onChange={setPassword} />
-                    Save: <input type="checkbox" checked={remember} onChange={() => setRemember(remember => !remember)} />
-                </div>
+                <section>
+                    <p>Connecting <strong>{connectionId}</strong>...</p>
+                    <p>Password: <Password onChange={setPassword} /></p>
+                    <p>
+                        <Checkbox onChange={remember => setRemember(remember)} value={remember}>Remember password for this session</Checkbox>
+                    </p>
+                </section>
             </Modal>
         }
     </>

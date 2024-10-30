@@ -126,6 +126,12 @@ svg.drag-image text {
     font-size: 13px;
 }
 
+section {
+    > p {
+        padding: .4em 0;
+    }
+}
+
 .fill-center {
     width: 100%;
     height: 100%;

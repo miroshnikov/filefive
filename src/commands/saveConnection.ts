@@ -32,11 +32,12 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
 
     if ('scheme' in settings) {
         config = {...config, ...omit(['password'], settings)}
-        Password.set(
-            connectionID(settings.scheme, settings.user, settings.host, settings.port), 
-            settings.password, 
-            true
-        )
+        if (settings.password.length) {
+            Password.save(
+                connectionID(settings.scheme, settings.user, settings.host, settings.port), 
+                settings.password
+            )
+        }
     } else {
         if (settings.layout) {
             config.layout =  {

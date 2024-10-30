@@ -11,7 +11,7 @@ import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
 import { filter, tap } from 'rxjs/operators'
 import { useEffectOnUpdate, useSubscribe } from '../../hooks'
-import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, toLower, complement } from 'ramda'
+import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, toLower } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
@@ -77,8 +77,8 @@ interface ExplorerProps {
     onSettingsChange?: (settings: Partial<ExplorerSettings>) => void
     toolbar: ToolbarItem[]
     tabindex: number
-    onFocus?: () => {}
-    onBlur?: () => {}
+    onFocus?: () => void
+    onBlur?: () => void
     contextMenu?: MenuItem[]
     onNewFile?: (uri: URI) => void
 }
@@ -198,12 +198,18 @@ export default function Explorer ({
         return () => list.current && resizeList.unobserve(list.current)
     }, [])
 
+    useEffect(() => {
+        return () => onBlur()
+    }, [])
+
+
     useSubscribe(() => 
         command$.pipe(filter(() => focused)).subscribe(cmd => {
             switch (cmd.id) {
                 case CommandID.Copy: {
+                    cmd.e.preventDefault()
                     const uris = selected.current?.map(path => createURI(connection, path))
-                    uris && cmd.data.setData('URIs', JSON.stringify(uris))
+                    uris && cmd.e.clipboardData.setData('URIs', JSON.stringify(uris))
                     break
                 }
                 case CommandID.Paste: {

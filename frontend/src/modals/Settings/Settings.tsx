@@ -66,7 +66,7 @@ export default function Settings() {
             <label>Color Theme:</label>
             <div className={styles.themes}>
                 {themes.map(t => 
-                    <span 
+                    <span key={t}
                         data-mode="dark"
                         data-theme={t}
                         data-active={t==theme} 

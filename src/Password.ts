@@ -15,30 +15,40 @@ export default class Passwords {
         )
     }
 
-    static set(id: ConnectionID, password: string, save = false) {
-        this.store.set(id, [password, save])
-        this.pending.get(id)?.(password)
-        save && this.save()
+    static set(id: ConnectionID, password: string|false, remember = false) {
+        if (password === false) {
+            this.pending.get(id)?.[1]()
+        } else {
+            this.pending.get(id)?.[0](password)
+            remember && this.store.set(id, [password, false])
+        }
+    }
+
+    static save(id: ConnectionID, password: string) {
+        this.store.set(id, [password, true])
+        this.dump()
     }
 
     static async get(id: ConnectionID): Promise<string> {
         if (this.store.has(id)) {
             return this.store.get(id)[0]
         }
-        const p = new Promise<string>((resolve) => this.pending.set(id, resolve))
+        const p = new Promise<string>((resolve, reject) => this.pending.set(id, [resolve, reject]))
         this.resolve(id)
         return p
     }
 
-    static delete(id: ConnectionID) {
+    static delete(id: ConnectionID, saved: boolean) {
         const found = this.store.get(id)
-        this.store.delete(id)
+        if (found && found[1] == saved) {
+            this.store.delete(id)
+            found[1] == true && this.dump()
+        }
         this.pending.delete(id)
-        found?.[1] == true && this.save()
     }
 
 
-    private static save() {
+    private static dump() {
         writeFile(
             this.saveFile,
             JSON.stringify(
@@ -52,5 +62,5 @@ export default class Passwords {
     private static store: Map<ConnectionID, [string, boolean]>
     private static saveFile = ''
     private static resolve: (key: ConnectionID) => void
-    private static pending = new Map<ConnectionID, (password: string) => void>()
+    private static pending = new Map<ConnectionID, [(password: string) => void, () => void]>()
 }
