@@ -1,17 +1,43 @@
-import React from "react"
+import React, { useState } from "react"
+import { createPortal } from 'react-dom'
 import { useSubscribe } from '../../hooks'
 import { error$ } from '../../observables/error'
-import { FailureType } from '../../../../src/types'
+import { FailureType, ConnectionID } from '../../../../src/types'
+import { Button } from '../../ui/components'
+import styles from './Error.less'
 
 
 export default function Error() {
+    const [errors, setErrors] = useState<{ id: ConnectionID, message: string }[]>([])
+    const [current, setCurrent] = useState(0)
+
     useSubscribe(() =>
         error$.subscribe(error => {
-            if (error.type != FailureType.Unauthorized) {
-                console.error(error)
+            console.error(error)
+            if (error.type == FailureType.RemoteError) {
+                setErrors(errors => [...errors, { id: error.id, message: error.message }])
             }
         })
     )
-    // TODO report issue on Github
-    return <></>
+
+    return <>
+        {errors.length && createPortal(
+            <div className={styles.root}>
+                <button className="close" onClick={() => setErrors([])}>✕</button>
+                <i className="icon">warning</i>
+                <div>
+                    <em><i className="icon">cloud</i>{ errors[current].id }</em>
+                    { errors[current].message }
+                </div>
+                {errors.length > 1 &&
+                    <footer>
+                        <Button onClick={() => setCurrent(Math.max(current-1, 0))} disabled={current<=0}>Previous</Button>
+                        {current+1}/{errors.length}
+                        <Button onClick={() => setCurrent(Math.min(current+1, errors.length-1))} disabled={current>=errors.length-1}>Next</Button>
+                    </footer>
+                }
+            </div>,
+            document.body
+        )}
+    </>
 }

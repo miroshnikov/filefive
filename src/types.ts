@@ -169,7 +169,7 @@ export type Failure =
     | {
         type: FailureType.RemoteError
         id: ConnectionID
-        error: Error
+        message: string
     }
     | {
         type: FailureType.APIError

@@ -1,0 +1,53 @@
+.root {
+    position: fixed;
+    right: 1em;
+    bottom: 4em;
+    z-index: 99;
+    background-color: var(--bar-background);
+    width: 30vw;
+    height: 12vh;
+    padding: 2rem 2rem 3rem 5.5rem;
+    border-radius: var(--dry-border-radius);
+    > .close {
+        position: absolute;
+        right: .8rem;
+        top: .2rem;
+        font-size: 1.4em;
+        cursor: pointer;
+    }
+    > .icon {
+        position: absolute;
+        font-size: 3rem;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--dry-error-text);
+    }
+    > div {
+        overflow-y: auto;
+        max-height: 100%;
+        > em {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            background-color: var(--background);
+            line-height: 1.4em;
+            padding: .4em 1em;
+            border-radius: var(--dry-border-radius);
+            margin-bottom: .5em;
+            > .icon {
+                font-size: 1.3em;
+            }
+        }
+    }
+    > footer {
+        position: absolute;
+        left: 2rem;
+        right: 2rem;
+        bottom: .5em;
+        display: flex;
+        justify-content: right;
+        align-items: center;
+        gap: 1em;
+    }
+}

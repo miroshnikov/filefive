@@ -10,7 +10,7 @@ export default function (name: string, parent: URI) {
     try {
         Connection.get(id).mkdir(join(path, name))
     } catch (error) {
-        App.onError({ type: FailureType.RemoteError, id, error })
+        App.onError({ type: FailureType.RemoteError, id, message: 'message' in error ? error.message : String(error) })
     }
     if (!isLocal(parent)) {
         App.remoteWatcher.refresh(parent)
