@@ -145,17 +145,7 @@ export default function Workspace({onChange}: Props) {
         setShowConnections(true)
     }
 
-    const localToolbar: ToolbarItem[] = [
-        {
-            id: CommandID.Transfer,
-            icon: connection ? 'upload' : 'file_copy',
-            title: connection ? 'Upload Selected' : 'Copy Selected',
-            disabled: focused.current != 'local' || !localSelected.length,
-            onClick: () => window.f5.copy(
-                localSelected.map(path => createURI(LocalFileSystemID, path)), 
-                createURI(connection?.id ?? LocalFileSystemID, remotePath)
-            )
-        },
+    const toolbar: ToolbarItem[] = [
         {
             id: CommandID.NewDir,
             icon: 'create_new_folder',
@@ -169,11 +159,31 @@ export default function Workspace({onChange}: Props) {
             onClick: () => command$.next({id: CommandID.NewFile})
         },
         {
+            id: CommandID.ShowFilter,
+            icon: 'filter_list',
+            title: 'Filter...',
+            onClick: () => command$.next({id: CommandID.ShowFilter})
+        },
+        {
             id: CommandID.CollapseAll,
             icon: 'unfold_less',
             title: 'Collapse All Folders',
             onClick: () => command$.next({id: CommandID.CollapseAll})
+        }
+    ]
+
+    const localToolbar: ToolbarItem[] = [
+        {
+            id: CommandID.Transfer,
+            icon: connection ? 'upload' : 'file_copy',
+            title: connection ? 'Upload Selected' : 'Copy Selected',
+            disabled: focused.current != 'local' || !localSelected.length,
+            onClick: () => window.f5.copy(
+                localSelected.map(path => createURI(LocalFileSystemID, path)), 
+                createURI(connection?.id ?? LocalFileSystemID, remotePath)
+            )
         },
+        ...toolbar,
         {
             id: CommandID.Delete,
             icon: 'delete',
@@ -194,24 +204,7 @@ export default function Workspace({onChange}: Props) {
                 createURI(LocalFileSystemID, localPath)
             )
         },
-        {
-            id: CommandID.NewDir,
-            icon: 'create_new_folder',
-            title: 'New Folder...',
-            onClick: () => command$.next({id: CommandID.NewDir})
-        },
-        {
-            id: CommandID.NewFile,
-            icon: 'note_add',
-            title: 'New File...',
-            onClick: () => command$.next({id: CommandID.NewFile})
-        },
-        {
-            id: CommandID.CollapseAll,
-            icon: 'unfold_less',
-            title: 'Collapse All Folders',
-            onClick: () => command$.next({id: CommandID.CollapseAll})
-        },
+        ...toolbar,
         {
             id: CommandID.Delete,
             icon: 'delete',
@@ -245,41 +238,7 @@ export default function Workspace({onChange}: Props) {
             disabled: remoteSelected.length != 1,
             onClick: () => connect(remoteSelected[0])
         },
-        {
-            id: CommandID.NewDir,
-            icon: 'create_new_folder',
-            title: 'New Folder...',
-            onClick: () => command$.next({id: CommandID.NewDir})
-        },
-        {
-            id: CommandID.NewFile,
-            icon: 'note_add',
-            title: 'New File...',
-            onClick: () => command$.next({id: CommandID.NewFile})
-        },
-        {
-            id: CommandID.Transfer,
-            icon: 'file_copy',
-            title: 'Copy Selected',
-            disabled: focused.current != 'remote' || !remoteSelected.length,
-            onClick: () => window.f5.copy(
-                remoteSelected.map(path => createURI(LocalFileSystemID, path)), 
-                createURI(LocalFileSystemID, localPath)
-            )
-        },
-        {
-            id: CommandID.CollapseAll,
-            icon: 'unfold_less',
-            title: 'Collapse All Folders',
-            onClick: () => command$.next({id: CommandID.CollapseAll})
-        },
-        {
-            id: CommandID.Delete,
-            icon: 'delete',
-            title: 'Delete Selected',
-            disabled: !remoteSelected.length,
-            onClick: () => window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
-        },
+        ...remoteToolbar,
         {
             id: 'Close',
             icon: 'close',

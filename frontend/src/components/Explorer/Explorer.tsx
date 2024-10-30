@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
+import React, { useState, useEffect, useRef, useMemo, useContext, useCallback } from "react"
 import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
 import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
@@ -6,6 +6,7 @@ import { parseURI, createURI } from '../../../../src/utils/URI'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
+import Filter from '../Filter/Filter'
 import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
@@ -30,6 +31,10 @@ const createDragImage = (text: string) => {
     dragImage.innerHTML = `<text x=15 y=15>${text}</text>`
     document.body.appendChild(dragImage)
     return dragImage
+}
+
+const filterFiles = (files: Files, predicate: (f: FileInfo) => boolean) => {
+    return files.filter(predicate)
 }
 
 const sortFiles = (files: Files, columns: Columns) => {
@@ -115,6 +120,8 @@ export default function Explorer ({
     const folders = useRef<Record<string, Files>>({})
     const [focused, setFocused] = useState(false)
     const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
+    const [showFilter, setShowFilter] = useState(false)
+    const [filterRe, setFilter] = useState<RegExp>(null)
     
     const expanded = useRef<string[]>([])
 
@@ -154,7 +161,18 @@ export default function Explorer ({
         size: (value: number) => numeral(value).format(appSettings.sizeFmt)
     }
 
-    const update = () => {
+    const filterPredicate = (file: FileInfo) => {
+        if (filterRe?.source.length) {
+            if (file.dir) {
+                return true
+            }
+            const res = filterRe.exec(file.name)
+            return res !== null
+        }
+        return true
+    }
+
+    const update = useCallback(() => {
         folders.current = pick(watched.current, folders.current)
         setFiles(
             pipe(
@@ -163,12 +181,12 @@ export default function Explorer ({
                 sortBy(length),
                 reduce((files, dir) => {
                     const i = files.findIndex(({path}) => path == dir)
-                    return i >= 0 ? insertAll(i+1, sortFiles(folders.current[dir], columns), files) : files
-                }, sortFiles(folders.current[root] ?? [], columns)),
+                    return i >= 0 ? insertAll(i+1, sortFiles(filterFiles(folders.current[dir], filterPredicate), columns), files) : files
+                }, sortFiles(filterFiles(folders.current[root] ?? [], filterPredicate), columns)),
                 toColumns(columns, formatters),
             )(folders.current)
         )
-    }
+    }, [root, columns, filterRe])
 
     useSubscribe(() => 
         dir$.pipe(
@@ -181,10 +199,16 @@ export default function Explorer ({
             folders.current[parseURI(dir)['path']] = files
             update()
         }), 
-        [root, columns]
+        [update]
     ) 
 
-    useEffectOnUpdate(() => update(), [columns])
+    useEffectOnUpdate(() => {
+        console.log('Filter: ', filterRe?.source, ""+filterRe)
+        if (!showFilter) {
+            setFilter(null)
+        }
+        update()
+    }, [columns, filterRe, showFilter])
 
     useEffect(() => {
         const resizeList = new ResizeObserver((entries) => {
@@ -201,7 +225,6 @@ export default function Explorer ({
     useEffect(() => {
         return () => onBlur()
     }, [])
-
 
     useSubscribe(() => 
         command$.pipe(filter(() => focused)).subscribe(cmd => {
@@ -273,6 +296,11 @@ export default function Explorer ({
                                 .join(' ')
                         )
                     }
+                    break
+                }
+                case CommandID.ShowFilter: {
+                    console.log('show filter', showFilter)
+                    setShowFilter(showFilter => !showFilter)
                     break
                 }
             }
@@ -424,6 +452,7 @@ export default function Explorer ({
                 connection={connectionName ? { id: connection, name: connectionName } : null}
             />
         </header>
+        {showFilter && <Filter onChange={setFilter} onClose={() => setShowFilter(false)} />}
         <List 
             ref={list}
             columns={columns}

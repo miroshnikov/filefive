@@ -1,6 +1,13 @@
 @font-face {
     font-family: OpenSans;
     src: url(./fonts/OpenSans-VariableFont_wdth,wght.ttf);
+    font-weight: 300;
+    font-variation-settings: "wght" 300;
+}
+
+@font-face {
+    font-family: OpenSans;
+    src: url(./fonts/OpenSans-VariableFont_wdth,wght.ttf);
     font-weight: 400;
     font-variation-settings: "wght" 400;
 }

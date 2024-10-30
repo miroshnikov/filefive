@@ -1,0 +1,52 @@
+:local(.root) {
+    display: flex;
+    align-items: center;
+    gap: .6em;
+    padding: .4em 1em .4em .4em;
+    background-color: var(--bar-background);
+    > i {
+        flex: 1em 0 0;
+        color: var(--bar-color);
+        font-size: 1.5em;
+    }
+    > div {
+        flex: 100% 1 1;
+        display: flex;
+        align-items: center;
+        gap: .2em;
+        background-color: var(--background);
+        padding: .2em .6em;
+        border-radius: var(--dry-border-radius);
+        > input {
+            flex: 100% 1 1;
+            background-color: var(--background);
+            font-size: .9rem;
+            &::placeholder {
+                font-weight: 300;
+                opacity: .6;
+            }
+        }
+        button {
+            flex: 1em 0 0;
+            font-size: .7rem;
+            border-radius: 2px;
+            padding: .2em .4em;
+            cursor: pointer;
+            &:hover {
+                background-color: var(--hover-background);
+            }
+            &[data-on="true"] {
+                background-color: var(--selected-background);
+            }
+
+            &:nth-child(2) {
+                text-decoration: underline;
+            }
+        }
+    }
+    > button {
+        flex: 1em 0 0;
+        color: var(--bar-color);
+        cursor: pointer;
+    }
+}

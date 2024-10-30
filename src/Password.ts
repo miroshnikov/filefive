@@ -29,9 +29,12 @@ export default class Passwords {
         this.dump()
     }
 
-    static async get(id: ConnectionID): Promise<string> {
+    static async get(id: ConnectionID, skipMissing = false): Promise<string> {
         if (this.store.has(id)) {
             return this.store.get(id)[0]
+        }
+        if (skipMissing) {
+            return ''
         }
         const p = new Promise<string>((resolve, reject) => this.pending.set(id, [resolve, reject]))
         this.resolve(id)

@@ -135,13 +135,13 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                     <Controller
                         name="password"
                         control={control}
-                        render={({field}) => <Password {...field} placeholder="Ask if empty" autoComplete="off" />}
+                        render={({field}) => <Password {...field} placeholder="Will ask if empty" autoComplete="off" />}
                     />
 
                     <label>Color Theme:</label>
                     <div className={themesStyle.themes}>
                         {themes.map(t => 
-                            <span 
+                            <span key={t}
                                 data-mode="dark"
                                 data-theme={t}
                                 data-active={t==theme} 

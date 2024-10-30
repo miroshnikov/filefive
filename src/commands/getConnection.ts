@@ -9,6 +9,6 @@ export default async function (path: Path): Promise<ConnectionConfig|null> {
         return null
     }
     const config = JSON.parse( await read(path) ) as ConnectionConfig
-    config.password = await Password.get(connectionID(config.scheme, config.user, config.host, config.port))
+    config.password = await Password.get(connectionID(config.scheme, config.user, config.host, config.port), true)
     return config
 }

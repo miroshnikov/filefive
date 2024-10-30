@@ -11,6 +11,7 @@ export enum CommandID {
     Connections = 'connections',
     Refresh = 'refresh',
     CollapseAll = 'collapse-all',
+    ShowFilter = 'show-filter',
     
     Rename = 'rename',
     Edit = 'edit',
@@ -35,6 +36,7 @@ export type KeyShortcutCommand =
     | CommandID.Connections
     | CommandID.Refresh
     | CommandID.CollapseAll
+    | CommandID.ShowFilter
     | CommandID.TriggerCopy
     | CommandID.TriggerPaste
 

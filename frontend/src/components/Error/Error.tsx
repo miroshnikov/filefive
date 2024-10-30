@@ -21,7 +21,7 @@ export default function Error() {
     )
 
     return <>
-        {errors.length && createPortal(
+        {errors.length > 0 && createPortal(
             <div className={styles.root}>
                 <button className="close" onClick={() => setErrors([])}>✕</button>
                 <i className="icon">warning</i>
