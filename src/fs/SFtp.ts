@@ -1,4 +1,4 @@
-import { join, dirname } from 'node:path'
+import { join } from 'node:path'
 import { Client, SFTPWrapper } from 'ssh2'
 import { Path } from '../types'
 import { FileSystem, FileItem, FileAttributes, FileAttributeType } from '../FileSystem'
@@ -24,6 +24,11 @@ export const ATTRIBUTES: FileAttributes = [
         name: "modified", 
         type: FileAttributeType.Date, 
         title: "Last Modified"
+    },
+    {
+        name: "rights", 
+        type: FileAttributeType.String, 
+        title: "Rights"
     }
 ]
 
@@ -133,7 +138,7 @@ export default class SFtp extends FileSystem {
                                 modified: new Date(f.attrs.mtime * 1000),
                                 owner: f.attrs.uid,
                                 group: f.attrs.gid,
-                                mode: f.attrs.mode  // rights ?
+                                rights: f.attrs.mode
                             }))
                     )
             })

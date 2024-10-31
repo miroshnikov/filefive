@@ -13,7 +13,8 @@ export type FileSystemURI = `${string}://${string}@${string}:${number}`
 export enum FileAttributeType {
     String = 'string',
     Number = 'number',
-    Date = 'date'
+    Date = 'date',
+    Rights = 'rights'
 }
 
 export interface FileAttribute {

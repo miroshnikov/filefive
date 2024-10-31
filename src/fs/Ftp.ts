@@ -24,9 +24,18 @@ export const ATTRIBUTES: FileAttributes = [
         name: "modified", 
         type: FileAttributeType.Date, 
         title: "Last Modified"
+    },
+    {
+        name: "rights", 
+        type: FileAttributeType.Rights, 
+        title: "Rights"
     }
 ]
 
+
+function parseRights(part: string) {
+    return (part.includes('r') ? 'r':'-') + (part.includes('w') ? 'w':'-') + (part.includes('x') ? 'x':'-')
+}
 
 export default class Ftp extends FileSystem {
     constructor(
@@ -81,7 +90,7 @@ export default class Ftp extends FileSystem {
                     resolve(
                         list
                             .filter(f => f.name != '.' && f.name != '..')
-                            .map(f => ({
+                            .map(f => { console.log(f, parseRights(f.rights.user) + parseRights(f.rights.group) + parseRights(f.rights.other)); return {
                                 path: join(dir, f.name),
                                 name: f.name,
                                 dir: f.type == 'd',
@@ -89,9 +98,9 @@ export default class Ftp extends FileSystem {
                                 modified: f.date,
                                 owner: f.owner,
                                 group: f.group,
-                                rights: f.rights,
+                                rights: f.rights ? parseRights(f.rights.user) + parseRights(f.rights.group) + parseRights(f.rights.other) : '',
                                 target: f.target
-                            }))
+                            }})
                     )
             })
         })

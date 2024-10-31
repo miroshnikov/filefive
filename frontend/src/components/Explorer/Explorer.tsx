@@ -50,6 +50,12 @@ const sortFiles = (files: Files, columns: Columns) => {
     return sortWith(sortings, files)
 }
 
+const rightsToStr = (n: number) =>
+    n.toString(8).split('').map(s => parseInt(s)).reverse().slice(0, 3).reduce(
+        (rights, n) => [...rights, (n & 4 ? 'r':'-') + (n & 2 ? 'w':'-') + (n & 1 ? 'x':'-')], []
+    ).reverse().join('')
+
+
 const toColumns = curry((columns: Columns, formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => string}, files: Files) => {
     return files.map(file => ({
         ...pick(['URI', 'path', 'dir'], file),
@@ -158,7 +164,8 @@ export default function Explorer ({
 
     const formatters = {
         modified: (value: Date) => format(value, appSettings.timeFmt),
-        size: (value: number) => numeral(value).format(appSettings.sizeFmt)
+        size: (value: number) => numeral(value).format(appSettings.sizeFmt),
+        rights: (value: number|string) => typeof value == 'number' ? rightsToStr(value) : value
     }
 
     const filterPredicate = (file: FileInfo) => {
@@ -200,7 +207,7 @@ export default function Explorer ({
             update()
         }), 
         [update]
-    ) 
+    )
 
     useEffectOnUpdate(() => update(), [columns, filterRe])
 
