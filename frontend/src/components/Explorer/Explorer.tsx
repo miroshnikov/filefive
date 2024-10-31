@@ -128,6 +128,10 @@ export default function Explorer ({
     const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
     const [showFilter, setShowFilter] = useState(false)
     const [filterRe, setFilter] = useState<RegExp>(null)
+    const history = useRef<Path[]>([])
+    const historyIndex = useRef(0)
+    const [isFirst, setIsFirst] = useState(true)
+    const [isLast, setIsLast] = useState(true)
     
     const expanded = useRef<string[]>([])
 
@@ -160,7 +164,29 @@ export default function Explorer ({
         }
     }, [root])
 
-    useEffectOnUpdate(() => onChange(root), [root])
+    useEffectOnUpdate(() => {
+        onChange(root)
+
+        // const length = history.current.length
+        // if (length) {
+        //     if (historyIndex.current == length-1) {
+        //         if (history.current[length-1] != root) {
+        //             history.current.push(root)
+        //             historyIndex.current++
+        //         }
+        //     }
+        // } else {
+        //     history.current.push(root)
+        //     historyIndex.current = 0
+        // }
+        // console.log(history.current, historyIndex.current)
+    }, [root])
+
+    useEffectOnUpdate(() => {
+        // history.current = [] // TODO set from settings
+        // historyIndex.current = Math.max(history.current.length-1, 0)
+        // console.log('settings changed')
+    }, [settings])
 
     const formatters = {
         modified: (value: Date) => format(value, appSettings.timeFmt),
@@ -446,13 +472,17 @@ export default function Explorer ({
                 <Toolbar items={toolbar} onClick={() => list.current?.focus()} /> : 
                 null 
             }
-            <Breadcrumbs 
-                icon={icon}
-                path={root}
-                root={fixedRoot}
-                go={setRoot}
-                connection={connectionName ? { id: connection, name: connectionName } : null}
-            />
+            <div className="path">
+                <button className="icon" disabled={isFirst}>arrow_back</button>
+                <button className="icon" disabled={isLast}>arrow_forward</button>
+                <Breadcrumbs 
+                    icon={icon}
+                    path={root}
+                    root={fixedRoot}
+                    go={setRoot}
+                    connection={connectionName ? { id: connection, name: connectionName } : null}
+                />
+            </div>
         </header>
         <Filter show={showFilter} onChange={setFilter} onClose={() => setShowFilter(false)} />
         <List 

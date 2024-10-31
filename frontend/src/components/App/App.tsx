@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react"
-import Workspace from '../Workspace/Workspace'
+import React, { useEffect, useState, useRef } from "react"
+import Workspace, { SettingsChanges } from '../Workspace/Workspace'
 import styles from './App.less'
 import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
-import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
+import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path, DeepPartial } from '../../../../src/types'
 import { parse } from '../../utils/path'
 import { createURI } from '../../../../src/utils/URI'
 import classNames from "classnames"
@@ -18,6 +18,7 @@ import { CommandID, KeyShortcutCommand } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 import { Tooltips, getTooltipShortcut, Spinner } from '../../ui/components'
 import Settings from '../../modals/Settings/Settings'
+import { mergeDeepRight } from 'ramda'
 
 
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
@@ -28,8 +29,15 @@ function setTitle(connectionId: ConnectionID|null, connectionName: string, local
 
 export default function App () {
     const [appSettings, setAppSettings] = useState<AppSettings>(null)
+
+    const settingsFile = useRef('')
+    const [updatingSettings, setUpdatingSettings] = useState(false)
+    
     useEffect(() => { 
-        window.f5.config().then(settings => setAppSettings(settings)) 
+        window.f5.config().then(settings => {
+            setAppSettings(settings)
+            settingsFile.current = settings.settings
+        }) 
     }, [])
 
     useEffect(() => {
@@ -65,11 +73,17 @@ export default function App () {
     )
 
     useSubscribe(() =>
-        file$.subscribe(() => {
-            window.f5.config().then(settings => {
-                setAppSettings(settings)
-            }) 
-        })
+        file$.subscribe(({path}) => {
+            if (path == settingsFile.current) {
+                if (!updatingSettings) {
+                    window.f5.config().then(settings => {
+                        setAppSettings(settings)
+                    }) 
+                }
+                setUpdatingSettings(false)
+            }
+        }),
+        [updatingSettings]
     )
 
     useShortcuts(
@@ -102,7 +116,17 @@ export default function App () {
 
     const [active, setActive] = useState(0)
     useEffect(() => setActive(queues.size-1), [queues])
- 
+
+    const updateSettings = (changes: SettingsChanges) => {
+        setUpdatingSettings(true)
+        window.f5.write(
+            createURI(LocalFileSystemID, appSettings.settings),
+            JSON.stringify(
+                mergeDeepRight(appSettings, changes)
+            )
+        )
+    }
+
     return (<>
         {appSettings ? 
             <AppSettingsContext.Provider value={appSettings}>
@@ -130,7 +154,7 @@ export default function App () {
                     </Tooltips>
 
                     <div className={styles.workspace}>
-                        <Workspace onChange={setTitle} />
+                        <Workspace onSettingsChange={updateSettings} onChange={setTitle} />
                     </div>
 
                     {queues.size > 0 && 

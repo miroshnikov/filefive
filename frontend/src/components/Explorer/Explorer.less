@@ -17,7 +17,31 @@
                 padding: 2px;
                 cursor: pointer;
             }
-        }    
+        }
+        > .path {
+            display: flex;
+            gap: .5em;
+            padding-left: .5em;
+            > button {
+                flex: 1em 0 0;
+                color: var(--bar-color);
+                font-size: 1.2em;
+                cursor: pointer;
+                &:hover {
+                    background-color: var(--hover-background);
+                }
+                &:disabled {
+                    cursor: default;
+                    opacity: .6;
+                    &:hover {
+                        background-color: transparent;
+                    }
+                }
+            }
+            > div {
+                flex: 100% 1 1;
+            }
+        }
     }
     > .list {
         flex: 100% 1 1;

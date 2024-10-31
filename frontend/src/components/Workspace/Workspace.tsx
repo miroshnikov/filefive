@@ -3,7 +3,7 @@ import { Split } from '../../ui/components'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
-import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType } from '../../../../src/types'
+import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial } from '../../../../src/types'
 import { createURI, parseURI } from '../../../../src/utils/URI'
 import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
@@ -12,12 +12,14 @@ import remoteFileMenu from '../../menu/remoteFile'
 import localDirMenu from '../../menu/localDir'
 import remoteDirMenu from '../../menu/remoteDir'
 import { useEffectOnUpdate, useSubscribe } from '../../hooks'
-import { assocPath, mergeDeepRight } from 'ramda'
+import { assocPath } from 'ramda'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
 import { basename, dirname } from '../../utils/path'
 
+
+export type SettingsChanges = { layout?: DeepPartial<AppSettings["layout"]>, path?: DeepPartial<AppSettings["path"]> } 
 
 interface Props {
     onChange: (
@@ -26,9 +28,10 @@ interface Props {
         localPath: Path,
         remotePath: Path
     ) => void
+    onSettingsChange: (settings: SettingsChanges) => void
 }
 
-export default function Workspace({onChange}: Props) {
+export default function Workspace({onChange, onSettingsChange}: Props) {
     const appSettings = useContext(AppSettingsContext)
 
     const [connection, setConnection] = 
@@ -57,7 +60,6 @@ export default function Workspace({onChange}: Props) {
     
     useEffectOnUpdate(() => {
         if (connection) {
-            console.log('save conn')
             window.f5.save(
                 connection.file, 
                 { 
@@ -71,28 +73,14 @@ export default function Workspace({onChange}: Props) {
         }
     }, [connection, remotePath, localPath])
 
-    const updateSettings = (settings: Pick<AppSettings, 'layout'>) => {
-        window.f5.write(
-            createURI(LocalFileSystemID, appSettings.settings),
-            JSON.stringify(settings)
-        )
-    }
-
     useEffectOnUpdate(() => {
         if (!connection) {
-            window.f5.write(
-                createURI(LocalFileSystemID, appSettings.settings),
-                JSON.stringify(
-                    mergeDeepRight(
-                        appSettings, {
-                            path: { 
-                                local: localPath, 
-                                remote: showConnections ? (appSettings.path?.remote ?? appSettings.home) : remotePath 
-                            }
-                        }
-                    )
-                )
-            )
+            onSettingsChange({
+                path: { 
+                    local: localPath, 
+                    remote: showConnections ? (appSettings.path?.remote ?? appSettings.home) : remotePath 
+                }
+            })
         }
     }, [remotePath, localPath])
 
@@ -234,7 +222,7 @@ export default function Workspace({onChange}: Props) {
         {
             id: 'connect',
             icon: 'power_settings_new',
-            title: 'Connect',
+            title: 'Connect <code>Double-click on File</code>',
             disabled: remoteSelected.length != 1,
             onClick: () => connect(remoteSelected[0])
         },
@@ -347,10 +335,10 @@ export default function Workspace({onChange}: Props) {
                         onSelect={paths => setLocalSelected(paths)}
                         onOpen={openLocal}
                         onMenu={fileContextMenu(false)}
-                        onSettingsChange={changed => 
+                        onSettingsChange={changes => 
                             connection ?
-                                setConnection(connection => assocPath(['layout', 'local'], {...connection.layout.local, ...changed}, connection)):
-                                updateSettings(assocPath(['layout', 'local'], {...appSettings.layout.remote, ...changed}, appSettings))
+                                setConnection(connection => assocPath(['layout', 'local'], {...connection.layout.local, ...changes}, connection)):
+                                onSettingsChange({ layout: { local: changes } })
                         }
                         contextMenu={menu}
                         toolbar={localToolbar}
@@ -412,9 +400,7 @@ export default function Workspace({onChange}: Props) {
                                 onSelect={paths => setRemoteSelected(paths)}
                                 onOpen={openRemote}
                                 onMenu={fileContextMenu()}
-                                onSettingsChange={changed => 
-                                    updateSettings(assocPath(['layout', 'remote'], {...appSettings.layout.remote, ...changed}, appSettings))
-                                }
+                                onSettingsChange={changes => onSettingsChange({ layout: { remote: changes } })}
                                 contextMenu={menu}
                                 toolbar={remoteToolbar}
                                 tabindex={2}
@@ -425,5 +411,3 @@ export default function Workspace({onChange}: Props) {
         />
     </>)
 }
-
-
