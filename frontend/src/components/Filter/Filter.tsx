@@ -12,34 +12,21 @@ export function escapeRegExp(s: string) {
 
 
 interface FilterProps {
+    show: boolean,
     onChange: (re: RegExp) => void
     onClose: () => void
 }
 
-export default function Filter({ onChange, onClose }: FilterProps) {
+export default function Filter({ show, onChange, onClose }: FilterProps) {
     const input = useRef(null)
-    const [text, setText] = useState('')
     const [placeholder, setPlaceholder] = useState('')
+    const [text, setText] = useState('')
     const [matchCase, toggleCase] = useToggle(false)
     const [whole, toggleWhole] = useToggle(false)
     const [useRe, toggleUseRe] = useToggle(false)
-    // exclude
+    // TODO invert / exclude matched
 
-    useEffect(() => input.current?.focus(), [])
-
-    useEffect(() => {   // TODO
-        setPlaceholder(
-            useRe ?
-                'e.g. \.(png|jpe?g|gif)$, image\d{1,2}\..*' :
-                'Wildcards * and ? may be used, e.g. *.png, image-?.*'
-        )
-        // setPlaceholder('File name ' + (
-        //     useRe ? `${whole ? 'matches RegExp' : 'has a substring that matches RegExp'}` :
-        //     `${whole ? 'is equal to string' : 'contains substring'} ${matchCase ? 'matching case' : ''}`)
-        // )
-    }, [matchCase, whole, useRe])
-
-    useEffect(() => {
+    const send = () => {
         if (text.length) {
             let source = useRe ? text : escapeRegExp(text)
             if (whole) {
@@ -53,11 +40,25 @@ export default function Filter({ onChange, onClose }: FilterProps) {
         } else {
             onChange(null)
         }
+    }
 
-    }, [text, matchCase, whole])
+    useEffect(() => {
+        show && input.current?.focus()
+        show ? send() : onChange(null)
+    }, [show])
 
-    return (
-        <div className={styles.root}>
+    useEffect(() => {
+        setPlaceholder(
+            useRe ?
+                'JavaScript RegExp e.g. \.(png|jpe?g|gif)$, image\d{1,2}\..*' :
+                'Wildcards * and ? may be used, e.g. *.png, image-?.*'
+        )
+    }, [matchCase, whole, useRe])
+
+    useEffect(() => send(), [text, matchCase, whole, useRe])
+
+    return (<>
+        {show && <div className={styles.root}>
             <i className='icon'>filter_list</i>
             <div>
                 <input 
@@ -72,10 +73,9 @@ export default function Filter({ onChange, onClose }: FilterProps) {
                     <button data-on={matchCase} data-tooltip="Match Case" onClick={() => { toggleCase(); input.current?.focus()} }>Aa</button>
                     <button data-on={whole} data-tooltip="Match Whole Word" onClick={() => { toggleWhole(); input.current?.focus()} }>ab</button>
                     <button data-on={useRe} data-tooltip="Use JavaScript Regular Expression" onClick={() => { toggleUseRe(); input.current?.focus()} }>.*</button>
-
                 </Tooltips>
             </div>
             <button onClick={e => onClose()}>✕</button>
         </div>
-    )
+    }</>)
 }

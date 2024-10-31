@@ -72,7 +72,10 @@ export default function App () {
         })
     )
 
-    useShortcuts(appSettings?.keybindings ?? [], id => command$.next({id: id as KeyShortcutCommand}), [appSettings])
+    useShortcuts(
+        appSettings?.keybindings ?? [], 
+        (id, e) => command$.next({ id: id as KeyShortcutCommand, e }), [appSettings]
+    )
 
     useSubscribe(() => 
         command$.subscribe(cmd => {

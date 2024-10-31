@@ -202,13 +202,7 @@ export default function Explorer ({
         [update]
     ) 
 
-    useEffectOnUpdate(() => {
-        console.log('Filter: ', filterRe?.source, ""+filterRe)
-        if (!showFilter) {
-            setFilter(null)
-        }
-        update()
-    }, [columns, filterRe, showFilter])
+    useEffectOnUpdate(() => update(), [columns, filterRe])
 
     useEffect(() => {
         const resizeList = new ResizeObserver((entries) => {
@@ -453,7 +447,7 @@ export default function Explorer ({
                 connection={connectionName ? { id: connection, name: connectionName } : null}
             />
         </header>
-        {showFilter && <Filter onChange={setFilter} onClose={() => setShowFilter(false)} />}
+        <Filter show={showFilter} onChange={setFilter} onClose={() => setShowFilter(false)} />
         <List 
             ref={list}
             columns={columns}

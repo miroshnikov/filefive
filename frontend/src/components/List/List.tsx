@@ -236,6 +236,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
             switch (cmd.id) {
                 case CommandID.SelectAll: {
                     setSelected(items.map(prop('path')))
+                    cmd.e?.preventDefault()
+                    cmd.e?.stopPropagation()
                     break
                 }
                 case CommandID.CollapseAll: {

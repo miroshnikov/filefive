@@ -50,7 +50,7 @@ type FileCommand =
     | CommandID.CopyNameNoExt
 
 export type Command = { label?: string } & (
-    | { id: KeyShortcutCommand }
+    | { id: KeyShortcutCommand, e?: KeyboardEvent }
     | { 
         id: FileCommand, 
         uri?: URI
