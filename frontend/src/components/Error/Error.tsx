@@ -8,7 +8,7 @@ import styles from './Error.less'
 
 
 export default function Error() {
-    const [errors, setErrors] = useState<{ id: ConnectionID, message: string }[]>([])
+    const [errors, setErrors] = useState<{ id?: ConnectionID, message: string }[]>([])
     const [current, setCurrent] = useState(0)
 
     useSubscribe(() =>
@@ -16,6 +16,8 @@ export default function Error() {
             console.error(error)
             if (error.type == FailureType.RemoteError) {
                 setErrors(errors => [...errors, { id: error.id, message: error.message }])
+            } else if (error.type == FailureType.APIError) {
+                setErrors(errors => [...errors, { message: error.message }])
             }
         })
     )
@@ -26,7 +28,9 @@ export default function Error() {
                 <button className="close" onClick={() => setErrors([])}>✕</button>
                 <i className="icon">warning</i>
                 <div>
-                    <em><i className="icon">cloud</i>{ errors[current].id }</em>
+                    {errors[current].id && 
+                        <em><i className="icon">cloud</i>{ errors[current].id }</em>
+                    }
                     { errors[current].message }
                 </div>
                 {errors.length > 1 &&

@@ -90,7 +90,7 @@ export default class Ftp extends FileSystem {
                     resolve(
                         list
                             .filter(f => f.name != '.' && f.name != '..')
-                            .map(f => { console.log(f, parseRights(f.rights.user) + parseRights(f.rights.group) + parseRights(f.rights.other)); return {
+                            .map(f => ({
                                 path: join(dir, f.name),
                                 name: f.name,
                                 dir: f.type == 'd',
@@ -100,7 +100,7 @@ export default class Ftp extends FileSystem {
                                 group: f.group,
                                 rights: f.rights ? parseRights(f.rights.user) + parseRights(f.rights.group) + parseRights(f.rights.other) : '',
                                 target: f.target
-                            }})
+                            }))
                     )
             })
         })

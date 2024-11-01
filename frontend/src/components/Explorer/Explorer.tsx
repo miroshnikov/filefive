@@ -12,7 +12,24 @@ import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
 import { filter, tap } from 'rxjs/operators'
 import { useEffectOnUpdate, useSubscribe } from '../../hooks'
-import { sortWith, descend, ascend, prop, without, pick, pipe, omit, keys, reduce, insertAll, sortBy, length, curry, whereEq, toLower } from 'ramda'
+import { 
+    sortWith, 
+    descend, 
+    ascend, 
+    prop, 
+    without, 
+    pick, 
+    pipe, 
+    omit, 
+    keys, 
+    reduce, 
+    insertAll, 
+    sortBy, 
+    length, 
+    curry, 
+    whereEq, 
+    takeLast 
+} from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
 import { Menu, MenuItem, ContextMenu } from '../../ui/components'
@@ -41,7 +58,7 @@ const sortFiles = (files: Files, columns: Columns) => {
     const sortings = [descend<FileInfo>(prop('dir'))]
     const sortedBy = columns.find(({sort}) => !!sort)
     if (sortedBy) {
-        const getLowerName = pipe(prop(sortedBy.name), toLower)
+        const getLowerName = pipe(prop(sortedBy.name), v => typeof v === 'string' ? v.toLowerCase() : v)
         sortings.push(sortedBy.sort == SortOrder.Asc ? 
             ascend(getLowerName) : 
             descend(getLowerName)
@@ -72,6 +89,8 @@ const onlyVisible = (dirs: string[]) => {
     return Array.from(visible.values())
 }
 
+
+const HISTORY_SIZE = 5
 
 
 interface ExplorerProps {
@@ -167,25 +186,27 @@ export default function Explorer ({
     useEffectOnUpdate(() => {
         onChange(root)
 
-        // const length = history.current.length
-        // if (length) {
-        //     if (historyIndex.current == length-1) {
-        //         if (history.current[length-1] != root) {
-        //             history.current.push(root)
-        //             historyIndex.current++
-        //         }
-        //     }
-        // } else {
-        //     history.current.push(root)
-        //     historyIndex.current = 0
-        // }
-        // console.log(history.current, historyIndex.current)
+        const length = history.current.length
+        if (length) {
+            if (historyIndex.current == length-1) {
+                if (history.current[length-1] != root) {
+                    history.current = takeLast(HISTORY_SIZE, [...history.current, root])
+                    historyIndex.current = history.current.length - 1
+                }
+            }
+        } else {
+            history.current.push(root)
+            historyIndex.current = 0
+        }
+        setIsFirst(historyIndex.current == 0)
+        setIsLast(historyIndex.current == history.current.length - 1)
+        console.log(history.current, historyIndex.current)
     }, [root])
 
-    useEffectOnUpdate(() => {
-        // history.current = [] // TODO set from settings
-        // historyIndex.current = Math.max(history.current.length-1, 0)
-        // console.log('settings changed')
+    useEffect(() => {
+        history.current = [] // TODO set from settings
+        historyIndex.current = Math.max(history.current.length-1, 0)
+        console.log('settings changed')
     }, [settings])
 
     const formatters = {
@@ -473,8 +494,12 @@ export default function Explorer ({
                 null 
             }
             <div className="path">
-                <button className="icon" disabled={isFirst}>arrow_back</button>
-                <button className="icon" disabled={isLast}>arrow_forward</button>
+                <button className="icon" disabled={isFirst} 
+                    onClick={e => setRoot(history.current[Math.max(--historyIndex.current, 0)])}
+                >arrow_back</button>
+                <button className="icon" disabled={isLast} 
+                    onClick={e => setRoot(history.current[Math.min(++historyIndex.current, history.current.length-1)])}
+                >arrow_forward</button>
                 <Breadcrumbs 
                     icon={icon}
                     path={root}

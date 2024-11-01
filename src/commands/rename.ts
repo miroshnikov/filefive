@@ -7,7 +7,11 @@ import App from '../App'
 
 export default async function (uri: URI, name: string) {
     const {id, path} = parseURI(uri)
-    await Connection.get(id).mv(path, join(dirname(path), name))
+    const to = join(dirname(path), name)
+    if (path == to) {
+        return
+    }
+    await Connection.get(id).mv(path, to)
     if (!isLocal(uri)) {
         App.remoteWatcher.refresh(createURI(id, dirname(path)))
     }

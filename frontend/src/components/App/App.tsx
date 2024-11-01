@@ -31,7 +31,8 @@ export default function App () {
     const [appSettings, setAppSettings] = useState<AppSettings>(null)
 
     const settingsFile = useRef('')
-    const [updatingSettings, setUpdatingSettings] = useState(false)
+    const [settingsChanges, setSettingsChanges] = useState<SettingsChanges>(null)
+
     
     useEffect(() => { 
         window.f5.config().then(settings => {
@@ -75,16 +76,25 @@ export default function App () {
     useSubscribe(() =>
         file$.subscribe(({path}) => {
             if (path == settingsFile.current) {
-                if (!updatingSettings) {
+                if (!settingsChanges) {
                     window.f5.config().then(settings => {
                         setAppSettings(settings)
                     }) 
                 }
-                setUpdatingSettings(false)
+                setSettingsChanges(null)
             }
         }),
-        [updatingSettings]
+        [settingsChanges]
     )
+
+    useEffect(() => {
+        if (settingsChanges) {
+            window.f5.write(
+                createURI(LocalFileSystemID, appSettings.settings),
+                JSON.stringify( mergeDeepRight(appSettings, settingsChanges) )
+            )
+        }
+    }, [settingsChanges])
 
     useShortcuts(
         appSettings?.keybindings ?? [], 
@@ -117,16 +127,6 @@ export default function App () {
     const [active, setActive] = useState(0)
     useEffect(() => setActive(queues.size-1), [queues])
 
-    const updateSettings = (changes: SettingsChanges) => {
-        setUpdatingSettings(true)
-        window.f5.write(
-            createURI(LocalFileSystemID, appSettings.settings),
-            JSON.stringify(
-                mergeDeepRight(appSettings, changes)
-            )
-        )
-    }
-
     return (<>
         {appSettings ? 
             <AppSettingsContext.Provider value={appSettings}>
@@ -154,7 +154,7 @@ export default function App () {
                     </Tooltips>
 
                     <div className={styles.workspace}>
-                        <Workspace onSettingsChange={updateSettings} onChange={setTitle} />
+                        <Workspace onSettingsChange={setSettingsChanges} onChange={setTitle} />
                     </div>
 
                     {queues.size > 0 && 

@@ -1,12 +1,11 @@
 import { Path, ConnectionID, LocalFileSystemID } from '../../../src/types'
 import { createURI } from '../../../src/utils/URI'
-import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'
 
 
-export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path): MenuItem[] {
+export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path, isRoot: boolean): MenuItem[] {
     return [
         {
             id: CommandID.Transfer,
@@ -47,11 +46,13 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
             label: 'Copy Path',
             click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(id, path) })
         },
-        {
-            id: CommandID.CopyRelativePath,
-            label: 'Copy Relative Path',
-            click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
-        },
+        ...(isRoot ? [] : [ 
+            {
+                id: CommandID.CopyRelativePath,
+                label: 'Copy Relative Path',
+                click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
+            }
+        ]),
         {
             id: CommandID.CopyName,
             label: 'Copy Name',
@@ -59,22 +60,24 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
             separator: true
         },
 
-        {
-            id: 'rename',
-            label: 'Rename...',
-            click: () => command$.next({ id: CommandID.Rename, uri: createURI(id, path) })
-        },
-        {
-            id: 'delete',
-            label: 'Delete',
-            click: () => {
-                window.f5.remove(
-                    ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(id, path)),
-                    false
-                )
+        ...(isRoot ? [] : [ 
+            {
+                id: 'rename',
+                label: 'Rename...',
+                click: () => command$.next({ id: CommandID.Rename, uri: createURI(id, path) })
             },
-            separator: true
-        },
+            {
+                id: 'delete',
+                label: 'Delete',
+                click: () => {
+                    window.f5.remove(
+                        ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(id, path)),
+                        false
+                    )
+                },
+                separator: true
+            }
+        ]),
         
         {
             id: 'refresh',

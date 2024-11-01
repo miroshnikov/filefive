@@ -53,7 +53,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
 
     useEffect(() => {
         const u = new URL(window.location.toString())
-        if (u.searchParams.has('connect')) {
+        if (u.searchParams.has('connect') && !connecting) {
             connect(u.searchParams.get('connect'))
         }
     }, [])
@@ -253,7 +253,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             )
         } else {
             setMenu(dir ? 
-                remoteDirMenu(id, path, remoteSelected, localPath) : 
+                remoteDirMenu(id, path, remoteSelected, localPath, path == remotePath) : 
                 remoteFileMenu(id, path, remoteSelected, localPath)
             )
         }
