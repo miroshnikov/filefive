@@ -1,14 +1,18 @@
-import { writeFile } from 'node:fs/promises';
 import { LocalFileSystemID, URI } from '../types'
 import Connection from '../Connection'
 import { parseURI, createURI, isLocal } from '../utils/URI'
-import { dirname, join } from 'node:path'
+import { dirname } from 'node:path'
+import saveSettings from './saveSettings'
 import App from '../App'
 
 
-export default async function (file: URI, content: string) {
+export default async function (file: URI, content: string, settingsPath: string) {
     const {id, path} = parseURI(file)
-    await Connection.get(id).write(path, content)
+    if (id == LocalFileSystemID && path == settingsPath) {
+        await saveSettings(settingsPath, content)
+    } else {
+        await Connection.get(id).write(path, content)
+    }
     if (!isLocal(file)) {
         App.remoteWatcher.refresh(createURI(id, dirname(path)))
     }

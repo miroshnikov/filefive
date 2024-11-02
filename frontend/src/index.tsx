@@ -47,7 +47,7 @@ i18next
     })
 
 window.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('app');
-    const root = createRoot(container);
-    root.render(<StrictMode><App/></StrictMode>);
+    const container = document.getElementById('app')
+    const root = createRoot(container)
+    root.render(<StrictMode><App/></StrictMode>)
 })

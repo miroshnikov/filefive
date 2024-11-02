@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
 import { Split } from '../../ui/components'
-import Explorer from '../Explorer/Explorer'
+import Explorer, { ExplorerSettings } from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial } from '../../../../src/types'
@@ -20,6 +20,13 @@ import { basename, dirname } from '../../utils/path'
 
 
 export type SettingsChanges = { layout?: DeepPartial<AppSettings["layout"]>, path?: DeepPartial<AppSettings["path"]> } 
+
+const getSettings = (settings: ConnectionSettings|AppSettings, tp: 'local'|'remote'): ExplorerSettings => (
+    {
+        ...settings.layout[tp]
+        // history: settings.history[tp]
+    }
+)
 
 interface Props {
     onChange: (
@@ -328,7 +335,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     <Explorer 
                         icon='computer'
                         connection={LocalFileSystemID}
-                        settings={connection?.layout.local ?? appSettings.layout.local}
+                        settings={(connection ?? appSettings).layout.local}
+                        // settings={getSettings(connection ?? appSettings, 'local')}
                         path={localPath} 
                         fixedRoot={'/'}
                         onChange={setLocalPath} 
@@ -375,6 +383,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 connection={connection.id}
                                 connectionName={basename(connection.file)}
                                 settings={connection.layout.remote}
+                                // settings={getSettings(connection, 'remote')}
                                 path={remotePath}
                                 fixedRoot={'/'}
                                 onChange={setRemotePath} 
@@ -394,6 +403,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 icon='computer'
                                 connection={LocalFileSystemID}
                                 settings={appSettings.layout.remote}
+                                // settings={getSettings(appSettings, 'remote')}
                                 path={remotePath} 
                                 fixedRoot={'/'}
                                 onChange={setRemotePath} 

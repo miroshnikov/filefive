@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useContext, useCallback } from "react"
 import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
-import { ConnectionID, URI, FileInfo, Files, Path, ExplorerSettings, SortOrder } from '../../../../src/types'
+import { ConnectionID, URI, FileInfo, Files, Path, ExplorerLayout, SortOrder } from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
 import styles from './Explorer.less'
@@ -93,6 +93,9 @@ const onlyVisible = (dirs: string[]) => {
 const HISTORY_SIZE = 5
 
 
+export type ExplorerSettings = ExplorerLayout //& { history: Path[] }
+
+
 interface ExplorerProps {
     icon: string
     connection: ConnectionID
@@ -149,6 +152,7 @@ export default function Explorer ({
     const [filterRe, setFilter] = useState<RegExp>(null)
     const history = useRef<Path[]>([])
     const historyIndex = useRef(0)
+    const goHistory = useRef(-1)
     const [isFirst, setIsFirst] = useState(true)
     const [isLast, setIsLast] = useState(true)
     
@@ -170,7 +174,7 @@ export default function Explorer ({
         )
     }, [settings])
 
-    useEffect(() => setRoot(path), [path])
+    useEffectOnUpdate(() => setRoot(path), [path])
     
     useEffect(() => {  
         setParent(root == '/' ? null : dirname(root))
@@ -186,27 +190,24 @@ export default function Explorer ({
     useEffectOnUpdate(() => {
         onChange(root)
 
-        const length = history.current.length
-        if (length) {
-            if (historyIndex.current == length-1) {
-                if (history.current[length-1] != root) {
-                    history.current = takeLast(HISTORY_SIZE, [...history.current, root])
-                    historyIndex.current = history.current.length - 1
-                }
-            }
+        if (goHistory.current >= 0) {
+            historyIndex.current = goHistory.current
         } else {
-            history.current.push(root)
-            historyIndex.current = 0
+            if (root != history.current[history.current.length-1]) {
+                history.current = takeLast(HISTORY_SIZE, [...history.current, root])
+            }
+            historyIndex.current = history.current.length - 1
         }
+        goHistory.current = -1
         setIsFirst(historyIndex.current == 0)
         setIsLast(historyIndex.current == history.current.length - 1)
+
         console.log(history.current, historyIndex.current)
     }, [root])
 
     useEffect(() => {
-        history.current = [] // TODO set from settings
+        history.current = [root] // settings.history
         historyIndex.current = Math.max(history.current.length-1, 0)
-        console.log('settings changed')
     }, [settings])
 
     const formatters = {
@@ -495,10 +496,10 @@ export default function Explorer ({
             }
             <div className="path">
                 <button className="icon" disabled={isFirst} 
-                    onClick={e => setRoot(history.current[Math.max(--historyIndex.current, 0)])}
+                    onClick={e => setRoot(history.current[goHistory.current = Math.max(historyIndex.current-1, 0)])}
                 >arrow_back</button>
                 <button className="icon" disabled={isLast} 
-                    onClick={e => setRoot(history.current[Math.min(++historyIndex.current, history.current.length-1)])}
+                    onClick={e => setRoot(history.current[Math.min(goHistory.current = historyIndex.current+1, history.current.length-1)])}
                 >arrow_forward</button>
                 <Breadcrumbs 
                     icon={icon}

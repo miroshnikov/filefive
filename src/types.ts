@@ -58,6 +58,7 @@ export interface ConnectionConfig {
     theme: string
     layout?: Twofold<ExplorerConfig>
     path?: Twofold<Path|undefined>
+    history?: Twofold<Path[]>
 }
 
 export interface AppConfig {
@@ -67,11 +68,12 @@ export interface AppConfig {
     sizeFmt?: string
     layout?: Twofold<ExplorerConfig>
     path?: Twofold<Path|undefined>
+    history?: Twofold<Path[]>
 }
 
 
 
-export interface ExplorerSettings {
+export interface ExplorerLayout {
     columns: (FileAttribute & { visible: boolean, width: number })[]
     sort: [FileAttribute['name'], SortOrder]
 }
@@ -81,8 +83,9 @@ export interface ConnectionSettings {
     pwd: string
     attributes: FileAttributes
     theme: string
-    layout?: Twofold<ExplorerSettings>
+    layout?: Twofold<ExplorerLayout>
     path?: Twofold<Path|undefined>
+    history?: Twofold<Path[]>
 }
 
 export interface AppSettings {
@@ -94,8 +97,9 @@ export interface AppSettings {
     theme: string
     timeFmt: string
     sizeFmt: string
-    layout: Twofold<ExplorerSettings>
+    layout: Twofold<ExplorerLayout>
     path: Twofold<Path|undefined>
+    history: Twofold<Path[]>
 }
 
 

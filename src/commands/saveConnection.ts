@@ -1,13 +1,13 @@
 import { read } from '../Local'
 import { connectionID } from '../utils/URI'
-import { Path, ConnectionSettings, ExplorerSettings, ExplorerConfig, ConnectionConfig } from '../types'
+import { Path, ConnectionSettings, ExplorerLayout, ExplorerConfig, ConnectionConfig } from '../types'
 import { stat } from '../Local'
 import { whereEq, omit } from 'ramda'
 import { writeFile } from 'node:fs/promises'
 import Password from '../Password'
 
 
-export function getLayout(settings: ExplorerSettings): ExplorerConfig {
+export function getLayout(settings: ExplorerLayout): ExplorerConfig {
     return {
         columns: settings.columns.filter(whereEq({visible: true})).map(({name, width}) => ({name, width})),
         sort: settings.sort
@@ -17,7 +17,7 @@ export function getLayout(settings: ExplorerSettings): ExplorerConfig {
 
 export type SaveConnectionSettings = 
     | Pick<ConnectionConfig, 'scheme'|'host'|'port'|'user'|'password'> 
-    | Pick<ConnectionSettings, 'layout'|'path'>
+    | Pick<ConnectionSettings, 'layout'|'path'|'history'>
 
 
 export default async function (path: Path, settings: SaveConnectionSettings) {
@@ -47,6 +47,9 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
         }
         if (settings.path) {
             config.path = settings.path
+        }
+        if (settings.history) {
+            config.history = settings.history
         }
     }
 

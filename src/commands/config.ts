@@ -23,6 +23,7 @@ export default async function (path: string): Promise<AppSettings> {
             local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
             remote: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.remote)
         },
-        path: config.path ?? { local: homedir(), remote: homedir() }
+        path: config.path ?? { local: homedir(), remote: homedir() },
+        history: config.history ?? { local: [], remote: [] }
     }
 }

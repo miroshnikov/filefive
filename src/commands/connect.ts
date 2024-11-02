@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { parse } from 'path'
-import { Path, ConnectionID, ConnectionConfig, ConnectionSettings, ExplorerConfig, ExplorerSettings, SortOrder } from '../types'
+import { Path, ConnectionID, ConnectionConfig, ConnectionSettings, ExplorerConfig, ExplorerLayout, SortOrder } from '../types'
 import { FileAttributes } from '../FileSystem'
 import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
 import { connectionID } from '../utils/URI'
@@ -10,7 +10,7 @@ import { where, whereEq, isNotNil, isNotEmpty } from 'ramda'
 
 
 
-export function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerSettings {
+export function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerLayout {
         return { 
             columns:
                 config ? 
@@ -70,6 +70,10 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
             path: {
                 local: config.path?.local,
                 remote: config.path?.remote ?? pwd
+            },
+            history: {
+                local: config.history?.local ?? [],
+                remote: config.history?.remote ?? []
             }
         }
         return { id, settings }
