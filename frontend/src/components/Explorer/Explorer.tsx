@@ -11,7 +11,7 @@ import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
 import { filter, tap } from 'rxjs/operators'
-import { useEffectOnUpdate, useSubscribe } from '../../hooks'
+import { useEffectOnUpdate, useSubscribe, useCustomCompareEffect } from '../../hooks'
 import { 
     sortWith, 
     descend, 
@@ -28,7 +28,8 @@ import {
     length, 
     curry, 
     whereEq, 
-    takeLast 
+    takeLast,
+    equals
 } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
@@ -162,7 +163,7 @@ export default function Explorer ({
 
     const [showColumnsMenu, setShowColumnsMenu] = useState(false)
 
-    useEffect(() => {
+    useCustomCompareEffect(() => {
         setColumns(
             settings.columns.filter(({visible, name}) => visible == true || name == 'name').map(c => ({
                 name: c.name,
@@ -172,7 +173,7 @@ export default function Explorer ({
                 sort: settings.sort[0] == c.name ? settings.sort[1] : undefined
             }))
         )
-    }, [settings])
+    }, [settings], equals)
 
     useEffectOnUpdate(() => setRoot(path), [path])
     

@@ -68,7 +68,7 @@ interface ListProps {
     parent?: string,
 }
 
-export default forwardRef<HTMLDivElement, ListProps>(function List ({   
+export default forwardRef<HTMLDivElement, ListProps>(function List ({
         columns, 
         files, 
         onGo, 
@@ -133,6 +133,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
         return items
     }
 
+
     const setRenamingItem = (items: Items) => {
         if (renaming) {
             const item = items.find(whereEq({URI: renaming}))
@@ -144,7 +145,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
 
     useEffect(() => setItems(setRenamingItem(insertNewItem(files))), [files])
 
-    useEffect(() => {        
+    useEffect(() => {
         setItems(items => {
             items = items.filter(({FileStateAttr}) => FileStateAttr != FileState.Creating)
             if (creating && expanded.includes(creating.in)) {
@@ -180,7 +181,10 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     ), [items])
 
     const [widths, setWidths] = useState([]) 
-    useEffect(() => { setWidths(columns.map(prop('width'))) }, [columns])
+    useEffect(
+        () => { setWidths(columns.map(prop('width'))) }, 
+        [columns]
+    )
 
     const toggle = (dir: string) => {
         setExpanded(expanded.includes(dir) ? without([dir], expanded) : [...expanded, dir])
