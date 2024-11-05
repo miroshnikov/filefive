@@ -6,15 +6,15 @@ import remove from './remove'
 import mkdir from './mkdir'
 import read from './read'
 import write from './write'
-import config from './config'
+import getSettings from './settings'
 import rename from './rename'
 import getConnection from './getConnection'
 import saveConnection from './saveConnection'
-
+import saveSettings from './saveSettings'
 
 export const commands = {
     connect,
-    config,
+    getSettings,
     watch,
     unwatch,
     copy,
@@ -24,6 +24,7 @@ export const commands = {
     write,
     rename,
     getConnection,
-    saveConnection
+    saveConnection,
+    saveSettings
 }
 

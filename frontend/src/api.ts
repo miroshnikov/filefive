@@ -1,4 +1,4 @@
-import { URI, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, Path, Failure, FailureType } from '../../src/types'
+import { URI, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, Path, Failure, FailureType, DeepPartial } from '../../src/types'
 import { LocalFileInfo } from '../../src/Local'
 import { error$ } from './observables/error'
 
@@ -43,7 +43,8 @@ function subscribe<Event extends {}>(channel: string, callback: (event: Event) =
 }
 
 window.f5 = {
-    config: () => invoke<AppSettings>('config'),
+    settings: () => invoke<AppSettings>('getapp'),
+    saveSettings: (settings: DeepPartial<AppSettings>) => invoke<void>('saveapp', { settings }),
 
     onError: listener => subscribe<any>('error', (error) => listener(error)),
 
@@ -63,7 +64,7 @@ window.f5 = {
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
     read: (file) => invoke<string>('read', { file }),
-    write: (path, content, jsonMerge) => invoke<void>('write', { path, content, jsonMerge }),
+    write: (path, content) => invoke<void>('write', { path, content }),
     rename: (path, name) => invoke<void>('rename', { path, name }),
 
     get: (path) => invoke<ConnectionConfig|null>('get', { path }),

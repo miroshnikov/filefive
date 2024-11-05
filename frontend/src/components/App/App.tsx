@@ -18,7 +18,7 @@ import { CommandID, KeyShortcutCommand } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 import { Tooltips, getTooltipShortcut, Spinner } from '../../ui/components'
 import Settings from '../../modals/Settings/Settings'
-import { mergeDeepRight } from 'ramda'
+
 
 
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
@@ -35,9 +35,8 @@ export default function App () {
 
     
     useEffect(() => { 
-        window.f5.config().then(settings => {
+        window.f5.settings().then(settings => {
             setAppSettings(settings)
-            settingsFile.current = settings.settings
         }) 
     }, [])
 
@@ -76,7 +75,7 @@ export default function App () {
     useSubscribe(() =>
         file$.subscribe(({path}) => {
             if (path == settingsFile.current) {
-                window.f5.config().then(settings => {
+                window.f5.settings().then(settings => {
                     console.log('update AppSettings')
                     setAppSettings(settings)
                 }) 
@@ -84,30 +83,9 @@ export default function App () {
         })
     )
 
-    // useSubscribe(() =>
-    //     file$.subscribe(({path}) => {
-    //         if (path == settingsFile.current) {
-    //             if (!settingsChanges) {
-    //                 window.f5.config().then(settings => {
-    //                     setAppSettings(settings)
-    //                 }) 
-    //             }
-    //             setSettingsChanges(null)
-    //         }
-    //     }),
-    //     [settingsChanges]
-    // )
-
     useConcatAsyncEffect(async () => {
         if (settingsChanges) {
-            console.log('write', settingsChanges, mergeDeepRight(appSettings, settingsChanges))
-            await window.f5.write(
-                createURI(LocalFileSystemID, appSettings.settings),
-                JSON.stringify( settingsChanges ),
-                true
-                // JSON.stringify( mergeDeepRight(appSettings, settingsChanges) )
-            )
-            console.log('end write')
+            await window.f5.saveSettings(settingsChanges)
         }
     }, [settingsChanges])
 

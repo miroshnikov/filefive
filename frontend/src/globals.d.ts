@@ -1,10 +1,11 @@
-import { URI, Path, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, QueueAction } from '../../src/types'
+import { URI, Path, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, QueueAction, DeepPartial } from '../../src/types'
 import { LocalFileInfo } from '../../src/Local'
 import { SaveConnectionSettings } from '../../src/commands/saveConnection'
 
 
 export interface F5 {
-    config(): Promise<AppSettings>
+    settings(): Promise<AppSettings>
+    saveSettings(settings: DeepPartial<AppSettings>): Promise<void>
 
     onError(listener: (error: any) => void): void
 
@@ -24,7 +25,7 @@ export interface F5 {
     open(file: Path): void
     mkdir(name: string, parent: URI): void
     read(file: URI): Promise<string>
-    write(path: URI, content: string, jsonMerge?: boolean): Promise<void>
+    write(path: URI, content: string): Promise<void>
     rename(path: URI, name: string): Promise<void>
 
     get(path: Path): Promise<ConnectionConfig|null>

@@ -1,11 +1,17 @@
 import { writeFile } from 'node:fs/promises'
-import { read } from '../Local'
-import { AppConfig, AppSettings } from '../types'
+import { AppConfig, AppSettings, DeepPartial } from '../types'
 import { getSettings } from './saveConnection'
+import { mergeDeepRight } from 'ramda'
+import { commands } from '.'
 
 
-export default async function (path: string, content: string) {
-    const settings = JSON.parse(content) as AppSettings
+export default async function (path: string, changes: DeepPartial<AppSettings>) {
+
+    const settings = mergeDeepRight(
+        await commands.getSettings(path), 
+        changes
+    ) as AppSettings
+
     const config: AppConfig = {
         mode: settings.mode,
         theme: settings.theme,
@@ -15,5 +21,5 @@ export default async function (path: string, content: string) {
         remote: getSettings(settings.remote),
         path: settings.path
     }
-    await writeFile(path, JSON.stringify({ ...JSON.parse(await read(path)), ...config }))
+    await writeFile(path, JSON.stringify(config))
 }

@@ -1,7 +1,19 @@
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { mkdir } from 'node:fs/promises'
-import { Path, ConnectionID, URI, Files, Failure, FailureType, QueueEvent, QueueAction, LocalFileSystemID } from './types'
+import { 
+    Path, 
+    ConnectionID, 
+    URI, 
+    Files, 
+    Failure, 
+    FailureType, 
+    QueueEvent, 
+    QueueAction, 
+    LocalFileSystemID, 
+    AppSettings,
+    DeepPartial
+} from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
 import FileWatcher from './FileWatcher'
@@ -10,7 +22,7 @@ import { queues } from './queues/Queue'
 import Password from './Password'
 import { commands } from './commands'
 import transform from './transform'
-import { touch, LocalFileInfo } from './Local'
+import { touch, stat, LocalFileInfo } from './Local'
 import { createURI } from './utils/URI'
 import { SaveConnectionSettings } from './commands/saveConnection'
 import { inspect } from 'node:util'
@@ -20,41 +32,46 @@ export type Emitter = <Event extends {}>(channel: string) => (event: Event) => v
 
 export default class App {
        
-    static bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter, opener: (file: string) => void) {
+    static async bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter, opener: (file: string) => void) {
 
         const dataPath = join(homedir(), '.f5')
         const connPath = join(dataPath, 'connections')
         mkdir(connPath, { recursive: true })
         touch(join(dataPath, 'credentials.json'), JSON.stringify([]))
         const settingsPath = join(dataPath, 'settings.json')
-        touch(settingsPath, JSON.stringify({}))
+        if (!stat(settingsPath)) {
+            await touch(settingsPath)
+            commands.saveSettings(settingsPath, await commands.getSettings(settingsPath))
+        }
                
         Password.load(dataPath, id => App.onError({ type: FailureType.Unauthorized, id }))
         Connection.initialize()
 
         Object.entries({
-            config:     () => commands.config(settingsPath),
-            connect:    ({file}: {file: Path}) => commands.connect(file, (id, {message}) => this.onError({ type: FailureType.RemoteError, id, message })),
-            login:      ({id, password, remember}: {id: ConnectionID, password: string|false, remember: boolean}) => Password.set(id, password, remember),
-            disconnect: ({id}: {id: ConnectionID}) => Connection.close(id),
+            getapp:       () => commands.getSettings(settingsPath),
+            saveapp:      ({settings}: {settings: DeepPartial<AppSettings>}) => commands.saveSettings(settingsPath, settings),
 
-            watch:      ({dir}: {dir: URI}) => commands.watch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
-            unwatch:    ({dir}: {dir: URI}) => commands.unwatch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
-            refresh:    ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
+            connect:      ({file}: {file: Path}) => commands.connect(file, (id, {message}) => this.onError({ type: FailureType.RemoteError, id, message })),
+            login:        ({id, password, remember}: {id: ConnectionID, password: string|false, remember: boolean}) => Password.set(id, password, remember),
+            disconnect:   ({id}: {id: ConnectionID}) => Connection.close(id),
 
-            copy:       ({src, dest, move}: {src: URI[], dest: URI, move: boolean}) => commands.copy(src, dest, move),
-            remove:     ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
-            open:       ({file}: {file: Path}) => opener(file),
-            mkdir:      ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
-            read:       ({file}: {file: URI}) => commands.read(file),
-            write:      ({path, content, jsonMerge}: {path: URI, content: string, jsonMerge?: boolean}) => commands.write(path, content, jsonMerge ?? false, settingsPath),
-            rename:     ({path, name}: {path: URI, name: string}) => commands.rename(path, name),
+            watch:        ({dir}: {dir: URI}) => commands.watch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
+            unwatch:      ({dir}: {dir: URI}) => commands.unwatch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
+            refresh:      ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
 
-            get:        ({path}: {path: Path}) => commands.getConnection(path),
-            save:       ({path, settings}: {path: Path, settings: SaveConnectionSettings}) => commands.saveConnection(path, settings),
+            copy:         ({src, dest, move}: {src: URI[], dest: URI, move: boolean}) => commands.copy(src, dest, move),
+            remove:       ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
+            open:         ({file}: {file: Path}) => opener(file),
+            mkdir:        ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
+            read:         ({file}: {file: URI}) => commands.read(file),
+            write:        ({path, content}: {path: URI, content: string}) => commands.write(path, content),
+            rename:       ({path, name}: {path: URI, name: string}) => commands.rename(path, name),
 
-            resolve:    ({id, action, forAll}: {id: string, action: QueueAction, forAll: boolean}) => queues.get(id)?.resolve(action, forAll),
-            stop:       ({id}: {id: string}) => queues.get(id)?.stop()
+            get:          ({path}: {path: Path}) => commands.getConnection(path),
+            save:         ({path, settings}: {path: Path, settings: SaveConnectionSettings}) => commands.saveConnection(path, settings),
+
+            resolve:      ({id, action, forAll}: {id: string, action: QueueAction, forAll: boolean}) => queues.get(id)?.resolve(action, forAll),
+            stop:         ({id}: {id: string}) => queues.get(id)?.stop()
         }).forEach(([name, handler]) => handle(name, handler))
 
         const emitError = emitter<Failure>('error')
