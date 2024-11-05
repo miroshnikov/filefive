@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react"
 import Workspace, { SettingsChanges } from '../Workspace/Workspace'
 import styles from './App.less'
-import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste } from '../../hooks'
+import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste, useConcatAsyncEffect } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
-import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path, DeepPartial } from '../../../../src/types'
+import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
 import { parse } from '../../utils/path'
 import { createURI } from '../../../../src/utils/URI'
 import classNames from "classnames"
@@ -76,23 +76,38 @@ export default function App () {
     useSubscribe(() =>
         file$.subscribe(({path}) => {
             if (path == settingsFile.current) {
-                if (!settingsChanges) {
-                    window.f5.config().then(settings => {
-                        setAppSettings(settings)
-                    }) 
-                }
-                setSettingsChanges(null)
+                window.f5.config().then(settings => {
+                    console.log('update AppSettings')
+                    setAppSettings(settings)
+                }) 
             }
-        }),
-        [settingsChanges]
+        })
     )
 
-    useEffect(() => {
+    // useSubscribe(() =>
+    //     file$.subscribe(({path}) => {
+    //         if (path == settingsFile.current) {
+    //             if (!settingsChanges) {
+    //                 window.f5.config().then(settings => {
+    //                     setAppSettings(settings)
+    //                 }) 
+    //             }
+    //             setSettingsChanges(null)
+    //         }
+    //     }),
+    //     [settingsChanges]
+    // )
+
+    useConcatAsyncEffect(async () => {
         if (settingsChanges) {
-            window.f5.write(
+            console.log('write', settingsChanges, mergeDeepRight(appSettings, settingsChanges))
+            await window.f5.write(
                 createURI(LocalFileSystemID, appSettings.settings),
-                JSON.stringify( mergeDeepRight(appSettings, settingsChanges) )
+                JSON.stringify( settingsChanges ),
+                true
+                // JSON.stringify( mergeDeepRight(appSettings, settingsChanges) )
             )
+            console.log('end write')
         }
     }, [settingsChanges])
 

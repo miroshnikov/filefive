@@ -19,11 +19,8 @@ export default async function (path: string): Promise<AppSettings> {
         theme: config.theme ?? 'black',
         timeFmt: config.timeFmt ?? 'yyyy-MM-dd HH:mm',
         sizeFmt: config.sizeFmt ?? '0.0 b',
-        layout: {
-            local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
-            remote: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.remote)
-        },
-        path: config.path ?? { local: homedir(), remote: homedir() },
-        history: config.history ?? { local: [], remote: [] }
+        local: explorerSettings(LOCAL_ATTRIBUTES, config.local), 
+        remote: explorerSettings(LOCAL_ATTRIBUTES, config.remote),
+        path: config.path ?? { local: homedir(), remote: homedir() }
     }
 }

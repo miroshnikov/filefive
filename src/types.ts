@@ -42,53 +42,50 @@ export enum SortOrder {
 }
 
 export interface ExplorerConfig {
-    columns: {
+    columns?: {
         name: FileAttribute['name'],
         width: number
     }[]
-    sort: [FileAttribute['name'], SortOrder]
+    sort?: [FileAttribute['name'], SortOrder]
+    history?: Path[]
 }
 
-export interface ConnectionConfig {
+export interface ConnectionConfig extends Twofold<ExplorerConfig> {
     scheme: string
     host: string
     port: number
     user: string
     password: string
     theme: string
-    layout?: Twofold<ExplorerConfig>
     path?: Twofold<Path|undefined>
-    history?: Twofold<Path[]>
 }
 
-export interface AppConfig {
+
+export interface AppConfig extends Twofold<ExplorerConfig> {
     mode?: 'light'|'system'|'dark'
     theme?: string
     timeFmt?: string
     sizeFmt?: string
-    layout?: Twofold<ExplorerConfig>
     path?: Twofold<Path|undefined>
-    history?: Twofold<Path[]>
 }
 
 
 
-export interface ExplorerLayout {
+export interface ExplorerSettings {
     columns: (FileAttribute & { visible: boolean, width: number })[]
     sort: [FileAttribute['name'], SortOrder]
+    history: Path[]
 }
 
-export interface ConnectionSettings { 
+export interface ConnectionSettings extends Twofold<ExplorerSettings> { 
     name: string
     pwd: string
     attributes: FileAttributes
     theme: string
-    layout?: Twofold<ExplorerLayout>
     path?: Twofold<Path|undefined>
-    history?: Twofold<Path[]>
 }
 
-export interface AppSettings {
+export interface AppSettings extends Twofold<ExplorerSettings> {
     home: Path
     settings: Path
     connections: Path
@@ -97,9 +94,7 @@ export interface AppSettings {
     theme: string
     timeFmt: string
     sizeFmt: string
-    layout: Twofold<ExplorerLayout>
     path: Twofold<Path|undefined>
-    history: Twofold<Path[]>
 }
 
 

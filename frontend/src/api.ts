@@ -63,7 +63,7 @@ window.f5 = {
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
     read: (file) => invoke<string>('read', { file }),
-    write: (path, content) => invoke<void>('write', { path, content }),
+    write: (path, content, jsonMerge) => invoke<void>('write', { path, content, jsonMerge }),
     rename: (path, name) => invoke<void>('rename', { path, name }),
 
     get: (path) => invoke<ConnectionConfig|null>('get', { path }),

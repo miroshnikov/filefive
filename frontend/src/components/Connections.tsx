@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react"
-import { LocalFileSystemID, URI, Path, SortOrder, ExplorerLayout } from '../../../src/types'
+import { LocalFileSystemID, URI, Path, SortOrder, ExplorerSettings } from '../../../src/types'
 import { FileAttributeType } from '../../../src/FileSystem'
 import { AppSettingsContext } from '../context/config'
 import { MenuItem } from '../ui/components'
 import { parseURI } from '../../../src/utils/URI'
-import Explorer, { ExplorerSettings } from './Explorer/Explorer'
+import Explorer from './Explorer/Explorer'
 import dirMenu from '../menu/connectionsDir'
 import fileMenu from '../menu/connection'
 import ConnectionForm from '../modals/Connection/Connection'
@@ -43,7 +43,7 @@ const settings: ExplorerSettings = {
         }
     ],
     sort: ['name', SortOrder.Asc],
-    // history: []
+    history: []
 }
 
 export default function Connections({ path, onChange, onSelect, connect, toolbar, onFocus, onBlur, tabindex }: Props) {

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { parse } from 'path'
-import { Path, ConnectionID, ConnectionConfig, ConnectionSettings, ExplorerConfig, ExplorerLayout, SortOrder } from '../types'
+import { Path, ConnectionID, ConnectionConfig, ConnectionSettings, ExplorerConfig, ExplorerSettings, SortOrder } from '../types'
 import { FileAttributes } from '../FileSystem'
 import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
 import { connectionID } from '../utils/URI'
@@ -10,7 +10,7 @@ import { where, whereEq, isNotNil, isNotEmpty } from 'ramda'
 
 
 
-export function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerLayout {
+export function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerSettings {
         return { 
             columns:
                 config ? 
@@ -26,7 +26,8 @@ export function explorerSettings(attributes: FileAttributes, config?: ExplorerCo
                             .map(a => ({...a, visible: false, width: 300}))
                      ] :
                     attributes.map(a => ({...a, visible: true, width: 300})), 
-            ...(config ? { sort: config.sort } : { sort: ['name', SortOrder.Asc] } ) 
+            ...(config ? { sort: config.sort } : { sort: ['name', SortOrder.Asc] }),
+            ...(config ? { history: config.history } : { history: [] })
         }
 }
 
@@ -63,17 +64,11 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
             attributes,
             pwd, 
             theme: config.theme ?? 'black',
-            layout: {
-                local: explorerSettings(LOCAL_ATTRIBUTES, config.layout?.local), 
-                remote: explorerSettings(attributes, config.layout?.remote)
-            },
+            local: explorerSettings(LOCAL_ATTRIBUTES, config.local), 
+            remote: explorerSettings(attributes, config.remote),
             path: {
                 local: config.path?.local,
                 remote: config.path?.remote ?? pwd
-            },
-            history: {
-                local: config.history?.local ?? [],
-                remote: config.history?.remote ?? []
             }
         }
         return { id, settings }

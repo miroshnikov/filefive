@@ -24,7 +24,7 @@ export interface F5 {
     open(file: Path): void
     mkdir(name: string, parent: URI): void
     read(file: URI): Promise<string>
-    write(path: URI, content: string): Promise<void>
+    write(path: URI, content: string, jsonMerge?: boolean): Promise<void>
     rename(path: URI, name: string): Promise<void>
 
     get(path: Path): Promise<ConnectionConfig|null>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
 import { Split } from '../../ui/components'
-import Explorer, { ExplorerSettings } from '../Explorer/Explorer'
+import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial } from '../../../../src/types'
@@ -12,21 +12,13 @@ import remoteFileMenu from '../../menu/remoteFile'
 import localDirMenu from '../../menu/localDir'
 import remoteDirMenu from '../../menu/remoteDir'
 import { useEffectOnUpdate, useSubscribe } from '../../hooks'
-import { assocPath } from 'ramda'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
 import { basename, dirname } from '../../utils/path'
 
 
-export type SettingsChanges = { layout?: DeepPartial<AppSettings["layout"]>, path?: DeepPartial<AppSettings["path"]> } 
-
-const getSettings = (settings: ConnectionSettings|AppSettings, tp: 'local'|'remote'): ExplorerSettings => { 
-    return {
-        ...settings.layout[tp]
-        // history: settings.history[tp]
-    }
-}
+export type SettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'>>
 
 interface Props {
     onChange: (
@@ -335,7 +327,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     <Explorer 
                         icon='computer'
                         connection={LocalFileSystemID}
-                        settings={getSettings(connection ?? appSettings, 'local')}
+                        settings={(connection ?? appSettings).local}
                         path={localPath} 
                         fixedRoot={'/'}
                         onChange={setLocalPath} 
@@ -344,8 +336,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                         onMenu={fileContextMenu(false)}
                         onSettingsChange={changes => 
                             connection ?
-                                setConnection(connection => assocPath(['layout', 'local'], {...connection.layout.local, ...changes}, connection)):
-                                onSettingsChange({ layout: { local: changes } })
+                                setConnection(connection => ({...connection, local: {...connection.local, ...changes}})):
+                                onSettingsChange({ local: changes })
                         }
                         contextMenu={menu}
                         toolbar={localToolbar}
@@ -381,15 +373,15 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 icon='cloud'
                                 connection={connection.id}
                                 connectionName={basename(connection.file)}
-                                settings={getSettings(connection, 'remote')}
+                                settings={connection.remote}
                                 path={remotePath}
                                 fixedRoot={'/'}
                                 onChange={setRemotePath} 
                                 onSelect={paths => setRemoteSelected(paths)}
                                 onOpen={openRemote}
                                 onMenu={fileContextMenu()}
-                                onSettingsChange={changed =>
-                                    setConnection(connection => assocPath(['layout', 'remote'], {...connection.layout.remote, ...changed}, connection))
+                                onSettingsChange={changes =>
+                                    setConnection(connection => ({...connection, remote: {...connection.remote, ...changes}}))
                                 }
                                 contextMenu={menu}
                                 toolbar={remoteToolbar}
@@ -400,14 +392,14 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             <Explorer 
                                 icon='computer'
                                 connection={LocalFileSystemID}
-                                settings={getSettings(appSettings, 'remote')}
+                                settings={appSettings.remote}
                                 path={remotePath} 
                                 fixedRoot={'/'}
                                 onChange={setRemotePath} 
                                 onSelect={paths => setRemoteSelected(paths)}
                                 onOpen={openRemote}
                                 onMenu={fileContextMenu()}
-                                onSettingsChange={changes => onSettingsChange({ layout: { remote: changes } })}
+                                onSettingsChange={changes => onSettingsChange({ remote: changes })}
                                 contextMenu={menu}
                                 toolbar={remoteToolbar}
                                 tabindex={2}

@@ -1,23 +1,24 @@
 import { read } from '../Local'
 import { connectionID } from '../utils/URI'
-import { Path, ConnectionSettings, ExplorerLayout, ExplorerConfig, ConnectionConfig } from '../types'
+import { Path, ConnectionSettings, ExplorerSettings, ExplorerConfig, ConnectionConfig } from '../types'
 import { stat } from '../Local'
 import { whereEq, omit } from 'ramda'
 import { writeFile } from 'node:fs/promises'
 import Password from '../Password'
 
 
-export function getLayout(settings: ExplorerLayout): ExplorerConfig {
+export function getSettings(settings: ExplorerSettings): ExplorerConfig {
     return {
         columns: settings.columns.filter(whereEq({visible: true})).map(({name, width}) => ({name, width})),
-        sort: settings.sort
+        sort: settings.sort,
+        history: settings.history
     }
 }
 
 
 export type SaveConnectionSettings = 
     | Pick<ConnectionConfig, 'scheme'|'host'|'port'|'user'|'password'> 
-    | Pick<ConnectionSettings, 'layout'|'path'|'history'>
+    | Pick<ConnectionSettings, 'local'|'remote'|'path'>
 
 
 export default async function (path: Path, settings: SaveConnectionSettings) {
@@ -39,17 +40,14 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
             )
         }
     } else {
-        if (settings.layout) {
-            config.layout =  {
-                local: getLayout(settings.layout.local),
-                remote: getLayout(settings.layout.remote)
-            }
+        if (settings.local) {
+            config.local = getSettings(settings.local)
+        }
+        if (settings.remote) {
+            config.remote = getSettings(settings.remote)
         }
         if (settings.path) {
             config.path = settings.path
-        }
-        if (settings.history) {
-            config.history = settings.history
         }
     }
 

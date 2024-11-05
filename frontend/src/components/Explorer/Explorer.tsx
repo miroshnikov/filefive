@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useContext, useCallback } from "react"
 import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
-import { ConnectionID, URI, FileInfo, Files, Path, ExplorerLayout, SortOrder } from '../../../../src/types'
+import { ConnectionID, URI, FileInfo, Files, Path, SortOrder, ExplorerSettings } from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
 import styles from './Explorer.less'
@@ -92,9 +92,6 @@ const onlyVisible = (dirs: string[]) => {
 
 
 const HISTORY_SIZE = 5
-
-
-export type ExplorerSettings = ExplorerLayout //& { history: Path[] }
 
 
 interface ExplorerProps {
@@ -198,6 +195,7 @@ export default function Explorer ({
                 history.current = takeLast(HISTORY_SIZE, [...history.current, root])
             }
             historyIndex.current = history.current.length - 1
+            onSettingsChange?.({history: history.current})
         }
         goHistory.current = -1
         setIsFirst(historyIndex.current == 0)
@@ -206,10 +204,10 @@ export default function Explorer ({
         console.log(history.current, historyIndex.current)
     }, [root])
 
-    useEffect(() => {
-        history.current = [root] // settings.history
+    useCustomCompareEffect(() => {
+        history.current = settings.history
         historyIndex.current = Math.max(history.current.length-1, 0)
-    }, [settings])
+    }, [settings], equals)
 
     const formatters = {
         modified: (value: Date) => format(value, appSettings.timeFmt),
@@ -548,4 +546,3 @@ export default function Explorer ({
         }
     </div>
 }
-
