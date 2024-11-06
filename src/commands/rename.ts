@@ -11,7 +11,7 @@ export default async function (uri: URI, name: string) {
     if (path == to) {
         return
     }
-    await Connection.get(id).mv(path, to)
+    await Connection.get(id).rename(path, to)
     if (!isLocal(uri)) {
         App.remoteWatcher.refresh(createURI(id, dirname(path)))
     }

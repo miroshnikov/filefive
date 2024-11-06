@@ -177,4 +177,5 @@ export type Failure =
     | {
         type: FailureType.APIError
         message: string
+        method: string
     }

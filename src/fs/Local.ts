@@ -56,6 +56,10 @@ export default class Local extends FileSystem {
         await mkdir(path, { recursive: true })
     }
 
+    async rename(from: Path, to: Path): Promise<void> {
+        await rename(from, to)
+    }
+
     async mv(from: Path, to: Path): Promise<void> {
         try {
             await del(to)

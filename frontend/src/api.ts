@@ -13,8 +13,7 @@ async function invoke<T>(method: string, data: {} = {}): Promise<T> {
         if (!resp.ok) {
             return resp.json().then(error => {
                 const message = 'message' in error ? error.message : String(error)
-                error$.next({ type: FailureType.APIError, message }) 
-                throw new Error(message)
+                error$.next({ type: FailureType.APIError, message, method }) 
             })
         }
         return resp.json()

@@ -37,6 +37,7 @@ export default function App () {
     useEffect(() => { 
         window.f5.settings().then(settings => {
             setAppSettings(settings)
+            settingsFile.current = settings.settings
         }) 
     }, [])
 
@@ -76,11 +77,11 @@ export default function App () {
         file$.subscribe(({path}) => {
             if (path == settingsFile.current) {
                 window.f5.settings().then(settings => {
-                    console.log('update AppSettings')
                     setAppSettings(settings)
                 }) 
             }
-        })
+        }),
+        []
     )
 
     useConcatAsyncEffect(async () => {

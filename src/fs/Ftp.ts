@@ -142,6 +142,11 @@ export default class Ftp extends FileSystem {
         return new Promise((resolve, reject) => this.connection.mkdir(path, true, e => e ? reject(e) : resolve()))
     }
 
+    async rename(from: Path, to: Path): Promise<void> {
+        await this.open()
+        return new Promise((resolve, reject) => this.connection.rename(from, to, e => e ? reject(e) : resolve()))
+    }
+
     async mv(from: Path, to: Path): Promise<void> {
         await this.open()
         return new Promise((resolve, reject) => this.connection.rename(from, to, e => e ? reject(e) : resolve()))

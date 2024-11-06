@@ -11,7 +11,7 @@ import localFileMenu from '../../menu/localFile'
 import remoteFileMenu from '../../menu/remoteFile'
 import localDirMenu from '../../menu/localDir'
 import remoteDirMenu from '../../menu/remoteDir'
-import { useEffectOnUpdate, useSubscribe } from '../../hooks'
+import { useEffectOnUpdate, useSubscribe, useConcatAsyncEffect } from '../../hooks'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
@@ -56,12 +56,11 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             connect(u.searchParams.get('connect'))
         }
     }, [])
-    
-    useEffectOnUpdate(() => {
+
+    useConcatAsyncEffect(async () => {
         if (connection) {
-            window.f5.save(
-                connection.file, 
-                { 
+            await window.f5.save(
+                connection.file, { 
                     ...connection,
                     path: { 
                         local: localPath, 

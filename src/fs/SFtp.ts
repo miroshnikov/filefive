@@ -180,18 +180,22 @@ export default class SFtp extends FileSystem {
         ))
     }
 
+    async rename(from: Path, to: Path): Promise<void> {
+        const sftp = await this.open() 
+        return new Promise((resolve, reject) => {
+            sftp.rename(from, to, e => {
+                if (e) {
+                    reject(new Error(this.decodeError(e)))
+                    return
+                }
+                resolve()
+            })
+        })
+    }
+
     async mv(from: Path, to: Path): Promise<void> {
         await this.exec(`rm -Rf '${to}'`)
         return this.exec(`mv -f '${from}' '${to}'`)
-        // return new Promise((resolve, reject) => {
-        //     sftp.rename(from, to, e => {
-        //         if (e) {
-        //             reject(new Error(this.decodeError(e)))
-        //             return
-        //         }
-        //         resolve()
-        //     })
-        // })
     }
 
     async cp(from: Path, to: Path, recursive: boolean): Promise<void> {
