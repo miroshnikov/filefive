@@ -22,8 +22,6 @@ export type SaveConnectionSettings =
 
 
 export default async function (path: Path, settings: SaveConnectionSettings) {
-    console.log('start writing config')
-
     const content = stat(path) ? await read(path) : null
     if (stat(path) && !content) {
         throw new Error(`Cant read connection file: ${path} ${typeof content}`)
@@ -55,6 +53,4 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
         throw new Error(`Save invalid config into ${path}`)
     }
     await writeFile(path, JSON.stringify(config))
-
-    console.log('end writing config')
 }

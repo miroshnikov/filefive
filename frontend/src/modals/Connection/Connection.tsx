@@ -89,7 +89,6 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                 data.port = scheme == 'sftp' ? 22 : 21
             }
             await window.f5.save(file, data)
-            console.log('Save C data done')
             if (id == ModalButtonID.Ok) {
                 onConnect(file)            
             }

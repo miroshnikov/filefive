@@ -18,7 +18,7 @@ import { error$ } from '../../observables/error'
 import { basename, dirname } from '../../utils/path'
 
 
-export type SettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'>>
+export type AppSettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'>>
 
 interface Props {
     onChange: (
@@ -27,7 +27,7 @@ interface Props {
         localPath: Path,
         remotePath: Path
     ) => void
-    onSettingsChange: (settings: SettingsChanges) => void
+    onSettingsChange: (settings: AppSettingsChanges) => void
 }
 
 export default function Workspace({onChange, onSettingsChange}: Props) {
@@ -59,6 +59,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
 
     useConcatAsyncEffect(async () => {
         if (connection) {
+            console.log('write connection', connection.remote.columns)
             await window.f5.save(
                 connection.file, { 
                     ...connection,
@@ -106,7 +107,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     setConnection({ ...settings, id, file: path })
                     setLocalPath(path => settings.path.local ?? path)
                     setRemotePath(settings.path.remote!)
-                    document.documentElement.setAttribute('data-theme', settings.theme) 
                     const u = new URL(window.location.toString())
                     u.searchParams.set('connect', path)
                     history.replaceState(null, '', u.toString())
@@ -116,6 +116,10 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             .finally(() => setConnecting(''))
     }
 
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', connection ? connection.theme : appSettings.theme) 
+    }, [appSettings, connection])
+  
     const disconnect = () => {
         if (!connection) {
             return
@@ -124,7 +128,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         setConnection(null)
         setLocalPath(appSettings.path?.local ?? appSettings.home)
         setRemotePath(appSettings.connections)
-        document.documentElement.setAttribute('data-theme', appSettings.theme) 
         const u = new URL(window.location.toString())
         u.searchParams.delete('connect')
         history.replaceState(null, '', u.toString())

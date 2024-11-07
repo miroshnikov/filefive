@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react"
-import Workspace, { SettingsChanges } from '../Workspace/Workspace'
+import React, { useEffect, useState, useRef, useLayoutEffect } from "react"
+import Workspace, { AppSettingsChanges } from '../Workspace/Workspace'
 import styles from './App.less'
 import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste, useConcatAsyncEffect } from '../../hooks'
 import { queue$ } from '../../observables/queue'
@@ -31,9 +31,8 @@ export default function App () {
     const [appSettings, setAppSettings] = useState<AppSettings>(null)
 
     const settingsFile = useRef('')
-    const [settingsChanges, setSettingsChanges] = useState<SettingsChanges>(null)
-
-    
+    const [settingsChanges, setSettingsChanges] = useState<AppSettingsChanges>(null)
+   
     useEffect(() => { 
         window.f5.settings().then(settings => {
             setAppSettings(settings)
@@ -48,7 +47,7 @@ export default function App () {
     }, [appSettings])
 
     const defaultMode = useMode()
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (appSettings) {
             document.documentElement.setAttribute('data-mode', appSettings.mode == 'system' ? defaultMode : appSettings.mode)            
             document.documentElement.setAttribute('data-theme', appSettings.theme)            

@@ -29,7 +29,9 @@ import {
     curry, 
     whereEq, 
     takeLast,
-    equals
+    equals,
+    adjust,
+    sort
 } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
@@ -177,6 +179,7 @@ export default function Explorer ({
     useEffect(() => {  
         setParent(root == '/' ? null : dirname(root))
         watch([root])       
+
         return () => { 
             unwatch(watched.current) 
             setFiles([])
@@ -425,7 +428,7 @@ export default function Explorer ({
         }
     }
 
-    const sort = (name: Column['name']) => {
+    const sortByColumn = (name: Column['name']) => {
         const toSort = columns.find(whereEq({name}))
         toSort.sort = toSort.sort === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc
         setColumns(columns.map(c => c.name == name ? c : omit(['sort'], c)))
@@ -433,13 +436,15 @@ export default function Explorer ({
     }
 
     const columnsMenu = useMemo<MenuItem[]>(() => 
-        settings.columns.slice(1).map(c => ({
+        settings.columns.slice(1).map((c, i) => ({
             id: c.name,
             label: c.title,
             checked: c.visible,
             click: () => {
-                c.visible = !c.visible
-                onSettingsChange?.({ columns: settings.columns })
+                onSettingsChange?.({
+                    columns: adjust(i+1, c => ({...c, visible: !c.visible}), settings.columns)
+                })
+                return false
             }
         })),
         [settings]
@@ -451,7 +456,11 @@ export default function Explorer ({
             c && (c.width = width)
         })
         onSettingsChange?.({ 
-            columns: settings.columns.sort(({name: a}, {name: b}) => columns.findIndex(whereEq({name: a})) - columns.findIndex(whereEq({name: b})))
+            columns: 
+                sort(
+                    ({name: a}, {name: b}) => columns.findIndex(whereEq({name: a})) - columns.findIndex(whereEq({name: b})), 
+                    settings.columns
+                )
         })
     }
 
@@ -525,7 +534,7 @@ export default function Explorer ({
             onMenu={(path, dir) => {setShowColumnsMenu(false); onMenu(createURI(connection, path), dir)}}
             onNew={createNew}
             onRename={(path, name) => window.f5.rename(path, name)}
-            onSort={sort}
+            onSort={sortByColumn}
             onColumnsMenu={() => setShowColumnsMenu(true)}
             onColumnsChange={onColumnsChange}
             root={root}
