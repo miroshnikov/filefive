@@ -22,14 +22,16 @@ export default function Filter({ show, onChange, onClose }: FilterProps) {
     const [placeholder, setPlaceholder] = useState('')
     const [text, setText] = useState('')
     const [matchCase, toggleCase] = useToggle(false)
-    const [whole, toggleWhole] = useToggle(false)
+    const [wholeWord, toggleWholeWord] = useToggle(false)
     const [useRe, toggleUseRe] = useToggle(false)
+    const [invert, toggleInvert] = useToggle(false)
+
     // TODO invert / exclude matched
 
     const send = () => {
         if (text.length) {
             let source = useRe ? text : escapeRegExp(text)
-            if (whole) {
+            if (wholeWord) {
                 source = `^${source}$`
             }
             try {
@@ -53,9 +55,9 @@ export default function Filter({ show, onChange, onClose }: FilterProps) {
                 'JavaScript RegExp e.g. \.(png|jpe?g|gif)$, image\d{1,2}\..*' :
                 'Wildcards * and ? may be used, e.g. *.png, image-?.*'
         )
-    }, [matchCase, whole, useRe])
+    }, [matchCase, wholeWord, useRe])
 
-    useEffect(() => send(), [text, matchCase, whole, useRe])
+    useEffect(() => send(), [text, matchCase, wholeWord, useRe])
 
     return (<>
         {show && <div className={styles.root}>
@@ -71,8 +73,11 @@ export default function Filter({ show, onChange, onClose }: FilterProps) {
                 />
                 <Tooltips>
                     <button data-on={matchCase} data-tooltip="Match Case" onClick={() => { toggleCase(); input.current?.focus()} }>Aa</button>
-                    <button data-on={whole} data-tooltip="Match Whole Word" onClick={() => { toggleWhole(); input.current?.focus()} }>ab</button>
+                    <button data-on={wholeWord} data-tooltip="Match Whole Word" onClick={() => { toggleWholeWord(); input.current?.focus()} }>ab</button>
                     <button data-on={useRe} data-tooltip="Use JavaScript Regular Expression" onClick={() => { toggleUseRe(); input.current?.focus()} }>.*</button>
+                    <button data-on={invert} data-tooltip="Invert (Exclude Matched)" onClick={() => { toggleInvert(); input.current?.focus()} }>
+                        <i className="icon">block</i>
+                    </button>
                 </Tooltips>
             </div>
             <button onClick={e => onClose()}>✕</button>
