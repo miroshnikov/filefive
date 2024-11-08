@@ -42,5 +42,13 @@
     {
         "key": "ctrl+f",
         "command": "show-filter"
+    },
+    {
+        "key": "ctrl+bracketleft",
+        "command": "go-back"
+    },
+    {
+        "key": "ctrl+bracketright",
+        "command": "go-forward"
     }
 ]

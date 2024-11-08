@@ -12,6 +12,8 @@ export enum CommandID {
     Refresh = 'refresh',
     CollapseAll = 'collapse-all',
     ShowFilter = 'show-filter',
+    GoBack = 'go-back',
+    GoForward= 'go-forward',
     
     Rename = 'rename',
     Edit = 'edit',
@@ -39,6 +41,8 @@ export type KeyShortcutCommand =
     | CommandID.ShowFilter
     | CommandID.TriggerCopy
     | CommandID.TriggerPaste
+    | CommandID.GoBack
+    | CommandID.GoForward
 
 type FileCommand = 
     | CommandID.Rename

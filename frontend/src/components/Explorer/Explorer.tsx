@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useContext, useCallback } from "react"
 import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
-import { ConnectionID, URI, FileInfo, Files, Path, SortOrder, ExplorerSettings } from '../../../../src/types'
+import { ConnectionID, URI, FileInfo, Files, Path, SortOrder, ExplorerSettings, LocalFileSystemID } from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
 import styles from './Explorer.less'
@@ -35,7 +35,7 @@ import {
 } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
-import { Menu, MenuItem, ContextMenu } from '../../ui/components'
+import { Menu, MenuItem, ContextMenu, Tooltips } from '../../ui/components'
 import { format } from 'date-fns'
 import { t } from 'i18next'
 import { command$ } from '../../observables/command'
@@ -362,6 +362,14 @@ export default function Explorer ({
                     setShowFilter(showFilter => !showFilter)
                     break
                 }
+                case CommandID.GoBack: {
+                    setRoot(history.current[goHistory.current = Math.max(historyIndex.current-1, 0)])
+                    break
+                }
+                case CommandID.GoForward: {
+                    setRoot(history.current[Math.min(goHistory.current = historyIndex.current+1, history.current.length-1)])
+                    break
+                }
             }
         }), 
         [focused]
@@ -510,12 +518,19 @@ export default function Explorer ({
                 null 
             }
             <div className="path">
-                <button className="icon" disabled={isFirst} 
-                    onClick={e => setRoot(history.current[goHistory.current = Math.max(historyIndex.current-1, 0)])}
-                >arrow_back</button>
-                <button className="icon" disabled={isLast} 
-                    onClick={e => setRoot(history.current[Math.min(goHistory.current = historyIndex.current+1, history.current.length-1)])}
-                >arrow_forward</button>
+                <Tooltips shortcuts={appSettings.keybindings}>
+                    <button className="icon" disabled={isFirst} data-command={CommandID.GoBack} data-tooltip="Go Back"
+                        onClick={() => command$.next({id: CommandID.GoBack})}
+                    >arrow_back</button>
+                    <button className="icon" disabled={isLast} data-command={CommandID.GoForward} data-tooltip="Go Forward"
+                        onClick={() => command$.next({id: CommandID.GoForward})}
+                    >arrow_forward</button>
+                    {connection != LocalFileSystemID &&
+                        <button className="icon" data-command="refresh" data-tooltip="Refresh"
+                            onClick={() => command$.next({id: CommandID.Refresh})}
+                        >refresh</button>
+                    }
+                </Tooltips>
                 <Breadcrumbs 
                     icon={icon}
                     path={root}

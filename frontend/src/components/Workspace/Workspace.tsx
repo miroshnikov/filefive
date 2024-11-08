@@ -203,13 +203,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         },
         ...(connection ? [
             {
-                id: CommandID.Refresh,
-                icon: 'refresh',
-                title: 'Refresh',
-                disabled: false,
-                onClick: () => window.f5.refresh(createURI(connection.id, remotePath))
-            },
-            {
                 id: 'disconnect',
                 icon: 'close',
                 title: 'Disconnect',

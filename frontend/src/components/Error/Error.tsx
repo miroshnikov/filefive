@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { createPortal } from 'react-dom'
+import { filter } from 'rxjs/operators'
 import { useSubscribe } from '../../hooks'
 import { error$ } from '../../observables/error'
 import { FailureType, ConnectionID } from '../../../../src/types'
@@ -12,7 +13,7 @@ export default function Error() {
     const [current, setCurrent] = useState(0)
 
     useSubscribe(() =>
-        error$.subscribe(error => {
+        error$.pipe(filter(() => !document.hidden)).subscribe(error => {
             console.error(error)
             if (error.type == FailureType.RemoteError) {
                 setErrors(errors => [...errors, { id: error.id, message: error.message }])

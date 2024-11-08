@@ -124,20 +124,22 @@ export default function App () {
         {appSettings ? 
             <AppSettingsContext.Provider value={appSettings}>
                 <div className={classNames(styles.root, {hasQueues: queues.size > 0})}>
-                    <Tooltips>
+                    <Tooltips shortcuts={appSettings.keybindings}>
                         <div className={styles.toolbar}>
                             <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
                             <span>
                                 <button 
-                                    className="icon" 
-                                    data-tooltip={"Connections..." + getTooltipShortcut(CommandID.Connections, appSettings.keybindings)}
+                                    className="icon"
+                                    data-command={CommandID.Connections}
+                                    data-tooltip="Connections..."
                                     onClick={() => command$.next({id: CommandID.Connections})}
                                 >
                                     cloud_upload
                                 </button>
                                 <button 
                                     className="icon" 
-                                    data-tooltip={"Settings..." + getTooltipShortcut(CommandID.Settings, appSettings.keybindings)}
+                                    data-command={CommandID.Settings}
+                                    data-tooltip="Settings..."
                                     onClick={() => command$.next({id: CommandID.Settings})}
                                 >
                                     settings
