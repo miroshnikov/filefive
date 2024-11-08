@@ -6,7 +6,7 @@ import { parseURI, createURI } from '../../../../src/utils/URI'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
-import Filter from '../Filter/Filter'
+import Filter, { FilterSettings, filterRegExp } from '../Filter/Filter'
 import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
@@ -147,9 +147,13 @@ export default function Explorer ({
     const watched = useRef<string[]>([])
     const folders = useRef<Record<string, Files>>({})
     const [focused, setFocused] = useState(false)
+    
     const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
+
     const [showFilter, setShowFilter] = useState(false)
-    const [filterRe, setFilter] = useState<RegExp>(null)
+    const [filterSettings, setFilterSettings] = useState<FilterSettings>(null)
+    const filterRe = useRef<RegExp>(null)
+
     const history = useRef<Path[]>([])
     const historyIndex = useRef(0)
     const goHistory = useRef(-1)
@@ -219,12 +223,12 @@ export default function Explorer ({
     }
 
     const filterPredicate = (file: FileInfo) => {
-        if (filterRe?.source.length) {
-            if (file.dir) {
-                return true
-            }
-            const res = filterRe.exec(file.name)
-            return res !== null
+        if (file.dir) {
+            return true
+        }
+        if (filterRe.current) {
+            const found = filterRe.current.exec(file.name)
+            return filterSettings?.invert ?? false ? found === null : found !== null
         }
         return true
     }
@@ -243,7 +247,7 @@ export default function Explorer ({
                 toColumns(columns, formatters),
             )(folders.current)
         )
-    }, [root, columns, filterRe])
+    }, [root, columns, filterSettings])
 
     useSubscribe(() => 
         dir$.pipe(
@@ -259,7 +263,10 @@ export default function Explorer ({
         [update]
     )
 
-    useEffectOnUpdate(() => update(), [columns, filterRe])
+    useEffectOnUpdate(() => {
+        filterRe.current = filterSettings ? filterRegExp(filterSettings) : null
+        update()
+    }, [columns, filterSettings])
 
     useEffect(() => {
         const resizeList = new ResizeObserver((entries) => {
@@ -518,7 +525,7 @@ export default function Explorer ({
                 />
             </div>
         </header>
-        <Filter show={showFilter} onChange={setFilter} onClose={() => setShowFilter(false)} />
+        <Filter show={showFilter} onChange={setFilterSettings} onClose={() => setShowFilter(false)} />
         <List 
             ref={list}
             columns={columns}

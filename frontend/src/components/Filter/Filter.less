@@ -21,6 +21,7 @@
             flex: 100% 1 1;
             background-color: var(--background);
             font-size: .9rem;
+            border: 1px solid transparent;
             &::placeholder {
                 font-weight: 300;
                 opacity: .6;
@@ -46,6 +47,12 @@
 
             > .icon {
                 font-size: 1.2em;
+                line-height: 1.1em;
+            }
+        }
+        &[data-error="true"] {
+            > input {
+                color: var(--dry-error-text);
             }
         }
     }
