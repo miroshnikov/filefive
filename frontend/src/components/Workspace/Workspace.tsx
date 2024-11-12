@@ -98,6 +98,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     }
 
     const connect = (path: string) => {
+        disconnect()
+
         setConnecting(basename(path))
         window.f5.connect(path)
             .then(connection => {
@@ -220,7 +222,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             disabled: remoteSelected.length != 1,
             onClick: () => connect(remoteSelected[0])
         },
-        ...remoteToolbar,
+        ...toolbar,
         {
             id: 'Close',
             icon: 'close',
@@ -318,7 +320,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     return (<>
         <Split 
             left = {
-                /*localPath*/false ? 
+                localPath ? 
                     <Explorer 
                         icon='computer'
                         connection={LocalFileSystemID}
