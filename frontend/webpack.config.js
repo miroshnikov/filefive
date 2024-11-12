@@ -12,7 +12,8 @@ module.exports = {
         extensions: [ '.tsx', '.ts', '...' ],
         symlinks: false
     },   
-    cache: false,
+    mode: 'production',
+    cache: false,   
     devtool: 'cheap-source-map',
     devServer: {
       static: './dist/public',

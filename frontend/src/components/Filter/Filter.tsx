@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useToggle } from '../../hooks'
 import { Tooltips } from '../../ui/components'
+import { FilterSettings } from '../../../../src/types'
+import { useEffectOnUpdate } from '../../hooks'
 import styles from './Filter.less'
 
 
@@ -9,14 +11,6 @@ function escapeRegExp(s: string) {
     re = re.replaceAll('*', '.*')
     re = re.replaceAll('?', '.{1}')
     return re
-}
-
-export interface FilterSettings {
-    text: string,
-    matchCase?: boolean
-    wholeWord?: boolean
-    useRe?: boolean
-    invert?: boolean
 }
 
 export function filterRegExp(settings: FilterSettings): RegExp|null {
@@ -37,25 +31,22 @@ export function filterRegExp(settings: FilterSettings): RegExp|null {
 
 
 interface FilterProps {
-    show: boolean,
+    value: FilterSettings|null
     onChange: (settings: FilterSettings|null) => void
     onClose: () => void
 }
 
-export default function Filter({ show, onChange, onClose }: FilterProps) {
+export default function Filter({ value, onChange, onClose }: FilterProps) {
     const input = useRef(null)
     const [placeholder, setPlaceholder] = useState('')
     const [error, setError] = useState(false)
-    const [text, setText] = useState('')
-    const [matchCase, toggleCase] = useToggle(false)
-    const [wholeWord, toggleWholeWord] = useToggle(false)
-    const [useRe, toggleUseRe] = useToggle(false)
-    const [invert, toggleInvert] = useToggle(false)
+    const [text, setText] = useState(value?.text ?? '')
+    const [matchCase, toggleCase] = useToggle(value?.matchCase ?? false)
+    const [wholeWord, toggleWholeWord] = useToggle(value?.wholeWord ?? false)
+    const [useRe, toggleUseRe] = useToggle(value?.useRe ?? false)
+    const [invert, toggleInvert] = useToggle(value?.invert ?? false)
 
-    useEffect(() => {
-        show && input.current?.focus()
-        onChange(show ? {text, matchCase, wholeWord, useRe, invert} : null)
-    }, [show])
+    useEffect(() => input.current?.focus(), [])
 
     useEffect(() => {
         setPlaceholder(
@@ -65,20 +56,19 @@ export default function Filter({ show, onChange, onClose }: FilterProps) {
         )
     }, [matchCase, wholeWord, useRe])
 
-    useEffect(() => {
+    useEffectOnUpdate(() => {
         input.current?.focus()
-        onChange({text, matchCase, wholeWord, useRe, invert})
+        onChange(text.length ? {text, matchCase, wholeWord, useRe, invert} : null)
+
         if (text.length) {
             const re = filterRegExp({text, matchCase, wholeWord, useRe, invert})
             setError(!re)
         } else {
             setError(false)
         }
-
     }, [text, matchCase, wholeWord, useRe, invert])
 
-    return (<>
-        {show && <div className={styles.root}>
+    return <div className={styles.root}>
             <i className='icon'>filter_list</i>
             <div data-error={error}>
                 <input 
@@ -100,5 +90,4 @@ export default function Filter({ show, onChange, onClose }: FilterProps) {
             </div>
             <button onClick={e => onClose()}>✕</button>
         </div>
-    }</>)
 }

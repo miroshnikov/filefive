@@ -1,12 +1,22 @@
 import React, { useState, useEffect, useRef, useMemo, useContext, useCallback } from "react"
 import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
-import { ConnectionID, URI, FileInfo, Files, Path, SortOrder, ExplorerSettings, LocalFileSystemID } from '../../../../src/types'
+import { 
+    ConnectionID, 
+    URI, 
+    FileInfo, 
+    Files, 
+    Path, 
+    SortOrder, 
+    ExplorerSettings, 
+    LocalFileSystemID,
+    FilterSettings
+} from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
-import Filter, { FilterSettings, filterRegExp } from '../Filter/Filter'
+import Filter, { filterRegExp } from '../Filter/Filter'
 import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
@@ -151,7 +161,7 @@ export default function Explorer ({
     const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
 
     const [showFilter, setShowFilter] = useState(false)
-    const [filterSettings, setFilterSettings] = useState<FilterSettings>(null)
+    const filterSettings = useRef<FilterSettings>(null)
     const filterRe = useRef<RegExp>(null)
 
     const history = useRef<Path[]>([])
@@ -176,11 +186,16 @@ export default function Explorer ({
                 sort: settings.sort[0] == c.name ? settings.sort[1] : undefined
             }))
         )
+
+        if (settings.filter) {
+            filterSettings.current = settings.filter
+            setShowFilter(true)
+        }
     }, [settings], equals)
 
     useEffectOnUpdate(() => setRoot(path), [path])
     
-    useEffect(() => {  
+    useEffect(() => {
         setParent(root == '/' ? null : dirname(root))
         watch([root])       
 
@@ -208,7 +223,7 @@ export default function Explorer ({
         setIsFirst(historyIndex.current == 0)
         setIsLast(historyIndex.current == history.current.length - 1)
 
-        console.log(history.current, historyIndex.current)
+        // console.log(history.current, historyIndex.current)
     }, [root])
 
     useCustomCompareEffect(() => {
@@ -228,7 +243,7 @@ export default function Explorer ({
         }
         if (filterRe.current) {
             const found = filterRe.current.exec(file.name)
-            return filterSettings?.invert ?? false ? found === null : found !== null
+            return filterSettings.current?.invert ?? false ? found === null : found !== null
         }
         return true
     }
@@ -264,9 +279,21 @@ export default function Explorer ({
     )
 
     useEffectOnUpdate(() => {
-        filterRe.current = filterSettings ? filterRegExp(filterSettings) : null
         update()
-    }, [columns, filterSettings])
+    }, [columns])
+
+
+    const setFilterSettings = (filter: FilterSettings) => {
+        filterRe.current = filter ? filterRegExp(filter) : null
+        update()
+        if (!equals(filter, settings.filter)) {
+            onSettingsChange?.({filter})
+        }
+    } 
+    useEffectOnUpdate(() => {
+        setFilterSettings(showFilter ? filterSettings.current : null)
+    }, [showFilter])
+    
 
     useEffect(() => {
         const resizeList = new ResizeObserver((entries) => {
@@ -540,7 +567,13 @@ export default function Explorer ({
                 />
             </div>
         </header>
-        <Filter show={showFilter} onChange={setFilterSettings} onClose={() => setShowFilter(false)} />
+        {showFilter && 
+            <Filter 
+                value={filterSettings.current}
+                onChange={settings => setFilterSettings(filterSettings.current = settings)}
+                onClose={() => setShowFilter(false)}
+            />
+        }
         <List 
             ref={list}
             columns={columns}

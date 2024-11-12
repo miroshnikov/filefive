@@ -59,7 +59,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
 
     useConcatAsyncEffect(async () => {
         if (connection) {
-            console.log('write connection', connection.remote.columns)
+            console.log('write connection', connection.remote.filter)
             await window.f5.save(
                 connection.file, { 
                     ...connection,
@@ -318,7 +318,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     return (<>
         <Split 
             left = {
-                localPath ? 
+                /*localPath*/false ? 
                     <Explorer 
                         icon='computer'
                         connection={LocalFileSystemID}

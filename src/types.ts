@@ -41,6 +41,14 @@ export enum SortOrder {
     Desc = 'desc'
 }
 
+export interface FilterSettings {
+    text: string,
+    matchCase?: boolean
+    wholeWord?: boolean
+    useRe?: boolean
+    invert?: boolean
+}
+
 export interface ExplorerConfig {
     columns?: {
         name: FileAttribute['name'],
@@ -48,6 +56,7 @@ export interface ExplorerConfig {
     }[]
     sort?: [FileAttribute['name'], SortOrder]
     history?: Path[]
+    filter?: FilterSettings
 }
 
 export interface ConnectionConfig extends Twofold<ExplorerConfig> {
@@ -75,6 +84,7 @@ export interface ExplorerSettings {
     columns: (FileAttribute & { visible: boolean, width: number })[]
     sort: [FileAttribute['name'], SortOrder]
     history: Path[]
+    filter: FilterSettings|null
 }
 
 export interface ConnectionSettings extends Twofold<ExplorerSettings> { 

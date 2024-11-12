@@ -12,22 +12,22 @@ import { where, whereEq, isNotNil, isNotEmpty } from 'ramda'
 
 export function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerSettings {
         return { 
-            columns:
-                config ? 
-                    [
-                        ...config.columns
-                            .map(({name, width}) => {
-                                const attribute = attributes.find(whereEq({name}))
-                                return attribute ? { ...attribute, visible: true, width } : null
-                            })
-                            .filter(isNotNil),
-                        ...attributes
-                            .filter(({name}) => !config.columns.find(c => name == c.name))
-                            .map(a => ({...a, visible: false, width: 300}))
-                     ] :
-                    attributes.map(a => ({...a, visible: true, width: 300})), 
-            ...(config ? { sort: config.sort } : { sort: ['name', SortOrder.Asc] }),
-            ...(config ? { history: config.history } : { history: [] })
+            columns: config ? [
+                ...config.columns
+                    .map(({name, width}) => {
+                        const attribute = attributes.find(whereEq({name}))
+                        return attribute ? { ...attribute, visible: true, width } : null
+                    })
+                    .filter(isNotNil),
+                ...attributes
+                    .filter(({name}) => !config.columns.find(c => name == c.name))
+                    .map(a => ({...a, visible: false, width: 300}))
+                ] : attributes.map(a => ({...a, visible: true, width: 300})), 
+            ...({ 
+                sort: config?.sort ?? ['name', SortOrder.Asc],
+                history: config?.history ?? [],
+                filter: config?.filter ?? null
+            })
         }
 }
 

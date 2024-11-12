@@ -11,7 +11,8 @@ export function getSettings(settings: ExplorerSettings): ExplorerConfig {
     return {
         columns: settings.columns.filter(whereEq({visible: true})).map(({name, width}) => ({name, width})),
         sort: settings.sort,
-        history: settings.history
+        history: settings.history,
+        filter: settings.filter
     }
 }
 

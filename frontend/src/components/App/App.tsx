@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from "react"
 import Workspace, { AppSettingsChanges } from '../Workspace/Workspace'
 import styles from './App.less'
-import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste, useConcatAsyncEffect } from '../../hooks'
+import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste, useConcatAsyncEffect, useEffectOnUpdate } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
 import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
@@ -16,7 +16,7 @@ import { command$ } from '../../observables/command'
 import { file$ } from '../../observables/file'
 import { CommandID, KeyShortcutCommand } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
-import { Tooltips, getTooltipShortcut, Spinner } from '../../ui/components'
+import { Tooltips, Spinner } from '../../ui/components'
 import Settings from '../../modals/Settings/Settings'
 
 

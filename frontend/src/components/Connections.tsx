@@ -43,7 +43,8 @@ const settings: ExplorerSettings = {
         }
     ],
     sort: ['name', SortOrder.Asc],
-    history: []
+    history: [],
+    filter: null
 }
 
 export default function Connections({ path, onChange, onSelect, connect, toolbar, onFocus, onBlur, tabindex }: Props) {
