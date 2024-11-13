@@ -29,7 +29,6 @@ export enum CommandID {
 }
 
 export type KeyShortcutCommand = 
-    | CommandID.Transfer
     | CommandID.Delete
     | CommandID.SelectAll
     | CommandID.NewDir
@@ -45,6 +44,7 @@ export type KeyShortcutCommand =
     | CommandID.GoForward
 
 type FileCommand = 
+    | CommandID.Transfer
     | CommandID.Rename
     | CommandID.Edit
     | CommandID.CopyURI

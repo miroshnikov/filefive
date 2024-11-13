@@ -1,6 +1,6 @@
 import { join } from 'node:path'
 import TransmitQueue from './Queue'
-import { LocalFileSystemID, Path, ConnectionID, QueueState } from '../types'
+import { LocalFileSystemID, Path, ConnectionID, QueueState, FilterSettings } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import { touch } from '../Local'
 
@@ -11,12 +11,13 @@ export default class DownloadQueue extends TransmitQueue {
         connId: ConnectionID,
         src: Path[],
         dest: Path,
+        filter: FilterSettings,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
         onComplete: () => void
     ) {
-        super(connId, LocalFileSystemID, src, dest, onState, onConflict, onComplete)
+        super(connId, LocalFileSystemID, src, dest, filter, onState, onConflict, onComplete)
     }
 
     protected async transmit(fs: FileSystem, from: FileItem, dirs: string[], to: Path) {

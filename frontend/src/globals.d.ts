@@ -1,4 +1,16 @@
-import { URI, Path, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, QueueAction, DeepPartial } from '../../src/types'
+import { 
+    URI, 
+    Path, 
+    AppSettings, 
+    ConnectionID, 
+    ConnectionSettings, 
+    ConnectionConfig, 
+    Files, 
+    QueueEvent, 
+    QueueAction, 
+    DeepPartial,
+    FilterSettings 
+} from '../../src/types'
 import { LocalFileInfo } from '../../src/Local'
 import { SaveConnectionSettings } from '../../src/commands/saveConnection'
 
@@ -20,7 +32,7 @@ export interface F5 {
     onDirChange(listener: (uri: URI, files: Files) => void): void
     onFileChange(listener: (path: Path, stat: LocalFileInfo|null) => void): void
 
-    copy(src: URI[], dest: URI, move?: boolean): Promise<string>
+    copy(src: URI[], dest: URI, move?: boolean, filter?: FilterSettings): Promise<string>
     remove(files: URI[], force: boolean): void
     open(file: Path): void
     mkdir(name: string, parent: URI): void

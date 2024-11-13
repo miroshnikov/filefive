@@ -1,10 +1,11 @@
 import { basename, dirname, normalize, join, sep } from 'node:path'
-import { Path, ConnectionID, QueueState, QueueActionType, QueueAction, LocalFileSystemID } from '../types'
+import { Path, ConnectionID, QueueState, QueueActionType, QueueAction, LocalFileSystemID, FilterSettings } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import { Subject, Subscription } from 'rxjs'
-import { whereEq, memoizeWith, nthArg } from 'ramda'
+import { whereEq } from 'ramda'
 import Connection from '../Connection'
 import { stat as localStat } from '../Local'
+import { filterRegExp } from '../utils/filter'
 
 
 export interface Queue {
@@ -42,6 +43,7 @@ export default abstract class TransmitQueue implements Queue {
         protected to: ConnectionID,
         protected src: Path[],
         protected dest: Path,
+        protected filter: FilterSettings,
         private onState: (state: QueueState) => void,
         private onConflict: (src: FileItem, dest: FileItem) => void,
         private onComplete: () => void
@@ -95,6 +97,15 @@ export default abstract class TransmitQueue implements Queue {
     protected async enqueue(paths: Path[], dest: Path) {
         const ls = this.ls(this.from)
 
+        let matchFilter = (file: FileItem) => true
+        if (this.filter) {
+            const re = filterRegExp(this.filter)
+            matchFilter = (file: FileItem) => {
+                const found = re.exec(file.name)
+                return this.filter?.invert ?? false ? found === null : found !== null
+            }
+        }
+
         paths = paths.map(normalize).filter(path => !paths.find(ancestor => path.startsWith(ancestor + sep)))
 
         const add = async (path: Path, to: Path, dirs: string[] = []): Promise<any> => {
@@ -109,9 +120,11 @@ export default abstract class TransmitQueue implements Queue {
                         (await ls(from.path))?.map(child => add(child.path, to, [...dirs, basename(path)]))
                     )
                 } else {
-                    this.queue.push({ from, to, dirs })
-                    this.totalCnt++
-                    this.totalSize += from.size
+                    if (matchFilter(from)) {
+                        this.queue.push({ from, to, dirs })
+                        this.totalCnt++
+                        this.totalSize += from.size
+                    }
                 }
             }
         }
@@ -201,19 +214,6 @@ export default abstract class TransmitQueue implements Queue {
         return connId == LocalFileSystemID ? 
             (dir: string) => Connection.get(connId).ls(dir) : 
             lsRemote(connId)
-            // memoizeWith(
-            //     nthArg(0),
-            //     async (path: string): Promise<FileItem[]|null> => {
-            //         const [conn, close] = await Connection.transmit(connId)
-            //         try {
-            //             return await conn.ls(path)
-            //         } catch(e) {
-            //         } finally {
-            //             close()
-            //         }
-            //         return null
-            //     }
-            // )
     }
 
     protected stat(connId: ConnectionID): (path: string) => Promise<FileItem|null> {

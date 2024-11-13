@@ -1,4 +1,17 @@
-import { URI, AppSettings, ConnectionID, ConnectionSettings, ConnectionConfig, Files, QueueEvent, Path, Failure, FailureType, DeepPartial } from '../../src/types'
+import { 
+    URI, 
+    AppSettings, 
+    ConnectionID, 
+    ConnectionSettings, 
+    ConnectionConfig, 
+    Files, 
+    QueueEvent, 
+    Path, 
+    Failure, 
+    FailureType, 
+    DeepPartial,
+    FilterSettings
+} from '../../src/types'
 import { LocalFileInfo } from '../../src/Local'
 import { error$ } from './observables/error'
 
@@ -58,7 +71,7 @@ window.f5 = {
     onDirChange: listener => subscribe<{uri: URI, files: Files}>('dir', ({uri, files}) => listener(uri, files)),
     onFileChange: listener => subscribe<{path: Path, stat: LocalFileInfo|null}>('file', ({path, stat}) => listener(path, stat)),
 
-    copy: (src, dest, move = false) => invoke<string>('copy', { src, dest, move }),
+    copy: (src, dest, move = false, filter: FilterSettings = null) => invoke<string>('copy', { src, dest, move, filter }),
     remove: (files, force) => invoke<void>('remove', { files, force }),
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),

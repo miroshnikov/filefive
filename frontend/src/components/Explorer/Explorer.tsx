@@ -13,10 +13,11 @@ import {
     FilterSettings
 } from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
+import { filterRegExp } from '../../../../src/utils/filter'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
-import Filter, { filterRegExp } from '../Filter/Filter'
+import Filter from '../Filter/Filter'
 import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'

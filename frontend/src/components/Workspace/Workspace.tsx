@@ -4,7 +4,7 @@ import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial } from '../../../../src/types'
-import { createURI, parseURI } from '../../../../src/utils/URI'
+import { createURI, isLocal, parseURI } from '../../../../src/utils/URI'
 import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
@@ -59,7 +59,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
 
     useConcatAsyncEffect(async () => {
         if (connection) {
-            console.log('write connection', connection.remote.filter)
             await window.f5.save(
                 connection.file, { 
                     ...connection,
@@ -84,17 +83,11 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     }, [remotePath, localPath])
 
     const openLocal = (path: string) => {
-        window.f5.copy(
-            [LocalFileSystemID + path] as URI[], 
-            (connection?.id ?? LocalFileSystemID) + remotePath as URI
-        )
+        command$.next({ id: CommandID.Transfer, uri: createURI(LocalFileSystemID, path) })
     }
 
     const openRemote = (path: string) => {
-        window.f5.copy(
-            [(connection?.id ?? LocalFileSystemID) + path] as URI[], 
-            LocalFileSystemID + localPath as URI
-        )  
+        command$.next({ id: CommandID.Transfer, uri: createURI(connection?.id ?? LocalFileSystemID, path) })
     }
 
     const connect = (path: string) => {
@@ -169,10 +162,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             icon: connection ? 'upload' : 'file_copy',
             title: connection ? 'Upload Selected' : 'Copy Selected',
             disabled: focused.current != 'local' || !localSelected.length,
-            onClick: () => window.f5.copy(
-                localSelected.map(path => createURI(LocalFileSystemID, path)), 
-                createURI(connection?.id ?? LocalFileSystemID, remotePath)
-            )
+            onClick: () => command$.next({id: CommandID.Transfer})
         },
         ...toolbar,
         {
@@ -190,10 +180,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             icon: connection ? 'download' : 'file_copy',
             title: connection ? 'Download Selected' : 'Copy Selected',
             disabled: focused.current != 'remote' || !remoteSelected.length,
-            onClick: () => window.f5.copy(
-                remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), 
-                createURI(LocalFileSystemID, localPath)
-            )
+            onClick: () => command$.next({id: CommandID.Transfer})
         },
         ...toolbar,
         {
@@ -271,13 +258,20 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                 }
                 case CommandID.Transfer: {
                     if (focused.current) {
-                        focused.current == 'local' ?
+                        let local = focused.current == 'local'
+                        let files = local ? localSelected : remoteSelected
+                        if (cmd.uri) {
+                            local = isLocal(cmd.uri)
+                            const { path } = parseURI(cmd.uri)
+                            files = (local ? localSelected : remoteSelected).includes(path) ? (local ? localSelected : remoteSelected) : [path]
+                        }
+                        local ?
                             window.f5.copy(
-                                localSelected.map(path => createURI(LocalFileSystemID, path)), 
+                                files.map(path => createURI(LocalFileSystemID, path)), 
                                 createURI(connection?.id ?? LocalFileSystemID, remotePath)
                             ) :
                             window.f5.copy(
-                                remoteSelected.map(path => createURI(showConnections ? LocalFileSystemID : connection?.id ?? LocalFileSystemID, path)), 
+                                files.map(path => createURI(showConnections ? LocalFileSystemID : connection?.id ?? LocalFileSystemID, path)), 
                                 createURI(LocalFileSystemID, localPath)
                             )
                     }

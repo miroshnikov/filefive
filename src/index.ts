@@ -47,6 +47,7 @@ app.post('/api/upload', upload.array('files'), async function (req, res) {
             src.map(path => createURI(LocalFileSystemID, path)), 
             req.body['to'], 
             true,
+            null,
             () => src.forEach(path => rm(path, { force: true }))
         )
     }

@@ -53,7 +53,10 @@ export default function QueueAction() {
         {conflict &&
             <Modal onClose={proceed} buttons={[{id: 'stop', label: 'Stop'}, {id: 'cancel', label: 'Skip'}, {id: 'ok', label: 'Replace'}]}>
                 <div className={styles.root}>
-                    <p>The destination already contains a {conflict.to.dir ? 'folder' : 'file'} called <strong>{basename(conflict.to.path)}</strong></p>
+                    <p>
+                        The destination already contains a {conflict.to.dir ? 'folder' : 'file'} called 
+                        <strong>{basename(conflict.to.path)}</strong>
+                    </p>
                     <p>Would you like to replace the existing {conflict.to.dir ? 'folder' : 'file'} in <strong>{dirname(conflict.to.path)}</strong></p>
 
                     <div className={styles.file}>

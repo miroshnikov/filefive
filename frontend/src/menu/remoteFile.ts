@@ -10,12 +10,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: CommandID.Transfer,
             label: 'Download',
-            click: () => {
-                window.f5.copy(
-                    (selected.includes(path) ? selected : [path]).map(path => createURI(id, path)),
-                    createURI(LocalFileSystemID, copyTo)
-                )
-            },
+            click: () => command$.next({ id: CommandID.Transfer, uri: createURI(id, path) }),
             separator: true
         },
 

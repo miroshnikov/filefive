@@ -13,12 +13,7 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
             {
                 id: CommandID.Transfer,
                 label: id == LocalFileSystemID ? `Copy to ${basename(to)}` : 'Upload',
-                click: () => {
-                    window.f5.copy(
-                        (selected.includes(path) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
-                        copyTo
-                    )
-                },
+                click: () => command$.next({ id: CommandID.Transfer, uri: createURI(LocalFileSystemID, path) }),
                 separator: true
             },
         ]),

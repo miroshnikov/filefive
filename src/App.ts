@@ -12,7 +12,8 @@ import {
     QueueAction, 
     LocalFileSystemID, 
     AppSettings,
-    DeepPartial
+    DeepPartial,
+    FilterSettings
 } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
@@ -59,7 +60,7 @@ export default class App {
             unwatch:      ({dir}: {dir: URI}) => commands.unwatch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
             refresh:      ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
 
-            copy:         ({src, dest, move}: {src: URI[], dest: URI, move: boolean}) => commands.copy(src, dest, move),
+            copy:         ({src, dest, move, filter}: {src: URI[], dest: URI, move: boolean, filter?: FilterSettings}) => commands.copy(src, dest, move, filter),
             remove:       ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
             open:         ({file}: {file: Path}) => opener(file),
             mkdir:        ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),

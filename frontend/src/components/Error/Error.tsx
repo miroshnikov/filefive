@@ -14,7 +14,7 @@ export default function Error() {
 
     useSubscribe(() =>
         error$.pipe(filter(() => !document.hidden)).subscribe(error => {
-            console.error(error)
+            process.env.NODE_ENV == 'development' && console.error(error)
             if (error.type == FailureType.RemoteError) {
                 setErrors(errors => [...errors, { id: error.id, message: error.message }])
             } else if (error.type == FailureType.APIError) {

@@ -1,9 +1,10 @@
 import { dirname, join } from 'node:path'
 import TransmitQueue from './Queue'
-import { Path, ConnectionID, QueueState, LocalFileSystemID } from '../types'
+import { Path, ConnectionID, QueueState, LocalFileSystemID, FilterSettings } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import RemoteWatcher from '../RemoteWatcher'
 import { createURI } from '../utils/URI'
+import { filterRegExp } from '../utils/filter'
 
 
 export default class CopyQueue extends TransmitQueue {
@@ -11,6 +12,7 @@ export default class CopyQueue extends TransmitQueue {
         connId: ConnectionID,
         src: Path[],
         dest: Path,
+        filter: FilterSettings,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
@@ -18,10 +20,23 @@ export default class CopyQueue extends TransmitQueue {
         private watcher: RemoteWatcher,
         private move: boolean
     ) {
-        super(connId, connId, src, dest, onState, onConflict, onComplete)
+        super(connId, connId, src, dest, filter, onState, onConflict, onComplete)
     }
 
     protected async enqueue(paths: Path[], dest: Path) {
+
+        let applyFilter = (file: FileItem) => true
+        if (this.filter) {
+            const re = filterRegExp(this.filter)
+            applyFilter = (file: FileItem) => {
+                if (file.dir) {
+                    return true
+                }
+                const found = re.exec(file.name)
+                return this.filter?.invert ?? false ? found === null : found !== null
+            }
+        }
+        
         const stat = this.stat(this.from)
         await Promise.all(
             paths
@@ -29,13 +44,15 @@ export default class CopyQueue extends TransmitQueue {
                 .map(async path => {
                     const from = await stat(path)
                     if (from) {
-                        this.queue.push({
-                            from,
-                            dirs: [],
-                            to: this.dest
-                        })
-                        this.totalCnt++
-                        this.totalSize++
+                        if (applyFilter(from)){
+                            this.queue.push({
+                                from,
+                                dirs: [],
+                                to: this.dest
+                            })
+                            this.totalCnt++
+                            this.totalSize++
+                        }
                     }
                 })
         )

@@ -1,6 +1,6 @@
 import { join } from 'node:path'
 import TransmitQueue from './Queue'
-import { LocalFileSystemID, Path, ConnectionID, QueueState } from '../types'
+import { LocalFileSystemID, Path, ConnectionID, QueueState, FilterSettings } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import { stat } from '../Local'
 import RemoteWatcher from '../RemoteWatcher'
@@ -13,13 +13,14 @@ export default class UploadQueue extends TransmitQueue {
         connId: ConnectionID,
         src: Path[],
         dest: Path,
+        filter: FilterSettings,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
         onComplete: () => void,
         private watcher: RemoteWatcher
     ) {
-        super(LocalFileSystemID, connId, src, dest, onState, onConflict, onComplete)
+        super(LocalFileSystemID, connId, src, dest, filter, onState, onConflict, onComplete)
     }
 
     protected async transmit(fs: FileSystem, from: FileItem, dirs: string[], to: Path) {

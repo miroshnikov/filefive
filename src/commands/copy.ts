@@ -1,6 +1,6 @@
 import { URI } from '../types'
 import { isLocal, parseURI } from '../utils/URI'
-import { ConnectionID, QueueEventType, QueueType } from '../types'
+import { ConnectionID, QueueEventType, QueueType, FilterSettings } from '../types'
 import { Queue, queues } from '../queues/Queue'
 import CopyQueue from '../queues/Copy'
 import DownloadQueue from '../queues/Download'
@@ -10,7 +10,7 @@ import App from '../App'
 import { pipe, prop } from 'ramda'
 
 
-export default function (src: URI[], dest: URI, move: boolean, onComplete = () => {}) {
+export default function (src: URI[], dest: URI, move: boolean, filter?: FilterSettings, onComplete = () => {}) {
     if (!src.length) {
         return
     }
@@ -31,6 +31,7 @@ export default function (src: URI[], dest: URI, move: boolean, onComplete = () =
             connection,
             from,
             toPath,
+            filter,
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
             (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, queueType, from, to }),
             error => App.onError(error),
@@ -50,6 +51,7 @@ export default function (src: URI[], dest: URI, move: boolean, onComplete = () =
                 connection,
                 from,
                 toPath,
+                filter,
                 state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
                 (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, queueType, from, to }),
                 error => App.onError(error),
@@ -63,6 +65,7 @@ export default function (src: URI[], dest: URI, move: boolean, onComplete = () =
                 connection,
                 from,
                 toPath,
+                filter,
                 state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
                 (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, queueType, from, to }),
                 error => App.onError(error),
