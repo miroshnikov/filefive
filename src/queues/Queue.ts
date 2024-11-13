@@ -60,7 +60,7 @@ export default abstract class TransmitQueue implements Queue {
 
         this.processing = this.queue$.subscribe(async ({from, dirs, to, action}) => {
             let a = action ?? this.action
-            const existing = await stat(join(to, from.name))
+            const existing = await stat(join(to, ...dirs, from.name))
             if (existing) {
                 if (a) {
                     if (a.type == QueueActionType.Skip) {

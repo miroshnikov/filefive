@@ -56,7 +56,7 @@ interface ListProps {
     onDragStart?: (dragged: URI[], e: React.DragEvent<HTMLElement>) => void
     onDragEnd?: (e: React.DragEvent<HTMLElement>) => void
     onDragOver?: (e: React.DragEvent<HTMLElement>) => void
-    onDrop: (URIs: string[]|File[], target: string, effect: DropEffect) => void
+    onDrop: (URIs: string[]|File[], target: string, effect: DropEffect, e: React.DragEvent<HTMLElement>) => void
     onMenu: (path: string, dir: boolean) => void
     onNew?: (name: string, parent: Path, dir: boolean) => void
     onRename?: (uri: URI, name: string) => void
@@ -318,7 +318,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                     .filter(identity)
                     .some(({path}) => childOf(targetDir, path))
             ) {
-                onDrop(URIs, targetDir, e.altKey ? DropEffect.Copy : DropEffect.Move)           
+                onDrop(URIs, targetDir, e.altKey ? DropEffect.Copy : DropEffect.Move, e)           
             }
         } else if (e.dataTransfer.items.length) {               // dropped from outside
             const files: File[] = []
@@ -326,7 +326,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                 const item = e.dataTransfer.items[i]
                 item.kind == 'file' && files.push(item.getAsFile())
             }
-            files.length && onDrop(files, targetDir, DropEffect.Copy) 
+            files.length && onDrop(files, targetDir, DropEffect.Copy, e) 
         }
 
         e.dataTransfer.clearData()

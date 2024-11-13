@@ -268,11 +268,15 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                         local ?
                             window.f5.copy(
                                 files.map(path => createURI(LocalFileSystemID, path)), 
-                                createURI(connection?.id ?? LocalFileSystemID, remotePath)
+                                createURI(connection?.id ?? LocalFileSystemID, remotePath),
+                                false,
+                                (connection ?? appSettings).local.filter
                             ) :
                             window.f5.copy(
                                 files.map(path => createURI(showConnections ? LocalFileSystemID : connection?.id ?? LocalFileSystemID, path)), 
-                                createURI(LocalFileSystemID, localPath)
+                                createURI(LocalFileSystemID, localPath),
+                                false,
+                                showConnections ? null : (connection ?? appSettings).remote.filter
                             )
                     }
                     break

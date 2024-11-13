@@ -443,7 +443,9 @@ export default function Explorer ({
     const onDragStart = (dragged: URI[], e: React.DragEvent<HTMLElement>) => {
         e.dataTransfer.effectAllowed = 'copyMove'
         e.dataTransfer.setData('URIs', JSON.stringify(dragged))   //"text/uri-list" format only allows one URI
+        e.dataTransfer.setData('Filter', JSON.stringify(settings.filter))
         e.dataTransfer.items.add('source', connection)
+
         const caption = dragged.length == 1 ? basename(parseURI(dragged[0]).path) : ''+dragged.length
         const dragImage = createDragImage(caption)
         e.dataTransfer.setDragImage(dragImage, 0, 0)
@@ -462,12 +464,21 @@ export default function Explorer ({
         e.dataTransfer.dropEffect = sameSource ? (e.altKey ? 'copy' : 'move') : 'copy'
     }
 
-    const onDrop = (items: string[]|File[], target: Path, effect: DropEffect) => {
+    const onDrop = (items: string[]|File[], target: Path, effect: DropEffect, e: React.DragEvent<HTMLElement>) => {
         console.log(effect, items, '->', connection+target)
         if (items.length) {
-            typeof items[0] == 'string' ? 
-                window.f5.copy(items as URI[], createURI(connection, target), effect == DropEffect.Move) :
+            if (typeof items[0] == 'string') {
+                let filter: FilterSettings = null
+                const data = e.dataTransfer.getData('Filter')
+                if (data && data.length) {
+                    try {
+                        filter = JSON.parse(data)
+                    } catch(e) {}
+                }
+                window.f5.copy(items as URI[], createURI(connection, target), effect == DropEffect.Move, filter)
+            } else{
                 uploadFiles(items as File[], target)
+            }
         }
     }
 
