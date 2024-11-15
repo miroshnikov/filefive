@@ -1,4 +1,5 @@
 import { mkdir, writeFile, rename, cp } from 'node:fs/promises'
+import { dirname } from 'node:path'
 import { FileItem, FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
 import { pwd, list, copy, del } from '../Local'
 import { Path, LocalFileSystemID } from '../types'
@@ -64,6 +65,7 @@ export default class Local extends FileSystem {
         try {
             await del(to)
         } catch (e) {}
+        await mkdir(dirname(to), { recursive: true })
         await rename(from, to)
     }
 

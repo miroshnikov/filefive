@@ -6,6 +6,7 @@ import CopyQueue from '../queues/Copy'
 import DownloadQueue from '../queues/Download'
 import UploadQueue from '../queues/Upload'
 import unqid from '../utils/uniqid'
+import { commands } from '.'
 import App from '../App'
 import { pipe, prop } from 'ramda'
 

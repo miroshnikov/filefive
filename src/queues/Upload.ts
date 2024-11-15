@@ -17,7 +17,7 @@ export default class UploadQueue extends TransmitQueue {
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
-        onComplete: () => void,
+        onComplete: (stopped: boolean) => void,
         private watcher: RemoteWatcher
     ) {
         super(LocalFileSystemID, connId, src, dest, filter, onState, onConflict, onComplete)

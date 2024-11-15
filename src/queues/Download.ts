@@ -15,7 +15,7 @@ export default class DownloadQueue extends TransmitQueue {
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
-        onComplete: () => void
+        onComplete: (stopped: boolean) => void
     ) {
         super(connId, LocalFileSystemID, src, dest, filter, onState, onConflict, onComplete)
     }

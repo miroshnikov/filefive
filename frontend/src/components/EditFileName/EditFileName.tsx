@@ -24,7 +24,6 @@ export default function ({name, sublings, onOk, onCancel}: Props) {
 
     const onChange = (name: string) => {
         setNewName(name)
-        console.log('E', sublings.includes(name))
         setError(sublings.includes(name))
     }
 

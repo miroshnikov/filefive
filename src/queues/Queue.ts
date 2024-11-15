@@ -21,17 +21,15 @@ export const lsRemote = (connId: ConnectionID) => {
         if (cache.has(path)) {
             return cache.get(path)
         }
-        const [conn, close] = await Connection.transmit(connId)
-        try {
-            const list = conn.ls(path)
-            cache.set(path, list)
-            return list
-        } catch(e) {
-            cache.set(path, null)
-        } finally {
-            close()
-        }
-        return null
+        const list = new Promise<FileItem[]>(async (resove) => {
+            const [conn, close] = await Connection.transmit(connId)   
+            conn.ls(path)
+                .then(resove)
+                .catch(() => resove(null))
+                .finally(() => close())
+        })
+        cache.set(path, list)
+        return list
     }
 }
 
@@ -46,7 +44,7 @@ export default abstract class TransmitQueue implements Queue {
         protected filter: FilterSettings,
         private onState: (state: QueueState) => void,
         private onConflict: (src: FileItem, dest: FileItem) => void,
-        private onComplete: () => void
+        private onComplete: (stopped: boolean) => void
     ) {}
 
     public async create() {
@@ -172,7 +170,7 @@ export default abstract class TransmitQueue implements Queue {
         this.closed = true
         if (this.transmits == 0) {
             this.finalize()
-            this.onComplete()
+            this.onComplete(this.stopped)
         }
     }
 

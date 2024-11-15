@@ -4,7 +4,7 @@ import { queue$ } from '../../observables/queue'
 import { filter } from 'rxjs/operators'
 import { whereEq, ifElse, isNil, always, last, pipe, split } from 'ramda'
 import { QueueEventType, QueueType, ConnectionID } from '../../../../src/types'
-import { Progress, CircleProgress } from '../../ui/components'
+import { Progress, CircleProgress, Tooltips } from '../../ui/components'
 import styles from './Queue.less'
 import { t } from 'i18next'
 
@@ -52,7 +52,9 @@ export default function ({id, type, connection, active}: {id: string, type: Queu
                 <span dangerouslySetInnerHTML={{__html: msg}}></span>
                 <div className={styles.progress}>
                     <Progress percent={Math.round(done/total*100)} />
-                    <span className="icon" onClick={() => window.f5.stop(id)}>cancel</span>
+                    <Tooltips>
+                        <span className="icon" onClick={() => window.f5.stop(id)} data-tooltip="Stop">stop_circle</span>
+                    </Tooltips>
                 </div>        
             </> :
             <CircleProgress percent={Math.round(done/total*100)}>

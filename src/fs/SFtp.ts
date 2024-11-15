@@ -1,4 +1,4 @@
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
 import { Client, SFTPWrapper } from 'ssh2'
 import { Path } from '../types'
 import { FileSystem, FileItem, FileAttributes, FileAttributeType } from '../FileSystem'
@@ -195,12 +195,17 @@ export default class SFtp extends FileSystem {
 
     async mv(from: Path, to: Path): Promise<void> {
         await this.exec(`rm -Rf '${to}'`)
+        await this.exec(`mkdir -p '${dirname(to)}'`)       
         return this.exec(`mv -f '${from}' '${to}'`)
     }
 
     async cp(from: Path, to: Path, recursive: boolean): Promise<void> {
         await this.exec(`rm -Rf '${to}'`)
-        return this.exec(`cp -f${recursive ? 'R' : ''} '${from}' '${to}'`)
+        if (recursive) {
+            return this.exec(`cp -fR '${from}' '${to}'`)
+        }
+        await this.exec(`mkdir -p '${dirname(to)}'`)  
+        return this.exec(`cp -f '${from}' '${to}'`)
     }
 
     async write(path: Path, s: string): Promise<void> {

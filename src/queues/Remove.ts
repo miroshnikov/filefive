@@ -13,7 +13,7 @@ export default class RemoveQueue implements Queue {
         private paths: Path[],
         private onState: (state: QueueState) => void,
         private onError: (reason: any) => void,
-        private onComplete: () => void,
+        private onComplete: (stopped: boolean) => void,
         private watcher: RemoteWatcher
     ) {}
 
@@ -93,7 +93,7 @@ export default class RemoveQueue implements Queue {
 
         this.touched.forEach(path => this.watcher.refresh(createURI(this.connId, path)))
 
-        this.onComplete()
+        this.onComplete(this.stopped)
     }
 
     public stop() {

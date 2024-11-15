@@ -188,7 +188,7 @@ export default function Explorer ({
             }))
         )
 
-        if (settings.filter) {
+        if (settings.filter) { //TODO
             filterSettings.current = settings.filter
             setShowFilter(true)
         }
@@ -475,8 +475,13 @@ export default function Explorer ({
                         filter = JSON.parse(data)
                     } catch(e) {}
                 }
-                window.f5.copy(items as URI[], createURI(connection, target), effect == DropEffect.Move, filter)
-            } else{
+                window.f5.copy(
+                    items as URI[], 
+                    createURI(connection, target), 
+                    effect == DropEffect.Move, 
+                    filter
+                )
+            } else {
                 uploadFiles(items as File[], target)
             }
         }

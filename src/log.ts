@@ -67,7 +67,7 @@ export class LogFS extends FileSystem {
         try {
             return await this.fs.ls(dir)
         } catch (e) {
-            logger.error(e) 
+            logger.error(e)
             throw e
         }
     }
@@ -127,8 +127,8 @@ export class LogFS extends FileSystem {
         logger.log(await cmd('MV'), await id(this.id) + from, ' → ', await id(this.id) + to)
         try {
             return await this.fs.mv(from, to)
-        } catch (e) {
-            logger.error(e) 
+        } catch (e: any) {
+            logger.error(await err(e.message)) 
             throw e
         }
     }
@@ -138,7 +138,7 @@ export class LogFS extends FileSystem {
         try {
             return await this.fs.cp(from, to, recursive)
         } catch (e) {
-            logger.error(e) 
+            logger.error(await err(e.message)) 
             throw e
         }
     }
