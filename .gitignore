@@ -7,4 +7,3 @@ test
 yarn-error.log
 frontend/src/ui
 frontend/src/hooks
-api

@@ -72,6 +72,7 @@ window.f5 = {
     onFileChange: listener => subscribe<{path: Path, stat: LocalFileInfo|null}>('file', ({path, stat}) => listener(path, stat)),
 
     copy: (src, dest, move = false, filter: FilterSettings = null) => invoke<string>('copy', { src, dest, move, filter }),
+    duplicate: (src, filter: FilterSettings = null) => invoke<void>('duplicate', { src, filter }),
     remove: (files, force) => invoke<void>('remove', { files, force }),
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),

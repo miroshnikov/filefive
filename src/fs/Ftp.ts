@@ -153,7 +153,7 @@ export default class Ftp extends FileSystem {
     }
 
     async cp(from: Path, to: Path, recursive: boolean): Promise<void> {
-        throw new Error("FTP doesn't support remote duplication")
+        return Promise.reject(new Error("FTP doesn't support remote duplication"))
     }
 
     async write(path: Path, s: string): Promise<void> {

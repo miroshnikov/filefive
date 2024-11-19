@@ -79,11 +79,7 @@ export default class RemoveQueue implements Queue {
                     pending: 0
                 })
             } catch (error) {
-                this.onError({
-                    type: FailureType.RemoteError,
-                    id: this.connId,
-                    error
-                })
+                this.onError(error)
             } finally {
                 close()
             }

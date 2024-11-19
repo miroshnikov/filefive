@@ -61,6 +61,7 @@ export default class App {
             refresh:      ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
 
             copy:         ({src, dest, move, filter}: {src: URI[], dest: URI, move: boolean, filter?: FilterSettings}) => commands.copy(src, dest, move, filter),
+            duplicate:    ({src, filter}: {src: URI[], filter?: FilterSettings}) => commands.duplicate(src, filter),
             remove:       ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
             open:         ({file}: {file: Path}) => opener(file),
             mkdir:        ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),

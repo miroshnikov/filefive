@@ -6,7 +6,7 @@ import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial } from '../../../../src/types'
 import { createURI, isLocal, parseURI } from '../../../../src/utils/URI'
 import { AppSettingsContext } from '../../context/config'
-import { Spinner, MenuItem } from '../../ui/components'
+import { Spinner, MenuItem, Button } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import remoteFileMenu from '../../menu/remoteFile'
 import localDirMenu from '../../menu/localDir'
@@ -127,6 +127,16 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         u.searchParams.delete('connect')
         history.replaceState(null, '', u.toString())
         setShowConnections(true)
+    }
+
+    const cancel = () => {
+        if (connection) {
+            return
+        }
+        const u = new URL(window.location.toString())
+        u.searchParams.delete('connect')
+        history.replaceState(null, '', u.toString())
+        setConnecting('')
     }
 
     const toolbar: ToolbarItem[] = [
@@ -250,12 +260,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     setRemotePath(appSettings.connections)
                     break
                 }
-                case CommandID.Refresh: {
-                    if (connection) {
-                        window.f5.refresh(createURI(connection.id, remotePath))
-                    }
-                    break
-                }
                 case CommandID.Transfer: {
                     if (focused.current) {
                         let local = focused.current == 'local'
@@ -280,16 +284,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             )
                     }
                     break
-                }
-                case CommandID.Delete: {
-                    if (focused.current) {
-                        focused.current == 'local' ?
-                            window.f5.remove(localSelected.map(path => createURI(LocalFileSystemID, path)), false) : (
-                                showConnections ? 
-                                    window.f5.remove(remoteSelected.map(path => createURI(LocalFileSystemID, path)), false) : 
-                                    window.f5.remove(remoteSelected.map(path => createURI(connection?.id ?? LocalFileSystemID, path)), false)
-                            )
-                    }
                 }
             }
         }),
@@ -350,6 +344,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                         <div className="center">
                             <Spinner radius="2em" />
                             <p>Connecting {connecting}...</p>
+                            <Button onClick={() => cancel()}>Cancel</Button>
                         </div>
                     </div> :
                     showConnections ? 

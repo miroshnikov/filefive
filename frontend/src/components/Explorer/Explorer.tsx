@@ -315,6 +315,12 @@ export default function Explorer ({
     useSubscribe(() => 
         command$.pipe(filter(() => focused)).subscribe(cmd => {
             switch (cmd.id) {
+                case CommandID.Refresh: {
+                    if (connection) {
+                        window.f5.refresh(createURI(connection, path))
+                    }
+                    break
+                }
                 case CommandID.Copy: {
                     const uris = selected.current?.map(path => createURI(connection, path))
                     if (uris.length) {
@@ -384,6 +390,23 @@ export default function Explorer ({
                                 .join(' ')
                         )
                     }
+                    break
+                }
+                case CommandID.Delete: {
+                    if (selected.current?.length) {
+                        window.f5.remove(selected.current.map(path => createURI(connection ?? LocalFileSystemID, path)), false)
+                    }
+                    break
+                }
+                case CommandID.Duplicate: {
+                    let files: Path[] = []
+                    if (cmd.uri) {
+                        const { path } = parseURI(cmd.uri)
+                        files = (selected.current?.length && selected.current?.includes(path)) ? selected.current : [path]
+                    } else {
+                        files = selected.current ?? []
+                    }
+                    files.length && window.f5.duplicate(files.map(path => createURI(connection ?? LocalFileSystemID, path)), filterSettings.current)
                     break
                 }
                 case CommandID.ShowFilter: {

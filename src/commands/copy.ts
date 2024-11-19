@@ -1,12 +1,11 @@
 import { URI } from '../types'
 import { isLocal, parseURI } from '../utils/URI'
-import { ConnectionID, QueueEventType, QueueType, FilterSettings } from '../types'
+import { ConnectionID, QueueEventType, QueueType, FilterSettings, FailureType } from '../types'
 import { Queue, queues } from '../queues/Queue'
 import CopyQueue from '../queues/Copy'
 import DownloadQueue from '../queues/Download'
 import UploadQueue from '../queues/Upload'
 import unqid from '../utils/uniqid'
-import { commands } from '.'
 import App from '../App'
 import { pipe, prop } from 'ramda'
 
@@ -16,8 +15,8 @@ export default function (src: URI[], dest: URI, move: boolean, filter?: FilterSe
         return
     }
 
-    const {id: fromId } = parseURI(src[0])
-    const {id: toId, path: toPath } = parseURI(dest)
+    const { id: fromId } = parseURI(src[0])
+    const { id: toId, path: toPath } = parseURI(dest)
     const from = src.map(pipe(parseURI, prop('path')))
 
     const id = unqid()
@@ -35,7 +34,13 @@ export default function (src: URI[], dest: URI, move: boolean, filter?: FilterSe
             filter,
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
             (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, queueType, from, to }),
-            error => App.onError(error),
+            error => {
+                App.onError({
+                    type: FailureType.RemoteError,
+                    id: fromId,
+                    message: error.message ?? String(error)
+                })
+            },
             () => { 
                 queues.delete(id)
                 App.onQueueUpdate(id, { type: QueueEventType.Complete })

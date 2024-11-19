@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { filter } from 'rxjs/operators'
 import { useSubscribe } from '../../hooks'
 import { error$ } from '../../observables/error'
-import { FailureType, ConnectionID } from '../../../../src/types'
+import { FailureType, ConnectionID, LocalFileSystemID } from '../../../../src/types'
 import { Button } from '../../ui/components'
 import styles from './Error.less'
 
@@ -29,7 +29,7 @@ export default function Error() {
                 <button className="close" onClick={() => setErrors([])}>✕</button>
                 <i className="icon">warning</i>
                 <div>
-                    {errors[current].id && 
+                    {errors[current].id && errors[current].id != LocalFileSystemID &&
                         <em><i className="icon">cloud</i>{ errors[current].id }</em>
                     }
                     { errors[current].message }

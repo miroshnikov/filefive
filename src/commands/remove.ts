@@ -39,7 +39,13 @@ export default async function (files: URI[], force: boolean, connPath: string, i
             connId,
             files.map(pipe(parseURI, prop('path'))),
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
-            error => App.onError(error),
+            error => {
+                App.onError({
+                    type: FailureType.RemoteError,
+                    id: this.connId,
+                    message: error.message ?? String(error)
+                })
+            },
             () => {
                 queues.delete(id)
                 App.onQueueUpdate(id, { type: QueueEventType.Complete })

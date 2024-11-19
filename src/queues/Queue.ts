@@ -1,4 +1,4 @@
-import { basename, dirname, normalize, join, sep } from 'node:path'
+import { basename, dirname, normalize, join, sep, parse } from 'node:path'
 import { Path, ConnectionID, QueueState, QueueActionType, QueueAction, LocalFileSystemID, FilterSettings } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import { Subject, Subscription } from 'rxjs'
@@ -13,7 +13,6 @@ export interface Queue {
     resolve(action: QueueAction, forAll: boolean): void
     stop(): void
 }
-
 
 export const lsRemote = (connId: ConnectionID) => {
     const cache = new Map<string, Promise<FileItem[]|null>>()
@@ -197,6 +196,13 @@ export default abstract class TransmitQueue implements Queue {
         switch (action.type) {
             case QueueActionType.Replace: {
                 await transmit(from, dirs, to)
+                break
+            }
+            case QueueActionType.Rename: {
+                from.name = await this.rename(from.name, join(to, ...dirs))
+                console.log('name', from)
+                await transmit(from, dirs, to)
+                break
             }
         }
     }
@@ -220,6 +226,17 @@ export default abstract class TransmitQueue implements Queue {
         }
         const ls = this.ls(connId)
         return async (path: string) => (await ls(dirname(path)))?.find(whereEq({path}))
+    }
+
+    protected async rename(name: string, dir: Path) {
+        const {name: oldName, ext} = parse(name)
+        let newName = oldName
+        const files = await this.ls(this.to)(dir)
+        let counter = 0
+        while (files?.find(whereEq({name: newName + ext}))) {
+            newName = `${oldName} ${++counter}`
+        }
+        return newName + ext
     }
 
     protected async finalize() {}

@@ -16,6 +16,7 @@ export enum CommandID {
     GoForward= 'go-forward',
     
     Rename = 'rename',
+    Duplicate = 'duplicate',
     Edit = 'edit',
     CopyURI = 'copy-uri',
     CopyPath = 'copy-path',
@@ -46,6 +47,7 @@ export type KeyShortcutCommand =
 type FileCommand = 
     | CommandID.Transfer
     | CommandID.Rename
+    | CommandID.Duplicate
     | CommandID.Edit
     | CommandID.CopyURI
     | CommandID.CopyPath

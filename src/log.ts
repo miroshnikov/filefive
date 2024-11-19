@@ -134,7 +134,7 @@ export class LogFS extends FileSystem {
     }
 
     async cp(from: Path, to: Path, recursive: boolean): Promise<void> {
-        logger.log(await cmd(recursive ? 'CP -R' : 'CP'), await id(this.id) + from, ' → ', to)
+        logger.log(await cmd(recursive ? 'CP -R' : 'CP'), await id(this.id) + from, ' → ', await id(this.id) + to)
         try {
             return await this.fs.cp(from, to, recursive)
         } catch (e) {

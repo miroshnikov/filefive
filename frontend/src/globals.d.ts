@@ -33,6 +33,7 @@ export interface F5 {
     onFileChange(listener: (path: Path, stat: LocalFileInfo|null) => void): void
 
     copy(src: URI[], dest: URI, move?: boolean, filter?: FilterSettings): Promise<string>
+    duplicate(src: URI[], filter?: FilterSettings): Promise<void>
     remove(files: URI[], force: boolean): void
     open(file: Path): void
     mkdir(name: string, parent: URI): void

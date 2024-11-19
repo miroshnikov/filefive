@@ -11,6 +11,7 @@ import rename from './rename'
 import getConnection from './getConnection'
 import saveConnection from './saveConnection'
 import saveSettings from './saveSettings'
+import duplicate from './duplicate'
 
 export const commands = {
     connect,
@@ -18,6 +19,7 @@ export const commands = {
     watch,
     unwatch,
     copy,
+    duplicate,
     remove,
     mkdir,
     read,

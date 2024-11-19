@@ -29,6 +29,7 @@ const handle = async (name: string, handler: (args: {}) => any) => {
             res.json(result ?? null)
         } catch (e) {
             res.status(400)
+            process.env.NODE_ENV == 'development' && console.error(e)
             res.json({ message: (typeof e == 'object' && 'message' in e) ? e.message : String(e) })
         }
     })

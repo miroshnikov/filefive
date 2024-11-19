@@ -149,13 +149,14 @@ export type QueueEvent =
 
 export enum QueueActionType {
     Skip = 'skip',
-    Replace = 'replace'
-    // Rename
+    Replace = 'replace',
+    Rename = 'rename'
 }
 
 export type QueueAction = 
     | { type: QueueActionType.Skip }
     | { type: QueueActionType.Replace }
+    | { type: QueueActionType.Rename }
 
 
 

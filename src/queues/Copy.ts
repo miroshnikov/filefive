@@ -51,7 +51,6 @@ export default class CopyQueue extends TransmitQueue {
             return
         }
         try {
-            console.log('CP ', from.path, join(to, ...dirs, from.name))
             let p: Promise<void>
             if (this.move) {
                 p = fs.mv(from.path, join(to, ...dirs, from.name))
@@ -60,18 +59,11 @@ export default class CopyQueue extends TransmitQueue {
             } else {
                 p = fs.cp(from.path, join(to, ...dirs, from.name), from.dir)
             }
-            this.touched.set(to, [ ...(this.touched.get(to) ?? []), p])
             await p
-
-            // p
-            // .catch(e => { console.log('caught ', e); this.onError(e)  })
-            // .finally(() => this.sendState(from.size))
-
+            this.touched.set(to, [...(this.touched.get(to) ?? []), p])
         } catch(error: any) { 
-            console.log('caught ', error)
-            // this.onError(error) 
+            this.onError(error) 
         }
-        console.log('transmit complete')
         this.sendState(from.size)
     }
 

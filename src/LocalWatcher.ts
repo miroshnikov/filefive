@@ -12,7 +12,7 @@ export default class {
         private transform = (files: LocalFiles) => files
     ) {}
 
-    watch(dir: Path) {
+    watch(dir: Path): LocalFiles {
         this.watched.inc(dir) || this.watched.set(dir, watch(dir, (event, target) => {
             if (event == 'rename') {
                 const child = join(dir, target)
@@ -29,7 +29,9 @@ export default class {
                 this.onMissing(dir)
             }
         }))
-        this.listener(dir, this.transform(list(dir)))
+        const files = this.transform(list(dir))
+        this.listener(dir, files)
+        return files
     }
 
     unwatch(dir: Path) {
