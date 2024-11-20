@@ -25,6 +25,11 @@ export default function (path: Path, selected: Path[], isRoot: boolean): MenuIte
                 click: () => command$.next({ id: CommandID.Rename, uri: createURI(LocalFileSystemID, path) })
             },
             {
+                id: CommandID.Duplicate,
+                label: 'Duplicate',
+                click: () => command$.next({ id: CommandID.Duplicate, uri: createURI(LocalFileSystemID, path) })
+            },
+            {
                 id: 'delete',
                 label: 'Delete',
                 click: () => {

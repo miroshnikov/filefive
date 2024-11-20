@@ -228,12 +228,15 @@ export default abstract class TransmitQueue implements Queue {
     }
 
     protected async rename(name: string, dir: Path) {
-        const {name: oldName, ext} = parse(name)
-        let newName = oldName
+        let {name: oldName, ext} = parse(name)
+        const parts = oldName.match(/^(.+) copy ?(\d*)$/)
+        oldName = (parts && parts.length > 2) ? parts[1] : oldName
+        let counter = (parts && parts.length > 2) ? (parts[2] ? parseInt(parts[2])+1 : 1) : 1
+        let newName = `${oldName} copy${counter > 1 ? ' '+counter : ''}`
+
         const files = await this.ls(this.to)(dir)
-        let counter = 0
         while (files?.find(whereEq({name: newName + ext}))) {
-            newName = `${oldName} ${++counter}`
+            newName = `${oldName} copy ${++counter}`
         }
         return newName + ext
     }
