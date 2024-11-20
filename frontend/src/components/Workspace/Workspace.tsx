@@ -42,6 +42,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const [showConnections, setShowConnections] = useState(true)
     const [menu, setMenu] = useState<MenuItem[]>([])
     const [connecting, setConnecting] = useState('')
+    const abortConnecting = useRef<AbortController>(null)
 
     const focused = useRef<'local'|'remote'|null>(null)
 
@@ -94,7 +95,10 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         disconnect()
 
         setConnecting(basename(path))
-        window.f5.connect(path)
+
+        abortConnecting.current = new AbortController()
+
+        window.f5.connect(path, abortConnecting.current.signal)
             .then(connection => {
                 if (connection) {
                     setShowConnections(false)
@@ -119,6 +123,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         if (!connection) {
             return
         }
+        abortConnecting.current = null
         window.f5.disconnect(connection.id)
         setConnection(null)
         setLocalPath(appSettings.path?.local ?? appSettings.home)
@@ -133,6 +138,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         if (connection) {
             return
         }
+        abortConnecting.current?.abort()
+        abortConnecting.current = null
         const u = new URL(window.location.toString())
         u.searchParams.delete('connect')
         history.replaceState(null, '', u.toString())

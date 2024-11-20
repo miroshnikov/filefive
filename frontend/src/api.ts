@@ -16,11 +16,12 @@ import { LocalFileInfo } from '../../src/Local'
 import { error$ } from './observables/error'
 
 
-async function invoke<T>(method: string, data: {} = {}): Promise<T> {
+async function invoke<T>(method: string, data: {} = {}, signal?: AbortSignal): Promise<T> {
     return fetch(`/api/${method}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        ...(signal ? { signal } : {})
     })
     .then(resp => {
         if (!resp.ok) {
@@ -30,6 +31,9 @@ async function invoke<T>(method: string, data: {} = {}): Promise<T> {
             })
         }
         return resp.json()
+    })
+    .catch(e => {
+        process.env.NODE_ENV == 'development' && console.error(`/api/${method}`, e)
     })
 }
 
@@ -60,7 +64,7 @@ window.f5 = {
 
     onError: listener => subscribe<any>('error', (error) => listener(error)),
 
-    connect: file => invoke<{ id: ConnectionID, settings: ConnectionSettings }>('connect', { file }),
+    connect: (file, signal) => invoke<{ id: ConnectionID, settings: ConnectionSettings }>('connect', { file }, signal),
     login: (id: ConnectionID, password: string|false, remember: boolean) => invoke<void>('login', { id, password, remember }),
     disconnect: id => invoke<void>('disconnect', { id }),
 

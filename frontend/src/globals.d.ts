@@ -21,7 +21,7 @@ export interface F5 {
 
     onError(listener: (error: any) => void): void
 
-    connect(file: Path): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false>
+    connect(file: Path, signal: AbortSignal): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false>
     login(id: ConnectionID, password: string|false, remember: boolean): Promise<void>
     disconnect(id: ConnectionID): void
 

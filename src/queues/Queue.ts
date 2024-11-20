@@ -200,7 +200,6 @@ export default abstract class TransmitQueue implements Queue {
             }
             case QueueActionType.Rename: {
                 from.name = await this.rename(from.name, join(to, ...dirs))
-                console.log('name', from)
                 await transmit(from, dirs, to)
                 break
             }

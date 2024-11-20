@@ -71,6 +71,11 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
                 click: () => command$.next({ id: CommandID.Rename, uri: createURI(LocalFileSystemID, path) })
             },
             {
+                id: CommandID.Duplicate,
+                label: 'Duplicate',
+                click: () => command$.next({ id: CommandID.Duplicate, uri: createURI(LocalFileSystemID, path) })
+            },
+            {
                 id: 'delete',
                 label: 'Delete',
                 click: () => {

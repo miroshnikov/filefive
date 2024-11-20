@@ -12,7 +12,7 @@ module.exports = {
         extensions: [ '.tsx', '.ts', '...' ],
         symlinks: false
     },   
-    mode: 'production',
+    mode: 'development',
     cache: false,   
     devtool: 'cheap-source-map',
     devServer: {
