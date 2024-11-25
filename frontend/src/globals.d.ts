@@ -21,9 +21,9 @@ export interface F5 {
 
     onError(listener: (error: any) => void): void
 
-    connect(file: Path, signal: AbortSignal): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false>
+    connect(file: Path, signal: AbortSignal): Promise<{ id: ConnectionID, sid: string, settings: ConnectionSettings } | false>
     login(id: ConnectionID, password: string|false, remember: boolean): Promise<void>
-    disconnect(id: ConnectionID): void
+    disconnect(id: ConnectionID, sid: string): void
 
     watch(dir: URI): void
     unwatch(dir: URI): void
@@ -32,7 +32,7 @@ export interface F5 {
     onDirChange(listener: (uri: URI, files: Files) => void): void
     onFileChange(listener: (path: Path, stat: LocalFileInfo|null) => void): void
 
-    copy(src: URI[], dest: URI, move?: boolean, filter?: FilterSettings): Promise<string>
+    copy(src: URI[], dest: URI, move?: boolean, filter?: FilterSettings, sid?: string): Promise<string>
     duplicate(src: URI[], filter?: FilterSettings): Promise<void>
     remove(files: URI[], force: boolean): void
     open(file: Path): void
@@ -44,7 +44,7 @@ export interface F5 {
     get(path: Path): Promise<ConnectionConfig|null>
     save(path: Path, settings: SaveConnectionSettings): Promise<void>
 
-    resolve(id: string, action: QueueAction, forAll: boolean): void
+    resolve(id: string, action: QueueAction, forAll: boolean, sid?: string): void
     stop(id: string): void
     onQueueUpdate(listener: (id: string, event: QueueEvent) => void): void
 }

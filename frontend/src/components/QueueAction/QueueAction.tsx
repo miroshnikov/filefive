@@ -14,19 +14,21 @@ interface QueueConflict {
     from: FileItem
     to: FileItem
     queueType: QueueType
+    sid?: string
 }
 
 export default function QueueAction() {
 
     const [conflict, setConflict] = useState<QueueConflict>(null)
     const [conflicts, setConflicts] = useState<QueueConflict[]>([])
-    const forAll = useRef(false)
+    const [forAll, setForAll] = useState(false)
+    const remember = useRef(false)
 
     const proceed = (id: string) => {
         if (id == 'ok') {
-            window.f5.resolve(conflict.id, { type: QueueActionType.Replace }, forAll.current)
+            window.f5.resolve(conflict.id, { type: QueueActionType.Replace }, forAll, remember.current ? conflict.sid : undefined)
         } else if (id == 'cancel') {
-            window.f5.resolve(conflict.id, { type: QueueActionType.Skip }, forAll.current)
+            window.f5.resolve(conflict.id, { type: QueueActionType.Skip }, forAll, remember.current ? conflict.sid : undefined)
         } else {
             window.f5.stop(conflict.id)
         }
@@ -41,7 +43,6 @@ export default function QueueAction() {
     useSubscribe(() => 
         queue$.subscribe(({id, event}) => {
             if (event.type == QueueEventType.Ask) {
-                console.log('Conflict', id, event)
                 conflict ?
                     setConflicts(conflicts => [...conflicts, { id, ...event }]) :
                     setConflict({ id, ...event })
@@ -84,9 +85,18 @@ export default function QueueAction() {
                             Modified: {new Date(conflict?.from.modified).toLocaleString()}
                         </p>
                     </div>
-                    <Checkbox value={forAll.current} onChange={() => forAll.current = !forAll.current}>
-                        Apply the chosen action to the rest of files
-                    </Checkbox>
+
+                    <div className={styles.checks}>
+                        <Checkbox value={forAll} onChange={() => setForAll(v => !v)}>
+                            Apply the chosen action to the rest of files
+                        </Checkbox>
+
+                        {forAll &&
+                            <Checkbox value={remember.current} onChange={() => remember.current = !remember.current}>
+                                Remember for the current session
+                            </Checkbox>
+                        }
+                    </div>
                 </div>
             </Modal> 
         }

@@ -42,7 +42,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const [showConnections, setShowConnections] = useState(true)
     const [menu, setMenu] = useState<MenuItem[]>([])
     const [connecting, setConnecting] = useState('')
-    const abortConnecting = useRef<AbortController>(null)
+    const abortConnecting = useRef<AbortController>()
+    const sid = useRef<string>()
 
     const focused = useRef<'local'|'remote'|null>(null)
 
@@ -104,6 +105,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     setShowConnections(false)
                     const {id, settings} = connection
                     setConnection({ ...settings, id, file: path })
+                    sid.current = connection.sid
                     setLocalPath(path => settings.path.local ?? path)
                     setRemotePath(settings.path.remote!)
                     const u = new URL(window.location.toString())
@@ -123,8 +125,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         if (!connection) {
             return
         }
-        abortConnecting.current = null
-        window.f5.disconnect(connection.id)
+        abortConnecting.current = sid.current = undefined
+        window.f5.disconnect(connection.id, sid.current)
         setConnection(null)
         setLocalPath(appSettings.path?.local ?? appSettings.home)
         setRemotePath(appSettings.connections)
@@ -281,13 +283,15 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 files.map(path => createURI(LocalFileSystemID, path)), 
                                 createURI(connection?.id ?? LocalFileSystemID, remotePath),
                                 false,
-                                (connection ?? appSettings).local.filter
+                                (connection ?? appSettings).local.filter,
+                                sid.current
                             ) :
                             window.f5.copy(
                                 files.map(path => createURI(showConnections ? LocalFileSystemID : connection?.id ?? LocalFileSystemID, path)), 
                                 createURI(LocalFileSystemID, localPath),
                                 false,
-                                showConnections ? null : (connection ?? appSettings).remote.filter
+                                showConnections ? null : (connection ?? appSettings).remote.filter,
+                                sid.current
                             )
                     }
                     break
@@ -370,6 +374,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 icon='cloud'
                                 connection={connection.id}
                                 connectionName={basename(connection.file)}
+                                sid={sid.current}
                                 settings={connection.remote}
                                 path={remotePath}
                                 fixedRoot={'/'}

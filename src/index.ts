@@ -49,6 +49,7 @@ app.post('/api/upload', upload.array('files'), async function (req, res) {
             req.body['to'], 
             true,
             null,
+            null,
             () => src.forEach(path => rm(path, { force: true }))
         )
     }

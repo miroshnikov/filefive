@@ -54,13 +54,14 @@ export default class App {
 
             connect:      ({file}: {file: Path}) => commands.connect(file, (id, {message}) => this.onError({ type: FailureType.RemoteError, id, message })),
             login:        ({id, password, remember}: {id: ConnectionID, password: string|false, remember: boolean}) => Password.set(id, password, remember),
-            disconnect:   ({id}: {id: ConnectionID}) => Connection.close(id),
+            disconnect:   ({id, sid}: {id: ConnectionID, sid: string}) => commands.disconnect(id, sid),
 
             watch:        ({dir}: {dir: URI}) => commands.watch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
             unwatch:      ({dir}: {dir: URI}) => commands.unwatch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
             refresh:      ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
 
-            copy:         ({src, dest, move, filter}: {src: URI[], dest: URI, move: boolean, filter?: FilterSettings}) => commands.copy(src, dest, move, filter),
+            copy:         ({src, dest, move, filter, sid}: {src: URI[], dest: URI, move: boolean, filter?: FilterSettings, sid?: string}) => 
+                                    commands.copy(src, dest, move, filter, sid),
             duplicate:    ({src, filter}: {src: URI[], filter?: FilterSettings}) => commands.duplicate(src, filter),
             remove:       ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
             open:         ({file}: {file: Path}) => opener(file),
@@ -72,7 +73,8 @@ export default class App {
             get:          ({path}: {path: Path}) => commands.getConnection(path),
             save:         ({path, settings}: {path: Path, settings: SaveConnectionSettings}) => commands.saveConnection(path, settings),
 
-            resolve:      ({id, action, forAll}: {id: string, action: QueueAction, forAll: boolean}) => queues.get(id)?.resolve(action, forAll),
+            resolve:      ({id, action, forAll, sid}: {id: string, action: QueueAction, forAll: boolean, sid?: string}) => 
+                                    commands.resolve(id, action, forAll, sid),
             stop:         ({id}: {id: string}) => queues.get(id)?.stop()
         }).forEach(([name, handler]) => handle(name, handler))
 

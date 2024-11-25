@@ -6,6 +6,7 @@ import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
 import { connectionID } from '../utils/URI'
 import Connection from '../Connection'
 import Password from '../Password'
+import Session from '../Session'
 import { where, whereEq, isNotNil, isNotEmpty } from 'ramda'
 
 
@@ -32,7 +33,8 @@ export function explorerSettings(attributes: FileAttributes, config?: ExplorerCo
 }
 
 
-export default async function (file: Path, onError: (id: ConnectionID, e: any) => void): Promise<{ id: ConnectionID, settings: ConnectionSettings } | false> {
+export default async function (file: Path, onError: (id: ConnectionID, e: any) => void): 
+        Promise<{ id: ConnectionID, sid: string, settings: ConnectionSettings } | false> {
     let config: ConnectionConfig
     try {
         config = JSON.parse( readFileSync(file).toString() ) as ConnectionConfig
@@ -71,7 +73,7 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
                 remote: config.path?.remote ?? pwd
             }
         }
-        return { id, settings }
+        return { id, sid: Session.create(), settings }
     } catch (e) {
         Password.delete(id, false)
         onError(id, e)

@@ -1,4 +1,5 @@
 import connect from './connect'
+import disconnect from './disconnect'
 import watch from './watch'
 import unwatch from './unwatch'
 import copy from './copy'
@@ -12,9 +13,11 @@ import getConnection from './getConnection'
 import saveConnection from './saveConnection'
 import saveSettings from './saveSettings'
 import duplicate from './duplicate'
+import resolve  from './resolve'
 
 export const commands = {
     connect,
+    disconnect,
     getSettings,
     watch,
     unwatch,
@@ -27,6 +30,7 @@ export const commands = {
     rename,
     getConnection,
     saveConnection,
-    saveSettings
+    saveSettings,
+    resolve
 }
 

@@ -64,9 +64,9 @@ window.f5 = {
 
     onError: listener => subscribe<any>('error', (error) => listener(error)),
 
-    connect: (file, signal) => invoke<{ id: ConnectionID, settings: ConnectionSettings }>('connect', { file }, signal),
+    connect: (file, signal) => invoke<{ id: ConnectionID, sid: string, settings: ConnectionSettings }>('connect', { file }, signal),
     login: (id: ConnectionID, password: string|false, remember: boolean) => invoke<void>('login', { id, password, remember }),
-    disconnect: id => invoke<void>('disconnect', { id }),
+    disconnect: (id: ConnectionID, sid: string) => invoke<void>('disconnect', { id, sid }),
 
     watch: dir => invoke<void>('watch', { dir }),
     unwatch: dir => invoke<void>('unwatch', { dir }),
@@ -75,7 +75,7 @@ window.f5 = {
     onDirChange: listener => subscribe<{uri: URI, files: Files}>('dir', ({uri, files}) => listener(uri, files)),
     onFileChange: listener => subscribe<{path: Path, stat: LocalFileInfo|null}>('file', ({path, stat}) => listener(path, stat)),
 
-    copy: (src, dest, move = false, filter: FilterSettings = null) => invoke<string>('copy', { src, dest, move, filter }),
+    copy: (src, dest, move = false, filter: FilterSettings = null, sid?: string) => invoke<string>('copy', { src, dest, move, filter, sid }),
     duplicate: (src, filter: FilterSettings = null) => invoke<void>('duplicate', { src, filter }),
     remove: (files, force) => invoke<void>('remove', { files, force }),
     open: file => invoke<void>('open', { file }),
@@ -87,7 +87,7 @@ window.f5 = {
     get: (path) => invoke<ConnectionConfig|null>('get', { path }),
     save: (path, settings) => invoke<void>('save', { path, settings }),
 
-    resolve: (id, action, forAll) => invoke<void>('resolve', { id, action, forAll }),
+    resolve: (id, action, forAll, sid) => invoke<void>('resolve', { id, action, forAll, sid }),
     stop: id => invoke<void>('stop', { id }),
     onQueueUpdate: listener => subscribe<{id: string, event: QueueEvent}>('queue', ({id, event}) => listener(id, event))
 }

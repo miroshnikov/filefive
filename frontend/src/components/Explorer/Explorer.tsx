@@ -111,6 +111,7 @@ interface ExplorerProps {
     icon: string
     connection: ConnectionID
     connectionName?: string
+    sid?: string
     settings: ExplorerSettings
     path: Path
     fixedRoot: Path
@@ -132,6 +133,7 @@ export default function Explorer ({
     icon, 
     connection, 
     connectionName,
+    sid,
     settings,
     path, 
     fixedRoot, 
@@ -502,7 +504,8 @@ export default function Explorer ({
                     items as URI[], 
                     createURI(connection, target), 
                     effect == DropEffect.Move, 
-                    filter
+                    filter,
+                    sid
                 )
             } else {
                 uploadFiles(items as File[], target)
