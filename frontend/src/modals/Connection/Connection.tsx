@@ -73,7 +73,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         },
         {
             id: ModalButtonID.Ok,
-            label: 'Save & Connect',
+            label: 'Connect',
             disabled: !isValid
         } 
     ]

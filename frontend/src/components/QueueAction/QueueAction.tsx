@@ -91,7 +91,7 @@ export default function QueueAction() {
                             Apply the chosen action to the rest of files
                         </Checkbox>
 
-                        {forAll &&
+                        {conflict.sid && forAll &&
                             <Checkbox value={remember.current} onChange={() => remember.current = !remember.current}>
                                 Remember for the current session
                             </Checkbox>

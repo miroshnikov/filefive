@@ -155,7 +155,7 @@ export default class SFtp extends FileSystem {
     async put(fromLocal: Path, toRemote: Path): Promise<void> {
         const sftp = await this.open() 
         return new Promise((resolve, reject) => {
-            sftp.fastPut(fromLocal, toRemote, e => e ? reject(new Error(this.decodeError(e))) : resolve())
+            sftp.fastPut(fromLocal, toRemote, e => e ? reject(new Error(this.decodeError(e) + ` ${toRemote}`)) : resolve())
         })
     }
 

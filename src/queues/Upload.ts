@@ -35,12 +35,19 @@ export default class UploadQueue extends TransmitQueue {
             let targetDir = to
             for (const dir of dirs) {
                 targetDir = join(targetDir, dir)
-                if (!this.touched.has(targetDir)) {
-                    try {
-                        this.touched.set(targetDir, fs.mkdir(targetDir))
-                    } catch (e) {}
+                if (this.touched.has(targetDir)) {
+                    await this.touched.get(targetDir)
+                } else {
+                    this.touched.set(
+                        targetDir,
+                        new Promise(async (resolve) => {
+                            try {
+                                await fs.mkdir(targetDir)
+                            } catch (e) {}
+                            resolve()
+                        })
+                    )
                 }
-                await this.touched.get(targetDir)
             }
             if (!this.stopped) {
                 await fs.put(from.path, join(targetDir, from.name))
