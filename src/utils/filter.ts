@@ -8,7 +8,7 @@ function escapeRegExp(s: string) {
 }
 
 export function filterRegExp(settings: FilterSettings): RegExp|null {
-    if (!settings.text.length) {
+    if (!settings?.text.length) {
         return null
     }
 

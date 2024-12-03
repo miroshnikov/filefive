@@ -163,7 +163,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         },
         {
             id: CommandID.ShowFilter,
-            icon: 'filter_list',
+            icon: 'filter_alt',
             title: 'Filter...',
             onClick: () => command$.next({id: CommandID.ShowFilter})
         },

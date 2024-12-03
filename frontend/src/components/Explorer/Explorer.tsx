@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useContext, useCallback } from "react"
+import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
 import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
 import { 
@@ -164,6 +164,7 @@ export default function Explorer ({
     const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
 
     const [showFilter, setShowFilter] = useState(false)
+    const [initialFilter, setInitialFilter] = useState<FilterSettings>(null)
     const filterSettings = useRef<FilterSettings>(null)
     const filterRe = useRef<RegExp>(null)
 
@@ -190,9 +191,10 @@ export default function Explorer ({
             }))
         )
 
-        if (settings.filter) { //TODO
+        if (!equals(settings.filter, showFilter ? filterSettings.current : null)) {
             filterSettings.current = settings.filter
-            setShowFilter(true)
+            setInitialFilter(settings.filter)
+            setShowFilter(settings.filter != null)            
         }
     }, [settings], equals)
 
@@ -251,7 +253,7 @@ export default function Explorer ({
         return true
     }
 
-    const update = useCallback(() => {
+    const update = () => {
         folders.current = pick(watched.current, folders.current)
         setFiles(
             pipe(
@@ -265,7 +267,7 @@ export default function Explorer ({
                 toColumns(columns, formatters),
             )(folders.current)
         )
-    }, [root, columns, filterSettings])
+    }
 
     useSubscribe(() => 
         dir$.pipe(
@@ -285,18 +287,17 @@ export default function Explorer ({
         update()
     }, [columns])
 
-
     const setFilterSettings = (filter: FilterSettings) => {
         filterRe.current = filter ? filterRegExp(filter) : null
         update()
         if (!equals(filter, settings.filter)) {
             onSettingsChange?.({filter})
         }
-    } 
+    }
+
     useEffectOnUpdate(() => {
         setFilterSettings(showFilter ? filterSettings.current : null)
     }, [showFilter])
-    
 
     useEffect(() => {
         const resizeList = new ResizeObserver((entries) => {
@@ -610,13 +611,12 @@ export default function Explorer ({
                 />
             </div>
         </header>
-        {showFilter && 
-            <Filter 
-                value={filterSettings.current}
-                onChange={settings => setFilterSettings(filterSettings.current = settings)}
-                onClose={() => setShowFilter(false)}
-            />
-        }
+        <Filter 
+            show={showFilter}
+            initial={initialFilter}
+            onChange={settings => setFilterSettings(filterSettings.current = settings)}
+            onClose={() => setShowFilter(false)}
+        />
         <List 
             ref={list}
             columns={columns}
