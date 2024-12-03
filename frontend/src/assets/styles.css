@@ -168,6 +168,7 @@ section {
     --selected-color: #fff;
     --drop-background: #BEBEBE;
     --link: #1976d2;
+    --highlight: #4e91fd;
 }
 
 form {

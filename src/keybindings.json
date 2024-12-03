@@ -50,5 +50,9 @@
     {
         "key": "ctrl+bracketright",
         "command": "go-forward"
+    },
+    {
+        "key": "meta+y",
+        "command": "sync-browsing"
     }
 ]

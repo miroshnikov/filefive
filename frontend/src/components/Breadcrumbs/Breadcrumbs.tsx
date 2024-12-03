@@ -28,7 +28,7 @@ export default function Breadcrumbs(
     }, [path])
 
     return (
-        <div className={styles.root}>
+        <div className={'breadcrumbs ' + styles.root}>
             {connection ? 
                 <em onClick={() => go(root)}>
                     <i className='icon'>{icon}</i> 

@@ -13,7 +13,8 @@ export enum CommandID {
     CollapseAll = 'collapse-all',
     ShowFilter = 'show-filter',
     GoBack = 'go-back',
-    GoForward= 'go-forward',
+    GoForward = 'go-forward',
+    SyncBrowsing = 'sync-browsing',
     
     Rename = 'rename',
     Duplicate = 'duplicate',
@@ -43,6 +44,7 @@ export type KeyShortcutCommand =
     | CommandID.TriggerPaste
     | CommandID.GoBack
     | CommandID.GoForward
+    | CommandID.SyncBrowsing
 
 type FileCommand = 
     | CommandID.Transfer

@@ -6,16 +6,18 @@ import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial } from '../../../../src/types'
 import { createURI, isLocal, parseURI } from '../../../../src/utils/URI'
 import { AppSettingsContext } from '../../context/config'
-import { Spinner, MenuItem, Button } from '../../ui/components'
+import { Spinner, MenuItem, Button, Tooltips } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
 import remoteFileMenu from '../../menu/remoteFile'
 import localDirMenu from '../../menu/localDir'
 import remoteDirMenu from '../../menu/remoteDir'
-import { useEffectOnUpdate, useSubscribe, useConcatAsyncEffect } from '../../hooks'
+import { useEffectOnUpdate, useSubscribe, useConcatAsyncEffect, useToggle } from '../../hooks'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
 import { basename, dirname } from '../../utils/path'
+import classNames from 'classnames'
+import styles from './Workspace.less'
 
 
 export type AppSettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'>>
@@ -44,6 +46,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const [connecting, setConnecting] = useState('')
     const abortConnecting = useRef<AbortController>()
     const sid = useRef<string>()
+    const [sync, toggleSync] = useToggle(false)
 
     const focused = useRef<'local'|'remote'|null>(null)
 
@@ -296,6 +299,10 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     }
                     break
                 }
+                case CommandID.SyncBrowsing: {
+                    toggleSync()
+                    break
+                }
             }
         }),
         [appSettings, connection, localSelected, remoteSelected]
@@ -320,8 +327,17 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         [connection, localPath, remotePath]
     )
 
+    const syncDirs = (changedLocal: boolean) => {
+        if (!sync) {
+            return
+        }
+        console.log('sync: ', changedLocal, localPath, remotePath)
+    }
+    useEffectOnUpdate(() => syncDirs(true), [localPath])
+    useEffectOnUpdate(() => syncDirs(false), [remotePath])
+
     return (<>
-        <Split 
+        <Split className={classNames({ sync })}
             left = {
                 localPath ? 
                     <Explorer 
@@ -409,6 +425,15 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 onBlur={() => focused.current = null}
                             />
             }
-        />
+        >
+            <Tooltips shortcuts={appSettings.keybindings}>
+                <button 
+                    className={classNames(styles.synctoggle, 'icon', { on: sync })} 
+                    onClick={() => command$.next({id: CommandID.SyncBrowsing})}
+                    data-tooltip={`Synchronized Browsing is ${sync ? 'On' : 'Off'}`}
+                    data-command={CommandID.SyncBrowsing}
+                >{sync ? 'sync_lock' : 'sync'}</button>
+            </Tooltips>
+        </Split>
     </>)
 }

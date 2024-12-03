@@ -1,0 +1,30 @@
+:local(.synctoggle) {
+    position: absolute;
+    top: 2.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--bar-background);
+    color: var(--bar-color);
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 1;
+    font-size: 1.2rem;
+    transition: all .6s;
+    &.on {
+        color: var(--highlight);
+    }
+}
+
+.left > div .path {
+    padding-right: 1rem;
+}
+
+.right > div .path {
+    padding-left: 1rem;
+}
+
+.sync .breadcrumbs {
+    border-color: var(--highlight);
+}
