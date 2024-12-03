@@ -601,14 +601,14 @@ export default function Explorer ({
                             onClick={() => command$.next({id: CommandID.Refresh})}
                         >refresh</button>
                     }
+                    <Breadcrumbs 
+                        icon={icon}
+                        path={root}
+                        root={fixedRoot}
+                        go={setRoot}
+                        connection={connectionName ? { id: connection, name: connectionName } : null}
+                    />
                 </Tooltips>
-                <Breadcrumbs 
-                    icon={icon}
-                    path={root}
-                    root={fixedRoot}
-                    go={setRoot}
-                    connection={connectionName ? { id: connection, name: connectionName } : null}
-                />
             </div>
         </header>
         <Filter 

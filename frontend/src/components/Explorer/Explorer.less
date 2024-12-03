@@ -7,6 +7,7 @@
         position: sticky;
         top: 0;
         background-color: var(--bar-background);
+        width: 100%;
         > .toolbar {
             flex: 20px 0 0 ;
             display: flex;
@@ -19,6 +20,7 @@
             }
         }
         > .path {
+            width: 100%;
             display: flex;
             gap: .5em;
             align-items: center;
@@ -40,8 +42,9 @@
                     }
                 }
             }
-            > div {
+            div {
                 flex: 100% 1 1;
+                width: calc(100% - 4em);
             }
         }
     }

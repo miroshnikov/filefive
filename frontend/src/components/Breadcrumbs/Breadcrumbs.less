@@ -8,60 +8,78 @@
 :local(.root) {
     background-color: var(--bar-background);
     user-select: none;
-    > div {
+
+    display: flex;
+    align-items: center;
+    background-color: var(--background);
+    color: var(--color);
+    font-size: 1.1em;
+    margin: .4em;
+    padding: .2em .4em;
+    border-radius: 6px;
+    em {
+        background-color: var(--selected-background);
+        border-radius: 6px;
         display: flex;
         align-items: center;
-        background-color: var(--background);
-        color: var(--color);
-        font-size: 1.1em;
-        margin: .4em;
-        padding: .2em .4em;
-        border-radius: 6px;
-        em {
-            background-color: var(--selected-background);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: .3em;
-            padding: 0 .4em;
-            cursor: pointer;
-            > span {
-                overflow-x: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-            }
-        }
-        i {
-            font-size: 1.1em;
-            padding-right: .2em;
-            cursor: pointer;
-        }
-        > div {
+        gap: .3em;
+        padding: 0 .4em;
+        cursor: pointer;
+        > span {
             overflow-x: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+    i {
+        font-size: 1.1em;
+        padding-right: .2em;
+        cursor: pointer;
+    }
+    > div {
+        display: contents;
+        > span {
+            white-space: nowrap;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: .2em;
-            &::after {
-                .sep;
-            }
-            &:first-of-type::before {
-                .sep;
-            }
-            &:last-child::after {
-                display: none;
-            }
-            > span {
-                white-space: nowrap;
-                overflow-x: hidden;
-                text-overflow: ellipsis;
-                padding: 0 .2em;
-                border-radius: 6px;
-                &:hover {
-                    background-color: var(--selected-background);
-                }
+            padding: 0 .2em;
+            border-radius: 6px;
+            &:hover {
+                background-color: var(--selected-background);
             }
         }
-    
+        > i {
+            flex: auto 0 0;
+            font-size: .7em;
+            opacity: .6;
+        }
     }
+    // > div {
+    //     overflow-x: hidden;
+    //     cursor: pointer;
+    //     display: flex;
+    //     align-items: center;
+    //     gap: .2em;
+    //     &::after {
+    //         .sep;
+    //     }
+    //     &:first-of-type::before {
+    //         .sep;
+    //     }
+    //     &:last-child::after {
+    //         display: none;
+    //     }
+    //     > span {
+    //         white-space: nowrap;
+    //         overflow-x: hidden;
+    //         text-overflow: ellipsis;
+    //         padding: 0 .2em;
+    //         border-radius: 6px;
+    //         &:hover {
+    //             background-color: var(--selected-background);
+    //         }
+    //     }
+    // }
+
 }

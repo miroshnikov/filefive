@@ -27,8 +27,8 @@ export default function Breadcrumbs(
         )
     }, [path])
 
-    return <div className={styles.root}>
-        <div>
+    return (
+        <div className={styles.root}>
             {connection ? 
                 <em onClick={() => go(root)}>
                     <i className='icon'>{icon}</i> 
@@ -36,11 +36,13 @@ export default function Breadcrumbs(
                 </em> :
                 <i className='icon' onClick={() => go(root)}>{icon}</i>
             }
-            {items.map(item => 
-                <div key={item} title={item}>
-                    <span onClick={() => go(item)}>{basename(item)}</span>
+            {items.map((item, i) => 
+                <div key={item}>
+                    {i==0 && <i className='icon'>arrow_forward_ios</i>}
+                    <span onClick={() => go(item)} data-tooltip={item}>{basename(item)}</span>
+                    {i<items.length-1 && <i className='icon'>arrow_forward_ios</i>}
                 </div>
             )}
         </div>
-    </div>
+    )
 }
