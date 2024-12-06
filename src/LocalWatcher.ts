@@ -13,25 +13,32 @@ export default class {
     ) {}
 
     watch(dir: Path): LocalFiles {
-        this.watched.inc(dir) || this.watched.set(dir, watch(dir, (event, target) => {
-            if (event == 'rename') {
-                const child = join(dir, target)
-                if (this.watched.has(child) && !stat(child)) {
-                    this.watched.del(child)
-                    this.onMissing(child)
+        try {
+            this.watched.inc(dir) || this.watched.set(dir, watch(dir, (event, target) => {
+                if (event == 'rename') {
+                    const child = join(dir, target)
+                    if (this.watched.has(child) && !stat(child)) {
+                        this.watched.del(child)
+                        this.onMissing(child)
+                    }
                 }
-            }
-            
-            try {
-                this.listener(dir, this.transform(list(dir)), event, target)
-            } catch (e) {
-                this.watched.del(dir)
-                this.onMissing(dir)
-            }
-        }))
-        const files = this.transform(list(dir))
-        this.listener(dir, files)
-        return files
+                try {
+                    this.listener(dir, this.transform(list(dir)), event, target)
+                } catch (e) {
+                    this.watched.del(dir)
+                    this.onMissing(dir)
+                }
+            }))
+    
+            const files = this.transform(list(dir))
+            this.listener(dir, files)
+            return files
+
+        } catch (e) {
+            this.watched.del(dir)
+            this.onMissing(dir)
+        }
+        return []
     }
 
     unwatch(dir: Path) {

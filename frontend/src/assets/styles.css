@@ -138,6 +138,20 @@ section {
         gap: 1em;
         text-align: center;
     }
+    .icon:first-of-type {
+        font-size: 6em;
+    }
+    .link {
+        color: var(--link);
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    b {
+        background-color: var(--bar-background);
+        padding: .2em .5em;
+        border-radius: 6px;
+        font-weight: 600;
+    }
 }
 
 .modal-content {

@@ -431,7 +431,7 @@ export default function Explorer ({
 
     const watch = (dirs: string[]) => {
         watched.current.push(...dirs)
-        dirs.forEach(dir => window.f5.watch(connection+dir as URI))
+        dirs.forEach(dir => window.f5.watch(createURI(connection, dir)))
     }
 
     const unwatch = (dirs: string[]) => {

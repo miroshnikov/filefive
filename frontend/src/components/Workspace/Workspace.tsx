@@ -11,12 +11,13 @@ import localFileMenu from '../../menu/localFile'
 import remoteFileMenu from '../../menu/remoteFile'
 import localDirMenu from '../../menu/localDir'
 import remoteDirMenu from '../../menu/remoteDir'
-import { useEffectOnUpdate, useSubscribe, useConcatAsyncEffect, useToggle } from '../../hooks'
+import { useEffectOnUpdate, useSubscribe, useConcatAsyncEffect } from '../../hooks'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
-import { basename, dirname } from '../../utils/path'
+import { basename, dirname, join } from '../../utils/path'
 import classNames from 'classnames'
+import MissingDir from './MissingDir'
 import styles from './Workspace.less'
 
 
@@ -46,7 +47,11 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const [connecting, setConnecting] = useState('')
     const abortConnecting = useRef<AbortController>()
     const sid = useRef<string>()
-    const [sync, toggleSync] = useToggle(false)
+    const [sync, setSync] = useState(false)
+    const syncRootLocal = useRef('')
+    const syncRootRemote = useRef('')
+    const [tryDir, setTryDir] = useState('')
+    const [missingTarget, setMissingTarget] = useState<'local'|'remote'>(null)
 
     const focused = useRef<'local'|'remote'|null>(null)
 
@@ -300,7 +305,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     break
                 }
                 case CommandID.SyncBrowsing: {
-                    toggleSync()
+                    setSync(sync => !sync)
                     break
                 }
             }
@@ -312,6 +317,10 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         error$.subscribe(error => {
             if (error.type == FailureType.MissingDir) {
                 const {id, path} = parseURI(error.uri)
+                if (tryDir === path) {
+                    setMissingTarget(path == localPath ? 'local' : 'remote')
+                    return
+                }
                 if (id == LocalFileSystemID) {
                     if (path == localPath) {
                         setLocalPath(dirname(localPath))
@@ -322,48 +331,90 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                 } else if (id == connection.id && path == remotePath) {
                     setRemotePath(dirname(remotePath))
                 }
+
             }
         }),
-        [connection, localPath, remotePath]
+        [connection, localPath, remotePath, tryDir]
     )
 
-    const syncDirs = (changedLocal: boolean) => {
+    useEffectOnUpdate(() => {
+        syncRootLocal.current = sync ? localPath : ''
+        syncRootRemote.current = sync ? remotePath : ''
+        if (!sync) {
+            setTryDir('')
+            setMissingTarget(null)
+        }
+    }, [sync])
+
+    const syncDir = (root: string, dir: string, targetRoot: string, setF: (path: string) => void) => {
         if (!sync) {
             return
+        }      
+        const path = join(targetRoot, dir.substring(root.length))
+        if (path.length < targetRoot.length) {
+            setSync(false)
+        } else {
+            setMissingTarget(null)
+            setTryDir(path)
+            setF(path)
         }
-        console.log('sync: ', changedLocal, localPath, remotePath)
     }
-    useEffectOnUpdate(() => syncDirs(true), [localPath])
-    useEffectOnUpdate(() => syncDirs(false), [remotePath])
+
+    useEffectOnUpdate(() => {
+        if (localPath != tryDir) {
+            syncDir(syncRootLocal.current, localPath, syncRootRemote.current, setRemotePath)
+        }
+    }, [localPath])
+    useEffectOnUpdate(() => {
+        if (remotePath != tryDir) {
+            syncDir(syncRootRemote.current, remotePath, syncRootLocal.current, setLocalPath)
+        }
+    }, [remotePath])
+
+
 
     return (<>
         <Split className={classNames({ sync })}
             left = {
-                localPath ? 
-                    <Explorer 
-                        icon='computer'
-                        connection={LocalFileSystemID}
-                        settings={(connection ?? appSettings).local}
-                        path={localPath} 
-                        fixedRoot={'/'}
-                        onChange={setLocalPath} 
-                        onSelect={paths => setLocalSelected(paths)}
-                        onOpen={openLocal}
-                        onMenu={fileContextMenu(false)}
-                        onSettingsChange={changes => 
-                            connection ?
-                                setConnection(connection => ({...connection, local: {...connection.local, ...changes}})):
-                                onSettingsChange({ local: changes })
-                        }
-                        contextMenu={menu}
-                        toolbar={localToolbar}
-                        tabindex={1}
-                        onFocus={() => focused.current = 'local'}
-                        onBlur={() => focused.current = null}
-                    /> : 
-                    <div className="fill-center">
-                        <Spinner radius="2em" />
-                    </div>
+                localPath ? (
+                    missingTarget == 'local' ? 
+                        <MissingDir 
+                            path={localPath}
+                            onClose={async (create) => {
+                                if (create) {
+                                    await window.f5.mkdir(basename(tryDir), createURI(LocalFileSystemID, dirname(tryDir)))
+                                    setMissingTarget(null)
+                                } else {
+                                    setMissingTarget(null)
+                                    setSync(false)
+                                }
+                            }}
+                        /> :
+                        <Explorer 
+                            icon='computer'
+                            connection={LocalFileSystemID}
+                            settings={(connection ?? appSettings).local}
+                            path={localPath} 
+                            fixedRoot={'/'}
+                            onChange={setLocalPath} 
+                            onSelect={paths => setLocalSelected(paths)}
+                            onOpen={openLocal}
+                            onMenu={fileContextMenu(false)}
+                            onSettingsChange={changes => 
+                                connection ?
+                                    setConnection(connection => ({...connection, local: {...connection.local, ...changes}})):
+                                    onSettingsChange({ local: changes })
+                            }
+                            contextMenu={menu}
+                            toolbar={localToolbar}
+                            tabindex={1}
+                            onFocus={() => focused.current = 'local'}
+                            onBlur={() => focused.current = null}
+                        />
+                ) : 
+                <div className="fill-center">
+                    <Spinner radius="2em" />
+                </div>
             }
             right = {
                 connecting.length ? 
@@ -373,57 +424,80 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             <p>Connecting {connecting}...</p>
                             <Button onClick={() => cancel()}>Cancel</Button>
                         </div>
-                    </div> :
-                    showConnections ? 
-                        <Connections
-                            path={remotePath}
-                            onChange={setRemotePath}
-                            onSelect={paths => setRemoteSelected(paths)}
-                            connect={connect}
-                            toolbar={connectionsToolbar}
-                            tabindex={2}
-                            onFocus={() => focused.current = 'remote'}
-                            onBlur={() => focused.current = null}
-                        /> : 
-                        connection ? 
-                            <Explorer
-                                icon='cloud'
-                                connection={connection.id}
-                                connectionName={basename(connection.file)}
-                                sid={sid.current}
-                                settings={connection.remote}
+                    </div> : (
+                        missingTarget == 'remote' ? 
+                            <MissingDir 
                                 path={remotePath}
-                                fixedRoot={'/'}
-                                onChange={setRemotePath} 
-                                onSelect={paths => setRemoteSelected(paths)}
-                                onOpen={openRemote}
-                                onMenu={fileContextMenu()}
-                                onSettingsChange={changes =>
-                                    setConnection(connection => ({...connection, remote: {...connection.remote, ...changes}}))
-                                }
-                                contextMenu={menu}
-                                toolbar={remoteToolbar}
-                                tabindex={2}
-                                onFocus={() => focused.current = 'remote'}
-                                onBlur={() => focused.current = null}
-                            /> :
-                            <Explorer 
-                                icon='computer'
-                                connection={LocalFileSystemID}
-                                settings={appSettings.remote}
-                                path={remotePath} 
-                                fixedRoot={'/'}
-                                onChange={setRemotePath} 
-                                onSelect={paths => setRemoteSelected(paths)}
-                                onOpen={openRemote}
-                                onMenu={fileContextMenu()}
-                                onSettingsChange={changes => onSettingsChange({ remote: changes })}
-                                contextMenu={menu}
-                                toolbar={remoteToolbar}
-                                tabindex={2}
-                                onFocus={() => focused.current = 'remote'}
-                                onBlur={() => focused.current = null}
-                            />
+                                onClose={async (create) => {
+                                    if (create) {
+                                        console.log('mkdir', 
+                                            tryDir.substring(syncRootRemote.current.length),
+                                            syncRootRemote.current
+                                        )
+                                        await window.f5.mkdir(
+                                            tryDir.substring(syncRootRemote.current.length),
+                                            createURI(connection?.id ?? LocalFileSystemID, syncRootRemote.current)
+                                        )
+                                        setMissingTarget(null)
+
+                                    } else {
+                                        setMissingTarget(null)
+                                        setSync(false)
+                                    }
+                                }}
+                            /> : (
+                                showConnections ? 
+                                    <Connections
+                                        path={remotePath}
+                                        onChange={setRemotePath}
+                                        onSelect={paths => setRemoteSelected(paths)}
+                                        connect={connect}
+                                        toolbar={connectionsToolbar}
+                                        tabindex={2}
+                                        onFocus={() => focused.current = 'remote'}
+                                        onBlur={() => focused.current = null}
+                                    /> : 
+                                    connection ? 
+                                        <Explorer
+                                            icon='cloud'
+                                            connection={connection.id}
+                                            connectionName={basename(connection.file)}
+                                            sid={sid.current}
+                                            settings={connection.remote}
+                                            path={remotePath}
+                                            fixedRoot={'/'}
+                                            onChange={setRemotePath} 
+                                            onSelect={paths => setRemoteSelected(paths)}
+                                            onOpen={openRemote}
+                                            onMenu={fileContextMenu()}
+                                            onSettingsChange={changes =>
+                                                setConnection(connection => ({...connection, remote: {...connection.remote, ...changes}}))
+                                            }
+                                            contextMenu={menu}
+                                            toolbar={remoteToolbar}
+                                            tabindex={2}
+                                            onFocus={() => focused.current = 'remote'}
+                                            onBlur={() => focused.current = null}
+                                        /> :
+                                        <Explorer 
+                                            icon='computer'
+                                            connection={LocalFileSystemID}
+                                            settings={appSettings.remote}
+                                            path={remotePath} 
+                                            fixedRoot={'/'}
+                                            onChange={setRemotePath} 
+                                            onSelect={paths => setRemoteSelected(paths)}
+                                            onOpen={openRemote}
+                                            onMenu={fileContextMenu()}
+                                            onSettingsChange={changes => onSettingsChange({ remote: changes })}
+                                            contextMenu={menu}
+                                            toolbar={remoteToolbar}
+                                            tabindex={2}
+                                            onFocus={() => focused.current = 'remote'}
+                                            onBlur={() => focused.current = null}
+                                        />
+                            )
+                    )
             }
         >
             <Tooltips shortcuts={appSettings.keybindings}>

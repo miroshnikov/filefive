@@ -1,14 +1,25 @@
-import { URI, FailureType } from '../types'
+import { URI, FailureType, LocalFileSystemID } from '../types'
+import { mkdir } from 'node:fs/promises'
 import Connection from '../Connection'
 import { parseURI, isLocal } from '../utils/URI'
 import { join } from 'node:path'
+import { split } from '../utils/path'
 import App from '../App'
 
 
-export default function (name: string, parent: URI) {
-    const {id, path} = parseURI(parent)
+export default async function (name: string, parent: URI) {
+    let {id, path} = parseURI(parent)
     try {
-        Connection.get(id).mkdir(join(path, name))
+        if (id == LocalFileSystemID) {
+            await mkdir(join(path, name), { recursive: true })
+        } else {
+            const parts = split(name)
+            const conn = Connection.get(id)
+            for (const part of parts) {
+                path = join(path, part)
+                await conn.mkdir(path)
+            }
+        }
     } catch (error) {
         App.onError({ type: FailureType.RemoteError, id, message: 'message' in error ? error.message : String(error) })
     }

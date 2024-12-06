@@ -59,7 +59,7 @@ export default function ConfirmDeletion() {
                     <p>
                         <i>
                             {isLocal ? 
-                                `You can restore ${names.length > 1 ? 'these files' : 'this file'} from the Trash.` :
+                                `You can restore ${names.length > 1 ? 'them' : 'it'} from the Trash.` :
                                 'This action is irreversible!'
                             }
                         </i>

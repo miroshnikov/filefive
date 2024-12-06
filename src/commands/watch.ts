@@ -17,7 +17,7 @@ export default async function (uri: URI, local: LocalWatcher, remote: RemoteWatc
                 file.watch(path)
             }
         } else {
-
+            local.watch(path)
         }
     } else {
         remote.watch(uri)
