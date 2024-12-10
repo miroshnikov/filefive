@@ -99,7 +99,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
     return <>
         {file.length > 0 &&
             <Modal buttons={buttons} onClose={onModalClose}>
-                <form className={styles.root} onSubmit={e => e.preventDefault()}>
+                <form className={styles.root} onSubmit={e => e.preventDefault()} autoComplete="off">
                     <h1>{name}</h1>
 
                     <label>Protocol:</label>

@@ -430,16 +430,11 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 path={remotePath}
                                 onClose={async (create) => {
                                     if (create) {
-                                        console.log('mkdir', 
-                                            tryDir.substring(syncRootRemote.current.length),
-                                            syncRootRemote.current
-                                        )
                                         await window.f5.mkdir(
                                             tryDir.substring(syncRootRemote.current.length),
                                             createURI(connection?.id ?? LocalFileSystemID, syncRootRemote.current)
                                         )
                                         setMissingTarget(null)
-
                                     } else {
                                         setMissingTarget(null)
                                         setSync(false)

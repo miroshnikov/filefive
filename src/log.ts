@@ -39,7 +39,7 @@ export class LogFS extends FileSystem {
                 msg += ': ' + e.message
             }
             logger.error(await err(msg))
-            throw Error(msg)
+            throw new Error(msg)
         }
     }
 
