@@ -24,6 +24,7 @@ export default async function (path: string): Promise<AppSettings> {
         sizeFmt: config?.sizeFmt ?? '0.0 b',
         local: explorerSettings(LOCAL_ATTRIBUTES, config?.local), 
         remote: explorerSettings(LOCAL_ATTRIBUTES, config?.remote),
-        path: config?.path ?? { local: homedir(), remote: homedir() }
+        path: config?.path ?? { local: homedir(), remote: homedir() },
+        sync: config?.sync ?? null
     }
 }

@@ -19,7 +19,7 @@ export function getSettings(settings: ExplorerSettings): ExplorerConfig {
 
 export type SaveConnectionSettings = 
     | Pick<ConnectionConfig, 'scheme'|'host'|'port'|'user'|'password'> 
-    | Pick<ConnectionSettings, 'local'|'remote'|'path'>
+    | Pick<ConnectionSettings, 'local'|'remote'|'path'|'sync'>
 
 
 export default async function (path: Path, settings: SaveConnectionSettings) {
@@ -48,6 +48,7 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
         if (settings.path) {
             config.path = settings.path
         }
+        config.sync = settings.sync
     }
 
     if (!config) {

@@ -15,9 +15,15 @@ export default async function (name: string, parent: URI) {
         } else {
             const parts = split(name)
             const conn = Connection.get(id)
-            for (const part of parts) {
-                path = join(path, part)
-                await conn.mkdir(path)
+            for (let i=0; i<parts.length; i++) {
+                path = join(path, parts[i])
+                try {
+                    await conn.mkdir(path)
+                } catch (e) {
+                    if (i == parts.length-1) {
+                        throw e
+                    }
+                }
             }
         }
     } catch (error) {

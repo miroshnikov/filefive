@@ -67,6 +67,7 @@ export interface ConnectionConfig extends Twofold<ExplorerConfig> {
     password: string
     theme: string
     path?: Twofold<Path|undefined>
+    sync?: Twofold<Path>|null
 }
 
 
@@ -76,6 +77,7 @@ export interface AppConfig extends Twofold<ExplorerConfig> {
     timeFmt?: string
     sizeFmt?: string
     path?: Twofold<Path|undefined>
+    sync?: Twofold<Path>|null
 }
 
 
@@ -87,12 +89,13 @@ export interface ExplorerSettings {
     filter: FilterSettings|null
 }
 
-export interface ConnectionSettings extends Twofold<ExplorerSettings> { 
+export interface ConnectionSettings extends Twofold<ExplorerSettings> {
     name: string
     pwd: string
     attributes: FileAttributes
     theme: string
     path?: Twofold<Path|undefined>
+    sync: Twofold<Path>|null
 }
 
 export interface AppSettings extends Twofold<ExplorerSettings> {
@@ -105,6 +108,7 @@ export interface AppSettings extends Twofold<ExplorerSettings> {
     timeFmt: string
     sizeFmt: string
     path: Twofold<Path|undefined>
+    sync: Twofold<Path>|null
 }
 
 

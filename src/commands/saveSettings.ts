@@ -19,7 +19,8 @@ export default async function (path: string, changes: DeepPartial<AppSettings>) 
         sizeFmt: settings.sizeFmt,
         local: getSettings(settings.local),
         remote: getSettings(settings.remote),
-        path: settings.path
+        path: settings.path,
+        sync: settings.sync
     }
     await writeFile(path, JSON.stringify(config))
 }

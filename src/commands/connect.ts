@@ -71,7 +71,8 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
             path: {
                 local: config.path?.local,
                 remote: config.path?.remote ?? pwd
-            }
+            },
+            sync: config.sync ?? null
         }
         return { id, sid: Session.create(), settings }
     } catch (e) {

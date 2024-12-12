@@ -39,7 +39,7 @@ export default function Breadcrumbs(
             {items.map((item, i) => 
                 <div key={item}>
                     {i==0 && <i className='icon'>arrow_forward_ios</i>}
-                    <span onClick={() => go(root + item)} data-tooltip={root + item}>{basename(item)}</span>
+                    <span onClick={() => go(normalize(root + item))} data-tooltip={normalize(root + item)}>{basename(item)}</span>
                     {i<items.length-1 && <i className='icon'>arrow_forward_ios</i>}
                 </div>
             )}

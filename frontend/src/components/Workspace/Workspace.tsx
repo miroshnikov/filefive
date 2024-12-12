@@ -21,7 +21,7 @@ import MissingDir from './MissingDir'
 import styles from './Workspace.less'
 
 
-export type AppSettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'>>
+export type AppSettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'|'sync'>>
 
 interface Props {
     onChange: (
@@ -126,7 +126,12 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     }
 
     useEffect(() => {
-        document.documentElement.setAttribute('data-theme', connection ? connection.theme : appSettings.theme) 
+        document.documentElement.setAttribute('data-theme', connection ? connection.theme : appSettings.theme)
+
+        const syncDirs = connection ? connection.sync : appSettings.sync
+        setSyncRootLocal(syncDirs?.local ?? null)
+        setSyncRootRemote(syncDirs?.remote ?? null)
+        setSync(!!syncDirs)
     }, [appSettings, connection])
   
     const disconnect = () => {
@@ -243,14 +248,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             icon: 'close',
             title: 'Close Connections',
             disabled: false,
-            onClick: () => {
-                setShowConnections(false)
-                setRemotePath( 
-                    connection ? 
-                        (connection.path?.remote ?? connection.pwd) : 
-                        (appSettings.path?.remote ?? appSettings.home) 
-                    )
-            }
+            onClick: () => setShowConnections(false)
         }
     ]
 
@@ -275,7 +273,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             switch (cmd.id) {
                 case CommandID.Connections: {
                     setShowConnections(true)
-                    setRemotePath(appSettings.connections)
                     break
                 }
                 case CommandID.Transfer: {
@@ -338,15 +335,31 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         [connection, localPath, remotePath, tryDir]
     )
 
-    useEffectOnUpdate(() => setSync(false), [showConnections])   
+    useEffectOnUpdate(() => { 
+        setSync(false)
+        showConnections ? 
+            setRemotePath(appSettings.connections) :
+            setRemotePath( 
+                connection ? 
+                    (connection.path?.remote ?? connection.pwd) : 
+                    (appSettings.path?.remote ?? appSettings.home) 
+                )
+    }, [showConnections])   
 
     useEffectOnUpdate(() => {
-        setSyncRootLocal(sync ? localPath : null)
-        setSyncRootRemote(sync ? remotePath : null)
+        const localRoot = sync ? (syncRootLocal ?? localPath) : null
+        setSyncRootLocal(localRoot)
+
+        const remoteRoot = sync ? (syncRootRemote ?? remotePath) : null
+        setSyncRootRemote(remoteRoot)
+
         if (!sync) {
             setTryDir('')
             setMissingTarget(null)
         }
+        connection ?
+            setConnection(connection => ({ ...connection, sync: sync ? { local: localRoot, remote: remoteRoot } : null })):
+            onSettingsChange({ sync: sync ? { local: localRoot, remote: remoteRoot } : null })
     }, [sync])
 
     const syncDir = (root: string, dir: string, targetRoot: string, setF: (path: string) => void) => {
