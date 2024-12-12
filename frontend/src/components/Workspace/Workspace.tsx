@@ -48,8 +48,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const abortConnecting = useRef<AbortController>()
     const sid = useRef<string>()
     const [sync, setSync] = useState(false)
-    const syncRootLocal = useRef('')
-    const syncRootRemote = useRef('')
+    const [syncRootLocal, setSyncRootLocal] = useState<string>(null)
+    const [syncRootRemote, setSyncRootRemote] = useState<string>(null)
     const [tryDir, setTryDir] = useState('')
     const [missingTarget, setMissingTarget] = useState<'local'|'remote'>(null)
 
@@ -130,6 +130,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     }, [appSettings, connection])
   
     const disconnect = () => {
+        setSync(false)
         if (!connection) {
             return
         }
@@ -337,9 +338,11 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         [connection, localPath, remotePath, tryDir]
     )
 
+    useEffectOnUpdate(() => setSync(false), [showConnections])   
+
     useEffectOnUpdate(() => {
-        syncRootLocal.current = sync ? localPath : ''
-        syncRootRemote.current = sync ? remotePath : ''
+        setSyncRootLocal(sync ? localPath : null)
+        setSyncRootRemote(sync ? remotePath : null)
         if (!sync) {
             setTryDir('')
             setMissingTarget(null)
@@ -351,26 +354,26 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             return
         }      
         const path = join(targetRoot, dir.substring(root.length))
-        if (path.length < targetRoot.length) {
-            setSync(false)
-        } else {
-            setMissingTarget(null)
-            setTryDir(path)
-            setF(path)
-        }
+        setMissingTarget(null)
+        setTryDir(path)
+        setF(path)
     }
 
     useEffectOnUpdate(() => {
-        if (localPath != tryDir) {
-            syncDir(syncRootLocal.current, localPath, syncRootRemote.current, setRemotePath)
+        if (syncRootLocal && localPath.length < syncRootLocal.length) {
+            setSync(false)
+        } else if (localPath != tryDir) {
+            syncDir(syncRootLocal, localPath, syncRootRemote, setRemotePath)
         }
     }, [localPath])
+
     useEffectOnUpdate(() => {
-        if (remotePath != tryDir) {
-            syncDir(syncRootRemote.current, remotePath, syncRootLocal.current, setLocalPath)
+        if (syncRootRemote && remotePath.length < syncRootRemote.length) {
+            setSync(false)
+        } else if (remotePath != tryDir) {
+            syncDir(syncRootRemote, remotePath, syncRootLocal, setLocalPath)
         }
     }, [remotePath])
-
 
 
     return (<>
@@ -395,7 +398,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             connection={LocalFileSystemID}
                             settings={(connection ?? appSettings).local}
                             path={localPath} 
-                            fixedRoot={'/'}
+                            fixedRoot={syncRootLocal ?? '/'}
                             onChange={setLocalPath} 
                             onSelect={paths => setLocalSelected(paths)}
                             onOpen={openLocal}
@@ -431,8 +434,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 onClose={async (create) => {
                                     if (create) {
                                         await window.f5.mkdir(
-                                            tryDir.substring(syncRootRemote.current.length),
-                                            createURI(connection?.id ?? LocalFileSystemID, syncRootRemote.current)
+                                            tryDir.substring(syncRootRemote.length),
+                                            createURI(connection?.id ?? LocalFileSystemID, syncRootRemote)
                                         )
                                         setMissingTarget(null)
                                     } else {
@@ -460,7 +463,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                             sid={sid.current}
                                             settings={connection.remote}
                                             path={remotePath}
-                                            fixedRoot={'/'}
+                                            fixedRoot={syncRootRemote ?? '/'}
                                             onChange={setRemotePath} 
                                             onSelect={paths => setRemoteSelected(paths)}
                                             onOpen={openRemote}
@@ -479,7 +482,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                             connection={LocalFileSystemID}
                                             settings={appSettings.remote}
                                             path={remotePath} 
-                                            fixedRoot={'/'}
+                                            fixedRoot={syncRootRemote ?? '/'}
                                             onChange={setRemotePath} 
                                             onSelect={paths => setRemoteSelected(paths)}
                                             onOpen={openRemote}

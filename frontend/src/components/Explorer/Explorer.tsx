@@ -199,9 +199,13 @@ export default function Explorer ({
     }, [settings], equals)
 
     useEffectOnUpdate(() => setRoot(path), [path])
+
+    useEffect(() => {
+        setParent(root == fixedRoot ? null : dirname(root))
+    }, [fixedRoot])
     
     useEffect(() => {
-        setParent(root == '/' ? null : dirname(root))
+        setParent(root == fixedRoot ? null : dirname(root))
         watch([root])       
 
         return () => { 

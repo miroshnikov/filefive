@@ -32,6 +32,13 @@ module.exports = {
       new FaviconsWebpackPlugin({
         logo: './src/assets/logo.svg',
         mode: 'webapp',
+        favicons: {
+          appName: 'FileFive',
+          appShortName: 'F5',
+          appDescription: 'SFTP/FTP client, dual-panel file manager',
+          developerName: 'Max Miroshnikov',
+          developerURL: 'https://github.com/miroshnikov'
+        }
       })
     ],
     module: {

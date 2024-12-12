@@ -20,26 +20,26 @@ export default function Breadcrumbs(
 
     useEffect(() => {
         setItems(
-            segments(path).reduce(
+            segments(path.substring(root.length)).reduce(
                 (all, segment) => [...all, all.length ? join(last(all), segment) : normalize(segment) ], 
                 []
             )
         )
-    }, [path])
+    }, [path, root])
 
     return (
         <div className={'breadcrumbs ' + styles.root}>
             {connection ? 
-                <em onClick={() => go(root)}>
+                <em onClick={() => go(root)} data-tooltip={root}>
                     <i className='icon'>{icon}</i> 
                     <span>{connection.name}</span>
                 </em> :
-                <i className='icon' onClick={() => go(root)}>{icon}</i>
+                <i className='icon' onClick={() => go(root)} data-tooltip={root}>{icon}</i>
             }
             {items.map((item, i) => 
                 <div key={item}>
                     {i==0 && <i className='icon'>arrow_forward_ios</i>}
-                    <span onClick={() => go(item)} data-tooltip={item}>{basename(item)}</span>
+                    <span onClick={() => go(root + item)} data-tooltip={root + item}>{basename(item)}</span>
                     {i<items.length-1 && <i className='icon'>arrow_forward_ios</i>}
                 </div>
             )}
