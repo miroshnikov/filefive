@@ -1,4 +1,4 @@
-import { join, dirname, basename } from 'node:path'
+import { join, isAbsolute, basename, normalize } from 'node:path'
 import { tmpdir } from 'node:os'
 import { writeFile, rm } from 'node:fs/promises'
 import * as fs from 'fs'
@@ -90,17 +90,23 @@ export default class Ftp extends FileSystem {
                     resolve(
                         list
                             .filter(f => f.name != '.' && f.name != '..')
-                            .map(f => ({
-                                path: join(dir, f.name),
-                                name: f.name,
-                                dir: f.type == 'd',
-                                size: f.size,
-                                modified: f.date,
-                                owner: f.owner,
-                                group: f.group,
-                                rights: f.rights ? parseRights(f.rights.user) + parseRights(f.rights.group) + parseRights(f.rights.other) : '',
-                                target: f.target
-                            }))
+                            .map(f => {
+                                let target = f.target
+                                if (target && !isAbsolute(target)) {
+                                    target = normalize(join(dir, target))
+                                }
+                                return {
+                                    path: join(dir, f.name),
+                                    name: f.name,
+                                    dir: f.type == 'd',
+                                    size: f.size,
+                                    modified: f.date,
+                                    owner: f.owner,
+                                    group: f.group,
+                                    rights: f.rights ? parseRights(f.rights.user) + parseRights(f.rights.group) + parseRights(f.rights.other) : '',
+                                    target
+                                }
+                            })
                     )
             })
         })

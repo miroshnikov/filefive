@@ -1,6 +1,6 @@
 import { homedir } from 'node:os'
-import { normalize, basename, dirname, join } from 'node:path'
-import { readdirSync, statSync, watch as fsWatch, WatchEventType } from 'node:fs';
+import { normalize, basename, dirname, join, isAbsolute } from 'node:path'
+import { readdirSync, statSync, lstatSync, readlinkSync, watch as fsWatch, WatchEventType } from 'node:fs';
 import { mkdir, unlink, rename, cp, open, rm, readFile, writeFile } from 'node:fs/promises'
 import { FileItem } from './FileSystem'
 
@@ -17,14 +17,23 @@ export function pwd(): string {
 export function stat(path: string): LocalFileInfo|null {
     path = normalize(path)
     try {
-        const stat = statSync(path)
+        let stat = lstatSync(path)
+        let target: string
+        if (stat.isSymbolicLink()) {
+            target = readlinkSync(path)
+            if (!isAbsolute(target)) {
+                target = normalize(join(dirname(path), target))
+            }
+            stat = statSync(target)
+        }
         return {
             path,
             name: basename(path),
             dir: stat.isDirectory(), 
             size: stat.size,        // in bytes
             modified: stat.mtime,
-            inode: stat.ino
+            inode: stat.ino,
+            ...(target ? { target } : {})
         }
     } catch (e) {
         return null

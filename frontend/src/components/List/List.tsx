@@ -143,7 +143,9 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
         return items
     }
 
-    useEffect(() => setItems(setRenamingItem(insertNewItem(files))), [files])
+    useEffect(() => {
+        setItems(setRenamingItem(insertNewItem(files)))
+    }, [files])
 
     useEffect(() => {
         setItems(items => {
@@ -478,13 +480,17 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                     <td key={name}
                                         className={classNames({d: item.dir})}
                                         data-depth={depth(item.path)-rootDepth}
-                                        data-tooltip={item.path}
                                     >
                                         <div className={classNames({expanded: expanded.includes(item.path)})}>
                                             {item.dir && 
                                                 <i className="icon">arrow_forward_ios</i>
                                             }
-                                            <span>{item[name]}</span>
+                                            <span data-tooltip={item.path}>{item[name]}</span>
+                                            <ul>
+                                                {item.target &&
+                                                    <li className="icon" data-tooltip={'Symbolic Link to ' + item.target}>prompt_suggestion</li>
+                                                }
+                                            </ul>
                                         </div>
                                     </td> :
                                     <td key={name} className={'type-'+type}>

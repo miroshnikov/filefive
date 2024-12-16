@@ -86,10 +86,10 @@
                             &.expanded > .icon {
                                 transform: rotate(90deg);
                             }
-                            .icon {
+                            > .icon {
                                 opacity: .6;
                             }
-                            .icon + span {
+                            > .icon + span {
                                 padding-left: .3em;
                             }
                             > span {
@@ -97,7 +97,17 @@
                                 overflow: hidden;
                                 text-overflow: ellipsis;
                             }
+                            > ul {
+                                flex: auto 1 1;
+                                display: flex;
+                                justify-content: end;
+                                gap: 1em;
+                                > .icon {
+                                    font-size: 1.2em;
+                                }
+                            }
                         }
+
                         &:not(.d) > div {
                             padding-left: calc(var(--icon-size) + .3em);
                         }

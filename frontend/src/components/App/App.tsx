@@ -18,7 +18,7 @@ import { CommandID, KeyShortcutCommand } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 import { Tooltips, Spinner } from '../../ui/components'
 import Settings from '../../modals/Settings/Settings'
-
+import info from '../../../package.json'
 
 
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
@@ -126,7 +126,7 @@ export default function App () {
                 <div className={classNames(styles.root, {hasQueues: queues.size > 0})}>
                     <Tooltips shortcuts={appSettings.keybindings}>
                         <div className={styles.toolbar}>
-                            <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive</a>
+                            <a href="https://github.com/miroshnikov/f5" target="_blank"><span>F5</span>FileFive <small>{info.version}</small></a>
                             <span>
                                 <button 
                                     className="icon"

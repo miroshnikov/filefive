@@ -1,5 +1,5 @@
-import { join, dirname } from 'node:path'
-import { Client, SFTPWrapper } from 'ssh2'
+import { join, dirname, isAbsolute, normalize } from 'node:path'
+import { Client, SFTPWrapper, Stats } from 'ssh2'
 import { Path } from '../types'
 import { FileSystem, FileItem, FileAttributes, FileAttributeType } from '../FileSystem'
 
@@ -125,25 +125,62 @@ export default class SFtp extends FileSystem {
     async ls(dir: Path): Promise<FileItem[]> {
         const sftp = await this.open()
         return new Promise((resolve, reject) => {
-            sftp.readdir(dir, (e, list) => {
-                e ? 
-                    reject(new Error(`LS: Can't get contents of ${dir} ` + this.decodeError(e))) :
-                    resolve(
-                        list
-                            .map(f => ({
-                                path: join(dir, f.filename),
-                                name: f.filename,
-                                dir: f.attrs.isDirectory(),
-                                size: f.attrs.size,
-                                modified: new Date(f.attrs.mtime * 1000),
-                                owner: f.attrs.uid,
-                                group: f.attrs.gid,
-                                rights: f.attrs.mode
-                            }))
-                    )
+            sftp.readdir(dir, async (e, list) => {
+                if (e) {
+                    reject(new Error(`LS: Can't get contents of ${dir} ` + this.decodeError(e)))
+                }
+
+                const files: FileItem[]  = []
+                for (let f of list) {
+                    if (f.attrs.isSymbolicLink()) {
+                        let target = await this.readlink(join(dir, f.filename))
+                        if (!isAbsolute(target)) {
+                            target = normalize(join(dir, target))
+                        }
+                        const targetStat = await this.stat(target)
+                        files.push({
+                            path: join(dir, f.filename),
+                            name: f.filename,
+                            dir: f.attrs.isDirectory(),
+                            size: targetStat.size,
+                            modified: new Date(targetStat.mtime * 1000),
+                            owner: targetStat.uid,
+                            group: targetStat.gid,
+                            rights: targetStat.mode,
+                            target
+                        })
+                    } else {
+                        files.push({
+                            path: join(dir, f.filename),
+                            name: f.filename,
+                            dir: f.attrs.isDirectory(),
+                            size: f.attrs.size,
+                            modified: new Date(f.attrs.mtime * 1000),
+                            owner: f.attrs.uid,
+                            group: f.attrs.gid,
+                            rights: f.attrs.mode
+                        })
+                    }
+                }
+                resolve(files)
             })
         })
     }
+
+    private async readlink(path: Path): Promise<string> {
+        const sftp = await this.open()
+        return new Promise((resolve, reject) => {
+            sftp.readlink(path, (e, target) => e ? reject(new Error(this.decodeError(e))) : resolve(target))
+        })
+    }
+
+    private async stat(path: Path): Promise<Stats> {
+        const sftp = await this.open()
+        return new Promise((resolve, reject) => {
+            sftp.stat(path, (e, stats) => e ? reject(new Error(this.decodeError(e))) : resolve(stats))
+        })
+    }
+    
 
     async get(fromRemote: Path, toLocal: Path): Promise<void> {
         const sftp = await this.open()

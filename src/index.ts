@@ -9,8 +9,23 @@ const open = import("open")
 import { createURI } from './utils/URI'
 import { LocalFileSystemID } from './types'
 import { commands } from './commands'
+import { program } from 'commander'
+import info from '../package.json'
 
-const port = 3113
+program
+    .name('F5')
+    .description('SFTP/FTP client, dual-panel file manager in the browser')
+    .version(info.version)
+    .option('-p, --port <number>','port number', '3113')
+    .option('--debug', 'prints the log information')
+program.parse()
+const options = program.opts()
+
+
+const port = options.port ?? 3113
+const debug = options.debug ?? false
+
+// console.log('params', port, debug)
 
 const app = express()
 

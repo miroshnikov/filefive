@@ -28,7 +28,6 @@ import { createURI } from './utils/URI'
 import { SaveConnectionSettings } from './commands/saveConnection'
 import { inspect } from 'node:util'
 
-
 export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
 
 export default class App {

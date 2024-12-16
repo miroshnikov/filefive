@@ -6,6 +6,7 @@ export type FileItem = {
     dir: boolean
     size: number
     modified: Date
+    target?: string     // if a symlink
 } & {[key: string|symbol]: any}
 
 export type FileSystemURI = `${string}://${string}@${string}:${number}`

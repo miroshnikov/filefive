@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
+    "commander": "^12.1.0",
     "express": "^4.19.2",
     "ftp": "^0.3.10",
     "multer": "^1.4.5-lts.1",
