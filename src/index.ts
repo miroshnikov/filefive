@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import express from 'express'
 import multer from 'multer'
 import { resolve, join, dirname } from 'path'
@@ -31,6 +33,8 @@ const app = express()
 
 app.use(express.json())
 app.use(express.static(resolve(__dirname, 'public')))
+
+app.use(express.static(resolve(__dirname, '../dist/public')))
 
 const server = app.listen(port, () => {
     console.log(`F5 is running on port ${port}`)

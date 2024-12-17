@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "outDir": "dist",
     "resolveJsonModule": true,
-    "target": "es2021"
+    "target": "es2021",
+    "rootDir": "./src"
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*.ts"]
 }
