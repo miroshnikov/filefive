@@ -8,6 +8,7 @@ import logger, { LogFS } from './log'
 import Local from './fs/Local'
 import SFtp, { ATTRIBUTES as SFTP_ATTRIBUTES } from './fs/SFtp'
 import Ftp, { ATTRIBUTES as FTP_ATTRIBUTES } from './fs/Ftp'
+import options from './options'
 
 
 export default class {
@@ -141,10 +142,13 @@ export default class {
     }
 
     private static async create(id: ConnectionID, scheme: string, user: string, host: string, port: number, onClose = () => {}): Promise<FileSystem> {
-        return new LogFS(
-            id, 
-            await this.createFS(scheme, user, host, port, await Password.get(id), onClose)
-        )
+        if (options.log) {
+            return new LogFS(
+                id, 
+                await this.createFS(scheme, user, host, port, await Password.get(id), onClose)
+            )
+        }
+        return this.createFS(scheme, user, host, port, await Password.get(id), onClose)
     }
 
     private static async createFS(scheme: string, user: string, host: string, port: number, password: string, onClose: () => void) {

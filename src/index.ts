@@ -13,21 +13,19 @@ import { LocalFileSystemID } from './types'
 import { commands } from './commands'
 import { program } from 'commander'
 import info from '../package.json'
+import options from './options'
 
 program
     .name('F5')
     .description('SFTP/FTP client, dual-panel file manager in the browser')
     .version(info.version)
     .option('-p, --port <number>','port number', '3113')
-    .option('--debug', 'prints the log information')
+    .option('--log', 'prints the log information')
 program.parse()
-const options = program.opts()
+const inputOptions = program.opts()
 
-
-const port = options.port ?? 3113
-const debug = options.debug ?? false
-
-// console.log('params', port, debug)
+const port = inputOptions.port ?? 3113
+options.log = inputOptions.log ?? process.env.NODE_ENV == 'development'
 
 const app = express()
 
@@ -36,9 +34,11 @@ app.use(express.static(resolve(__dirname, 'public')))
 
 app.use(express.static(resolve(__dirname, '../dist/public')))
 
-const server = app.listen(port, () => {
-    console.log(`F5 is running on port ${port}`)
-    // (await open).default('http://localhost:3000')
+const server = app.listen(port, async () => {
+    console.log(`Listening on http://localhost:${port}`)
+    if (process.env.NODE_ENV !== 'development') {
+        (await open).default(`http://localhost:${port}`)
+    }
 })
 
 const handle = async (name: string, handler: (args: {}) => any) => {

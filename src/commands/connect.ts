@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { parse } from 'path'
 import { Path, ConnectionID, ConnectionConfig, ConnectionSettings, ExplorerConfig, ExplorerSettings, SortOrder } from '../types'
 import { FileAttributes } from '../FileSystem'
@@ -35,6 +35,12 @@ export function explorerSettings(attributes: FileAttributes, config?: ExplorerCo
 
 export default async function (file: Path, onError: (id: ConnectionID, e: any) => void): 
         Promise<{ id: ConnectionID, sid: string, settings: ConnectionSettings } | false> {
+
+    const stat = statSync(file)
+    if (!stat.isFile() && !stat.isSymbolicLink()) {
+        return false
+    }
+    
     let config: ConnectionConfig
     try {
         config = JSON.parse( readFileSync(file).toString() ) as ConnectionConfig

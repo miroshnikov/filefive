@@ -66,6 +66,7 @@ interface ListProps {
     root: string
     tabindex: number
     parent?: string,
+    children?: JSX.Element
 }
 
 export default forwardRef<HTMLDivElement, ListProps>(function List ({
@@ -87,7 +88,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
         onColumnsChange, 
         root, 
         tabindex, 
-        parent
+        parent,
+        children
     }, 
     fwdRef
 ) {
@@ -382,126 +384,131 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
         resizing.current = draggingColumn.current = null
     })
 
-    return <div 
-        className={classNames(styles.root, 'list', {draggedOver})} 
-        ref={setRef(rootEl, fwdRef)}
-        onFocus={() => isActive.current = true}
-        onBlur={() => isActive.current = false}
-        onClick={e => { if (e.target == rootEl.current) { setTarget(null); setSelected([]) }}}
-        onContextMenu={() => {setTarget(null); onMenu(root, true)}}
-        onDragOver={e => onDragOver?.(e)}
-        onDragEnter={() => setDraggedOver(true)}
-        onDragLeave={() => setDraggedOver(false)}
-        onDrop={e => dragDrop(root, e)}
-        tabIndex={tabindex}
-    >
-        <Tooltips delay={800}>
-        <table>
-            <thead>
-                <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.()}}>
-                    {columns.map(({name, title, sort}, i) =>
-                        <th key={name} 
-                            className={classNames({sorted: !!sort, drop: i===colDropTarget})}
-                            style={{width: widths[i]}}
-                            data-name={name}
-                            onClick={() => onSort?.(name)}
-                            onMouseDown={() => i && (draggingColumn.current = i)}
-                            onMouseOver={onColumnDragOver(i)}
-                            onMouseOut={() => setColDropTarget(null)}
-                            onMouseUp={onColumnDrop(i)}
-                        >
-                            {title}
-                            {sort && 
-                                <span className="icon">
-                                    {sort == SortOrder.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
-                                </span>
-                            }
-                            <i
-                                onMouseDown={e => {e.stopPropagation(); resizing.current = i}}
-                                onClick={e => e.stopPropagation()}
-                            ></i>
-                        </th>
-                    )}
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {parent &&
-                    <tr 
-                        key={parent} 
-                        className='up'
-                        onDoubleClick={() => onGo(parent)}
-                        onContextMenu={e => {e.stopPropagation(); onMenu(parent, true)}}
-                    >
-                        <td colSpan={columns.length + 1}>..</td>
-                    </tr>
-                }
-                {items.map((item, i) => 
-                    item.FileStateAttr == FileState.Creating || item.FileStateAttr == FileState.Renaming ?
-                        <tr key='editing'>
-                            <td 
-                                colSpan={columns.length + 1}
-                                className={classNames({d: item.dir})}
-                                data-depth={depth(item.path)+1-rootDepth}
-                            >
-                                <EditFileName 
-                                    name = {item.name}
-                                    sublings = {selectChildren(creating?.in, files.map(prop('path')))}
-                                    onOk = {nm => {
-                                        creating ? onNew?.(nm, creating.in, creating.dir) : onRename?.(renaming, nm)
-                                        createIn(null)
-                                        rename(null)
-                                    }}
-                                    onCancel={() => { createIn(null); rename(null) }}
-                                />
-                            </td>
-                            <td></td>
-                        </tr> :
-                        <tr 
-                            key={item.path} 
-                            className={classNames({
-                                selected: isSelected(item.path), 
-                                dragover: dropTarget && isDescendant(item.path, dropTarget),
-                                target: target?.path == item.path
-                            })}
-                            onClick={({metaKey, shiftKey}) => click(item, metaKey, shiftKey)}
-                            onDoubleClick={() => doubleClick(item)}
-                            onContextMenu={e => {e.stopPropagation(); setTarget(item); onMenu(item.path, item.dir)}}
-                            draggable={true}
-                            onDragStart={e => dragStart(i, e)}
-                            onDragEnd={e => onDragEnd?.(e)}
-                            onDragOver={e => onDragOver?.(e)}
-                            onDragEnter={e => dragEnter(item, e)}
-                            onDragLeave={e => dragLeave(item, e)}
-                            onDrop={e => dragDrop(item.dir ? item.path : dirname(item.path), e)}
-                        >
-                            {columns.map(({name, type}, i) =>
-                                i == 0 ?
-                                    <td key={name}
-                                        className={classNames({d: item.dir})}
-                                        data-depth={depth(item.path)-rootDepth}
+    return (
+            <div 
+                className={classNames(styles.root, 'list', {draggedOver})} 
+                ref={setRef(rootEl, fwdRef)}
+                onFocus={() => isActive.current = true}
+                onBlur={() => isActive.current = false}
+                onClick={e => { if (e.target == rootEl.current) { setTarget(null); setSelected([]) }}}
+                onContextMenu={() => {setTarget(null); onMenu(root, true)}}
+                onDragOver={e => onDragOver?.(e)}
+                onDragEnter={() => setDraggedOver(true)}
+                onDragLeave={() => setDraggedOver(false)}
+                onDrop={e => dragDrop(root, e)}
+                tabIndex={tabindex}
+            >
+                {items.length > 0 || !children ?
+                    <Tooltips delay={800}>
+                    <table>
+                        <thead>
+                            <tr onContextMenu={e => {e.stopPropagation(); onColumnsMenu?.()}}>
+                                {columns.map(({name, title, sort}, i) =>
+                                    <th key={name} 
+                                        className={classNames({sorted: !!sort, drop: i===colDropTarget})}
+                                        style={{width: widths[i]}}
+                                        data-name={name}
+                                        onClick={() => onSort?.(name)}
+                                        onMouseDown={() => i && (draggingColumn.current = i)}
+                                        onMouseOver={onColumnDragOver(i)}
+                                        onMouseOut={() => setColDropTarget(null)}
+                                        onMouseUp={onColumnDrop(i)}
                                     >
-                                        <div className={classNames({expanded: expanded.includes(item.path)})}>
-                                            {item.dir && 
-                                                <i className="icon">arrow_forward_ios</i>
-                                            }
-                                            <span data-tooltip={item.path}>{item[name]}</span>
-                                            <ul>
-                                                {item.target &&
-                                                    <li className="icon" data-tooltip={'Symbolic Link to ' + item.target}>prompt_suggestion</li>
-                                                }
-                                            </ul>
-                                        </div>
-                                    </td> :
-                                    <td key={name} className={'type-'+type}>
-                                        {item[name]}
-                                    </td>
+                                        {title}
+                                        {sort && 
+                                            <span className="icon">
+                                                {sort == SortOrder.Asc ? 'arrow_drop_up' : 'arrow_drop_down'}
+                                            </span>
+                                        }
+                                        <i
+                                            onMouseDown={e => {e.stopPropagation(); resizing.current = i}}
+                                            onClick={e => e.stopPropagation()}
+                                        ></i>
+                                    </th>
+                                )}
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {parent &&
+                                <tr 
+                                    key={parent} 
+                                    className='up'
+                                    onDoubleClick={() => onGo(parent)}
+                                    onContextMenu={e => {e.stopPropagation(); onMenu(parent, true)}}
+                                >
+                                    <td colSpan={columns.length + 1}>..</td>
+                                </tr>
+                            }
+                            {items.map((item, i) => 
+                                item.FileStateAttr == FileState.Creating || item.FileStateAttr == FileState.Renaming ?
+                                    <tr key='editing'>
+                                        <td 
+                                            colSpan={columns.length + 1}
+                                            className={classNames({d: item.dir})}
+                                            data-depth={depth(item.path)+1-rootDepth}
+                                        >
+                                            <EditFileName 
+                                                name = {item.name}
+                                                sublings = {selectChildren(creating?.in, files.map(prop('path')))}
+                                                onOk = {nm => {
+                                                    creating ? onNew?.(nm, creating.in, creating.dir) : onRename?.(renaming, nm)
+                                                    createIn(null)
+                                                    rename(null)
+                                                }}
+                                                onCancel={() => { createIn(null); rename(null) }}
+                                            />
+                                        </td>
+                                        <td></td>
+                                    </tr> :
+                                    <tr 
+                                        key={item.path} 
+                                        className={classNames({
+                                            selected: isSelected(item.path), 
+                                            dragover: dropTarget && isDescendant(item.path, dropTarget),
+                                            target: target?.path == item.path
+                                        })}
+                                        onClick={({metaKey, shiftKey}) => click(item, metaKey, shiftKey)}
+                                        onDoubleClick={() => doubleClick(item)}
+                                        onContextMenu={e => {e.stopPropagation(); setTarget(item); onMenu(item.path, item.dir)}}
+                                        draggable={true}
+                                        onDragStart={e => dragStart(i, e)}
+                                        onDragEnd={e => onDragEnd?.(e)}
+                                        onDragOver={e => onDragOver?.(e)}
+                                        onDragEnter={e => dragEnter(item, e)}
+                                        onDragLeave={e => dragLeave(item, e)}
+                                        onDrop={e => dragDrop(item.dir ? item.path : dirname(item.path), e)}
+                                    >
+                                        {columns.map(({name, type}, i) =>
+                                            i == 0 ?
+                                                <td key={name}
+                                                    className={classNames({d: item.dir})}
+                                                    data-depth={depth(item.path)-rootDepth}
+                                                >
+                                                    <div className={classNames({expanded: expanded.includes(item.path)})}>
+                                                        {item.dir && 
+                                                            <i className="icon">arrow_forward_ios</i>
+                                                        }
+                                                        <span data-tooltip={item.path}>{item[name]}</span>
+                                                        <ul>
+                                                            {item.target &&
+                                                                <li className="icon" data-tooltip={'Symbolic Link to ' + item.target}>prompt_suggestion</li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </td> :
+                                                <td key={name} className={'type-'+type}>
+                                                    {item[name]}
+                                                </td>
+                                        )}
+                                        <td></td>
+                                    </tr>
                             )}
-                            <td></td>
-                        </tr>
-                )}
-            </tbody>
-        </table>
-        </Tooltips>
-    </div>
+                        </tbody>
+                    </table>
+                    </Tooltips> : 
+                    children 
+                }
+        </div> 
+    )
 })

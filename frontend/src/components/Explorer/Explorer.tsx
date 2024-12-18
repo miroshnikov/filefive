@@ -21,7 +21,7 @@ import Filter from '../Filter/Filter'
 import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
-import { filter, tap } from 'rxjs/operators'
+import { filter } from 'rxjs/operators'
 import { useEffectOnUpdate, useSubscribe, useCustomCompareEffect } from '../../hooks'
 import { 
     sortWith, 
@@ -125,7 +125,8 @@ interface ExplorerProps {
     onFocus?: () => void
     onBlur?: () => void
     contextMenu?: MenuItem[]
-    onNewFile?: (uri: URI) => void
+    onNewFile?: (uri: URI) => void,
+    children?: JSX.Element
 }
 
 
@@ -147,7 +148,8 @@ export default function Explorer ({
     onFocus,
     onBlur,
     contextMenu = [],
-    onNewFile
+    onNewFile,
+    children
 }: ExplorerProps) {
     const appSettings = useContext(AppSettingsContext)
 
@@ -160,6 +162,7 @@ export default function Explorer ({
     const watched = useRef<string[]>([])
     const folders = useRef<Record<string, Files>>({})
     const [focused, setFocused] = useState(false)
+    const [loadingRoot, setLoadingRoot] = useState(true)
     
     const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
 
@@ -206,9 +209,11 @@ export default function Explorer ({
     
     useEffect(() => {
         setParent(root == fixedRoot ? null : dirname(root))
-        watch([root])       
+        watch([root])    
+        setLoadingRoot(true)
 
         return () => { 
+            setLoadingRoot(false)
             unwatch(watched.current) 
             setFiles([])
             selected.current = []
@@ -281,8 +286,12 @@ export default function Explorer ({
             }),
         )
         .subscribe(({dir, files}) => {
-            folders.current[parseURI(dir)['path']] = files
+            const { path } = parseURI(dir)
+            folders.current[path] = files
             update()
+            if (path == root) {
+                setLoadingRoot(false)
+            }
         }), 
         [update]
     )
@@ -642,7 +651,7 @@ export default function Explorer ({
             root={root}
             tabindex={tabindex}
             parent={parent}
-        />
+        >{loadingRoot ? undefined : children}</List>
         <footer>
             {(stat.files || stat.dirs) ?  
                 t('selected', {'count': selected.current?.length ?? 0 }) +

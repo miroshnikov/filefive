@@ -12,6 +12,7 @@ import { ToolbarItem } from './Toolbar/Toolbar'
 import { useSubscribe } from '../hooks'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'
+import NoConnections from './NoConnections'
 
 
 interface Props {
@@ -88,7 +89,7 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
             onNewFile={uri => setConnectionFile(parseURI(uri).path)}
             onFocus={onFocus}
             onBlur={onBlur}
-        /> 
+        ><NoConnections /></Explorer>
         <ConnectionForm file={connectionFile} onConnect={connect} onClose={() => setConnectionFile('')} />
     </>
 }
