@@ -81,7 +81,7 @@ const config = {
 }
 
 module.exports = (env, argv) => {
-  console.log('isDev', argv.mode == 'development')
-  console.log( util.inspect(config,true,null) )
+  // console.log('isDev', argv.mode == 'development')
+  // console.log( util.inspect(config,true,null) )
   return config
 }

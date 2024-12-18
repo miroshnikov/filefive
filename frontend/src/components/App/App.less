@@ -42,29 +42,67 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    > a:first-child {
-        text-decoration: none;
+    > span:first-child {
         display: flex;
-        justify-content: center;
+        gap: 1em;
         align-items: center;
-        text-align: center;
-        > span {
-            width: 2rem;
-            background-color: #4e91fd;
-            color: #F2EE53;
-            border-radius: 4px;
+        > a:first-child {
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            > span {
+                width: 2rem;
+                background-color: #4e91fd;
+                color: #F2EE53;
+                border-radius: 4px;
+                font-weight: 600;
+                font-size: 1.2rem;
+                margin-right: .6em;
+            }
+            > small {
+                align-self: flex-end;
+                font-size: .6em;
+                margin-left: 1em;
+                padding-bottom: .2em;
+            }
+            font-size: 1.4rem;
             font-weight: 600;
-            font-size: 1.2rem;
-            margin-right: .6em;
         }
-        > small {
-            align-self: flex-end;
-            font-size: .6em;
-            margin-left: 1em;
-            padding-bottom: .2em;
+        > nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1em;
+            background-color: var(--bar-background);
+            border-radius: 6px;
+            padding: 3px 10px;
+            > svg > path {
+                fill: var(--bar-color);
+            }
+            > a {
+                display: flex;
+                gap: .5em;
+                align-items: center;
+                text-decoration: none;
+                background-color: var(--background);
+                font-size: .8rem;
+                border-radius: 6px;
+                padding: 3px 6px;
+                > svg > path {
+                    transition: all .6s;
+                    fill: var(--bar-color);
+                }
+                > span {
+                    transition: all .6s;
+                    color: var(--bar-color);
+                }
+                &:hover {
+                    --bar-color: var(--color);
+                }
+            }
         }
-        font-size: 1.4rem;
-        font-weight: 600;
     }
     > span:last-child {
         display: flex;
