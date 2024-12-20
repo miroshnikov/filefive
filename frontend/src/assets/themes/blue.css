@@ -6,17 +6,18 @@
         --bar-background: #24303F;
         --bar-color: #898A8A;
         --border-color: #24303F; 
-        --active-border-color: #3F4451;
-        --hover-background: #25303F;
+        --active-border-color: #656973;
+        --hover-background: #3a4452;
         --selected-background: #212b38;
         --selected-color: #d7dae0;
         --drop-background: #142E48;
     }
     &[data-mode="light"] {
+        --highlight: #112131;
         --background: #dfe8f2;
         --color: #040404; 
         --bar-background: #5F90C2;
-        --bar-color: #4f4f4f;
+        --bar-color: #676D75;
         --border-color: #4480C7;
         --active-border-color: #5F90C2;
         --hover-background: #bed2e6;

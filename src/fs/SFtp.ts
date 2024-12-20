@@ -128,6 +128,7 @@ export default class SFtp extends FileSystem {
             sftp.readdir(dir, async (e, list) => {
                 if (e) {
                     reject(new Error(`LS: Can't get contents of ${dir} ` + this.decodeError(e)))
+                    return
                 }
 
                 const files: FileItem[]  = []

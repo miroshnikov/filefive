@@ -222,6 +222,7 @@ form {
 @import "themes/black.css";
 @import "themes/blue.css";
 @import "themes/green.css";
+@import "themes/pink.css";
 
 :root {
     --dry-bg: var(--background);

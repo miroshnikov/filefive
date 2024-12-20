@@ -111,6 +111,7 @@ interface ExplorerProps {
     icon: string
     connection: ConnectionID
     connectionName?: string
+    homeDir?: Path,
     sid?: string
     settings: ExplorerSettings
     path: Path
@@ -134,6 +135,7 @@ export default function Explorer ({
     icon, 
     connection, 
     connectionName,
+    homeDir,
     sid,
     settings,
     path, 
@@ -609,11 +611,16 @@ export default function Explorer ({
                     <button className="icon" disabled={isLast} data-command={CommandID.GoForward} data-tooltip="Go Forward"
                         onClick={() => command$.next({id: CommandID.GoForward})}
                     >arrow_forward</button>
-                    {connection != LocalFileSystemID &&
+                    {connection != LocalFileSystemID && <>
                         <button className="icon" data-command="refresh" data-tooltip="Refresh"
                             onClick={() => command$.next({id: CommandID.Refresh})}
                         >refresh</button>
-                    }
+                        {homeDir &&
+                            <button className="icon" data-tooltip={homeDir}
+                                onClick={() => setRoot(homeDir)}
+                            >home</button>
+                        }
+                    </>}
                     <Breadcrumbs 
                         icon={icon}
                         path={root}

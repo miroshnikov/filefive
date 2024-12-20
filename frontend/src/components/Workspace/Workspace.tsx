@@ -473,6 +473,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                             icon='cloud'
                                             connection={connection.id}
                                             connectionName={basename(connection.file)}
+                                            homeDir={connection.pwd}
                                             sid={sid.current}
                                             settings={connection.remote}
                                             path={remotePath}
