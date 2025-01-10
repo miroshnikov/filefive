@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from "react"
 import Workspace, { AppSettingsChanges } from '../Workspace/Workspace'
 import styles from './App.less'
-import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste, useConcatAsyncEffect } from '../../hooks'
+import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste, useConcatAsyncEffect, useEffectOnUpdate } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
 import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
@@ -19,6 +19,7 @@ import { AppSettingsContext } from '../../context/config'
 import { Tooltips, Spinner } from '../../ui/components'
 import Settings from '../../modals/Settings/Settings'
 import info from '../../../package.json'
+import { equals, mergeDeepRight } from 'ramda'
 
 
 function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
@@ -30,11 +31,15 @@ function setTitle(connectionId: ConnectionID|null, connectionName: string, local
 export default function App () {
     const [appSettings, setAppSettings] = useState<AppSettings>(null)
 
+    const currAppSettings = useRef<AppSettings>()
+
     const settingsFile = useRef('')
-    const [settingsChanges, setSettingsChanges] = useState<AppSettingsChanges>(null)
+    const [settingsChanges, setSettingsChanges] = useState<AppSettingsChanges>({})
+    const allSettingsChanges = useRef<AppSettingsChanges>({})
    
     useEffect(() => { 
         window.f5.settings().then(settings => {
+            currAppSettings.current = settings
             setAppSettings(settings)
             settingsFile.current = settings.settings
         }) 
@@ -76,22 +81,29 @@ export default function App () {
         file$.subscribe(({path}) => {
             if (path == settingsFile.current) {
                 window.f5.settings().then(settings => {
-                    setAppSettings(settings)
+                    if (!equals(currAppSettings.current, settings)) {
+                        currAppSettings.current = settings
+                        setAppSettings(settings)
+                    }
                 }) 
             }
         }),
         []
     )
 
-    useConcatAsyncEffect(async () => {
-        if (settingsChanges) {
-            await window.f5.saveSettings(settingsChanges)
-        }
+    useEffectOnUpdate(() => {
+        allSettingsChanges.current = mergeDeepRight(allSettingsChanges.current, settingsChanges) as AppSettingsChanges
+        currAppSettings.current = mergeDeepRight(currAppSettings.current, allSettingsChanges.current) as AppSettings
+        const tm = setTimeout(() => {
+            window.f5.saveSettings(allSettingsChanges.current)
+        }, 2000)
+        return () => clearTimeout(tm)
     }, [settingsChanges])
 
     useShortcuts(
         appSettings?.keybindings ?? [], 
-        (id, e) => command$.next({ id: id as KeyShortcutCommand, e }), [appSettings]
+        (id, e) => command$.next({ id: id as KeyShortcutCommand, e }), 
+        [appSettings]
     )
 
     useSubscribe(() => 

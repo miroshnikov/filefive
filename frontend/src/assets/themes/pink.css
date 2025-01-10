@@ -1,0 +1,27 @@
+[data-theme="pink"] {
+    --primary: #EB69A1;
+    &[data-mode="dark"] {
+        --background: #21171A;
+        --bar-background: #3B292E;
+        --color: #F1EFF0;
+        --bar-color: #6C6E74;
+        --border-color: #787680; 
+        --active-border-color: #E6679D;
+        --hover-background: #4e2f48;
+        --selected-background: #461f30;
+        --selected-color: #FFFFFF;
+        --drop-background: #261A1E;
+    }
+    &[data-mode="light"] {
+        --background: #fff;
+        --color: #21171A; 
+        --bar-background: #edeaec;
+        --bar-color: #676D75;
+        --border-color: #D2D7DE;
+        --active-border-color: #E6679D;
+        --hover-background: #f7d1e1;
+        --selected-background: #f0a3c4;
+        --selected-color: #15181c;
+        --drop-background: #eb85b0;
+    }
+}

@@ -346,7 +346,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                 )
     }, [showConnections])   
 
-    useEffectOnUpdate(() => {
+    useEffectOnUpdate(() => {       
         const localRoot = sync ? (syncRootLocal ?? localPath) : null
         setSyncRootLocal(localRoot)
 
@@ -365,7 +365,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const syncDir = (root: string, dir: string, targetRoot: string, setF: (path: string) => void) => {
         if (!sync) {
             return
-        }      
+        }
         const path = join(targetRoot, dir.substring(root.length))
         setMissingTarget(null)
         setTryDir(path)

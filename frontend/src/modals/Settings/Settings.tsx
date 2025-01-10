@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react"
+import React, { useState, useContext } from "react"
 import { Modal, ModalButtonID } from '../../ui/components'
 import classNames from "classnames"
 import { useSubscribe } from '../../hooks'

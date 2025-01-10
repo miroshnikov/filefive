@@ -506,7 +506,6 @@ export default function Explorer ({
     }
 
     const onDrop = (items: string[]|File[], target: Path, effect: DropEffect, e: React.DragEvent<HTMLElement>) => {
-        console.log(effect, items, '->', connection+target)
         if (items.length) {
             if (typeof items[0] == 'string') {
                 let filter: FilterSettings = null
