@@ -185,7 +185,7 @@ export default function Explorer ({
 
     const [showColumnsMenu, setShowColumnsMenu] = useState(false)
 
-    useCustomCompareEffect(() => {
+    const updateColumns = () => {
         setColumns(
             settings.columns.filter(({visible, name}) => visible == true || name == 'name').map(c => ({
                 name: c.name,
@@ -195,6 +195,10 @@ export default function Explorer ({
                 sort: settings.sort[0] == c.name ? settings.sort[1] : undefined
             }))
         )
+    }
+
+    useCustomCompareEffect(() => {
+        updateColumns()
 
         if (!equals(settings.filter, showFilter ? filterSettings.current : null)) {
             filterSettings.current = settings.filter
@@ -535,33 +539,30 @@ export default function Explorer ({
         onSettingsChange?.({ sort: [name, toSort.sort] })
     }
 
-    const columnsMenu = useMemo<MenuItem[]>(() => 
+    const columnsMenu =
         settings.columns.slice(1).map((c, i) => ({
             id: c.name,
             label: c.title,
             checked: c.visible,
             click: () => {
-                onSettingsChange?.({
-                    columns: adjust(i+1, c => ({...c, visible: !c.visible}), settings.columns)
-                })
+                settings.columns = adjust(i+1, c => ({...c, visible: !c.visible}), settings.columns)
+                updateColumns()
+                onSettingsChange?.({ columns: settings.columns })
                 return false
             }
-        })),
-        [settings]
-    )
+        }))
 
     const onColumnsChange = (columns: {name: string, width: number}[]) => {
         columns.forEach(({name, width}) => {
             const c = settings.columns.find(whereEq({name}))
             c && (c.width = width)
         })
-        onSettingsChange?.({ 
-            columns: 
-                sort(
-                    ({name: a}, {name: b}) => columns.findIndex(whereEq({name: a})) - columns.findIndex(whereEq({name: b})), 
-                    settings.columns
-                )
-        })
+        settings.columns = sort(
+            ({name: a}, {name: b}) => columns.findIndex(whereEq({name: a})) - columns.findIndex(whereEq({name: b})), 
+            settings.columns
+        )
+        updateColumns()
+        onSettingsChange?.({ columns: settings.columns })
     }
 
     useEffect(() => {
