@@ -10,7 +10,7 @@
         --hover-background: #4e2f48;
         --selected-background: #461f30;
         --selected-color: #FFFFFF;
-        --drop-background: #261A1E;
+        --drop-background: #3f2c33;
     }
     &[data-mode="light"] {
         --background: #fff;

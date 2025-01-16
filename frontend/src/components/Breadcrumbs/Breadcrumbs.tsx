@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, Fragment } from "react"
 import styles from './Breadcrumbs.less'
 import { segments, join, normalize, basename } from '../../utils/path'
 import { last } from 'ramda'
@@ -31,17 +31,17 @@ export default function Breadcrumbs(
         <div className={'breadcrumbs ' + styles.root}>
             {connection ? 
                 <em onClick={() => go(root)} data-tooltip={root}>
-                    <i className='icon'>{icon}</i> 
+                    <i className='connection icon'>{icon}</i> 
                     <span>{connection.name}</span>
                 </em> :
-                <i className='icon' onClick={() => go(root)} data-tooltip={root}>{icon}</i>
+                <i className='connection icon' onClick={() => go(root)} data-tooltip={root}>{icon}</i>
             }
-            {items.map((item, i) => 
-                <div key={item}>
-                    {i==0 && <i className='icon'>arrow_forward_ios</i>}
-                    <span onClick={() => go(normalize(root + item))} data-tooltip={normalize(root + item)}>{basename(item)}</span>
+            {items.length>0 && <i className='icon'>arrow_forward_ios</i>}
+            {items.map((name, i) => 
+                <Fragment key={crypto.randomUUID()}>
+                    <span onClick={() => go(normalize(root + name))} data-tooltip={normalize(root + name)}>{basename(name)}</span>
                     {i<items.length-1 && <i className='icon'>arrow_forward_ios</i>}
-                </div>
+                </Fragment>
             )}
         </div>
     )

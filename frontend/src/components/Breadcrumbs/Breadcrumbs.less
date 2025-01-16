@@ -33,28 +33,27 @@
             text-overflow: ellipsis;
         }
     }
-    i {
+    .connection.icon {
         font-size: 1.1em;
         padding-right: .2em;
         cursor: pointer;
     }
-    > div {
-        display: contents;
-        > span {
-            white-space: nowrap;
-            overflow-x: hidden;
-            text-overflow: ellipsis;
-            cursor: pointer;
-            padding: 0 .2em;
-            border-radius: 6px;
-            &:hover {
-                background-color: var(--selected-background);
-            }
+
+    > span {
+        flex: auto 0 1;
+        white-space: nowrap;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        padding: 0 .2em;
+        border-radius: 6px;
+        &:hover {
+            background-color: var(--selected-background);
         }
-        > i {
-            flex: auto 0 0;
-            font-size: .7em;
-            opacity: .6;
-        }
+    }
+    > i {
+        flex: auto 0 0;
+        font-size: .7em;
+        opacity: .6;
     }
 }
