@@ -4,6 +4,7 @@ import watch from './watch'
 import unwatch from './unwatch'
 import copy from './copy'
 import remove from './remove'
+import clear from './clear'
 import mkdir from './mkdir'
 import read from './read'
 import write from './write'
@@ -24,6 +25,7 @@ export const commands = {
     copy,
     duplicate,
     remove,
+    clear,
     mkdir,
     read,
     write,

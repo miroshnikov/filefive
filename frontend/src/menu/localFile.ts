@@ -66,7 +66,13 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         {
             id: CommandID.Duplicate,
             label: 'Duplicate',
-            click: () => command$.next({ id: CommandID.Duplicate, uri: createURI(LocalFileSystemID, path) })
+            click: () => command$.next({ id: CommandID.Duplicate, uri: createURI(LocalFileSystemID, path) }),
+            separator: true
+        },
+        {
+            id: 'clear',
+            label: 'Clear Contents',
+            click: () => window.f5.clear(createURI(LocalFileSystemID, path), false)
         },
         {
             id: CommandID.Delete,
@@ -77,17 +83,7 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
                     false
                 )
             },
-            separator: true
+
         },
-        {
-            id: 'clear',
-            label: 'Clear Content',
-            click: () => {
-                window.f5.write(
-                    createURI(LocalFileSystemID, path),
-                    ''
-                )
-            }
-        }
     ]
 }

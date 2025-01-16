@@ -78,6 +78,7 @@ window.f5 = {
     copy: (src, dest, move = false, filter: FilterSettings = null, sid?: string) => invoke<string>('copy', { src, dest, move, filter, sid }),
     duplicate: (src, filter: FilterSettings = null) => invoke<void>('duplicate', { src, filter }),
     remove: (files, force) => invoke<void>('remove', { files, force }),
+    clear: (file, force) => invoke<void>('clear', { file, force }),
     open: file => invoke<void>('open', { file }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
     read: (file) => invoke<string>('read', { file }),

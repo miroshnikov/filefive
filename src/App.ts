@@ -63,6 +63,7 @@ export default class App {
                                     commands.copy(src, dest, move, filter, sid),
             duplicate:    ({src, filter}: {src: URI[], filter?: FilterSettings}) => commands.duplicate(src, filter),
             remove:       ({files, force}: {files: URI[], force: boolean}) => commands.remove(files, force, connPath),
+            clear:        ({file, force}: {file: URI, force: boolean}) => commands.clear(file, force),
             open:         ({file}: {file: Path}) => opener(file),
             mkdir:        ({name, parent}: {name: string, parent: URI}) => commands.mkdir(name, parent),
             read:         ({file}: {file: URI}) => commands.read(file),

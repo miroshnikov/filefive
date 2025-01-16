@@ -54,7 +54,13 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: CommandID.Duplicate,
             label: 'Duplicate',
-            click: () => command$.next({ id: CommandID.Duplicate, uri: createURI(id, path) })
+            click: () => command$.next({ id: CommandID.Duplicate, uri: createURI(id, path) }),
+            separator: true
+        },
+        {
+            id: 'clear',
+            label: 'Clear Contents',
+            click: () => window.f5.clear(createURI(id, path), false)
         },
         {
             id: 'delete',
@@ -63,16 +69,6 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
                 window.f5.remove(
                     ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(id, path)),
                     false
-                )
-            }
-        },
-        {
-            id: 'clear',
-            label: 'Clear Content',
-            click: () => {
-                window.f5.write(
-                    createURI(id, path),
-                    ''
                 )
             },
             separator: true

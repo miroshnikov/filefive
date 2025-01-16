@@ -12,6 +12,7 @@ import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'
 import AskForPassword from '../../modals/Password'
 import ConfirmDeletion from '../../modals/Deletion'
+import ConfirmClearance from '../../modals/Clearance'
 import { command$ } from '../../observables/command'
 import { file$ } from '../../observables/file'
 import { CommandID, KeyShortcutCommand } from '../../commands'
@@ -208,6 +209,7 @@ export default function App () {
                 <Error />
                 <AskForPassword />
                 <ConfirmDeletion />
+                <ConfirmClearance />
                 <Settings />
             </AppSettingsContext.Provider> : 
             <div className="fill-center">
