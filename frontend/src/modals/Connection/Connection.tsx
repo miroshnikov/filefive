@@ -58,7 +58,8 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         register,
         formState: { errors, isValid },
         control,
-        getValues
+        getValues,
+        reset
     } = useForm<FormValues>({ mode: 'all', values })
 
     const buttons = [
@@ -94,6 +95,8 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             }
         }
         onClose()
+        reset({ host: '', port: '', user: '', password: '' })
+        setTheme(appSettings.theme)
     }
 
     return <>
@@ -135,7 +138,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                     <Controller
                         name="password"
                         control={control}
-                        render={({field}) => <Password {...field} placeholder="Will ask if empty" autoComplete="off" />}
+                        render={({field}) => <Password {...field} placeholder="Will ask if empty" autoComplete="new-password" />}
                     />
 
                     <label>Color Theme:</label>
