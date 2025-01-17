@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/miroshnikov/f5/blob/main/frontend/src/assets/logo.svg" alt="FileFive" />
+    <img src="https://github.com/miroshnikov/f5/blob/main/frontend/src/assets/logo.svg" width="64" alt="FileFive" />
 </p>
 
 
@@ -11,12 +11,11 @@ It is a Node.js package and works in the browser.
 ## Installation
 ```shell
 npm install -g f5
-f5
 ```
 
 ## Usage
 Run `f5` and FileFive will be opened in the default browser. Press <kbd>ctrl</kbd> + <kbd>c</kbd> to quit the program.
-```shell
+```
 > f5 --help
 Usage: F5 [options]
 
@@ -41,9 +40,9 @@ Options:
 - Uses browser tabs to browse more than one server or transfer files simultaneously
 
 ## Feedbacks
-To support its development, [star FileFive on GitHub]!
+To support its development, [star FileFive on GitHub](https://github.com/miroshnikov/f5/stargazers)!
 
-[Feedback, suggestion, bugs or improvements] are welcome.
+[Feedback, suggestion, improvements](https://github.com/miroshnikov/f5/discussions) or [bugs](https://github.com/miroshnikov/f5/issues) are welcome.
 
 ## License
 [GPL-3.0 License](LICENSE)
