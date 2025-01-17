@@ -34,7 +34,8 @@ Options:
 - Minimal and intuitive UI, mimicing the VSCode Explorer view
 - Search/filter files using JavaScript Regular Expressions
 - Synchronized browsing
-- Connections/servers are plain files on hard drive easy to add to a Git repository, copy, send, etc.
+- Connections/servers are plain files stored in a folder on your filesystem
+- You can use Git or any VCS to store connections and settings
 - Drag & drop support
 - Open files and folders in Visual Studio Code
 - Uses browser tabs to browse more than one server or transfer files simultaneously
