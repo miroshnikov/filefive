@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import { FileItem } from '../../../../src/FileSystem'
 import { queue$ } from '../../observables/queue'
 import { useSubscribe } from '../../hooks'
@@ -17,18 +17,26 @@ interface QueueConflict {
     sid?: string
 }
 
+
 export default function QueueAction() {
 
     const [conflict, setConflict] = useState<QueueConflict>(null)
     const [conflicts, setConflicts] = useState<QueueConflict[]>([])
     const [forAll, setForAll] = useState(false)
-    const remember = useRef(false)
+    const [remember, setRemember] = useState(false)
+
+    useEffect(() => setRemember(false), [forAll])
+
+    useEffect(() => {
+        setForAll(false)
+        setRemember(false)
+    }, [conflict])
 
     const proceed = (id: string) => {
         if (id == 'ok') {
-            window.f5.resolve(conflict.id, { type: QueueActionType.Replace }, forAll, remember.current ? conflict.sid : undefined)
+            window.f5.resolve(conflict.id, { type: QueueActionType.Replace }, forAll, remember ? conflict.sid : undefined)
         } else if (id == 'cancel') {
-            window.f5.resolve(conflict.id, { type: QueueActionType.Skip }, forAll, remember.current ? conflict.sid : undefined)
+            window.f5.resolve(conflict.id, { type: QueueActionType.Skip }, forAll, remember ? conflict.sid : undefined)
         } else {
             window.f5.stop(conflict.id)
         }
@@ -92,7 +100,7 @@ export default function QueueAction() {
                         </Checkbox>
 
                         {conflict.sid && forAll &&
-                            <Checkbox value={remember.current} onChange={() => remember.current = !remember.current}>
+                            <Checkbox value={remember} onChange={() => setRemember(remember => !remember)}>
                                 Remember for the current session
                             </Checkbox>
                         }
