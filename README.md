@@ -6,7 +6,7 @@
 # FileFive: SFTP/FTP client and dual-panel file manager for macOS and Linux
 FileFive is a free open-source SFTP/FTP client and file manager with intuitive and modern dual-panel interface.
 
-It is a Node.js package and works in the browser. 
+It is installed a Node.js package and works in the browser. 
 
 ## Installation
 ```shell
