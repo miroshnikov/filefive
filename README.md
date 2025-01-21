@@ -9,7 +9,7 @@ FileFive is a free open-source SFTP/FTP client and file manager with intuitive a
 It is installed a Node.js package and works in the browser. 
 
 <p align="center">
-    <img src="https://github.com/miroshnikov/f5/blob/main/screenshot.jpg" width="512" alt="FileFive" />
+    <img src="https://github.com/miroshnikov/f5/blob/main/screenshot.png" alt="FileFive" />
 </p>
 
 ## Installation
