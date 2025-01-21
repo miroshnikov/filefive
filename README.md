@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/miroshnikov/f5/blob/main/frontend/src/assets/logo.svg" width="64" alt="FileFive" />
+    <img src="https://github.com/miroshnikov/filefive/blob/main/frontend/src/assets/logo.svg" width="64" alt="FileFive" />
 </p>
 
 
@@ -9,12 +9,12 @@ FileFive is a free open-source SFTP/FTP client and file manager with intuitive a
 It is installed a Node.js package and works in the browser. 
 
 <p align="center">
-    <img src="https://github.com/miroshnikov/f5/blob/main/screenshot.png" alt="FileFive" />
+    <img src="https://github.com/miroshnikov/filefive/blob/main/screenshot.png" alt="FileFive" />
 </p>
 
 ## Installation
 ```shell
-npm install -g f5
+npm install -g filefive
 ```
 
 ## Usage
@@ -45,9 +45,9 @@ Options:
 - Uses browser tabs to browse more than one server or transfer files simultaneously
 
 ## Feedbacks
-To support its development, [star FileFive on GitHub](https://github.com/miroshnikov/f5/stargazers)!
+To support its development, [star FileFive on GitHub](https://github.com/miroshnikov/filefive/stargazers)!
 
-[Feedback, suggestion, improvements](https://github.com/miroshnikov/f5/discussions) or [bugs](https://github.com/miroshnikov/f5/issues) are welcome.
+[Feedback, suggestion, improvements](https://github.com/miroshnikov/filefive/discussions) or [bugs](https://github.com/miroshnikov/filefive/issues) are welcome.
 
 ## License
 [GPL-3.0 License](LICENSE)

@@ -1,5 +1,5 @@
 {
-  "name": "f5",
+  "name": "filefive",
   "description": "A SFTP/FTP client and dual-panel file manager for macOS and Linux",
   "version": "1.0.0",
   "license": "GPL-3.0",
@@ -10,11 +10,11 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miroshnikov/f5.git"
+    "url": "git+https://github.com/miroshnikov/filefive.git"
   },
-  "homepage": "https://github.com/miroshnikov/f5#readme",
+  "homepage": "https://github.com/miroshnikov/filefive#readme",
   "bugs": {
-    "url": "https://github.com/miroshnikov/f5/issues"
+    "url": "https://github.com/miroshnikov/filefive/issues"
   },
   "keywords": [
     "sftp-client",
