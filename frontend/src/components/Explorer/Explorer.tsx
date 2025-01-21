@@ -486,6 +486,9 @@ export default function Explorer ({
     }
 
     const onDragStart = (dragged: URI[], e: React.DragEvent<HTMLElement>) => {
+        e.dataTransfer.clearData()
+        e.dataTransfer.items.clear()
+
         e.dataTransfer.effectAllowed = 'copyMove'
         e.dataTransfer.setData('URIs', JSON.stringify(dragged))   //"text/uri-list" format only allows one URI
         e.dataTransfer.setData('Filter', JSON.stringify(settings.filter))
@@ -498,8 +501,6 @@ export default function Explorer ({
     }
 
     const onDragEnd = (e: React.DragEvent<HTMLElement>) => {
-        e.dataTransfer.clearData()
-        e.dataTransfer.items.clear()
     }
 
     const onDragOver = (e: React.DragEvent<HTMLElement>) => {

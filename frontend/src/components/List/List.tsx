@@ -333,11 +333,15 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
             files.length && onDrop(files, targetDir, DropEffect.Copy, e) 
         }
 
-        e.dataTransfer.clearData()
-        e.dataTransfer.items.clear()
         clearTimeout(dragCounter.current.timeout)
         dragCounter.current = { path: '', count: 0, timeout: null }
 
+        setDropTarget('')
+        setDraggedOver(false)
+    }
+
+    const dragEnd = (e: React.DragEvent<HTMLElement>) => {
+        onDragEnd?.(e)
         setDropTarget('')
         setDraggedOver(false)
     }
@@ -473,7 +477,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                         onContextMenu={e => {e.stopPropagation(); setTarget(item); onMenu(item.path, item.dir)}}
                                         draggable={true}
                                         onDragStart={e => dragStart(i, e)}
-                                        onDragEnd={e => onDragEnd?.(e)}
+                                        onDragEnd={dragEnd}
                                         onDragOver={e => onDragOver?.(e)}
                                         onDragEnter={e => dragEnter(item, e)}
                                         onDragLeave={e => dragLeave(item, e)}

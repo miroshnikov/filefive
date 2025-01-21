@@ -1,6 +1,6 @@
 {
   "name": "f5-frontend",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "F5 frontend",
   "main": "../dist/assets/index.js",
   "scripts": {
