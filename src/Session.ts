@@ -1,4 +1,5 @@
 import { QueueAction } from './types'
+import { randomUUID } from 'node:crypto'
 
 export interface SessionSettings {
     action?: QueueAction
@@ -6,7 +7,7 @@ export interface SessionSettings {
 
 export default class Session {
     public static create(): string {
-        const sid = crypto.randomUUID()
+        const sid = randomUUID()
         this.sessions.set(sid, {})
         return sid
     }
