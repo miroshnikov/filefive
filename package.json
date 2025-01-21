@@ -1,5 +1,6 @@
 {
   "name": "f5",
+  "description": "A SFTP/FTP client and dual-panel file manager for macOS and Linux",
   "version": "1.0.0",
   "license": "GPL-3.0",
   "author": "Max Miroshnikov",
@@ -7,19 +8,30 @@
     "f5": "dist/index.js"
   },
   "main": "dist/index.js",
-  "scripts": {
-    "dev": "NODE_ENV=development nodemon src/index.ts",
-    "build": "tsc -p .",
-    "start": "node dist/index.js"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miroshnikov/f5.git"
   },
+  "homepage": "https://github.com/miroshnikov/f5#readme",
+  "bugs": {
+    "url": "https://github.com/miroshnikov/f5/issues"
+  },
+  "keywords": [
+    "sftp-client",
+    "file-manager",
+    "dual-panel",
+    "macos-app",
+    "linux-app"
+  ],
   "files": [
     "dist/",
     "bin/"
   ],
-  "nodemonConfig": {
-    "ignore": [
-      "frontend/**"
-    ]
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon src/index.ts",
+    "build": "tsc -p .",
+    "start": "node dist/index.js",
+    "publish": "npm publish"
   },
   "dependencies": {
     "chalk": "^5.3.0",
@@ -47,5 +59,10 @@
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "frontend/**"
+    ]
   }
 }
