@@ -33,17 +33,17 @@ Options:
   -V, --version        output the version number
   -p, --port <number>  port number (default: "3113")
   --log                prints the log information
-  -h, --help           display help for command
+  -h, --help           display help
 ```
 
 ## Features
+- Cross-platform, runs on Mac OS, Linux and any *nix with Node.js
 - Supports SSH File Transfer Protocol (SFTP) and FTP
-- Cross-platform, runs on Mac OS, Linux and any *nix
 - Minimal and intuitive UI, mimicing the VSCode Explorer view
-- Search/filter files using JavaScript Regular Expressions
+- Search/filter files using wildcards and JavaScript Regular Expressions
 - Synchronized browsing
 - Connections/servers are plain files stored on your filesystem in the `~/.f5/connections` folder
-- You can use Git or any VCS to store connections and settings
+- Easy to backup connections and settings (e.g. using Git or other VCS)
 - Drag & drop support
 - Open files and folders in Visual Studio Code
 - Uses browser tabs to browse more than one server or transfer files simultaneously

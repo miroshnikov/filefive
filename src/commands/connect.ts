@@ -58,14 +58,19 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
     }
 
     const id = connectionID(config.scheme, config.user, config.host, config.port)
+    let password = ''
     try {
-        await Password.get(id)
-    } catch(e) {
+        password = await Password.get(id)
+    } catch (e) {
+        return false
+    }
+
+    if (!password) {
         return false
     }
 
     try {
-        const attributes = await Connection.open(config.scheme, config.user, config.host, config.port)
+        const attributes = await Connection.open(config.scheme, config.user, config.host, config.port, password)
         const pwd = await Connection.get(id).pwd()
         const settings: ConnectionSettings = {
             name: parse(file).name,

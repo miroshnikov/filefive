@@ -19,7 +19,7 @@ export default class Passwords {
         if (password === false) {
             this.pending.get(id)?.[1]()
         } else {
-            this.pending.get(id)?.[0](password)
+            this.pending.get(id)?.[0](password);
             remember && this.store.set(id, [password, false])
         }
     }
@@ -43,9 +43,9 @@ export default class Passwords {
 
     static delete(id: ConnectionID, saved: boolean) {
         const found = this.store.get(id)
-        if (found && found[1] == saved) {
+        if (found?.[1] === saved) {
             this.store.delete(id)
-            found[1] == true && this.dump()
+            found[1] === true && this.dump()
         }
         this.pending.delete(id)
     }

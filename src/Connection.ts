@@ -2,7 +2,6 @@ import ReferenceCountMap from './utils/ReferenceCountMap'
 import { FileSystem, FileAttributes } from './FileSystem'
 import { URI, ConnectionID, LocalFileSystemID, Files, Path } from './types'
 import { createURI, parseURI, connectionID } from './utils/URI'
-import Password from './Password'
 import unqid from './utils/uniqid'
 import logger, { LogFS } from './log'
 import Local from './fs/Local'
@@ -17,12 +16,13 @@ export default class {
         this.shared.set(LocalFileSystemID, new Local)
     }
 
-    static async open(scheme: string, user: string, host: string, port: number): Promise<FileAttributes> {
+    static async open(scheme: string, user: string, host: string, port: number, password: string): Promise<FileAttributes> {
         const id = connectionID(scheme, user, host, port)
         const attrs = (scheme == 'sftp') ? SFTP_ATTRIBUTES : FTP_ATTRIBUTES
         if (this.shared.inc(id)) {
             return attrs
         }
+        this.credentials.set(id, password)
         const conn = await this.create(id, scheme, user, host, port)
         await conn.open()
         this.shared.set(id, conn)
@@ -141,14 +141,21 @@ export default class {
         return this.limits.has(id) ? this.limits.get(id) : 1024     // for vsftpd max_per_ip in /etc/vsftpd.conf
     }
 
-    private static async create(id: ConnectionID, scheme: string, user: string, host: string, port: number, onClose = () => {}): Promise<FileSystem> {
+    private static async create(
+        id: ConnectionID, 
+        scheme: string, 
+        user: string, 
+        host: string, 
+        port: number, 
+        onClose = () => {}
+    ): Promise<FileSystem> {
         if (options.log) {
             return new LogFS(
                 id, 
-                await this.createFS(scheme, user, host, port, await Password.get(id), onClose)
+                await this.createFS(scheme, user, host, port, this.credentials.get(id), onClose)
             )
         }
-        return this.createFS(scheme, user, host, port, await Password.get(id), onClose)
+        return this.createFS(scheme, user, host, port, this.credentials.get(id), onClose)
     }
 
     private static async createFS(scheme: string, user: string, host: string, port: number, password: string, onClose: () => void) {
@@ -184,9 +191,9 @@ export default class {
     }
 
     private static shared = new ReferenceCountMap<ConnectionID, FileSystem>
-    // private static pools: Record<string, Record<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = {}
     private static pools: Map<string, Map<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = new Map()
     private static queue: Function[] = []
     private static pending: Record<string, ((id: string) => void)[]> = {}
     private static limits = new Map<ConnectionID, number>()
+    private static credentials = new Map<ConnectionID, string>()
 }

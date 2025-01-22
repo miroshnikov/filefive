@@ -31,13 +31,11 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
     let config = content ? JSON.parse(content) as ConnectionConfig : {} as Partial<ConnectionConfig>
 
     if ('scheme' in settings) {
+        const id = connectionID(settings.scheme, settings.user, settings.host, settings.port)
         config = {...config, ...omit(['password'], settings)}
-        if (settings.password.length) {
-            Password.save(
-                connectionID(settings.scheme, settings.user, settings.host, settings.port), 
-                settings.password
-            )
-        }
+        settings.password.length ?
+            Password.save(id, settings.password) :
+            Password.delete(id, true)
     } else {
         if (settings.local) {
             config.local = getSettings(settings.local)

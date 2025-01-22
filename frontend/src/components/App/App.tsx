@@ -10,7 +10,7 @@ import { createURI } from '../../../../src/utils/URI'
 import classNames from "classnames"
 import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'
-import AskForPassword from '../../modals/Password'
+import AskForPassword from '../../modals/Password/Password'
 import ConfirmDeletion from '../../modals/Deletion'
 import ConfirmClearance from '../../modals/Clearance'
 import { command$ } from '../../observables/command'

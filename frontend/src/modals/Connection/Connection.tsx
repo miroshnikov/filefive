@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { Path } from '../../../../src/types'
-import { Modal, ModalButtonID, Select, Password } from '../../ui/components'
+import { Modal, ModalButtonID, Select, Password, Checkbox } from '../../ui/components'
 import { useForm, Controller } from "react-hook-form"
 import { parse } from '../../utils/path'
 import classNames from "classnames"
@@ -25,6 +25,7 @@ const schemes = [
 
 
 type FormValues = {
+    scheme: string
     host: string
     port: string
     user: string
@@ -37,8 +38,12 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
 
     const [name, setName] = useState('')
     const [scheme, setScheme] = useState('sftp')
-    const [values, setValues] = useState({ host: '', port: '', user: '', password: '' })
+    const [values, setValues] = useState({ scheme: 'sftp', host: '', port: '', user: '', password: '' })
     const [theme, setTheme] = useState(appSettings.theme)
+    const [username, setUsername] = useState('')
+    const [pass, setPass] = useState('')
+    const [storePassword, setStorePassword] = useState(false)
+
 
     useEffect(() => { 
         if (file.length) {
@@ -46,8 +51,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             window.f5.get(file).then(config => {
                 if (config) {
                     const {scheme, host, port, user, password} = config
-                    setScheme(scheme)
-                    setValues({host, port: String(port), user, password})
+                    setValues({scheme, host, port: String(port), user, password})
                     setTheme(config.theme ?? appSettings.theme)
                 }
             })
@@ -61,8 +65,18 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         formState: { errors, isValid },
         control,
         getValues,
+        watch,
         reset
     } = useForm<FormValues>({ mode: 'all', values })
+
+    useEffect(() => {
+        const { unsubscribe } = watch(({scheme: s, user, host, port, password}) => {
+            setUsername(`${s}://${user}@${host}:${port ? port : (s == 'sftp' ? 22 : 21)}`)
+            setScheme(s)
+            setPass(password)
+        })
+        return () => unsubscribe()
+    }, [watch])
 
     const buttons = [
         {
@@ -87,9 +101,12 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                 host: trim,
                 port: parseInt,
                 user: trim
-            }, { scheme, ...getValues(), theme })
+            }, { ...getValues(), theme })
             if (!data.port) {
-                data.port = scheme == 'sftp' ? 22 : 21
+                data.port = data.scheme == 'sftp' ? 22 : 21
+            }
+            if (!storePassword) {
+                data.password = ''
             }
             await window.f5.save(file, data)
             if (id == ModalButtonID.Ok) {
@@ -97,18 +114,22 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             }
         }
         onClose()
-        reset({ host: '', port: '', user: '', password: '' })
+        reset({ scheme: 'sftp', host: '', port: '', user: '', password: '' })
         setTheme(appSettings.theme)
     }
 
     return <>
         {file.length > 0 &&
             <Modal buttons={buttons} onClose={onModalClose} options={{okOnEnter: false, x: true}}>
-                <form className={styles.root} onSubmit={e => e.preventDefault()} autoComplete="off">
+                <form className={styles.root} onSubmit={e => e.preventDefault()}>
                     <h1>{name}</h1>
 
                     <label>Protocol:</label>
-                    <Select options={schemes} onChange={setScheme} value={scheme} />
+                    <Controller
+                        name="scheme"
+                        control={control}
+                        render={({field}) => <Select {...field} options={schemes} />}
+                    />
 
                     <ul>
                         <li>
@@ -132,16 +153,32 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                     <label>User:</label>
                     <input className={classNames('dry', {error: errors.user})} 
                         {...register("user", { required: true })}
-                        placeholder="john" 
+                        placeholder="username"
                         autoComplete="off"
+                    />
+
+                    <input
+                        type="text" 
+                        name="username" 
+                        placeholder="username"
+                        defaultValue={username} 
+                        autoComplete="username"
                     />
 
                     <label>Password:</label>
                     <Controller
                         name="password"
                         control={control}
-                        render={({field}) => <Password {...field} placeholder="Will ask if empty" autoComplete="new-password" />}
+                        render={({field}) => <Password {...field} placeholder="Will ask if empty" autoComplete="current-password" />}
                     />
+
+                    {pass && <>
+                        <label></label>
+                        <Checkbox onChange={setStorePassword} value={storePassword}>Save password on disk</Checkbox>
+                        <p>
+                            Passwords are stored in plain text. It is recommended to use the browser password manager. 
+                        </p>
+                    </>}
 
                     <label>Color Theme:</label>
                     <div className={themesStyle.themes}>
