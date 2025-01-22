@@ -54,7 +54,7 @@ export default function Settings() {
         }
     }
     
-    return shown && <Modal buttons={buttons} onClose={onClose}>
+    return shown && <Modal buttons={buttons} onClose={onClose} options={{x: true}}>
         <form className={styles.form} onSubmit={e => e.preventDefault()}>
             <label>Mode:</label>
             <div className="dry-buttons">

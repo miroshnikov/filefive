@@ -54,6 +54,8 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         }
     }, [file])
 
+    useEffect(() => reset(values), [values])
+
     const {
         register,
         formState: { errors, isValid },
@@ -101,7 +103,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
 
     return <>
         {file.length > 0 &&
-            <Modal buttons={buttons} onClose={onModalClose} options={{okOnEnter: false}}>
+            <Modal buttons={buttons} onClose={onModalClose} options={{okOnEnter: false, x: true}}>
                 <form className={styles.root} onSubmit={e => e.preventDefault()} autoComplete="off">
                     <h1>{name}</h1>
 

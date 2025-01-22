@@ -109,7 +109,6 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     const [renaming, rename] = useState<URI>(null)
 
     const [dropTarget, setDropTarget] = useState<string>('')
-    const [draggedOver, setDraggedOver] = useState(false)
 
     const insertNewItem = (items: Items) => {
         if (creating) {
@@ -337,13 +336,11 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
         dragCounter.current = { path: '', count: 0, timeout: null }
 
         setDropTarget('')
-        setDraggedOver(false)
     }
 
     const dragEnd = (e: React.DragEvent<HTMLElement>) => {
         onDragEnd?.(e)
         setDropTarget('')
-        setDraggedOver(false)
     }
 
     const resizing = useRef<number>(null)
@@ -390,15 +387,13 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
 
     return (
             <div 
-                className={classNames(styles.root, 'list', {draggedOver})} 
+                className={classNames(styles.root, 'list')} 
                 ref={setRef(rootEl, fwdRef)}
                 onFocus={() => isActive.current = true}
                 onBlur={() => isActive.current = false}
                 onClick={e => { if (e.target == rootEl.current) { setTarget(null); setSelected([]) }}}
                 onContextMenu={() => {setTarget(null); onMenu(root, true)}}
                 onDragOver={e => onDragOver?.(e)}
-                onDragEnter={() => setDraggedOver(true)}
-                onDragLeave={() => setDraggedOver(false)}
                 onDrop={e => dragDrop(root, e)}
                 tabIndex={tabindex}
             >
