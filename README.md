@@ -6,7 +6,11 @@
 # FileFive: SFTP/FTP client and dual-panel file manager for macOS and Linux
 FileFive is a free open-source SFTP/FTP client and file manager with intuitive and modern dual-panel interface.
 
-It is installed a Node.js package and works in the browser. 
+It is installed as a Node.js package and uses the web browser as GUI.
+
+> [!NOTE]  
+> This project is being actively developed. Feel free to create any [issues](https://github.com/miroshnikov/filefive/issues), [feature requests](https://github.com/miroshnikov/filefive/issues) or [enhancements](https://github.com/miroshnikov/filefive/discussions) as you encounter them.
+
 
 <p align="center">
     <img src="https://github.com/miroshnikov/filefive/blob/main/screenshot.png" alt="FileFive" />
@@ -34,11 +38,11 @@ Options:
 
 ## Features
 - Supports SSH File Transfer Protocol (SFTP) and FTP
-- Cross-platform, runs on Mac OS and Linux
+- Cross-platform, runs on Mac OS, Linux and any *nix
 - Minimal and intuitive UI, mimicing the VSCode Explorer view
 - Search/filter files using JavaScript Regular Expressions
 - Synchronized browsing
-- Connections/servers are plain files stored in a folder on your filesystem
+- Connections/servers are plain files stored on your filesystem in the `~/.f5/connections` folder
 - You can use Git or any VCS to store connections and settings
 - Drag & drop support
 - Open files and folders in Visual Studio Code
