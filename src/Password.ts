@@ -15,18 +15,13 @@ export default class Passwords {
         )
     }
 
-    static set(id: ConnectionID, password: string|false, remember = false) {
+    static set(id: ConnectionID, password: string|false, remember: boolean, save: boolean) {
         if (password === false) {
             this.pending.get(id)?.[1]()
         } else {
             this.pending.get(id)?.[0](password);
-            remember && this.store.set(id, [password, false])
+            remember && this.store.set(id, [password, save])
         }
-    }
-
-    static save(id: ConnectionID, password: string) {
-        this.store.set(id, [password, true])
-        this.dump()
     }
 
     static async get(id: ConnectionID, skipMissing = false): Promise<string> {
@@ -41,9 +36,9 @@ export default class Passwords {
         return p
     }
 
-    static delete(id: ConnectionID, saved: boolean) {
+    static delete(id: ConnectionID, save: boolean) {
         const found = this.store.get(id)
-        if (found?.[1] === saved) {
+        if (found && (save || found[1] === save)) {
             this.store.delete(id)
             found[1] === true && this.dump()
         }

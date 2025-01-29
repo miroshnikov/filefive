@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { useSubscribe } from '../../hooks'
 import { error$ } from '../../observables/error'
 import { FailureType, ConnectionID } from '../../../../src/types'
@@ -10,6 +10,7 @@ export default function AskForPassword() {
     const [connectionId, setConnectionId] = useState<ConnectionID>()
     const [password, setPassword] = useState('')
     const [remember, setRemember] = useState(true)
+    const input = useRef<HTMLInputElement>()
 
     useSubscribe(() => 
         error$.subscribe(error => {
@@ -19,20 +20,21 @@ export default function AskForPassword() {
         })
     )
 
-    // useEffect(() => {
+    useEffect(() => {
+        connectionId && input.current?.focus()
+    }, [connectionId])
+
+    // useEffect(() => {        // TODO: fix auto-login in FireFox
     //     if (!connectionId) {
     //         return
     //     }
-
     //     setTimeout(() => {
     //         const filledPassword = document.querySelector('input[name="password"]:autofill')
-    //         if (filledPassword) {
-    //             const pass = (filledPassword as HTMLInputElement).value
-    //             if (pass) {
-    //                 onClose(ModalButtonID.Ok, pass, false)
-    //             }
-    //         }
-    //     }, 500)
+    //         const pass = (filledPassword as HTMLInputElement)?.value
+    //         pass ?
+    //             onClose(ModalButtonID.Ok, pass, false) :
+    //             setShow(true)
+    //     }, 600)
     // }, [connectionId])
 
     const buttons = [
@@ -49,8 +51,12 @@ export default function AskForPassword() {
 
     const onClose = (id: ModalButtonID, pass: string = null, rem: boolean = null) => {
         window.f5.login(connectionId, id == ModalButtonID.Ok ? (pass ?? password) : false, rem ?? remember)
+        if (id != ModalButtonID.Ok) {
+            const u = new URL(window.location.toString())
+            u.searchParams.delete('connect')
+            history.replaceState(null, '', u.toString())
+        }
         setConnectionId(undefined)
-        console.log('set conn undefind')
     }
     
     return <>
@@ -58,8 +64,10 @@ export default function AskForPassword() {
             <Modal buttons={buttons} onClose={onClose}>
                 <form className={styles.form} autoComplete="on">
                     <p>Connecting <em>{connectionId}</em>...</p>
-                    <input type='text' name="username" value={connectionId} autoComplete="username" readOnly />
-                    <p>Password: <Password onChange={setPassword} name='password' autoComplete='current-password' /></p>
+                    <div className="username">
+                        <input type='text' name="username" value={connectionId} autoComplete="username" readOnly />
+                    </div>
+                    <p>Password: <Password ref={input} onChange={setPassword} name='password' autoComplete='current-password' /></p>
                     <p>
                         <Checkbox onChange={remember => setRemember(remember)} value={remember}>Remember password for this session</Checkbox>
                     </p>

@@ -18,7 +18,7 @@ export function getSettings(settings: ExplorerSettings): ExplorerConfig {
 
 
 export type SaveConnectionSettings = 
-    | Pick<ConnectionConfig, 'scheme'|'host'|'port'|'user'|'password'> 
+    | (Pick<ConnectionConfig, 'scheme'|'host'|'port'|'user'|'password'> & { savePassword: boolean })
     | Pick<ConnectionSettings, 'local'|'remote'|'path'|'sync'>
 
 
@@ -32,10 +32,11 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
 
     if ('scheme' in settings) {
         const id = connectionID(settings.scheme, settings.user, settings.host, settings.port)
-        config = {...config, ...omit(['password'], settings)}
-        settings.password.length ?
-            Password.save(id, settings.password) :
-            Password.delete(id, true)
+        config = {...config, ...omit(['password', 'savePassword'], settings)}
+        Password.delete(id, true)
+        if (settings.password.length) {
+            Password.set(id, settings.password, true, settings.savePassword)
+        }
     } else {
         if (settings.local) {
             config.local = getSettings(settings.local)

@@ -36,13 +36,14 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
 
     const appSettings = useContext(AppSettingsContext)
 
+    const [editing, setEditing] = useState(false)
     const [name, setName] = useState('')
     const [scheme, setScheme] = useState('sftp')
     const [values, setValues] = useState({ scheme: 'sftp', host: '', port: '', user: '', password: '' })
     const [theme, setTheme] = useState(appSettings.theme)
     const [username, setUsername] = useState('')
     const [pass, setPass] = useState('')
-    const [storePassword, setStorePassword] = useState(false)
+    const [savePassword, setSavePassword] = useState(false)
 
 
     useEffect(() => { 
@@ -50,9 +51,11 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             setName( parse(file).name )
             window.f5.get(file).then(config => {
                 if (config) {
+                    setEditing(true)
                     const {scheme, host, port, user, password} = config
                     setValues({scheme, host, port: String(port), user, password})
                     setTheme(config.theme ?? appSettings.theme)
+                    setSavePassword(password.length > 0)
                 }
             })
         }
@@ -105,10 +108,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             if (!data.port) {
                 data.port = data.scheme == 'sftp' ? 22 : 21
             }
-            if (!storePassword) {
-                data.password = ''
-            }
-            await window.f5.save(file, data)
+            await window.f5.save(file, { ...data, savePassword })
             if (id == ModalButtonID.Ok) {
                 onConnect(file)            
             }
@@ -157,26 +157,30 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         autoComplete="off"
                     />
 
-                    <input
-                        type="text" 
-                        name="username" 
-                        placeholder="username"
-                        defaultValue={username} 
-                        autoComplete="username"
-                    />
+                    <div className="username">
+                        <input
+                            type="text" 
+                            name="username" 
+                            placeholder="username"
+                            defaultValue={username} 
+                            autoComplete="username"
+                        />
+                    </div>
 
                     <label>Password:</label>
                     <Controller
                         name="password"
                         control={control}
-                        render={({field}) => <Password {...field} placeholder="Will ask if empty" autoComplete="current-password" />}
+                        render={({field}) => 
+                            <Password {...field} placeholder="Will ask if empty" autoComplete='current-password' />
+                        }
                     />
 
                     {pass && <>
                         <label></label>
-                        <Checkbox onChange={setStorePassword} value={storePassword}>Save password on disk</Checkbox>
+                        <Checkbox onChange={setSavePassword} value={savePassword}>Save password on disk</Checkbox>
                         <p>
-                            Passwords are stored in plain text. It is recommended to use the browser password manager. 
+                            Passwords are stored in plain text. Use the browser password manager for a better protection.
                         </p>
                     </>}
 

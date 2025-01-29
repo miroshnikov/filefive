@@ -52,7 +52,7 @@ export default class App {
             saveapp:      ({settings}: {settings: DeepPartial<AppSettings>}) => commands.saveSettings(settingsPath, settings),
 
             connect:      ({file}: {file: Path}) => commands.connect(file, (id, {message}) => this.onError({ type: FailureType.RemoteError, id, message })),
-            login:        ({id, password, remember}: {id: ConnectionID, password: string|false, remember: boolean}) => Password.set(id, password, remember),
+            login:        ({id, password, remember}: {id: ConnectionID, password: string|false, remember: boolean}) => Password.set(id, password, remember, false),
             disconnect:   ({id, sid}: {id: ConnectionID, sid: string}) => commands.disconnect(id, sid),
 
             watch:        ({dir}: {dir: URI}) => commands.watch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
