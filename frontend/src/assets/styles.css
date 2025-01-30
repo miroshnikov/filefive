@@ -86,6 +86,10 @@ image, picture, svg, video {
 *::-webkit-scrollbar-corner {
     background-color: transparent;
 }
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--hover-background) transparent;
+}
 
 *:focus {
     outline: none !important
