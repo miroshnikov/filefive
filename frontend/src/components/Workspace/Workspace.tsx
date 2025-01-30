@@ -3,7 +3,7 @@ import { Split } from '../../ui/components'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
-import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial } from '../../../../src/types'
+import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial, QueueEventType } from '../../../../src/types'
 import { createURI, isLocal, parseURI } from '../../../../src/utils/URI'
 import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem, Button, Tooltips } from '../../ui/components'
@@ -19,6 +19,7 @@ import { basename, dirname, join } from '../../utils/path'
 import classNames from 'classnames'
 import MissingDir from './MissingDir'
 import styles from './Workspace.less'
+import { createQueue } from '../../observables/queue'
 
 
 export type AppSettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'|'sync'>>
@@ -290,7 +291,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             const { path } = parseURI(cmd.uri)
                             files = (local ? localSelected : remoteSelected).includes(path) ? (local ? localSelected : remoteSelected) : [path]
                         }
-                        local ?
+                        const qid = local ?
                             window.f5.copy(
                                 files.map(path => createURI(LocalFileSystemID, path)), 
                                 createURI(connection?.id ?? LocalFileSystemID, remotePath),
@@ -305,6 +306,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 showConnections ? null : (connection ?? appSettings).remote.filter,
                                 sid.current
                             )
+                        qid.then(id => createQueue(id))
                     }
                     break
                 }

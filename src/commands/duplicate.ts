@@ -8,7 +8,6 @@ import unqid from '../utils/uniqid'
 import App from '../App'
 
 
-
 export default function (src: URI[], filter?: FilterSettings) {
     if (!src.length) {
         return

@@ -53,6 +53,7 @@ import { t } from 'i18next'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
+import { createQueue } from '../../observables/queue'
 
 
 
@@ -362,6 +363,7 @@ export default function Explorer ({
                             return
                         }
                         window.f5.copy(cmd.uris, createURI(connection, target.current ?? root))
+                            .then(qid => createQueue(qid))
                     }
                     break
                 }
@@ -536,7 +538,7 @@ export default function Explorer ({
                     effect == DropEffect.Move, 
                     filter,
                     sid
-                )
+                ).then(qid => createQueue(qid))
             } else {
                 uploadFiles(items as File[], target)
             }

@@ -130,6 +130,7 @@ export enum QueueType {
 }
 
 export enum QueueEventType {
+    Start = 'start',
     Create = 'create',
     Update = 'update',
     Ask = 'ask',
