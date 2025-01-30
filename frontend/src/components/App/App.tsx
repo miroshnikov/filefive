@@ -32,7 +32,7 @@ function setTitle(connectionId: ConnectionID|null, connectionName: string, local
 export default function App () {
     const [appSettings, setAppSettings] = useState<AppSettings>(null)
 
-    const currAppSettings = useRef<AppSettings>()
+    const currAppSettings = useRef<AppSettings>(null)
 
     const settingsFile = useRef('')
     const [settingsChanges, setSettingsChanges] = useState<AppSettingsChanges>({})

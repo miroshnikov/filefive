@@ -19,13 +19,17 @@ const config = {
   devServer: {
     static: './dist/public',
     port: 1331,
-    proxy: {
-      '/api': 'http://localhost:3113',
-      '/events': {
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://localhost:3113'
+      },
+      {
+        context: ['/events'],
         target: 'http://localhost:3113',
         ws: true
-      },
-    }
+      }
+    ]
   },
   plugins: [
     new HtmlWebpackPlugin({}),

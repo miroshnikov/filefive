@@ -10,7 +10,7 @@ export default function AskForPassword() {
     const [connectionId, setConnectionId] = useState<ConnectionID>()
     const [password, setPassword] = useState('')
     const [remember, setRemember] = useState(true)
-    const input = useRef<HTMLInputElement>()
+    const input = useRef<HTMLInputElement>(null)
 
     useSubscribe(() => 
         error$.subscribe(error => {

@@ -1,8 +1,8 @@
-import React, { useRef, useState, useEffect, forwardRef, useCallback } from "react"
+import React, { useRef, useState, useEffect, forwardRef, useCallback, JSX } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
 import { URI, FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
-import { without, whereEq, prop, propEq, pipe, findIndex, __, subtract, unary, includes, identity, startsWith, update, move } from 'ramda'
+import { without, whereEq, prop, propEq, __, includes, identity, startsWith, update, move } from 'ramda'
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf, join } from '../../utils/path'
 import { useSet, useSubscribe, useEvent } from '../../hooks'
@@ -211,19 +211,14 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
             if (isSelected(path)) {
                 // TODO remove selection ?
             } else {
-                const targetIndex = items.findIndex(propEq('path', path))
-                const dist = selected.map(
-                    unary(pipe(
-                        propEq('path'),
-                        findIndex(__ as any, items) as unknown as (pred: (item: Item) => boolean) => number,
-                        subtract(targetIndex),
-                        Math.abs
-                    ))
-                )
-                const closestIndex = items.findIndex(whereEq({path: selected[ dist.indexOf(Math.min(...dist)) ]}));
+                const targetIndex = items.findIndex(propEq(path, 'path'))
+                const distances = selected.map(path => Math.abs(targetIndex - items.findIndex(propEq(path, 'path'))))
+                const closestIndex = items.findIndex(
+                    whereEq({path: selected[ distances.indexOf(Math.min(...distances)) ]})
+                );
                 (targetIndex > closestIndex ? 
                     items.slice(closestIndex+1, targetIndex+1) :  
-                    items.slice(targetIndex, closestIndex)).forEach(({path}) => toggleSelected(path))              
+                    items.slice(targetIndex, closestIndex)).forEach(({path}) => toggleSelected(path))                 
             }
         }
         else if (meta) {

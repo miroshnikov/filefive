@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useContext } from "react"
+import React, { useState, useEffect, useRef, useContext, JSX } from "react"
 import classNames from 'classnames'
 import { AppSettingsContext } from '../../context/config'
 import { 
@@ -277,7 +277,7 @@ export default function Explorer ({
                 sortBy(length),
                 reduce((files, dir) => {
                     const i = files.findIndex(({path}) => path == dir)
-                    return i >= 0 ? insertAll(i+1, sortFiles(filterFiles(folders.current[dir], filterPredicate), columns), files) : files
+                    return i >= 0 ? insertAll(i+1, sortFiles(filterFiles(folders.current[dir as string], filterPredicate), columns), files) : files
                 }, sortFiles(filterFiles(folders.current[root] ?? [], filterPredicate), columns)),
                 toColumns(columns, formatters),
             )(folders.current)
