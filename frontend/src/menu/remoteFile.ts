@@ -1,8 +1,9 @@
-import { Path, ConnectionID, LocalFileSystemID } from '../../../src/types'
+import { Path, ConnectionID, LocalFileSystemID, FailureType } from '../../../src/types'
 import { createURI } from '../../../src/utils/URI'
 import { MenuItem } from '../ui/components'
 import { command$ } from '../observables/command'
 import { CommandID } from '../commands'
+import { error$ } from '../observables/error'
 
 
 export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path): MenuItem[] {
@@ -60,16 +61,16 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'clear',
             label: 'Clear Contents',
-            click: () => window.f5.clear(createURI(id, path), false)
+            click: () => command$.next({ id: CommandID.ClearContents, uri: createURI(id, path) })
         },
         {
             id: 'delete',
             label: 'Delete',
             click: () => {
-                window.f5.remove(
-                    ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(id, path)),
-                    false
-                )
+                error$.next({ 
+                    type: FailureType.ConfirmDeletion, 
+                    files: ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(id, path))
+                })
             },
             separator: true
         },

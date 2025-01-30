@@ -5,12 +5,7 @@ import Connection from '../Connection'
 import App from '../App'
 
 
-export default async function (file: URI, force: boolean) {
-    if (!force) {
-        App.onError({ type: FailureType.ConfirmClear, file } )
-        return
-    }
-
+export default async function (file: URI) {
     const { id, path } = parseURI(file)
     
     await Connection.get(id).write(path, '') 

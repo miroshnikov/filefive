@@ -10,13 +10,8 @@ import App from '../App'
 import { pipe, prop } from 'ramda'
 
 
-export default async function (files: URI[], force: boolean, connPath: string, immediately = false) {
+export default async function (files: URI[], connPath: string, immediately = false) {
     if (!files.length) {
-        return
-    }
-
-    if (!force) {
-        App.onError({ type: FailureType.ConfirmDeletion, files } )
         return
     }
 

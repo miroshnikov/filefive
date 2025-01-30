@@ -14,7 +14,8 @@ export default function AskForPassword() {
 
     useSubscribe(() => 
         error$.subscribe(error => {
-            if (error.type == FailureType.Unauthorized) {
+            if (error.type == FailureType.Unauthorized && sessionStorage.getItem('Connecting')) {
+                sessionStorage.removeItem('Connecting')
                 setConnectionId(error.id)
             }
         })

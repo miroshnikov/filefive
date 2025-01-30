@@ -1,9 +1,10 @@
-import { Path, LocalFileSystemID, URI } from '../../../src/types'
+import { Path, LocalFileSystemID, URI, FailureType } from '../../../src/types'
 import { createURI, parseURI } from '../../../src/utils/URI'
 import { basename } from '../utils/path'
 import { MenuItem } from '../ui/components'
 import { CommandID } from '../commands'
 import { command$ } from '../observables/command'
+import { error$ } from '../observables/error'
 
 
 export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] {
@@ -72,18 +73,17 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         {
             id: 'clear',
             label: 'Clear Contents',
-            click: () => window.f5.clear(createURI(LocalFileSystemID, path), false)
+            click: () => command$.next({ id: CommandID.ClearContents, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: CommandID.Delete,
             label: 'Delete',
             click: () => {
-                window.f5.remove(
-                    ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(LocalFileSystemID, path)),
-                    false
-                )
-            },
-
-        },
+                error$.next({
+                    type: FailureType.ConfirmDeletion, 
+                    files: ((selected.length && selected.includes(path)) ? selected : [path]).map(path => createURI(LocalFileSystemID, path))
+                })
+            }
+        }
     ]
 }

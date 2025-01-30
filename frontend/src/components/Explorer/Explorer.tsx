@@ -10,7 +10,8 @@ import {
     SortOrder, 
     ExplorerSettings, 
     LocalFileSystemID,
-    FilterSettings
+    FilterSettings,
+    FailureType
 } from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
 import { filterRegExp } from '../../../../src/utils/filter'
@@ -51,6 +52,8 @@ import { format } from 'date-fns'
 import { t } from 'i18next'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
+import { error$ } from '../../observables/error'
+
 
 
 const createDragImage = (text: string) => {
@@ -416,8 +419,15 @@ export default function Explorer ({
                 }
                 case CommandID.Delete: {
                     if (selected.current?.length) {
-                        window.f5.remove(selected.current.map(path => createURI(connection ?? LocalFileSystemID, path)), false)
+                        error$.next({ 
+                            type: FailureType.ConfirmDeletion, 
+                            files: selected.current.map(path => createURI(connection ?? LocalFileSystemID, path))
+                        })
                     }
+                    break
+                }
+                case CommandID.ClearContents: {
+                    error$.next({ type: FailureType.ConfirmClear, file: cmd.uri })
                     break
                 }
                 case CommandID.Duplicate: {

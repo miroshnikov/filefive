@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import { filter } from 'rxjs/operators'
 import { Modal, ModalButtonID } from '../ui/components'
 import { URI, FailureType } from '../../../src/types'
 import { parseURI } from '../../../src/utils/URI'
@@ -17,7 +16,7 @@ export default function ConfirmDeletion() {
     }, [file])
 
     useSubscribe(() => 
-        error$.pipe(filter(() => !document.hidden)).subscribe(error => {
+        error$.subscribe(error => {
             if (error.type == FailureType.ConfirmClear) {
                 setFile(error.file)
             }
@@ -37,7 +36,7 @@ export default function ConfirmDeletion() {
 
     const onClose = (id: ModalButtonID) => {
         if (id == ModalButtonID.Ok) {
-            window.f5.clear(file, true)
+            window.f5.clear(file)
         }
         setFile(null)
     }

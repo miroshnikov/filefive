@@ -61,6 +61,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     )
 
     useEffect(() => {
+        sessionStorage.removeItem('Connecting')
+
         const u = new URL(window.location.toString())
         if (u.searchParams.has('connect') && !connecting) {
             connect(u.searchParams.get('connect'))
@@ -104,6 +106,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         disconnect()
 
         setConnecting(basename(path))
+        sessionStorage.setItem('Connecting', path);
 
         abortConnecting.current = new AbortController()
 
@@ -122,7 +125,10 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                 }
             })
             .catch(e => {})
-            .finally(() => setConnecting(''))
+            .finally(() => { 
+                setConnecting(''); 
+                sessionStorage.removeItem('Connecting') 
+            })
     }
 
     useEffect(() => {

@@ -18,6 +18,7 @@ export enum CommandID {
     
     Rename = 'rename',
     Duplicate = 'duplicate',
+    ClearContents = 'clear-contents',
     Edit = 'edit',
     CopyURI = 'copy-uri',
     CopyPath = 'copy-path',
@@ -50,6 +51,7 @@ type FileCommand =
     | CommandID.Transfer
     | CommandID.Rename
     | CommandID.Duplicate
+    | CommandID.ClearContents
     | CommandID.Edit
     | CommandID.CopyURI
     | CommandID.CopyPath
