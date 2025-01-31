@@ -26,7 +26,12 @@ export default function Toolbar({items, onClick}: {items: ToolbarItem[], onClick
                     <button key={item.id}
                         className="icon" 
                         disabled={item.disabled ?? false}
-                        onClick={e => { e.preventDefault(); e.stopPropagation(); onClick?.(item.id); setTimeout(() => item.onClick(), 100) }}
+                        onClick={e => { 
+                            e.preventDefault(); 
+                            e.stopPropagation(); 
+                            onClick?.(item.id); 
+                            setTimeout(() => item.onClick(), 100) 
+                        }}
                         data-tooltip={item.title + getTooltipShortcut(item.id, appSettings.keybindings)}
                     >{item.icon}</button>
                 )}

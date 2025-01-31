@@ -23,7 +23,7 @@ import List, { Column, Columns, ColumnType, Item } from '../List/List'
 import Toolbar, { ToolbarItem } from '../Toolbar/Toolbar'
 import { dir$ } from '../../observables/dir'
 import { filter } from 'rxjs/operators'
-import { useEffectOnUpdate, useSubscribe, useCustomCompareEffect } from '../../hooks'
+import { useEffectOnUpdate, useSubscribe, useCustomCompareEffect, useFocus } from '../../hooks'
 import { 
     sortWith, 
     descend, 
@@ -159,6 +159,8 @@ export default function Explorer ({
 }: ExplorerProps) {
     const appSettings = useContext(AppSettingsContext)
 
+    const rootRef = useRef<HTMLDivElement>(null)
+
     const [columns, setColumns] = useState<Columns>([])
     const [root, setRoot] = useState<string>(path)
     const [parent, setParent] = useState<string>(null)
@@ -167,7 +169,6 @@ export default function Explorer ({
     const target = useRef<Path>(null)
     const watched = useRef<string[]>([])
     const folders = useRef<Record<string, Files>>({})
-    const [focused, setFocused] = useState(false)
     const [loadingRoot, setLoadingRoot] = useState(true)
     
     const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
@@ -320,6 +321,7 @@ export default function Explorer ({
 
     useEffectOnUpdate(() => {
         setFilterSettings(showFilter ? filterSettings.current : null)
+        !showFilter && list.current?.focus()
     }, [showFilter])
 
     useEffect(() => {
@@ -337,6 +339,12 @@ export default function Explorer ({
     useEffect(() => {
         return () => onBlur()
     }, [])
+
+    const focused = useFocus(rootRef)
+
+    useEffect(() => {
+        focused ? onFocus?.() : onBlur?.()
+    }, [focused])
 
     useSubscribe(() => 
         command$.pipe(filter(() => focused)).subscribe(cmd => {
@@ -606,15 +614,13 @@ export default function Explorer ({
         )
     }, [files, selected.current])
 
-    return <div 
+    return <div ref={rootRef}
             className={classNames(styles.root, {focused})} 
-            onFocus={() => {setFocused(true); onFocus?.()}} 
-            onBlur={() => {setFocused(false); onBlur?.()}}
+            tabIndex={tabindex} 
         >
         <header>
             {toolbar.length ? 
-                <Toolbar items={toolbar} onClick={() => list.current?.focus()} /> : 
-                null 
+                <Toolbar items={toolbar} onClick={() => list.current?.focus() } /> : null
             }
             <div className="path">
                 <Tooltips shortcuts={appSettings.keybindings}>
@@ -669,7 +675,7 @@ export default function Explorer ({
             onColumnsMenu={() => setShowColumnsMenu(true)}
             onColumnsChange={onColumnsChange}
             root={root}
-            tabindex={tabindex}
+            tabindex={tabindex+10}
             parent={parent}
         >{loadingRoot ? undefined : children}</List>
         <footer>
