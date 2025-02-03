@@ -151,7 +151,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     useEffect(() => {
         setItems(items => {
             items = items.filter(({FileStateAttr}) => FileStateAttr != FileState.Creating)
-            if (creating && expanded.includes(creating.in)) {
+            if (creating && (expanded.includes(creating.in) || creating.in == root)) {
                 return insertNewItem(items)
             }
             return items
@@ -251,7 +251,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                 case CommandID.NewFile: {
                     const inDir = target ? (dirOf(target, items) || root) : root
                     if (inDir) {
-                        !expanded.includes(inDir) && toggle(inDir);
+                        !expanded.includes(inDir) && inDir != root && toggle(inDir);
                         createIn({ in: inDir, dir: cmd.id == CommandID.NewDir })
                     }
                     break
