@@ -201,7 +201,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             id: CommandID.Transfer,
             icon: connection ? 'upload' : 'file_copy',
             title: connection ? 'Upload Selected' : 'Copy Selected',
-            disabled: focused.current != 'local' || !localSelected.length,
+            disabled: !localSelected.length,
             onClick: () => command$.next({id: CommandID.Transfer})
         },
         ...toolbar,
@@ -219,7 +219,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             id: CommandID.Transfer,
             icon: connection ? 'download' : 'file_copy',
             title: connection ? 'Download Selected' : 'Copy Selected',
-            disabled: focused.current != 'remote' || !remoteSelected.length,
+            disabled: !remoteSelected.length,
             onClick: () => command$.next({id: CommandID.Transfer})
         },
         ...toolbar,
@@ -395,7 +395,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             syncDir(syncRootRemote, remotePath, syncRootLocal, setLocalPath)
         }
     }, [remotePath])
-
 
     return (<>
         <Split className={classNames({ sync })}

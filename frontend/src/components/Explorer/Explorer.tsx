@@ -616,7 +616,7 @@ export default function Explorer ({
 
     return <div ref={rootRef}
             className={classNames(styles.root, {focused})} 
-            tabIndex={tabindex} 
+            tabIndex={tabindex}
         >
         <header>
             {toolbar.length ? 

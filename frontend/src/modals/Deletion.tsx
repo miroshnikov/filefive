@@ -5,6 +5,7 @@ import { parseURI } from '../../../src/utils/URI'
 import { useSubscribe } from '../hooks'
 import { error$ } from '../observables/error'
 import { basename } from '../utils/path'
+import { createQueue } from '../observables/queue'
 
 
 export default function ConfirmDeletion() {
@@ -38,7 +39,7 @@ export default function ConfirmDeletion() {
 
     const onClose = (id: ModalButtonID) => {
         if (id == ModalButtonID.Ok) {
-            window.f5.remove(files)
+            window.f5.remove(files).then(id => createQueue(id))
         }
         setFiles([])
     }

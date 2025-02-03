@@ -27,6 +27,7 @@ export default async function (files: URI[], connPath: string, immediately = fal
                 // TODO delete from credentials
             }
         })
+        return null
     } else {
         const connId = parseURI(files[0])['id']
         const id = unqid()
@@ -49,7 +50,11 @@ export default async function (files: URI[], connPath: string, immediately = fal
         )
 
         queues.set(id, queue)
-        App.onQueueUpdate(id, { type: QueueEventType.Create, queueType: QueueType.Remove, connection: connId })
         queue.create()
+        setTimeout(
+            () => App.onQueueUpdate(id, { type: QueueEventType.Create, queueType: QueueType.Remove, connection: connId }),
+            100
+        )
+        return id
     }
 }

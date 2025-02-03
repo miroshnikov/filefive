@@ -4,7 +4,7 @@ import { QueueEvent, QueueEventType } from '../../../src/types'
 const queues = new Set<string>()
 
 export function createQueue(id: string) {
-    queues.add(id)
+    id && queues.add(id)
 }
 
 export const queue$ = new Subject<{ id: string, event: QueueEvent }>()
