@@ -19,7 +19,7 @@ import { CommandID, KeyShortcutCommand } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 import { Tooltips, Spinner } from '../../ui/components'
 import Settings from '../../modals/Settings/Settings'
-import info from '../../../package.json'
+import info from '../../../../package.json'
 import { equals, mergeDeepRight } from 'ramda'
 
 

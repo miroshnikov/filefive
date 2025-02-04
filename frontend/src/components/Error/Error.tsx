@@ -9,7 +9,7 @@ import styles from './Error.less'
 
 
 export default function Error() {
-    const [errors, setErrors] = useState<{ id?: ConnectionID, origin?: string, message: string }[]>([])
+    const [errors, setErrors] = useState<{ id?: ConnectionID, origin?: string, message: string, html?: boolean }[]>([])
     const [current, setCurrent] = useState(0)
 
     useSubscribe(() =>
@@ -19,6 +19,8 @@ export default function Error() {
                 setErrors(errors => [...errors, { id: error.id, message: error.message }])
             } else if (error.type == FailureType.APIError) {
                 setErrors(errors => [...errors, { origin: error.method,  message: error.message }])
+            } else if (error.type == FailureType.Warning) {
+                setErrors(errors => [...errors, { message: error.message, html: true }])
             }
         })
     )
@@ -32,7 +34,10 @@ export default function Error() {
                     {errors[current].id && errors[current].id != LocalFileSystemID &&
                         <em><i className="icon">cloud</i>{ errors[current].id }</em>
                     }
-                    { errors[current].message }
+                    {errors[current].html === true ?
+                        <div className="message" dangerouslySetInnerHTML={{__html: errors[current].message}}></div> :
+                        errors[current].message
+                    }
                     {errors[current].origin && 
                         <p>
                             Origin: { errors[current].origin }

@@ -15,6 +15,7 @@ import saveConnection from './saveConnection'
 import saveSettings from './saveSettings'
 import duplicate from './duplicate'
 import resolve  from './resolve'
+import checkVer  from './checkVer'
 
 export const commands = {
     connect,
@@ -33,6 +34,7 @@ export const commands = {
     getConnection,
     saveConnection,
     saveSettings,
-    resolve
+    resolve,
+    checkVer
 }
 

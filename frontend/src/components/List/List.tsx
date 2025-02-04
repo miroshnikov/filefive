@@ -431,7 +431,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                     onDoubleClick={() => onGo(parent)}
                                     onContextMenu={e => {e.stopPropagation(); onMenu(parent, true)}}
                                 >
-                                    <td colSpan={columns.length + 1}>..</td>
+                                    <td colSpan={columns.length + 1}><span className="icon">keyboard_return</span>..</td>
                                 </tr>
                             }
                             {items.map((item, i) => 

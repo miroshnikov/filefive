@@ -103,6 +103,21 @@ export default class App {
 
         const emitQueue = emitter<{id: string, event: QueueEvent}>('queue')
         this.onQueueUpdate = (id: string, event: QueueEvent) => emitQueue({id, event})
+
+        const notifyNewVer = async () => {
+            const versions = await commands.checkVer()
+            if (versions) {
+                this.onError({
+                    type: FailureType.Warning,
+                    message: `
+                        <p>A new version of the FileFive is available!</p>
+                        <p>Current version: <em>${versions[0]}</em> → New version: <em>${versions[1]}</em></p>
+                    `
+                })
+            }
+        }
+        notifyNewVer()
+        setInterval(notifyNewVer, 86400000)
     }
 
     public static onError: (error: Failure) => void

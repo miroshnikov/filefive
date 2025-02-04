@@ -171,7 +171,8 @@ export enum FailureType {
     ConfirmClear = 'confirm-clear',
     MissingDir = 'missing-dir',
     RemoteError = 'remote-error',
-    APIError = 'api-error'
+    APIError = 'api-error',
+    Warning = 'warning'
 }
 export type Failure =
     | {
@@ -199,4 +200,8 @@ export type Failure =
         type: FailureType.APIError
         message: string
         method: string
+    }
+    | {
+        type: FailureType.Warning
+        message: string
     }
