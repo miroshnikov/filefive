@@ -2,10 +2,10 @@ import React, { useRef, useState, useEffect, forwardRef, useCallback, JSX } from
 import classNames from 'classnames'
 import styles from './List.less'
 import { URI, FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
-import { without, whereEq, prop, propEq, __, includes, identity, startsWith, update, move } from 'ramda'
+import { without, whereEq, prop, propEq, __, includes, identity, startsWith, update, move, isNotNil } from 'ramda'
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf, join } from '../../utils/path'
-import { useSet, useSubscribe, useEvent } from '../../hooks'
+import { useSet, useSubscribe, useEvent, useType } from '../../hooks'
 import setRef from '../../ui/setRef'
 import { CommandID } from '../../commands'
 import { command$ } from '../../observables/command'
@@ -194,17 +194,21 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
         onToggle(dir)
     }
 
-    const click = (item: Item, meta: boolean, shift: boolean) => {
+    const click = (item: Item, meta: boolean, shift: boolean, expand: boolean) => {
         select(item.path, meta, shift)
         setTarget(item)
 
         clearTimeout(waitForSecondClick.current)
         waitForSecondClick.current = setTimeout(() => {
-            if (item.dir && !meta && !shift) {
+            if (item.dir && !meta && !shift && expand) {
                 toggle(item.path)
             }    
         }, 400)
     }
+
+    useEffect(() => {
+        target && rootEl.current?.querySelector(`[data-path='${target.path}']`)?.scrollIntoView()
+    }, [target])
 
     const select = (path: string, meta: boolean, shift: boolean) => {
         if (shift && selected.length) {
@@ -242,6 +246,12 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                     cmd.e?.stopPropagation()
                     break
                 }
+                case CommandID.SelectAllFiles: {
+                    setSelected(items.filter(({dir}) => !dir).map(prop('path')))
+                    cmd.e?.preventDefault()
+                    cmd.e?.stopPropagation()
+                    break
+                }
                 case CommandID.CollapseAll: {
                     expanded.forEach(onToggle)
                     setExpanded([])
@@ -263,6 +273,18 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
             }
         }),
         [target, items, expanded]
+    )
+
+    useType(
+        700, 
+        search => {
+            if (isActive.current) {
+                const re = new RegExp('^'+search, 'i')
+                const found = files.map(item => item.name.match(re) ? item : null).find(isNotNil)
+                found && click(found, false, false, false)
+            }
+        },
+        [files]
     )
  
     const dragStart = (i: number, e: React.DragEvent<HTMLElement>) => {
@@ -462,7 +484,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                             dragover: dropTarget && isDescendant(item.path, dropTarget),
                                             target: target?.path == item.path
                                         })}
-                                        onClick={({metaKey, shiftKey}) => click(item, metaKey, shiftKey)}
+                                        data-path={item.path}
+                                        onClick={({metaKey, shiftKey}) => click(item, metaKey, shiftKey, true)}
                                         onDoubleClick={() => doubleClick(item)}
                                         onContextMenu={e => {e.stopPropagation(); setTarget(item); onMenu(item.path, item.dir)}}
                                         draggable={true}

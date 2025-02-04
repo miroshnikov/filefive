@@ -5,6 +5,7 @@ export enum CommandID {
     Transfer = 'transfer',
     Delete = 'delete',
     SelectAll = 'select-all',
+    SelectAllFiles = 'select-all-files',
     NewDir = 'new-dir',
     NewFile = 'new-file',
     Settings = 'settings',
@@ -34,6 +35,7 @@ export enum CommandID {
 export type KeyShortcutCommand = 
     | CommandID.Delete
     | CommandID.SelectAll
+    | CommandID.SelectAllFiles
     | CommandID.NewDir
     | CommandID.NewFile
     | CommandID.Settings

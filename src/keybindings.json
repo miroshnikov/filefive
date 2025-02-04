@@ -20,6 +20,10 @@
         "command": "select-all"
     },
     {
+        "key": "meta+shift+a",
+        "command": "select-all-files"
+    },
+    {
         "key": "ctrl+r",
         "command": "refresh"
     },
