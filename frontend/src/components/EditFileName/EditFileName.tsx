@@ -34,8 +34,13 @@ export default function ({name, sublings, onOk, onCancel}: Props) {
             return
         }
         if (e.key == 'Enter' && !error) {
-            newName.length ? onOk(newName) : setError(true)
+            newName.length ? save(newName) : setError(true)
         }
+    }
+
+    const save = (name: string) => {
+        name = name.replace('/', '')    // TODO
+        name.length && onOk(name)
     }
     
     return <input 
@@ -43,7 +48,7 @@ export default function ({name, sublings, onOk, onCancel}: Props) {
         className={classNames('dry', styles.root, { error })} 
         value={newName} 
         onChange={e => onChange(e.target.value)} 
-        onBlur={() => (newName.length && !error) ? onOk(name) : onCancel()}
+        onBlur={() => (newName.length && !error) ? save(newName) : onCancel()}
         onKeyDown={onKey}
     />
 }

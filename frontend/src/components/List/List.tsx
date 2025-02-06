@@ -145,6 +145,9 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     }
 
     useEffect(() => {
+        if (target && !files.find(whereEq({URI: target.URI}))) {
+            setTarget(null)
+        }
         setItems(setRenamingItem(insertNewItem(files)))
     }, [files])
 
