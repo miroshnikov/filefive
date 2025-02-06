@@ -15,6 +15,7 @@ export default function ({name, sublings, onOk, onCancel}: Props) {
     const inputEl = useRef(null)
     const [newName, setNewName] = useState(name)
     const [error, setError] = useState(false)
+    const done = useRef(false)
 
     useEffect(() => {
         inputEl.current?.focus()
@@ -39,6 +40,7 @@ export default function ({name, sublings, onOk, onCancel}: Props) {
     }
 
     const save = (name: string) => {
+        done.current = true
         name = name.replace('/', '')    // TODO
         name.length && onOk(name)
     }
@@ -48,7 +50,7 @@ export default function ({name, sublings, onOk, onCancel}: Props) {
         className={classNames('dry', styles.root, { error })} 
         value={newName} 
         onChange={e => onChange(e.target.value)} 
-        onBlur={() => (newName.length && !error) ? save(newName) : onCancel()}
+        onBlur={() => !done.current && ((newName.length && !error) ? save(newName) : onCancel())}
         onKeyDown={onKey}
     />
 }
