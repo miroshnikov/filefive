@@ -207,7 +207,19 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     }
 
     useEffect(() => {
-        target && rootEl.current?.querySelector(`[data-path='${target.path}']`)?.scrollIntoView()
+        if (target && rootEl.current) {
+            const targetEl = rootEl.current.querySelector(`[data-path='${target.path}']`)
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+
+                const { top: snapTop } = rootEl.current.getBoundingClientRect()
+                const { top } = targetEl.getBoundingClientRect()
+                if (top <= snapTop) {
+                    rootEl.current.scroll?.({ top: 0, behavior: 'instant' })
+                }
+            }
+        }
+
     }, [target])
 
     const select = (path: string, meta: boolean, shift: boolean) => {

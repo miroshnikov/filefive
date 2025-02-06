@@ -116,7 +116,7 @@ export default class App {
                 })
             }
         }
-        notifyNewVer()
+        setTimeout(notifyNewVer, 20000)
         setInterval(notifyNewVer, 86400000)
     }
 

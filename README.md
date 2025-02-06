@@ -37,16 +37,17 @@ Options:
 ## Features
 - Cross-platform, runs on Mac OS, Linux and any *nix with Node.js
 - Supports SSH File Transfer Protocol (SFTP) and FTP
-- Minimal and intuitive UI, mimicing the VSCode Explorer view
+- Minimalistic and intuitive UI, mimicing the VSCode Explorer view
 - Search/filter files using wildcards and JavaScript Regular Expressions
 - Synchronized browsing
 - Connections/servers are plain files stored on your filesystem in the `~/.f5/connections` folder
 - Easy to backup connections and settings in `~/.f5` folder, e.g. using Git or other VCS
 - Drag & drop, copy & paste files support
-- Uses browser tabs to browse more than one server or transfer files simultaneously
-- Utilizes the built-in browser password manager to store passwords
+- Use browser tabs to browse more than one server or transfer files simultaneously
+- Utilize the built-in browser password manager to store passwords
 - Open files and folders in default app or Visual Studio Code
-- A different color theme per connection
+- Theming: System preference, Light, Dark; a different color theme per connection
+- Search On Type
 
 ## Feedbacks
 To support its development, [star FileFive on GitHub](https://github.com/miroshnikov/filefive/stargazers)!

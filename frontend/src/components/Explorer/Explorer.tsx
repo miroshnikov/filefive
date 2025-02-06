@@ -620,7 +620,7 @@ export default function Explorer ({
         >
         <header>
             {toolbar.length ? 
-                <Toolbar items={toolbar} onClick={() => list.current?.focus() } /> : null
+                <Toolbar items={toolbar} onClick={() => list.current?.focus()} /> : null
             }
             <div className="path">
                 <Tooltips shortcuts={appSettings.keybindings}>
