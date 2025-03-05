@@ -36,7 +36,7 @@ export interface F5 {
     duplicate(src: URI[], filter?: FilterSettings): Promise<void>
     remove(files: URI[]): Promise<string|null>
     clear(file: URI): void
-    open(file: Path): void
+    open(file: URI, app?: string): Promise<string>
     mkdir(name: string, parent: URI): Promise<void>
     read(file: URI): Promise<string>
     write(path: URI, content: string): Promise<void>

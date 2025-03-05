@@ -7,6 +7,7 @@ import remove from './remove'
 import clear from './clear'
 import mkdir from './mkdir'
 import read from './read'
+import open from './open'
 import write from './write'
 import getSettings from './settings'
 import rename from './rename'
@@ -16,6 +17,7 @@ import saveSettings from './saveSettings'
 import duplicate from './duplicate'
 import resolve  from './resolve'
 import checkVer  from './checkVer'
+
 
 export const commands = {
     connect,
@@ -29,6 +31,7 @@ export const commands = {
     clear,
     mkdir,
     read,
+    open,
     write,
     rename,
     getConnection,

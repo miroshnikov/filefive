@@ -17,7 +17,6 @@ export default class {
             const ac = new AbortController()
             this.watched.set(path, ac)
             for await (const {eventType, filename} of watch(path, { signal: ac.signal })) {
-
                 let newPath = path
                 if (eventType == "rename" && basename(path) !== filename) {
                     newPath = join(dirname(path), filename)

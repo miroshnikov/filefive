@@ -56,12 +56,12 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
         {
             id: 'vscode',
             label: "Open in VS Code",
-            click: () => window.f5.open(`vscode://file/${path}`)
+            click: () => window.f5.open(createURI(LocalFileSystemID, path), 'code')
         },
         {
             id: 'open',
             label: 'Show in Finder',
-            click: () => window.f5.open(path),
+            click: () => { window.f5.open(createURI(LocalFileSystemID, path)) },
             separator: !isRoot
         },
         

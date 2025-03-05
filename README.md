@@ -8,7 +8,7 @@ FileFive is a free open-source SFTP/FTP client and file manager with intuitive a
 
 It is installed as a Node.js package and uses the web browser as GUI.
 
-FileFive has a unique set of features and may an alternative to FileZilla, Cyberduck, Transmit and ForkLift.
+FileFive has a unique set of features and may be an alternative to FileZilla, Cyberduck, Transmit, ForkLift and Commander One.
 
 <p align="center">
     <img src="https://github.com/miroshnikov/filefive/blob/main/screenshot.png" alt="FileFive" />
@@ -37,11 +37,11 @@ Options:
 ## Features
 - Cross-platform, runs on Mac OS, Linux and any *nix with Node.js
 - Supports SSH File Transfer Protocol (SFTP) and FTP
-- Minimalistic and intuitive UI, mimicing the VSCode Explorer view
+- Minimalistic and intuitive UI, mimicing the look and feel of VSCode Explorer view
 - Search/filter files using wildcards and JavaScript Regular Expressions
 - Synchronized browsing
 - Connections/servers are plain files stored on your filesystem in the `~/.f5/connections` folder
-- Easy to backup connections and settings in `~/.f5` folder, e.g. using Git or other VCS
+- Easy to backup connections and settings in `~/.f5` folder, e.g. by putting them into a Git repo
 - Drag & drop, copy & paste files support
 - Use browser tabs to browse more than one server or transfer files simultaneously
 - Utilize the built-in browser password manager to store passwords

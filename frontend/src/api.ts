@@ -79,7 +79,7 @@ window.f5 = {
     duplicate: (src, filter: FilterSettings = null) => invoke<void>('duplicate', { src, filter }),
     remove: (files) => invoke<string|null>('remove', { files }),
     clear: (file) => invoke<void>('clear', { file }),
-    open: file => invoke<void>('open', { file }),
+    open: (file, app) => invoke<string>('open', { file, app }),
     mkdir: (name, parent) => invoke<void>('mkdir', { name, parent }),
     read: (file) => invoke<string>('read', { file }),
     write: (path, content) => invoke<void>('write', { path, content }),

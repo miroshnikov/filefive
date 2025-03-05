@@ -47,15 +47,12 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         {
             id: 'vscode',
             label: "Open in VS Code",
-            click: () => window.f5.open(`vscode://file/${path}`)
-            // open files through protocol links
-            // vscode://file/<path>
-            // vscode-insiders://file/<path>
+            click: () => window.f5.open(createURI(LocalFileSystemID, path), 'code')
         },
         {
             id: 'open',
             label: 'Open in Default App',
-            click: () => window.f5.open(path),
+            click: () => { window.f5.open(createURI(LocalFileSystemID, path)) },
             separator: true
         },
 

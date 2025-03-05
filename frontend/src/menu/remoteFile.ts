@@ -4,6 +4,7 @@ import { MenuItem } from '../ui/components'
 import { command$ } from '../observables/command'
 import { CommandID } from '../commands'
 import { error$ } from '../observables/error'
+import { createQueue } from '../observables/queue'
 
 
 export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path): MenuItem[] {
@@ -43,7 +44,19 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: CommandID.CopyNameNoExt,
             label: 'Copy Name w/o Extension',
-            click: () => command$.next({ id: CommandID.CopyNameNoExt, uri: createURI(LocalFileSystemID, path) }),
+            click: () => command$.next({ id: CommandID.CopyNameNoExt, uri: createURI(id, path) }),
+            separator: true
+        },
+
+        {
+            id: 'vscode',
+            label: "Open in VS Code",
+            click: () => window.f5.open(createURI(id, path), 'code').then(qid => createQueue(qid))
+        },
+        {
+            id: 'open',
+            label: 'Open in Default App',
+            click: () => { window.f5.open(createURI(id, path)).then(qid => createQueue(qid)) },
             separator: true
         },
 
