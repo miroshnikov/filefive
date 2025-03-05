@@ -40,6 +40,7 @@ Options:
 - Minimalistic and intuitive UI, mimicing the look and feel of VSCode Explorer view
 - Search/filter files using wildcards and JavaScript Regular Expressions
 - Synchronized browsing
+- Remote file editing
 - Connections/servers are plain files stored on your filesystem in the `~/.f5/connections` folder
 - Easy to backup connections and settings in `~/.f5` folder, e.g. by putting them into a Git repo
 - Drag & drop, copy & paste files support

@@ -20,7 +20,8 @@ export default class Passwords {
             this.pending.get(id)?.[1]()
         } else {
             this.pending.get(id)?.[0](password);
-            remember && this.store.set(id, [password, save])
+            remember && this.store.set(id, [password, save]);
+            save && this.dump()
         }
     }
 

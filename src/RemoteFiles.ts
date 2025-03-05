@@ -69,5 +69,5 @@ function resetDeletion(file: Path, current: ReturnType<typeof setTimeout>) {
     return setTimeout(() => {
         files.delete(file)
         rm(dirname(file), { force: true, recursive: true })
-    }, 1000*60*2)
+    }, 1000*60*60)
 }
