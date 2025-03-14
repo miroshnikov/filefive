@@ -12,7 +12,7 @@ import {
     DeepPartial,
     FilterSettings
 } from '../../src/types'
-import { LocalFileInfo } from '../../src/Local'
+import { LocalFileItem } from '../../src/Local'
 import { error$ } from './observables/error'
 
 
@@ -73,7 +73,7 @@ window.f5 = {
     refresh: dir => invoke<void>('refresh', { dir }),
 
     onDirChange: listener => subscribe<{uri: URI, files: Files}>('dir', ({uri, files}) => listener(uri, files)),
-    onFileChange: listener => subscribe<{path: Path, stat: LocalFileInfo|null}>('file', ({path, stat}) => listener(path, stat)),
+    onFileChange: listener => subscribe<{path: Path, stat: LocalFileItem|null}>('file', ({path, stat}) => listener(path, stat)),
 
     copy: (src, dest, move = false, filter: FilterSettings = null, sid?: string) => invoke<string>('copy', { src, dest, move, filter, sid }),
     duplicate: (src, filter: FilterSettings = null) => invoke<void>('duplicate', { src, filter }),

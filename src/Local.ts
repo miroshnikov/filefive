@@ -6,15 +6,15 @@ import { FileItem } from './FileSystem'
 
 
 
-export type LocalFileInfo = FileItem & { inode: number }
-export type LocalFiles = LocalFileInfo[]
+export type LocalFileItem = FileItem & { inode: number }
+export type LocalFiles = LocalFileItem[]
 
 export function pwd(): string {
     return homedir()
 }
 
 
-export function stat(path: string): LocalFileInfo|null {
+export function stat(path: string): LocalFileItem|null {
     path = normalize(path)
     try {
         let stat = lstatSync(path)
@@ -44,7 +44,7 @@ export function list(dir: string): LocalFiles {
     return readdirSync(dir).map(name => stat(join(dir, name))).filter(f => f)
 }
 
-export async function move(from: string, to: string, force = false): Promise<true|LocalFileInfo> {
+export async function move(from: string, to: string, force = false): Promise<true|LocalFileItem> {
     await mkdir(dirname(to), { recursive: true })
     const existing = stat(to)
     if (existing) {
@@ -58,7 +58,7 @@ export async function move(from: string, to: string, force = false): Promise<tru
     return true
 }
 
-export async function copy(from: string, to: string, force = false): Promise<true|LocalFileInfo> {
+export async function copy(from: string, to: string, force = false): Promise<true|LocalFileItem> {
     await mkdir(dirname(to), { recursive: true })
     const existing = stat(to)
     if (existing && !force) {

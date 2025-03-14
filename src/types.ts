@@ -19,13 +19,13 @@ export enum FileState {
     Renaming = 'renaming'
 }
 
-export const FileTagsAttr = Symbol.for('tags')
+export const FileAttrsAttr = 'attributes'
 
 
 export type FileInfo = FileItem & {
     URI: URI
     FileStateAttr?: FileState
-    FileTagsAttr?: string[]
+    FileAttrsAttr?: Record<string, string>
 }
 export type Files = FileInfo[]
 

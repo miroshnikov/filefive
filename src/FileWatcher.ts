@@ -2,12 +2,12 @@ import { watch } from 'node:fs/promises'
 import { WatchEventType } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { Path } from './types'
-import { stat, LocalFileInfo } from './Local'
+import { stat, LocalFileItem } from './Local'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 
 
 export default class {
-    constructor(private listener: (path: Path, stat: LocalFileInfo|null, event?: WatchEventType) => void) {}
+    constructor(private listener: (path: Path, stat: LocalFileItem|null, event?: WatchEventType) => void) {}
 
     async watch(path: Path) {
         if (this.watched.inc(path)) {

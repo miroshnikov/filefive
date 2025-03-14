@@ -22,10 +22,10 @@ import RemoteWatcher from './RemoteWatcher'
 import { queues } from './queues/Queue'
 import Password from './Password'
 import { commands } from './commands'
-import transform from './transform'
-import { touch, stat, LocalFileInfo } from './Local'
+import { touch, stat, LocalFileItem } from './Local'
 import { createURI } from './utils/URI'
 import { SaveConnectionSettings } from './commands/saveConnection'
+import LocalTransformer from './transformers/Local'
 import { inspect } from 'node:util'
 
 export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
@@ -84,21 +84,25 @@ export default class App {
         const emitDir = emitter<{uri: URI, files: Files}>('dir')
         const sendDirContent = (uri: URI, files: Files) => emitDir({uri, files})
         this.localWatcher = new LocalWatcher(
-            (path, files) => 
+            async (path, files) => {
+                const transformer = new LocalTransformer()
                 sendDirContent(
                     createURI(LocalFileSystemID, path), 
-                    files.map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
-                ),
+                    await transformer.transform(
+                        path,
+                        files.map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
+                    )
+                )
+            },
             path => this.onError({ type: FailureType.MissingDir, uri: createURI(LocalFileSystemID, path) }), 
         )
         this.remoteWatcher = new RemoteWatcher(
             sendDirContent, 
-            uri => this.onError({ type: FailureType.MissingDir, uri }), 
-            transform
+            uri => this.onError({ type: FailureType.MissingDir, uri })
         )
 
-        const emitFile = emitter<{path: Path, stat: LocalFileInfo|null}>('file')
-        const sendFileStat = (path: Path, stat: LocalFileInfo|null) => emitFile({path, stat})
+        const emitFile = emitter<{path: Path, stat: LocalFileItem|null}>('file')
+        const sendFileStat = (path: Path, stat: LocalFileItem|null) => emitFile({path, stat})
         this.fileWatcher = new FileWatcher(sendFileStat)
 
         const emitQueue = emitter<{id: string, event: QueueEvent}>('queue')
