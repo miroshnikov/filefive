@@ -1,0 +1,38 @@
+[data-f5-attribute] {
+    font-size: 0.9em;
+}
+[data-f5-attribute="git_u"] {
+    &::after {
+        content: 'U';
+    }
+}
+[data-f5-attribute="git_m"] {
+    &::after {
+        content: 'M';
+    }
+}
+[data-f5-attribute="git_a"] {
+    &::after {
+        content: 'A';
+    }
+}
+.d [data-f5-attribute="git_c"] {
+    font-size: .5em;
+    &::after {
+        content: '⬤';
+    }
+}
+
+[data-f5-attributes~="git_u"] * {
+    color: #6DA862;
+}
+[data-f5-attributes~="git_m"] * {
+    color: #BD923D;
+}
+[data-f5-attributes~="git_a"] * {
+    color: #6DA862;
+}
+
+.d[data-f5-attributes~="git_c"] * {
+    color: #6DA862;
+}

@@ -11,7 +11,8 @@ import {
     ExplorerSettings, 
     LocalFileSystemID,
     FilterSettings,
-    FailureType
+    FailureType,
+    FileAttrsAttr
 } from '../../../../src/types'
 import { parseURI, createURI } from '../../../../src/utils/URI'
 import { filterRegExp } from '../../../../src/utils/filter'
@@ -93,7 +94,7 @@ const rightsToStr = (n: number) =>
 
 const toColumns = curry((columns: Columns, formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => string}, files: Files) => {
     return files.map(file => ({
-        ...pick(['URI', 'path', 'dir', 'target'], file),
+        ...pick(['URI', 'path', 'dir', 'target', FileAttrsAttr], file),
         ...{ rawSize: file.size },
         ...columns.reduce((props, {name}) => ({...props, 
             [name]: new String(name=='size' && file.dir ? '' : name in formatters ? formatters[name](file[name]) : file[name])

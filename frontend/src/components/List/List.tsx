@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect, forwardRef, useCallback, JSX } from "react"
 import classNames from 'classnames'
 import styles from './List.less'
-import { URI, FileInfo, Path, FileState, SortOrder } from '../../../../src/types'
 import { without, whereEq, prop, propEq, __, includes, identity, startsWith, update, move, isNotNil } from 'ramda'
+import { URI, FileInfo, Path, FileState, SortOrder, FileAttrsAttr } from '../../../../src/types'
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf, join } from '../../utils/path'
 import { useSet, useSubscribe, useEvent, useType } from '../../hooks'
@@ -516,6 +516,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                                 <td key={name}
                                                     className={classNames({d: item.dir})}
                                                     data-depth={depth(item.path)-rootDepth}
+                                                    data-f5-attributes={Object.entries(item[FileAttrsAttr] ?? {}).map(([id]) => id).join(' ')}
                                                 >
                                                     <div className={classNames({expanded: expanded.includes(item.path)})}>
                                                         {item.dir && 
@@ -526,6 +527,9 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                                             {item.target &&
                                                                 <li className="icon" data-tooltip={'Symbolic Link to ' + item.target}>prompt_suggestion</li>
                                                             }
+                                                            {Object.entries(item[FileAttrsAttr] ?? {}).map(([id, name]) =>
+                                                                <li key="id" data-f5-attribute={id} data-tooltip={name}></li>
+                                                            )}
                                                         </ul>
                                                     </div>
                                                 </td> :

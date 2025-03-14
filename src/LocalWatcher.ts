@@ -8,8 +8,7 @@ import ReferenceCountMap from './utils/ReferenceCountMap'
 export default class {
     constructor(
         private listener: (dir: Path, files: LocalFiles, event?: WatchEventType, target?: string) => void,
-        private onMissing: (path: string) => void,
-        private transform = (files: LocalFiles) => files
+        private onMissing: (path: string) => void
     ) {}
 
     watch(dir: Path): LocalFiles {
@@ -23,14 +22,14 @@ export default class {
                     }
                 }
                 try {
-                    this.listener(dir, this.transform(list(dir)), event, target)
+                    this.listener(dir, list(dir), event, target)
                 } catch (e) {
                     this.watched.del(dir)
                     this.onMissing(dir)
                 }
             }))
     
-            const files = this.transform(list(dir))
+            const files = list(dir)
             this.listener(dir, files)
             return files
 

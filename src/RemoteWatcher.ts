@@ -8,8 +8,7 @@ import { parseURI } from './utils/URI'
 export default class RemoteWatcher {
     constructor(
         private listener: (uri: URI, files: Files) => void,
-        private onMissing: (uri: URI) => void,
-        private transform = (files: Files) => files
+        private onMissing: (uri: URI) => void
     ) {}
 
     public watch(uri: URI) {
@@ -35,8 +34,8 @@ export default class RemoteWatcher {
     private list(uri: URI) {
         const { id, path } = parseURI(uri)
         Connection.list(id, path)
-            .then(files => this.listener(uri, this.transform(files)))
-            .catch(e => {
+            .then(files => this.listener(uri, files))
+            .catch(() => {
                 this.watched.del(uri)
                 this.onMissing(uri)
             })

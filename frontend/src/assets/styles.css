@@ -221,6 +221,7 @@ form {
     }
 }
 
+@import "git.css";
 
 @import "../ui/styles.css";
 @import "themes/black.css";
