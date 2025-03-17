@@ -1,5 +1,5 @@
 import { Files, FileAttrsAttr, Path } from '../types'
-import gitStatus from './gitStatus'
+import gitStatus from './git'
 
 
 export default class {
