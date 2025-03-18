@@ -16,7 +16,7 @@ export default class DuplicateQueue extends CopyQueue {
         onComplete: (stopped: boolean) => void,
         watcher: RemoteWatcher
     ) {
-        super(connId, src, dest, filter, onState, onConflict, onError, onComplete, watcher, false)
+        super(connId, src, dest, filter, null, onState, onConflict, onError, onComplete, watcher, false)
         this.resolve({ type: QueueActionType.Rename }, true)
     }
 

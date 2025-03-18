@@ -59,8 +59,8 @@ export default class App {
             unwatch:      ({dir}: {dir: URI}) => commands.unwatch(dir, this.localWatcher, this.remoteWatcher, this.fileWatcher),
             refresh:      ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
 
-            copy:         ({src, dest, move, filter, sid}: {src: URI[], dest: URI, move: boolean, filter?: FilterSettings, sid?: string}) => 
-                                    commands.copy(src, dest, move, filter, sid),
+            copy:         ({src, dest, move, filter, root, sid}: {src: URI[], dest: URI, move: boolean, filter?: FilterSettings, root?: Path, sid?: string}) => 
+                                    commands.copy(src, dest, move, filter, root, sid),
             duplicate:    ({src, filter}: {src: URI[], filter?: FilterSettings}) => commands.duplicate(src, filter),
             remove:       ({files}: {files: URI[]}) => commands.remove(files, connPath),
             clear:        ({file}: {file: URI}) => commands.clear(file),

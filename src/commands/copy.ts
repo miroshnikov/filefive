@@ -1,6 +1,6 @@
 import { URI } from '../types'
 import { isLocal, parseURI } from '../utils/URI'
-import { ConnectionID, QueueEventType, QueueType, FilterSettings, FailureType } from '../types'
+import { ConnectionID, QueueEventType, QueueType, FilterSettings, FailureType, Path } from '../types'
 import { FileItem } from '../FileSystem'
 import { Queue, queues } from '../queues/Queue'
 import Session from '../Session'
@@ -12,7 +12,15 @@ import App from '../App'
 import { pipe, prop } from 'ramda'
 
 
-export default function (src: URI[], dest: URI, move: boolean, filter?: FilterSettings, sid?: string, onComplete = () => {}) {
+export default function (
+    src: URI[], 
+    dest: URI, 
+    move: boolean, 
+    filter?: FilterSettings, 
+    root?: Path,
+    sid?: string, 
+    onComplete = () => {}
+) {
     if (!src.length) {
         return
     }
@@ -51,6 +59,7 @@ export default function (src: URI[], dest: URI, move: boolean, filter?: FilterSe
             from,
             toPath,
             filter,
+            root,
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
             onConflict.bind(queue),
             error => {
@@ -73,6 +82,7 @@ export default function (src: URI[], dest: URI, move: boolean, filter?: FilterSe
                 from,
                 toPath,
                 filter,
+                root,
                 state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
                 onConflict.bind(queue),
                 error => App.onError(error),
@@ -83,6 +93,7 @@ export default function (src: URI[], dest: URI, move: boolean, filter?: FilterSe
                 from,
                 toPath,
                 filter,
+                root,
                 state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
                 onConflict.bind(queue),
                 error => App.onError(error),

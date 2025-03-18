@@ -1,4 +1,4 @@
-import { URI } from '../../src/types'
+import { URI, Path } from '../../src/types'
 
 
 export enum CommandID {
@@ -50,7 +50,6 @@ export type KeyShortcutCommand =
     | CommandID.SyncBrowsing
 
 type FileCommand = 
-    | CommandID.Transfer
     | CommandID.Rename
     | CommandID.Duplicate
     | CommandID.ClearContents
@@ -67,6 +66,11 @@ export type Command = { label?: string } & (
         id: FileCommand, 
         uri?: URI
       } 
+    | {
+        id: CommandID.Transfer,
+        uri?: URI,
+        root?: Path
+      }
     | { id: CommandID.Paste, files?: File[], uris?: URI[] }
     | { id: CommandID.Copy, e: ClipboardEvent }
 )

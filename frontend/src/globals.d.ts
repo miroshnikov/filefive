@@ -32,7 +32,7 @@ export interface F5 {
     onDirChange(listener: (uri: URI, files: Files) => void): void
     onFileChange(listener: (path: Path, stat: LocalFileItem|null) => void): void
 
-    copy(src: URI[], dest: URI, move?: boolean, filter?: FilterSettings, sid?: string): Promise<string>
+    copy(src: URI[], dest: URI, move?: boolean, filter?: FilterSettings, root?: Path, sid?: string): Promise<string>
     duplicate(src: URI[], filter?: FilterSettings): Promise<void>
     remove(files: URI[]): Promise<string|null>
     clear(file: URI): void

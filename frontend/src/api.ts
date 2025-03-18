@@ -75,7 +75,7 @@ window.f5 = {
     onDirChange: listener => subscribe<{uri: URI, files: Files}>('dir', ({uri, files}) => listener(uri, files)),
     onFileChange: listener => subscribe<{path: Path, stat: LocalFileItem|null}>('file', ({path, stat}) => listener(path, stat)),
 
-    copy: (src, dest, move = false, filter: FilterSettings = null, sid?: string) => invoke<string>('copy', { src, dest, move, filter, sid }),
+    copy: (src, dest, move = false, filter?: FilterSettings, root?: Path, sid?: string) => invoke<string>('copy', { src, dest, move, filter, root, sid }),
     duplicate: (src, filter: FilterSettings = null) => invoke<void>('duplicate', { src, filter }),
     remove: (files) => invoke<string|null>('remove', { files }),
     clear: (file) => invoke<void>('clear', { file }),

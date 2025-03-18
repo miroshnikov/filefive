@@ -189,6 +189,18 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             onClick: () => command$.next({id: CommandID.ShowFilter})
         },
         {
+            id: CommandID.SelectAll,
+            icon: 'select_all',
+            title: 'Select All',
+            onClick: () => command$.next({id: CommandID.SelectAll})
+        },
+        {
+            id: CommandID.SelectAllFiles,
+            icon: 'select',
+            title: 'Select All Files',
+            onClick: () => command$.next({id: CommandID.SelectAllFiles})
+        },
+        {
             id: CommandID.CollapseAll,
             icon: 'unfold_less',
             title: 'Collapse All Folders',
@@ -204,6 +216,14 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             disabled: !localSelected.length,
             onClick: () => command$.next({id: CommandID.Transfer})
         },
+        {
+            id: 'transfer_keep_paths',
+            icon: connection ? 'upload_2' : 'folder_copy',
+            title: (connection ? 'Upload Selected' : 'Copy Selected') + ' Keep Relative Paths',
+            disabled: !localSelected.length,
+            onClick: () => command$.next({ id: CommandID.Transfer, root: localPath })
+        },
+
         ...toolbar,
         {
             id: CommandID.Delete,
@@ -221,6 +241,13 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             title: connection ? 'Download Selected' : 'Copy Selected',
             disabled: !remoteSelected.length,
             onClick: () => command$.next({id: CommandID.Transfer})
+        },
+        {
+            id: 'transfer_keep_paths',
+            icon: connection ? 'download_2' : 'folder_copy',
+            title: (connection ? 'Download Selected' : 'Copy Selected') + ' Keep Relative Paths',
+            disabled: !remoteSelected.length,
+            onClick: () => command$.next({ id: CommandID.Transfer, root: remotePath })
         },
         ...toolbar,
         {
@@ -297,6 +324,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 createURI(connection?.id ?? LocalFileSystemID, remotePath),
                                 false,
                                 (connection ?? appSettings).local.filter,
+                                cmd.root,
                                 sid.current
                             ) :
                             window.f5.copy(
@@ -304,6 +332,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 createURI(LocalFileSystemID, localPath),
                                 false,
                                 showConnections ? null : (connection ?? appSettings).remote.filter,
+                                cmd.root,
                                 sid.current
                             )
                         qid.then(id => createQueue(id))

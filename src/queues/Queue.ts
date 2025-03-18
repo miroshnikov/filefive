@@ -40,7 +40,8 @@ export default abstract class TransmitQueue implements Queue {
         protected to: ConnectionID,
         protected src: Path[],
         protected dest: Path,
-        protected filter: FilterSettings,
+        protected filter: FilterSettings|undefined,
+        protected fromRoot: Path|undefined,
         private onState: (state: QueueState) => void,
         private onConflict: (src: FileItem, dest: FileItem) => void,
         private onComplete: (stopped: boolean) => void
@@ -109,6 +110,7 @@ export default abstract class TransmitQueue implements Queue {
             if (this.stopped) {
                 return
             }
+
             const parent = dirname(path)
             const from = (await ls(parent))?.find(whereEq({path}))
             if (from) {
@@ -126,7 +128,9 @@ export default abstract class TransmitQueue implements Queue {
             }
         }
 
-        await Promise.all(paths.map(path => add(path, dest)))
+        await Promise.all(
+            paths.map(path => add(path, dest, this.fromRoot ? dirname(path).substring(this.fromRoot.length+1).split('/') : []))
+        )
     }
 
     protected abstract transmit(fs: FileSystem, from: FileItem, dirs: string[], to: Path): Promise<void>

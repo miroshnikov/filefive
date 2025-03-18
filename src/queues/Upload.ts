@@ -13,14 +13,15 @@ export default class UploadQueue extends TransmitQueue {
         connId: ConnectionID,
         src: Path[],
         dest: Path,
-        filter: FilterSettings,
+        filter: FilterSettings|undefined,
+        fromRoot: Path|undefined,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
         onComplete: (stopped: boolean) => void,
         private watcher: RemoteWatcher
     ) {
-        super(LocalFileSystemID, connId, src, dest, filter, onState, onConflict, onComplete)
+        super(LocalFileSystemID, connId, src, dest, filter, fromRoot, onState, onConflict, onComplete)
     }
 
     protected async transmit(fs: FileSystem, from: FileItem, dirs: string[], to: Path) {

@@ -12,6 +12,7 @@ export default class CopyQueue extends TransmitQueue {
         src: Path[],
         dest: Path,
         filter: FilterSettings,
+        fromRoot: Path|undefined,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
@@ -19,7 +20,7 @@ export default class CopyQueue extends TransmitQueue {
         private watcher: RemoteWatcher,
         private move: boolean
     ) {
-        super(connId, connId, src, dest, filter, onState, onConflict, onComplete)
+        super(connId, connId, src, dest, filter, fromRoot, onState, onConflict, onComplete)
     }
 
     protected async enqueue(paths: Path[], dest: Path) {

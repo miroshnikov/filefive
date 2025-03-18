@@ -12,12 +12,13 @@ export default class DownloadQueue extends TransmitQueue {
         src: Path[],
         dest: Path,
         filter: FilterSettings,
+        fromRoot: Path|undefined,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         private onError: (reason: any) => void,
         onComplete: (stopped: boolean) => void
     ) {
-        super(connId, LocalFileSystemID, src, dest, filter, onState, onConflict, onComplete)
+        super(connId, LocalFileSystemID, src, dest, filter, fromRoot, onState, onConflict, onComplete)
     }
 
     protected async transmit(fs: FileSystem, from: FileItem, dirs: string[], to: Path) {

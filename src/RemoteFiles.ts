@@ -26,6 +26,7 @@ export async function open(file: URI, onLoad: (file: Path) => void) {
             false,
             null,
             null,
+            null,
             () => {
                 files.set(
                     tmpName,
