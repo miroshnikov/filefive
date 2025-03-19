@@ -44,7 +44,9 @@ export default class UploadQueue extends TransmitQueue {
                         new Promise(async (resolve) => {
                             try {
                                 await fs.mkdir(targetDir)
-                            } catch (e) {}
+                            } catch {
+                                // the targetDir already exists
+                            }
                             resolve()
                         })
                     )

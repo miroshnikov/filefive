@@ -1,7 +1,7 @@
 {
   "name": "filefive",
   "description": "A SFTP/FTP client and dual-panel file manager for macOS and Linux",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "license": "GPL-3.0",
   "author": "Max Miroshnikov",
   "bin": {
@@ -31,6 +31,7 @@
     "dev": "NODE_ENV=development nodemon src/index.ts",
     "build": "tsc -p .",
     "start": "node dist/index.js",
+    "lint": "eslint",
     "publish": "tsc -p . && npm publish"
   },
   "dependencies": {
@@ -48,6 +49,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
     "@types/express": "^5.0.0",
     "@types/ftp": "^0.3.36",
     "@types/multer": "^1.4.12",
@@ -56,9 +58,11 @@
     "@types/ssh2": "^1.15.4",
     "@types/whatwg-url": "^13.0.0",
     "@types/ws": "^8.5.14",
+    "eslint": "^9.22.0",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1"
   },
   "nodemonConfig": {
     "ignore": [

@@ -1,6 +1,6 @@
 import { basename, dirname, normalize, sep } from 'node:path'
 import { Queue } from './Queue'
-import { Path, ConnectionID, QueueState, FailureType, QueueAction } from '../types'
+import { Path, ConnectionID, QueueState, QueueAction } from '../types'
 import Connection from '../Connection'
 import { createURI } from '../utils/URI'
 import RemoteWatcher from '../RemoteWatcher'

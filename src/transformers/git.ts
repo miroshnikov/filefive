@@ -49,7 +49,9 @@ export default async function(path: Path, files: Files): Promise<Files> {
                 })
         }
 
-    } catch(e) {}
+    } catch { 
+        // either path is not in git repo or no git installed
+    }
 
     return files
 }

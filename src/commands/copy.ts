@@ -102,11 +102,10 @@ export default function (
             )
     }
    
-    queues.set(id, queue)
-    queue.create()
-    setTimeout(
-        () => App.onQueueUpdate(id, { type: QueueEventType.Create, queueType, connection }),
-        100
-    )
+    queues.set(id, queue)   
+    setTimeout(() => {
+        App.onQueueUpdate(id, { type: QueueEventType.Create, queueType, connection })
+        queue.create()
+    }, 100)
     return id
 }

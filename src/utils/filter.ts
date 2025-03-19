@@ -18,7 +18,7 @@ export function filterRegExp(settings: FilterSettings): RegExp|null {
     }
     try {
         return new RegExp(source, settings.matchCase ? '' : 'i')
-    } catch(e) {
+    } catch {
         return null
     }
 }
