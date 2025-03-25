@@ -11,7 +11,15 @@ It is installed as a Node.js package and uses the web browser as GUI.
 FileFive has a unique set of features and may be an alternative to FileZilla, Cyberduck, Transmit, and ForkLift.
 
 <p align="center">
-    <img src="https://github.com/miroshnikov/filefive/blob/main/screenshot.png" alt="FileFive" />
+    <img src="https://github.com/miroshnikov/filefive/blob/main/docs/screenshots/screenshot-1.png" alt="FileFive" />
+</p>
+<p align="center">
+  <details>
+    <summary>More screenshots</summary>
+    <img src="https://github.com/miroshnikov/filefive/blob/main/docs/screenshots/screenshot-2.png" alt="FileFive"/>
+    <img src="https://github.com/miroshnikov/filefive/blob/main/docs/screenshots/screenshot-3.png" alt="FileFive"/>
+    <img src="https://github.com/miroshnikov/filefive/blob/main/docs/screenshots/screenshot-4.png" alt="FileFive"/>
+  </details>
 </p>
 
 ## Installation
