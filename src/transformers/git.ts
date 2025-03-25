@@ -4,6 +4,7 @@ import { join, dirname } from 'node:path'
 import { Files, FileAttrsAttr, Path } from '../types'
 import { partition } from 'ramda'
 
+
 export default async function(path: Path, files: Files): Promise<Files> {
     const run = promisify(execFile)
 
@@ -19,33 +20,46 @@ export default async function(path: Path, files: Files): Promise<Files> {
                 .replace(/\0$/, '')
                 .split('\0')
                 .map(s => [join(repoRoot, s.substring(3)), s.substring(0, 2)])
+                .map(([path, status]) => [path.replace(/\/$/, ''), status])
         )
 
-        const topDir = new RegExp('^([^/]+)');
-
-        [...inRoot
-            .map(([path, s]) => [path, getStatusCode(s)])
-            .filter(([, status]) => status),
-            ...[ ...new Set(
-                inSubfolders.map(([p]) => topDir.exec(p.substring(path.length+1))?.[1]).filter(s => s)
-            )].map(dir => [join(path, dir), 'git_c'])
-        ].forEach(([path, status]) => {
-            const f = files.find(f => f.path == path)
-            f && (f[FileAttrsAttr][status] = statusNames[status] ?? '')
-        })
+        if (inSubfolders.length == 1 && inSubfolders[0][0] == path && inSubfolders[0][1].includes('?')) {
+            files.forEach(f => {
+                const status = f.dir ? GitStatus.Contains : GitStatus.Untracked
+                f[FileAttrsAttr][status] = statusNames[status]
+            })
+        } else {
+            const topDir = new RegExp('^([^/]+)');
+    
+            [...inRoot
+                .map(([path, s]) => [path, getStatusCode(s)])
+                .filter(([, status]) => status),
+                ...[ ...new Set(
+                    inSubfolders.map(([p]) => topDir.exec(p.substring(path.length+1))?.[1]).filter(s => s)
+                )].map(dir => [join(path, dir), GitStatus.Contains])
+            ].forEach(([path, status]) => {
+                const f = files.find(f => f.path == path)
+                if (f) {
+                    if (f.dir) {
+                        status = GitStatus.Contains
+                    }
+                    f[FileAttrsAttr][status] = status ? (statusNames[status] ?? '') : ''
+                }
+            })
+        }
 
 
         const { stdout: ignored } = await run('git', ['ls-files', '--others', '--ignored', '--exclude-standard', '--directory', '-z'], { cwd: path })
         if (ignored == './\0') {
-            files.forEach(f => f[FileAttrsAttr]['git_i'] = 'Ignored')
+            files.forEach(f => f[FileAttrsAttr][GitStatus.Ignored] = statusNames[GitStatus.Ignored])
         } else {
             ignored
                 .replace(/\0$/, '')
                 .split('\0')
-                .map(s => join(repoRoot, s.replace(/\/$/, '')))
+                .map(s => join(path, s.replace(/\/$/, '')))
                 .forEach(path => {
                     const f = files.find(f => f.path == path)
-                    f && (f[FileAttrsAttr]['git_i'] = 'Ignored')
+                    f && (f[FileAttrsAttr][GitStatus.Ignored] = statusNames[GitStatus.Ignored])
                 })
         }
 
@@ -56,20 +70,29 @@ export default async function(path: Path, files: Files): Promise<Files> {
     return files
 }
 
-function getStatusCode(s: string) {
-    if (s.includes('?')) {
-        return 'git_u'
-    } else if (s.includes('M')) {
-        return 'git_m'
-    } else if (s.includes('A')) {
-        return 'git_a'
-    }
-    return ''
+enum GitStatus {
+    Untracked = 'git_u',
+    Modified = 'git_m',
+    Added = 'git_a',
+    Contains = 'git_c',
+    Ignored = 'git_i'
 }
 
 const statusNames: Record<string, string> = {
-    git_u: 'Untracked',
-    git_m: 'Modified',
-    git_a: 'Index Added',
-    git_c: 'Has uncommited items'
+    [GitStatus.Untracked]: 'Untracked',
+    [GitStatus.Modified]: 'Modified',
+    [GitStatus.Added]: 'Index Added',
+    [GitStatus.Contains]: 'Has uncommited items',
+    [GitStatus.Ignored]: 'Ignored'
+}
+
+function getStatusCode(s: string): GitStatus {
+    if (s.includes('?')) {
+        return GitStatus.Untracked
+    } else if (s.includes('M')) {
+        return GitStatus.Modified
+    } else if (s.includes('A')) {
+        return GitStatus.Added
+    }
+    return null
 }
