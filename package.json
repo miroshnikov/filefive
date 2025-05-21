@@ -31,6 +31,7 @@
     "dev": "NODE_ENV=development nodemon src/index.ts",
     "build": "tsc -p .",
     "start": "node dist/index.js",
+    "test": "jest tests",
     "lint": "eslint",
     "publish": "tsc -p . && npm publish"
   },
@@ -52,6 +53,7 @@
     "@eslint/js": "^9.22.0",
     "@types/express": "^5.0.0",
     "@types/ftp": "^0.3.36",
+    "@types/jest": "^29.5.14",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.12.0",
     "@types/ramda": "^0.30.2",
@@ -59,7 +61,9 @@
     "@types/whatwg-url": "^13.0.0",
     "@types/ws": "^8.5.14",
     "eslint": "^9.22.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.9",
+    "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.1"

@@ -14,6 +14,7 @@ const config = {
       extensions: [ '.tsx', '.ts', '...' ],
       symlinks: false
   },   
+  target: 'web',
   cache: false,   
   devtool: 'cheap-source-map',
   devServer: {

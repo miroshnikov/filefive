@@ -35,7 +35,7 @@ app.use(express.static(resolve(__dirname, 'public')))
 app.use(express.static(resolve(__dirname, '../dist/public')))
 
 const server = app.listen(port, async () => {
-    console.log(`Listening on http://localhost:${port}`)
+    console.log(`FileFive is up on http://localhost:${port}`)
     if (process.env.NODE_ENV !== 'development') {
         (await open).default(`http://localhost:${port}`)
     }
