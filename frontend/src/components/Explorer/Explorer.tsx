@@ -546,6 +546,7 @@ export default function Explorer ({
                     createURI(connection, target), 
                     effect == DropEffect.Move, 
                     filter,
+                    null,
                     sid
                 ).then(qid => createQueue(qid))
             } else {
