@@ -57,6 +57,7 @@ export default class SFtp extends FileSystem {
         private host: string, 
         private user: string, 
         private password: string, 
+        private privateKey: Buffer = null,
         private port = 22,
         private onError: (e: Error) => void,
         private onClose = () => {}
@@ -97,8 +98,12 @@ export default class SFtp extends FileSystem {
             this.connection.connect({ 
                 host: this.host, 
                 username: this.user, 
-                password: this.password, 
                 port: this.port,
+                ...(
+                    this.privateKey ? 
+                        { privateKey: this.privateKey } : 
+                        { password: this.password }
+                )
                 // debug: s => console.log('DEBUG', s)
             })
         }

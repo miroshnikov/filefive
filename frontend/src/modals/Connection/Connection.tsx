@@ -30,6 +30,7 @@ type FormValues = {
     port: string
     user: string
     password: string
+    privatekey: string
 }
 
 export default function ({ file, onConnect, onClose }: { file?: Path, onConnect: (path: Path) => void, onClose: () => void }) {
@@ -39,11 +40,19 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
     const [editing, setEditing] = useState(false)
     const [name, setName] = useState('')
     const [scheme, setScheme] = useState('sftp')
-    const [values, setValues] = useState({ scheme: 'sftp', host: '', port: '', user: '', password: '' })
+    const [values, setValues] = useState({ 
+        scheme: 'sftp', 
+        host: '', 
+        port: '', 
+        user: '', 
+        password: '',
+        privatekey: ''
+    })
     const [theme, setTheme] = useState(appSettings.theme)
     const [username, setUsername] = useState('')
     const [pass, setPass] = useState('')
     const [savePassword, setSavePassword] = useState(false)
+    const [usePrivateKey, setUsePrivateKey] = useState(false)
 
 
     useEffect(() => { 
@@ -52,10 +61,11 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             window.f5.get(file).then(config => {
                 if (config) {
                     setEditing(true)
-                    const {scheme, host, port, user, password} = config
-                    setValues({scheme, host, port: String(port), user, password})
+                    const {scheme, host, port, user, password, privatekey} = config
+                    setValues({scheme, host, port: String(port), user, password, privatekey})
                     setTheme(config.theme ?? appSettings.theme)
                     setSavePassword(password.length > 0)
+                    setUsePrivateKey(privatekey.length > 0)
                 }
             })
         }
@@ -108,13 +118,20 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             if (!data.port) {
                 data.port = data.scheme == 'sftp' ? 22 : 21
             }
+            if (scheme == 'sftp') {
+                if (usePrivateKey) {
+                    data.privatekey ||= '~/.ssh/id_ed25519'
+                } else {
+                    data.privatekey = ''
+                }
+            }
             await window.f5.save(file, { ...data, savePassword })
             if (id == ModalButtonID.Ok) {
                 onConnect(file)            
             }
         }
         onClose()
-        reset({ scheme: 'sftp', host: '', port: '', user: '', password: '' })
+        reset({ scheme: 'sftp', host: '', port: '', user: '', password: '', privatekey: '' })
         setTheme(appSettings.theme)
     }
 
@@ -167,21 +184,37 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         />
                     </div>
 
-                    <label>Password:</label>
-                    <Controller
-                        name="password"
-                        control={control}
-                        render={({field}) => 
-                            <Password {...field} placeholder="Will ask if empty" autoComplete='current-password' />
-                        }
-                    />
+                    {(scheme != 'sftp' || !usePrivateKey) && <>                       
+                        <label>Password:</label>
+                        <Controller
+                            name="password"
+                            control={control}
+                            render={({field}) => 
+                                <Password {...field} placeholder="Will ask if empty" autoComplete='current-password' />
+                            }
+                        />
+                    </>}
 
-                    {pass && <>
+                    {(scheme != 'sftp' || !usePrivateKey) && pass && <>
                         <label></label>
                         <Checkbox onChange={setSavePassword} value={savePassword}>Save password on disk</Checkbox>
                         <p>
                             Passwords are stored in plain text. Use the browser password manager for a better protection.
                         </p>
+                    </>}
+
+                    {scheme == 'sftp' && <>
+                        <label></label>
+                        <Checkbox onChange={setUsePrivateKey} value={usePrivateKey}>Use SSH Private Key</Checkbox>
+                    </>}
+
+                    {scheme == 'sftp' && usePrivateKey && <>
+                        <label>Key File Path:</label>
+                        <input className='dry'
+                            {...register("privatekey")}
+                            placeholder="~/.ssh/id_ed25519 (by default)"
+                            autoComplete="off"
+                        />
                     </>}
 
                     <label>Color Theme:</label>

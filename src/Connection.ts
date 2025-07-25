@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import { FileSystem, FileAttributes } from './FileSystem'
 import { URI, ConnectionID, LocalFileSystemID, Files, Path } from './types'
@@ -16,14 +19,30 @@ export default class {
         this.shared.set(LocalFileSystemID, new Local)
     }
 
-    static async open(scheme: string, user: string, host: string, port: number, password: string): Promise<FileAttributes> {
+    static async open(
+        scheme: string, 
+        user: string, 
+        host: string, 
+        port: number, 
+        password: string,
+        privatekey: string
+    ): Promise<FileAttributes> {
         const id = connectionID(scheme, user, host, port)
         const attrs = (scheme == 'sftp') ? SFTP_ATTRIBUTES : FTP_ATTRIBUTES
         if (this.shared.inc(id)) {
             return attrs
         }
-        this.credentials.set(id, password)
-        const conn = await this.create(id, scheme, user, host, port)
+
+        if (privatekey) {
+            if (privatekey.startsWith('~')) {
+                privatekey = join(homedir(), privatekey.substring(1))
+            }
+            this.credentials.set(id, ['key', readFileSync(privatekey)])
+        } else {
+            this.credentials.set(id, ['password', password])
+        }
+        
+        const conn = await this.create(id)
         await conn.open()
         this.shared.set(id, conn)
         return attrs
@@ -80,7 +99,7 @@ export default class {
                     const poolId = unqid()
                     try {
                         const onClose = () => this.pools.get(id)?.delete(poolId)
-                        const fs = await this.createFromId(id, onClose)
+                        const fs = await this.create(id, onClose)
                         await fs.open()
                         this.pools.get(id).set(poolId, { fs, idle: false })
                         resolve([fs, poolId])
@@ -141,30 +160,33 @@ export default class {
         return this.limits.has(id) ? this.limits.get(id) : 1024     // for vsftpd max_per_ip in /etc/vsftpd.conf
     }
 
-    private static async create(
-        id: ConnectionID, 
-        scheme: string, 
-        user: string, 
-        host: string, 
-        port: number, 
-        onClose = () => {}
-    ): Promise<FileSystem> {
+    private static async create(id: ConnectionID, onClose = () => {}): Promise<FileSystem> {
         if (options.log) {
             return new LogFS(
                 id, 
-                await this.createFS(scheme, user, host, port, this.credentials.get(id), onClose)
+                await this.createFS(id, onClose)
             )
         }
-        return this.createFS(scheme, user, host, port, this.credentials.get(id), onClose)
+        return this.createFS(id, onClose)
     }
 
-    private static async createFS(scheme: string, user: string, host: string, port: number, password: string, onClose: () => void) {
+    private static async createFS(id: ConnectionID, onClose: () => void) {
+        const { scheme, user, host, port } = parseURI(id as URI)
+
+        if (!this.credentials.has(id)) {
+            onClose?.()
+            return
+        }
+
+        const [authType, credential] = this.credentials.get(id)
+
         switch (scheme) {
             case 'sftp': {
                 return new SFtp(
                     host, 
                     user, 
-                    password,
+                    authType == 'password' ? credential : '',
+                    authType == 'key' ? credential : null,
                     port, 
                     error => logger.error('SFTP error:', error),
                     onClose
@@ -174,7 +196,7 @@ export default class {
                 return new Ftp(
                     host, 
                     user, 
-                    password,
+                    credential as string,
                     port, 
                     error => logger.error('FTP error:', error),
                     onClose
@@ -185,15 +207,11 @@ export default class {
         }
     }
 
-    private static async createFromId(id: ConnectionID, onClose = () => {}): Promise<FileSystem> {
-        const { scheme, user, host, port } = parseURI(id as URI)
-        return this.create(id, scheme, user, host, port, onClose)
-    }
-
+    
     private static shared = new ReferenceCountMap<ConnectionID, FileSystem>
     private static pools: Map<string, Map<string, {fs: FileSystem, idle: false|ReturnType<typeof setTimeout>}>> = new Map()
     private static queue: Function[] = []
     private static pending: Record<string, ((id: string) => void)[]> = {}
     private static limits = new Map<ConnectionID, number>()
-    private static credentials = new Map<ConnectionID, string>()
+    private static credentials = new Map<ConnectionID, ['password', string]|['key', Buffer]>()
 }

@@ -65,6 +65,7 @@ export interface ConnectionConfig extends Twofold<ExplorerConfig> {
     port: number
     user: string
     password: string
+    privatekey: string
     theme: string
     path?: Twofold<Path|undefined>
     sync?: Twofold<Path>|null
