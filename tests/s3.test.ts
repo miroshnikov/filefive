@@ -14,7 +14,7 @@ import { S3Client,
  } from "@aws-sdk/client-s3";
 import * as fs from 'node:fs';
 import { NodeJsRuntimeStreamingBlobPayloadOutputTypes } from "@smithy/types"
-
+import S3 from '../src/fs/S3'
 
  // example of using @aws-sdk/client-s3
 // https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/welcome.html
@@ -24,6 +24,7 @@ import { NodeJsRuntimeStreamingBlobPayloadOutputTypes } from "@smithy/types"
 describe('S3', () => {
 
   let client: S3Client
+  let conn: S3
 
   beforeAll(() => {
     client = new S3Client({ 
@@ -35,6 +36,17 @@ describe('S3', () => {
         secretAccessKey: process.env.S3_SECRET!
       }
     })
+
+    conn = new S3(
+      process.env.S3_URL!,
+      process.env.S3_KEY!,
+      process.env.S3_SECRET!,
+      'us-east-1',
+      443,
+      (e) => {
+        console.log('ERROR OCCURED: ', e)
+      }
+    )
   });
 
   test('List buckets', async () => {
@@ -42,27 +54,33 @@ describe('S3', () => {
     // Beginning October 1, 2025, Amazon S3 will stop returning DisplayName
     try {
       const data: ListBucketsCommandOutput = await client.send(command);
-      // console.log(
-      //   data.Buckets?.map(bucket => bucket.Name + ' ' + bucket.CreationDate)
-      // )
+      console.log(
+        data,
+        // data.Buckets?.map(bucket => bucket.Name + ' ' + bucket.CreationDate)
+      )
     } catch (error) {
       console.log('ERROR: ', error)
     }
-
-    expect(1+2).toBe(3);
   });
 
 
   test('List files', async () => {
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/command/ListObjectsCommand/
     try {
-      const data: ListObjectsCommandOutput = await client.send(new ListObjectsCommand({
-        Bucket: process.env.S3_BUCKET,
-        // Delimiter: '/',
-        // Prefix: 'aaa/bbb/', // - in subfolder
-        MaxKeys: 1000   // 1000 is maximum number
-        // Marker: cursor,  Marker is where you want Amazon S3 to start listing from. Amazon S3 starts listing after this specified key. Marker can be any key in the bucket.
-      }));
+      console.log(
+        await conn.ls(await conn.pwd()),
+        await conn.ls(`/${process.env.S3_BUCKET}`),
+        await conn.ls(`/${process.env.S3_BUCKET}/b`)
+      )
+
+      // const data: ListObjectsCommandOutput = await client.send(new ListObjectsCommand({
+      //   Bucket: process.env.S3_BUCKET,
+      //   Delimiter: '/',
+      //   Prefix: 'b/', // - in subfolder
+      //   MaxKeys: 1000   // 1000 is maximum number
+      //   // Marker: cursor,  Marker is where you want Amazon S3 to start listing from. Amazon S3 starts listing after this specified key. Marker can be any key in the bucket.
+      // }));
+      
       // console.log(
       //   data
       //   // data.Contents?.map(item => [item.Key, item.LastModified, item.Size])
@@ -95,6 +113,13 @@ describe('S3', () => {
   })
 
   test('Upload', async () => {
+
+    // conn.put(
+    //   '/Users/maximmiroshnikov/projects/filefive/jest.setup.ts',
+    //   `/${process.env.S3_BUCKET}/a/test.ts`
+    // )
+
+
     const filePath = '/Users/maximmiroshnikov/projects/filefive/jest.setup.ts'
 
     // const f = fs.readFileSync('/Users/maximmiroshnikov/projects/filefive/jest.setup.ts');
@@ -115,137 +140,166 @@ describe('S3', () => {
 
 
     // For files larger than 100MB, consider using multipart upload:
-    // CreateMultipartUploadCommand
-    const { UploadId } = await client.send(
-      new CreateMultipartUploadCommand({
-        Bucket: process.env.S3_BUCKET,
-        Key: 'jest.setup.ts'
-      })
-    )
 
-    const partSize = 5 * 1024 * 1024
-    const fileStream = fs.createReadStream(filePath, { highWaterMark: partSize });
-    let buffer: any[] = [];
-    let partNumber = 1
-    const parts: { ETag: string|undefined, PartNumber: number }[] = []
-    for await (const chunk of fileStream) {
-      buffer.push(chunk);
+    // const { UploadId } = await client.send(
+    //   new CreateMultipartUploadCommand({
+    //     Bucket: process.env.S3_BUCKET,
+    //     Key: 'jest.setup.ts'
+    //   })
+    // )
 
-      if (buffer.length >= partSize) {
-        const partParams = {
-          Bucket: process.env.S3_BUCKET,
-          Key: 'jest.setup.ts',
-          PartNumber: partNumber,
-          UploadId,
-          Body: Buffer.concat(buffer)
-        };
+    // const partSize = 5 * 1024 * 1024
+    // const fileStream = fs.createReadStream(filePath, { highWaterMark: partSize });
+    // let buffer: any[] = [];
+    // let partNumber = 1
+    // const parts: { ETag: string|undefined, PartNumber: number }[] = []
+    // for await (const chunk of fileStream) {
+    //   buffer.push(chunk);
+
+    //   if (buffer.length >= partSize) {
+    //     const partParams = {
+    //       Bucket: process.env.S3_BUCKET,
+    //       Key: 'jest.setup.ts',
+    //       PartNumber: partNumber,
+    //       UploadId,
+    //       Body: Buffer.concat(buffer)
+    //     };
         
-        const { ETag } = await client.send(new UploadPartCommand(partParams));
-        parts.push({ ETag, PartNumber: partNumber });
-        console.log(`Uploaded part ${partNumber}`);
+    //     const { ETag } = await client.send(new UploadPartCommand(partParams));
+    //     parts.push({ ETag, PartNumber: partNumber });
+    //     console.log(`Uploaded part ${partNumber}`);
         
-        partNumber++;
-        buffer = [];
-      }
-    }
+    //     partNumber++;
+    //     buffer = [];
+    //   }
+    // }
 
-        // Upload remaining data
-    if (buffer.length > 0) {
-      const partParams = {
-        Bucket: process.env.S3_BUCKET,
-        Key: 'jest.setup.ts',
-        PartNumber: partNumber,
-        UploadId,
-        Body: Buffer.concat(buffer)
-      };
+    //     // Upload remaining data
+    // if (buffer.length > 0) {
+    //   const partParams = {
+    //     Bucket: process.env.S3_BUCKET,
+    //     Key: 'jest.setup.ts',
+    //     PartNumber: partNumber,
+    //     UploadId,
+    //     Body: Buffer.concat(buffer)
+    //   };
       
-      const { ETag } = await client.send(new UploadPartCommand(partParams));
-      parts.push({ ETag, PartNumber: partNumber });
-      console.log(`Uploaded final part ${partNumber}`);
-    }
+    //   const { ETag } = await client.send(new UploadPartCommand(partParams));
+    //   parts.push({ ETag, PartNumber: partNumber });
+    //   console.log(`Uploaded final part ${partNumber}`);
+    // }
 
-        // Complete the upload
-    const data = await client.send(
-      new CompleteMultipartUploadCommand({
-        Bucket: process.env.S3_BUCKET,
-        Key: 'jest.setup.ts',
-        UploadId,
-        MultipartUpload: { Parts: parts }
-      })
-    );
+    //     // Complete the upload
+    // const data = await client.send(
+    //   new CompleteMultipartUploadCommand({
+    //     Bucket: process.env.S3_BUCKET,
+    //     Key: 'jest.setup.ts',
+    //     UploadId,
+    //     MultipartUpload: { Parts: parts }
+    //   })
+    // );
 
 
   })
 
-  // test('Download', async () => {
-  //   const data: GetObjectCommandOutput = await client.send(new GetObjectCommand({
-  //     Bucket: process.env.S3_BUCKET,
-  //     Key: 'a/test2.ts'
-  //   }))
+  test('Download', async () => {
+      conn.get(
+        `/${process.env.S3_BUCKET}/a/test.ts`,
+        __dirname + '/zzz.ts'
+      )
 
-  //   if (data.Body) {
-  //     const body = data.Body as NodeJsRuntimeStreamingBlobPayloadOutputTypes
-  //     const writeStream = fs.createWriteStream('/Users/maximmiroshnikov/projects/filefive/tests/test2.ts');
-  //     body.pipe(writeStream)
+    // const data: GetObjectCommandOutput = await client.send(new GetObjectCommand({
+    //   Bucket: process.env.S3_BUCKET,
+    //   Key: 'a/test2.ts'
+    // }))
 
-  //     return new Promise((resolve, reject) => {
-  //       writeStream.on('finish', () => {
-  //         console.log(`File downloaded successfully to`);
-  //         resolve('ok')
-  //       });
+    // if (data.Body) {
+    //   const body = data.Body as NodeJsRuntimeStreamingBlobPayloadOutputTypes
+    //   const writeStream = fs.createWriteStream('/Users/maximmiroshnikov/projects/filefive/tests/test2.ts');
+    //   body.pipe(writeStream)
+
+    //   return new Promise((resolve, reject) => {
+    //     writeStream.on('finish', () => {
+    //       console.log(`File downloaded successfully to`);
+    //       resolve('ok')
+    //     });
         
-  //       writeStream.on('error', (err) => {
-  //         console.error('Error writing file:', err);
-  //         reject(err)
-  //       });
-  //     });
-  //   }
-  // })
+    //     writeStream.on('error', (err) => {
+    //       console.error('Error writing file:', err);
+    //       reject(err)
+    //     });
+    //   });
+    // }
+  })
 
-  // test('rm', async () => {
-  //   try {
-  //     const data = await client.send(new DeleteObjectCommand({
-  //       Bucket: process.env.S3_BUCKET,
-  //       Key: 'a/test2.ts'
-  //     }));
-  //   } catch (err) {
-  //     console.error('Error deleting object:', err);
-  //   }
-  // })
+  test('rm', async () => {
+    conn.rm(`/${process.env.S3_BUCKET}/a`, true)
 
 
+    // try {
+    //   const data = await client.send(new DeleteObjectCommand({
+    //     Bucket: process.env.S3_BUCKET,
+    //     Key: 'a/test2.ts'
+    //   }));
+    // } catch (err) {
+    //   console.error('Error deleting object:', err);
+    // }
+  })
 
-  // test('mkdir', async () => {
 
-  //   // Key: 'a/',   // the illusion of a folder by uploading an empty object with a trailing slash.
-  //   // Size: 0,
 
-  //   try {
-  //     const data = await client.send(new PutObjectCommand({
-  //       Bucket: process.env.S3_BUCKET,
-  //       Key: 'b/',
-  //       Body: ''
-  //     }));
-  //     console.log('Folder created successfully:', data);
-  //   } catch (err) {
-  //     console.error('Error creating folder:', err);
-  //   }
-  // })
+  test('mkdir', async () => {
+    await conn.mkdir(`/${process.env.S3_BUCKET}/test-folder`)
 
-  //   test('copy mv rename', async () => {
-  //     try {
-  //       const data = await client.send(new CopyObjectCommand({
-  //         Bucket: process.env.S3_BUCKET,
-  //         CopySource: `/${process.env.S3_BUCKET}/${encodeURIComponent('a/jest.config.js')}`,
-  //         Key: 'a/new.js'
-  //       }));
-  //       console.log('copied successfully:', data);
+    // Key: 'a/',   // the illusion of a folder by uploading an empty object with a trailing slash.
+    // Size: 0,
 
-  //       // then delete. send(new DeleteObjectCommand())
+    // try {
+    //   const data = await client.send(new PutObjectCommand({
+    //     Bucket: process.env.S3_BUCKET,
+    //     Key: 'b/',
+    //     Body: ''
+    //   }));
+    //   console.log('Folder created successfully:', data);
+    // } catch (err) {
+    //   console.error('Error creating folder:', err);
+    // }
+  })
 
-  //     } catch (err) {
-  //       console.error('Error copying:', err);
-  //     }
-  // })
+    test('copy mv rename', async () => {
+      // await conn.cp(
+      //   `/${process.env.S3_BUCKET}/test-folder/`,
+      //   `/${process.env.S3_BUCKET}/my-folder/`,
+      //   true
+      // )
+
+      // await conn.rename(
+      //   `/${process.env.S3_BUCKET}/test-folder/LICENSE`,
+      //   `/${process.env.S3_BUCKET}/test-folder/newname`
+      // )
+
+
+
+      // try {
+      //   const data = await client.send(new CopyObjectCommand({
+      //     Bucket: process.env.S3_BUCKET,
+      //     CopySource: `/${process.env.S3_BUCKET}/${encodeURIComponent('a/jest.config.js')}`,
+      //     Key: 'a/new.js'
+      //   }));
+      //   console.log('copied successfully:', data);
+
+      //   // then delete. send(new DeleteObjectCommand())
+
+      // } catch (err) {
+      //   console.error('Error copying:', err);
+      // }
+  })
+
+  test.only('write', async () => {
+    await conn.write(
+      '/5d1a214b4700-max-files/my-folder/package.json',
+      'abc123'
+    )
+  })
   
 });
