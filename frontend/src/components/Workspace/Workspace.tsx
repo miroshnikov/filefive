@@ -15,7 +15,7 @@ import { useEffectOnUpdate, useSubscribe, useConcatAsyncEffect } from '../../hoo
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
-import { basename, dirname, join } from '../../utils/path'
+import { basename, dirname, join, descendantOf } from '../../utils/path'
 import classNames from 'classnames'
 import MissingDir from './MissingDir'
 import styles from './Workspace.less'
@@ -316,12 +316,20 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                         if (cmd.uri) {
                             local = isLocal(cmd.uri)
                             const { path } = parseURI(cmd.uri)
-                            files = (local ? localSelected : remoteSelected).includes(path) ? (local ? localSelected : remoteSelected) : [path]
+                            files = (local ? localSelected : remoteSelected).includes(path) ? 
+                                (local ? localSelected : remoteSelected) : 
+                                [path]
                         }
+                        if (!files.length) {
+                            return
+                        }
+
                         const qid = local ?
                             window.f5.copy(
                                 files.map(path => createURI(LocalFileSystemID, path)), 
-                                createURI(connection?.id ?? LocalFileSystemID, remotePath),
+                                connection?.id ? 
+                                    createURI(connection.id, remotePath) :
+                                    createURI(LocalFileSystemID, focused.current == 'local' ? remotePath : localPath),
                                 false,
                                 (connection ?? appSettings).local.filter,
                                 cmd.root,
