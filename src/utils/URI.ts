@@ -5,8 +5,16 @@ export function isLocal(uri: string) {
     return uri.startsWith('file:')
 }
 
-export function connectionID(scheme: string, user: string, host: string, port:number): ConnectionID {
-    return scheme == 'file' ? LocalFileSystemID : `${scheme}://${user}@${host}:${port}` as ConnectionID
+export function connectionID(scheme: string, user: string, host: string, port: number): ConnectionID {
+    switch (scheme) {
+        case 'file': 
+            return LocalFileSystemID
+        case 's3': 
+            scheme = host.match(/^https?:\/\//)[0].slice(0, -3)
+            host = host.substring(scheme.length+3)
+            break
+    }
+    return `${scheme}://${user}@${host}:${port}` as ConnectionID
 }
 
 
@@ -38,10 +46,13 @@ export function createURI(id: ConnectionID, path: Path): URI {
 
 function defaultPort(protocol: string) {
     switch (protocol) {
-        case 'ftp':  return 21
-        case 'sftp': return 22
-        case 'http': return 80
+        case 'file':  return null
+        case 'ftp':   return 21
+        case 'sftp':  return 22
+        case 'http':  return 80
+        case 'https': return 443
     }
+    console.error(`Default port for ${protocol} is not defined`)
     return null
 }
 

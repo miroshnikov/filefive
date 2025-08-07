@@ -32,7 +32,7 @@ export default function Error() {
                 <i className="icon">warning</i>
                 <div>
                     {errors[current].id && errors[current].id != LocalFileSystemID &&
-                        <em><i className="icon">cloud</i>{ errors[current].id }</em>
+                        <em>{ errors[current].id }</em>
                     }
                     {errors[current].html === true ?
                         <div className="message" dangerouslySetInnerHTML={{__html: errors[current].message}}></div> :

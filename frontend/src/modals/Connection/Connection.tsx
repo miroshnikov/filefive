@@ -12,14 +12,18 @@ import themesStyle from '../Settings/Settings.less'
 
 
 
-const schemes = [
+const protocols = [
     {
         value: 'sftp',
-        label: 'SFTP'
+        label: 'SFTP - SSH File Transfer Protocol'
     },
     {
         value: 'ftp',
-        label: 'FTP'
+        label: 'FTP - File Transfer Protocol'
+    },
+    {
+        value: 's3',
+        label: 'S3 - Amazon Simple Storage Service'
     }
 ]
 
@@ -37,9 +41,8 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
 
     const appSettings = useContext(AppSettingsContext)
 
-    const [editing, setEditing] = useState(false)
     const [name, setName] = useState('')
-    const [scheme, setScheme] = useState('sftp')
+    const [protocol, setProtocol] = useState('sftp')
     const [values, setValues] = useState({ 
         scheme: 'sftp', 
         host: '', 
@@ -49,6 +52,8 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         privatekey: ''
     })
     const [theme, setTheme] = useState(appSettings.theme)
+
+    // const [host, setHost] = useState('')
     const [username, setUsername] = useState('')
     const [pass, setPass] = useState('')
     const [savePassword, setSavePassword] = useState(false)
@@ -60,7 +65,6 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             setName( parse(file).name )
             window.f5.get(file).then(config => {
                 if (config) {
-                    setEditing(true)
                     const {scheme, host, port, user, password, privatekey} = config
                     setValues({scheme, host, port: String(port), user, password, privatekey})
                     setTheme(config.theme ?? appSettings.theme)
@@ -79,17 +83,30 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         control,
         getValues,
         watch,
-        reset
+        reset,
+        setValue
     } = useForm<FormValues>({ mode: 'all', values })
 
     useEffect(() => {
-        const { unsubscribe } = watch(({scheme: s, user, host, port, password}) => {
-            setUsername(`${s}://${user}@${host}:${port ? port : (s == 'sftp' ? 22 : 21)}`)
-            setScheme(s)
+        const { unsubscribe } = watch(({scheme, user, host, port, password}) => {
+            setUsername(`${scheme}://${user}@${host}:${port ? port : (scheme == 'sftp' ? 22 : 21)}`)
+            setProtocol(scheme)
             setPass(password)
         })
         return () => unsubscribe()
     }, [watch])
+
+    const parseHost = (host: string) => {
+        const h = host.trim()
+        const scheme = h.match(/^s?ftp:/)
+        if (scheme) {
+            return h.substring(scheme[0].length+2)
+        }
+        if (protocol == 's3' && h.length > 8 && !h.match(/^https?:/)) {
+            return `https://${h}`
+        }
+        return h
+    }
 
     const buttons = [
         {
@@ -108,23 +125,31 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         } 
     ]
 
+    const defaultPort = () => {
+        return {
+            sftp: '22',
+            ftp: '21',
+            s3: '443'
+        }[protocol] ?? ''
+    }
+
     const onModalClose = async (id: string) => {
         if (id == 'save' || id == ModalButtonID.Ok) {
+
             const data = evolve({
-                host: trim,
-                port: parseInt,
+                host: parseHost,
+                port: p => parseInt(p || defaultPort()),
                 user: trim
             }, { ...getValues(), theme })
-            if (!data.port) {
-                data.port = data.scheme == 'sftp' ? 22 : 21
-            }
-            if (scheme == 'sftp') {
+
+            if (protocol == 'sftp') {
                 if (usePrivateKey) {
                     data.privatekey ||= '~/.ssh/id_ed25519'
                 } else {
                     data.privatekey = ''
                 }
             }
+
             await window.f5.save(file, { ...data, savePassword })
             if (id == ModalButtonID.Ok) {
                 onConnect(file)            
@@ -145,32 +170,33 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                     <Controller
                         name="scheme"
                         control={control}
-                        render={({field}) => <Select {...field} options={schemes} />}
+                        render={({field}) => <Select {...field} options={protocols} />}
                     />
 
                     <ul>
                         <li>
-                            <label>Host:</label>
+                            <label>{protocol == 's3' ? 'URL' : 'Host'}:</label>
                             <input className={classNames('dry', {error: errors.host})} 
                                 {...register("host", { required: true })}
-                                placeholder="example.com" 
+                                placeholder={protocol == 's3' ? 'https://s3.amazonaws.com' : 'example.com'}
                                 autoComplete="off"
+                                onBlur={() => setValue('host', parseHost(getValues().host))}
                             />
                         </li>
                         <li>
                             <label>Port:</label>
                             <input className={classNames('dry', {error: errors.port})} 
                                 {...register("port", { pattern: /\d+/g })}
-                                placeholder={scheme == 'sftp' ? '22' : '21'} 
+                                placeholder={defaultPort()} 
                                 autoComplete="off"
                             />
                         </li>
                     </ul>
 
-                    <label>User:</label>
+                    <label>{protocol == 's3' ? 'Access Key Id' : 'User'}:</label>
                     <input className={classNames('dry', {error: errors.user})} 
                         {...register("user", { required: true })}
-                        placeholder="username"
+                        placeholder={protocol == 's3' ? 'unique identifier' : 'username'}
                         autoComplete="off"
                     />
 
@@ -184,8 +210,8 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         />
                     </div>
 
-                    {(scheme != 'sftp' || !usePrivateKey) && <>                       
-                        <label>Password:</label>
+                    {(protocol != 'sftp' || !usePrivateKey) && <>                       
+                        <label>{protocol == 's3' ? 'Secret Access Key' : 'Password'}:</label>
                         <Controller
                             name="password"
                             control={control}
@@ -195,7 +221,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         />
                     </>}
 
-                    {(scheme != 'sftp' || !usePrivateKey) && pass && <>
+                    {(protocol != 'sftp' || !usePrivateKey) && pass && <>
                         <label></label>
                         <Checkbox onChange={setSavePassword} value={savePassword}>Save password on disk</Checkbox>
                         <p>
@@ -203,12 +229,12 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         </p>
                     </>}
 
-                    {scheme == 'sftp' && <>
+                    {protocol == 'sftp' && <>
                         <label></label>
                         <Checkbox onChange={setUsePrivateKey} value={usePrivateKey}>Use SSH Private Key</Checkbox>
                     </>}
 
-                    {scheme == 'sftp' && usePrivateKey && <>
+                    {protocol == 'sftp' && usePrivateKey && <>
                         <label>Key File Path:</label>
                         <input className='dry'
                             {...register("privatekey")}

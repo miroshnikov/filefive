@@ -22,8 +22,8 @@ export function explorerSettings(attributes: FileAttributes, config?: ExplorerCo
                     .filter(isNotNil),
                 ...attributes
                     .filter(({name}) => !config.columns.find(c => name == c.name))
-                    .map(a => ({...a, visible: false, width: 300}))
-                ] : attributes.map(a => ({...a, visible: true, width: 300})), 
+                    .map(a => ({...a, visible: false, width: 250}))
+                ] : attributes.map(a => ({...a, visible: true, width: 250})), 
             ...({ 
                 sort: config?.sort ?? ['name', SortOrder.Asc],
                 history: config?.history ?? [],

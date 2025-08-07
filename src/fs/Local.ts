@@ -74,6 +74,6 @@ export default class Local extends FileSystem {
     }
 
     async write(path: Path, data: string): Promise<void> {
-        await writeFile(path, data)
+        return writeFile(path, data)
     }
 }

@@ -10,6 +10,7 @@ import logger, { LogFS } from './log'
 import Local from './fs/Local'
 import SFtp, { ATTRIBUTES as SFTP_ATTRIBUTES } from './fs/SFtp'
 import Ftp, { ATTRIBUTES as FTP_ATTRIBUTES } from './fs/Ftp'
+import S3, { ATTRIBUTES as S3_ATTRIBUTES } from './fs/S3'
 import options from './options'
 
 
@@ -20,18 +21,26 @@ export default class {
     }
 
     static async open(
-        scheme: string, 
+        protocol: string, 
         user: string, 
         host: string, 
         port: number, 
         password: string,
         privatekey: string
     ): Promise<FileAttributes> {
-        const id = connectionID(scheme, user, host, port)
-        const attrs = (scheme == 'sftp') ? SFTP_ATTRIBUTES : FTP_ATTRIBUTES
+        const id = connectionID(protocol, user, host, port)
+
+        const attrs = {
+            sftp: SFTP_ATTRIBUTES,
+            ftp: FTP_ATTRIBUTES,
+            s3: S3_ATTRIBUTES
+        }[protocol]
+
         if (this.shared.inc(id)) {
             return attrs
         }
+
+        this.protocols.set(id, protocol)
 
         if (privatekey) {
             if (privatekey.startsWith('~')) {
@@ -180,7 +189,12 @@ export default class {
 
         const [authType, credential] = this.credentials.get(id)
 
-        switch (scheme) {
+        const protocol = this.protocols.get(id)
+        if (!protocol) {
+            throw new Error(`Protocol ${protocol} not found`)
+        }
+
+        switch (protocol) {
             case 'sftp': {
                 return new SFtp(
                     host, 
@@ -202,8 +216,19 @@ export default class {
                     onClose
                 )
             }
+            case 's3': {
+                return new S3(
+                    `${scheme}:\\${host}`,
+                    user,
+                    credential as string,
+                    'us-east-1', // TODO
+                    port,
+                    error => logger.error('S3 error:', error),
+                    onClose
+                )
+            }
             default: 
-                throw new Error(`Unsupported scheme ${scheme}`)
+                throw new Error(`Unsupported protocol ${protocol}`)
         }
     }
 
@@ -213,5 +238,6 @@ export default class {
     private static queue: Function[] = []
     private static pending: Record<string, ((id: string) => void)[]> = {}
     private static limits = new Map<ConnectionID, number>()
+    private static protocols = new Map<ConnectionID, string>()
     private static credentials = new Map<ConnectionID, ['password', string]|['key', Buffer]>()
 }

@@ -6,38 +6,35 @@
     background-color: var(--bar-background);
     width: 30vw;
     height: 12vh;
-    padding: 2rem 2rem 3rem 5.5rem;
+    padding: 1.2rem .5rem .5rem 3.5rem;
     border-radius: var(--dry-border-radius);
     > .close {
         position: absolute;
         right: .8rem;
         top: .2rem;
-        font-size: 1.4em;
+        font-size: .8em;
         cursor: pointer;
     }
     > .icon {
         position: absolute;
-        font-size: 3rem;
-        left: 1rem;
+        font-size: 2.5rem;
+        left: .5rem;
         top: 50%;
         transform: translateY(-50%);
         color: var(--dry-error-text);
     }
     > div {
-        overflow-y: auto;
+        overflow-y: scroll;
         max-height: 100%;
+        background-color: var(--border-color);
+        border-radius: var(--dry-border-radius);
+        font-size: .8rem;
+        padding: .2em;
         em {
-            display: flex;
-            align-items: center;
-            gap: .4em;
+            display: block;
+            font-weight: 500;
             background-color: var(--background);
-            line-height: 1.4em;
             padding: .4em .5em;
-            border-radius: var(--dry-border-radius);
-            margin-bottom: .5em;
-            > .icon {
-                font-size: 1.3em;
-            }
         }
     }
     .message {

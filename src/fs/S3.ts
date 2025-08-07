@@ -35,35 +35,42 @@ export const ATTRIBUTES: FileAttributes = [
 
 export default class S3 extends FileSystem {
     constructor(
-        host: string, 
-        accessKeyId: string, 
-        secretAccessKey: string, 
-        region = 'us-east-1',   // the default region, particularly for legacy or unspecified requests
-        port = 443,
+        private host = 'https://s3.amazonaws.com', // the global endpoint (auto-detects the bucket's region)
+        private accessKeyId: string, 
+        private secretAccessKey: string, 
+        private region = 'us-east-1',   // the default region, particularly for legacy or unspecified requests
+        private port = 443,
         private onError = (e: Error) => {},
         private onClose = () => {}
     ) { 
         super()
-        this.connection = new S3Client({
-            endpoint: `${host}:${port}`,
-            region: region,
-            forcePathStyle: true,   // Needed for MinIO and some other non-AWS services
-            credentials: {
-                accessKeyId,
-                secretAccessKey
-            }
-        })
     }
 
     async open(): Promise<true> {
+        try {
+            this.connection = new S3Client({
+                endpoint: `${this.host}:${this.port}`,
+                region: this.region,
+                forcePathStyle: true,   // Needed for MinIO and some other non-AWS services
+                credentials: {
+                    accessKeyId: this.accessKeyId,
+                    secretAccessKey: this.secretAccessKey
+                }
+            })
+        } catch (e) {
+            this.onError(e)
+        }
         return Promise.resolve(true)
     }
 
     close() {
+        this.connection && this.onClose()
+        this.connection?.destroy()
+        this.connection = null
     }
 
     opened() { 
-        return true
+        return this.connection != null
     }
 
     async pwd(): Promise<Path> {
@@ -176,16 +183,12 @@ export default class S3 extends FileSystem {
         )
     }
 
-    async rm(path: Path, recursive: boolean): Promise<void> {   // dir must be empty
+    async rm(path: Path, recursive: boolean): Promise<void> {   // dir must be empty      
         const parts = split(path)
-        try {
-            await this.connection.send(new DeleteObjectCommand({
-                Bucket: parts[0],
-                Key: parts.slice(1).join('/') + (recursive ? '/' : '')
-            }));
-        } catch (e) {
-            this.onError(e)
-        }
+        await this.connection.send(new DeleteObjectCommand({
+            Bucket: parts[0],
+            Key: parts.slice(1).join('/') + (recursive ? '/' : '')
+        }));
     }
 
     async mkdir(path: Path): Promise<void> {
@@ -206,28 +209,32 @@ export default class S3 extends FileSystem {
     }
 
     async mv(from: Path, to: Path): Promise<void> {
-        await this.cp(from, to, false)
-        await this.rm(from, false)
+        const isDir = (await this.ls(dirname(from))).find(({path}) => path == from)?.dir ?? false
+        await this.cp(from, to, isDir)
+
+        const recursiveRm = async (path: string) => {
+            await Promise.all(
+                (await this.ls(path)).map(f => f.dir ? recursiveRm(f.path) : this.rm(f.path, false))
+            )
+            await this.rm(path, true)
+        }
+        await (isDir ? recursiveRm(from) : this.rm(from, isDir))
     }
 
     async cp(from: Path, to: Path, recursive: boolean): Promise<void> {
-        const parts = split(from)
-        try {
-            await this.connection.send( new CopyObjectCommand({
-                Bucket: parts[0],
-                CopySource: resolve(from) + (recursive ? '/' : ''),
-                Key: split(to).slice(1).join('/') + (recursive ? '/' : '')
-            }) )
-        } catch (e) {
-            this.onError(e)
-        }
-
         if (recursive) {
             await Promise.all(
                 (await this.ls(from)).map(f =>
                     this.cp(f.path, resolve(to, f.name), f.dir)
                 )
             )
+        } else {
+            const parts = split(from)
+            await this.connection.send( new CopyObjectCommand({
+                Bucket: parts[0],
+                CopySource: resolve(from) + (recursive ? '/' : ''),
+                Key: split(to).slice(1).join('/') + (recursive ? '/' : '')
+            }) )
         }
     }
 
@@ -243,7 +250,7 @@ export default class S3 extends FileSystem {
             this.onError(e)
         }
     }
-    
+
 
     private async listBuckets(): Promise<FileItem[]> {
         const output = await this.connection.send( new ListBucketsCommand({}) )
