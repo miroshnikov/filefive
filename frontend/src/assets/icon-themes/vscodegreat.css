@@ -1,0 +1,868 @@
+.fileicon {
+            background: no-repeat center / contain;
+        }
+        .fileicon[data-code="_file"] {
+                    background-image: url('vscodegreat/file.png')
+                }
+                .fileicon[data-code="_fd_default"] {
+                    background-image: url('vscodegreat/folders/default.svg')
+                }
+                .fileicon[data-code="_fd_default-open"] {
+                    background-image: url('vscodegreat/folders/default-open.svg')
+                }
+                .fileicon[data-code="_fd_root"] {
+                    background-image: url('vscodegreat/folders/root.svg')
+                }
+                .fileicon[data-code="_fd_root-open"] {
+                    background-image: url('vscodegreat/folders/root-open.svg')
+                }
+                .fileicon[data-code="_fd_node"] {
+                    background-image: url('vscodegreat/folders/node.svg')
+                }
+                .fileicon[data-code="_fd_node-open"] {
+                    background-image: url('vscodegreat/folders/node-open.svg')
+                }
+                .fileicon[data-code="_fd_bower"] {
+                    background-image: url('vscodegreat/folders/bower.svg')
+                }
+                .fileicon[data-code="_fd_bower-open"] {
+                    background-image: url('vscodegreat/folders/bower-open.svg')
+                }
+                .fileicon[data-code="_fd_git"] {
+                    background-image: url('vscodegreat/folders/git.svg')
+                }
+                .fileicon[data-code="_fd_git-open"] {
+                    background-image: url('vscodegreat/folders/git-open.svg')
+                }
+                .fileicon[data-code="_fd_tests"] {
+                    background-image: url('vscodegreat/folders/tests.svg')
+                }
+                .fileicon[data-code="_fd_tests-open"] {
+                    background-image: url('vscodegreat/folders/tests-open.svg')
+                }
+                .fileicon[data-code="_fd_vscode"] {
+                    background-image: url('vscodegreat/folders/vsc.svg')
+                }
+                .fileicon[data-code="_fd_vscode-open"] {
+                    background-image: url('vscodegreat/folders/vsc-open.svg')
+                }
+                .fileicon[data-code="_fd_jest"] {
+                    background-image: url('vscodegreat/folders/jest.svg')
+                }
+                .fileicon[data-code="_fd_jest-open"] {
+                    background-image: url('vscodegreat/folders/jest-open.svg')
+                }
+                .fileicon[data-code="_fd_build"] {
+                    background-image: url('vscodegreat/folders/build.svg')
+                }
+                .fileicon[data-code="_fd_build-open"] {
+                    background-image: url('vscodegreat/folders/build-open.svg')
+                }
+                .fileicon[data-code="_fd_bench"] {
+                    background-image: url('vscodegreat/folders/bench.svg')
+                }
+                .fileicon[data-code="_fd_bench-open"] {
+                    background-image: url('vscodegreat/folders/bench-open.svg')
+                }
+                .fileicon[data-code="_fd_i18n"] {
+                    background-image: url('vscodegreat/folders/i18n.svg')
+                }
+                .fileicon[data-code="_fd_i18n-open"] {
+                    background-image: url('vscodegreat/folders/i18n-open.svg')
+                }
+                .fileicon[data-code="_fd_views"] {
+                    background-image: url('vscodegreat/folders/views.svg')
+                }
+                .fileicon[data-code="_fd_views-open"] {
+                    background-image: url('vscodegreat/folders/views-open.svg')
+                }
+                .fileicon[data-code="_fd_theme"] {
+                    background-image: url('vscodegreat/folders/theme.svg')
+                }
+                .fileicon[data-code="_fd_theme-open"] {
+                    background-image: url('vscodegreat/folders/theme-open.svg')
+                }
+                .fileicon[data-code="_fd_db"] {
+                    background-image: url('vscodegreat/folders/db.svg')
+                }
+                .fileicon[data-code="_fd_db-open"] {
+                    background-image: url('vscodegreat/folders/db-open.svg')
+                }
+                .fileicon[data-code="_fd_images"] {
+                    background-image: url('vscodegreat/folders/images.svg')
+                }
+                .fileicon[data-code="_fd_images-open"] {
+                    background-image: url('vscodegreat/folders/images-open.svg')
+                }
+                .fileicon[data-code="_fd_save"] {
+                    background-image: url('vscodegreat/folders/save.svg')
+                }
+                .fileicon[data-code="_fd_save-open"] {
+                    background-image: url('vscodegreat/folders/save-open.svg')
+                }
+                .fileicon[data-code="_fd_next"] {
+                    background-image: url('vscodegreat/folders/next.svg')
+                }
+                .fileicon[data-code="_fd_next-open"] {
+                    background-image: url('vscodegreat/folders/next-open.svg')
+                }
+                .fileicon[data-code="_fd_app"] {
+                    background-image: url('vscodegreat/folders/app.svg')
+                }
+                .fileicon[data-code="_fd_app-open"] {
+                    background-image: url('vscodegreat/folders/app-open.svg')
+                }
+                .fileicon[data-code="_fd_cypress"] {
+                    background-image: url('vscodegreat/folders/cypress.svg')
+                }
+                .fileicon[data-code="_fd_cypress-open"] {
+                    background-image: url('vscodegreat/folders/cypress-open.svg')
+                }
+                .fileicon[data-code="_fd_src"] {
+                    background-image: url('vscodegreat/folders/src.svg')
+                }
+                .fileicon[data-code="_fd_src-open"] {
+                    background-image: url('vscodegreat/folders/src-open.svg')
+                }
+                .fileicon[data-code="_fd_layout"] {
+                    background-image: url('vscodegreat/folders/layout.svg')
+                }
+                .fileicon[data-code="_fd_layout-open"] {
+                    background-image: url('vscodegreat/folders/layout-open.svg')
+                }
+                .fileicon[data-code="_fd_services"] {
+                    background-image: url('vscodegreat/folders/services.svg')
+                }
+                .fileicon[data-code="_fd_services-open"] {
+                    background-image: url('vscodegreat/folders/services-open.svg')
+                }
+                .fileicon[data-code="_f_jest"] {
+                    background-image: url('vscodegreat/jest.svg')
+                }
+                .fileicon[data-code="_f_actionscript"] {
+                    background-image: url('vscodegreat/actionscript.png')
+                }
+                .fileicon[data-code="_f_android"] {
+                    background-image: url('vscodegreat/android.svg')
+                }
+                .fileicon[data-code="_f_angular"] {
+                    background-image: url('vscodegreat/angular.svg')
+                }
+                .fileicon[data-code="_f_apache"] {
+                    background-image: url('vscodegreat/apache.svg')
+                }
+                .fileicon[data-code="_f_applescript"] {
+                    background-image: url('vscodegreat/applescript.svg')
+                }
+                .fileicon[data-code="_f_autoit"] {
+                    background-image: url('vscodegreat/autoit.svg')
+                }
+                .fileicon[data-code="_f_binary"] {
+                    background-image: url('vscodegreat/binary.png')
+                }
+                .fileicon[data-code="_f_blade"] {
+                    background-image: url('vscodegreat/blade.svg')
+                }
+                .fileicon[data-code="_f_bower"] {
+                    background-image: url('vscodegreat/bower.svg')
+                }
+                .fileicon[data-code="_f_brunch"] {
+                    background-image: url('vscodegreat/brunch.svg')
+                }
+                .fileicon[data-code="_f_c"] {
+                    background-image: url('vscodegreat/c.png')
+                }
+                .fileicon[data-code="_f_c-h"] {
+                    background-image: url('vscodegreat/c-h.png')
+                }
+                .fileicon[data-code="_f_cake"] {
+                    background-image: url('vscodegreat/cake.png')
+                }
+                .fileicon[data-code="_f_codekit"] {
+                    background-image: url('vscodegreat/codekit.svg')
+                }
+                .fileicon[data-code="_f_coffeescript"] {
+                    background-image: url('vscodegreat/coffeescript.svg')
+                }
+                .fileicon[data-code="_f_coldfusion"] {
+                    background-image: url('vscodegreat/coldfusion.png')
+                }
+                .fileicon[data-code="_f_cfm"] {
+                    background-image: url('vscodegreat/cfm.png')
+                }
+                .fileicon[data-code="_f_cfc"] {
+                    background-image: url('vscodegreat/cfc.png')
+                }
+                .fileicon[data-code="_f_clojure"] {
+                    background-image: url('vscodegreat/clojure.svg')
+                }
+                .fileicon[data-code="_f_cakephp"] {
+                    background-image: url('vscodegreat/cakephp.svg')
+                }
+                .fileicon[data-code="_f_cmake"] {
+                    background-image: url('vscodegreat/cmake.svg')
+                }
+                .fileicon[data-code="_f_cpp"] {
+                    background-image: url('vscodegreat/cpp.svg')
+                }
+                .fileicon[data-code="_f_cpp-h"] {
+                    background-image: url('vscodegreat/cpp-h.png')
+                }
+                .fileicon[data-code="_f_crystal"] {
+                    background-image: url('vscodegreat/crystal.svg')
+                }
+                .fileicon[data-code="_f_csharp"] {
+                    background-image: url('vscodegreat/csharp.svg')
+                }
+                .fileicon[data-code="_f_css"] {
+                    background-image: url('vscodegreat/css.svg')
+                }
+                .fileicon[data-code="_f_database"] {
+                    background-image: url('vscodegreat/database.svg')
+                }
+                .fileicon[data-code="_f_database2"] {
+                    background-image: url('vscodegreat/database2.svg')
+                }
+                .fileicon[data-code="_f_docker"] {
+                    background-image: url('vscodegreat/docker.svg')
+                }
+                .fileicon[data-code="_f_dotenv"] {
+                    background-image: url('vscodegreat/dotenv.svg')
+                }
+                .fileicon[data-code="_f_dust"] {
+                    background-image: url('vscodegreat/dust.png')
+                }
+                .fileicon[data-code="_f_ejs"] {
+                    background-image: url('vscodegreat/ejs.svg')
+                }
+                .fileicon[data-code="_f_elixir"] {
+                    background-image: url('vscodegreat/elixir.svg')
+                }
+                .fileicon[data-code="_f_elm"] {
+                    background-image: url('vscodegreat/elm.svg')
+                }
+                .fileicon[data-code="_f_erlang"] {
+                    background-image: url('vscodegreat/erlang.png')
+                }
+                .fileicon[data-code="_f_eslint"] {
+                    background-image: url('vscodegreat/eslint.svg')
+                }
+                .fileicon[data-code="_f_exe"] {
+                    background-image: url('vscodegreat/exe.png')
+                }
+                .fileicon[data-code="_f_font"] {
+                    background-image: url('vscodegreat/font.svg')
+                }
+                .fileicon[data-code="_f_fsharp"] {
+                    background-image: url('vscodegreat/fsharp.svg')
+                }
+                .fileicon[data-code="_f_gherkin"] {
+                    background-image: url('vscodegreat/gherkin.png')
+                }
+                .fileicon[data-code="_f_git"] {
+                    background-image: url('vscodegreat/git.svg')
+                }
+                .fileicon[data-code="_f_go"] {
+                    background-image: url('vscodegreat/go.svg')
+                }
+                .fileicon[data-code="_f_gnu"] {
+                    background-image: url('vscodegreat/gnu.svg')
+                }
+                .fileicon[data-code="_f_gradle"] {
+                    background-image: url('vscodegreat/gradle.svg')
+                }
+                .fileicon[data-code="_f_graphviz"] {
+                    background-image: url('vscodegreat/graphviz.png')
+                }
+                .fileicon[data-code="_f_grunt"] {
+                    background-image: url('vscodegreat/grunt.svg')
+                }
+                .fileicon[data-code="_f_gulp"] {
+                    background-image: url('vscodegreat/gulp.svg')
+                }
+                .fileicon[data-code="_f_haml"] {
+                    background-image: url('vscodegreat/haml.png')
+                }
+                .fileicon[data-code="_f_handlebars"] {
+                    background-image: url('vscodegreat/handlebars.svg')
+                }
+                .fileicon[data-code="_f_haskell"] {
+                    background-image: url('vscodegreat/haskell.svg')
+                }
+                .fileicon[data-code="_f_haxe"] {
+                    background-image: url('vscodegreat/haxe.svg')
+                }
+                .fileicon[data-code="_f_html"] {
+                    background-image: url('vscodegreat/html.svg')
+                }
+                .fileicon[data-code="_f_illustrator"] {
+                    background-image: url('vscodegreat/illustrator.svg')
+                }
+                .fileicon[data-code="_f_image"] {
+                    background-image: url('vscodegreat/image.png')
+                }
+                .fileicon[data-code="_f_icon"] {
+                    background-image: url('vscodegreat/icon.png')
+                }
+                .fileicon[data-code="_f_jade"] {
+                    background-image: url('vscodegreat/jade.svg')
+                }
+                .fileicon[data-code="_f_java"] {
+                    background-image: url('vscodegreat/java.svg')
+                }
+                .fileicon[data-code="_f_java-alt"] {
+                    background-image: url('vscodegreat/java-alt.svg')
+                }
+                .fileicon[data-code="_f_javascript"] {
+                    background-image: url('vscodegreat/javascript.svg')
+                }
+                .fileicon[data-code="_f_jenkinsfile"] {
+                    background-image: url('vscodegreat/jenkins.svg')
+                }
+                .fileicon[data-code="_f_json"] {
+                    background-image: url('vscodegreat/json.svg')
+                }
+                .fileicon[data-code="_f_julia"] {
+                    background-image: url('vscodegreat/julia.svg')
+                }
+                .fileicon[data-code="_f_karma"] {
+                    background-image: url('vscodegreat/karma.svg')
+                }
+                .fileicon[data-code="_f_key"] {
+                    background-image: url('vscodegreat/key.png')
+                }
+                .fileicon[data-code="_f_less"] {
+                    background-image: url('vscodegreat/less.svg')
+                }
+                .fileicon[data-code="_f_liquid"] {
+                    background-image: url('vscodegreat/liquid.svg')
+                }
+                .fileicon[data-code="_f_markdown"] {
+                    background-image: url('vscodegreat/markdown.svg')
+                }
+                .fileicon[data-code="_f_matlab"] {
+                    background-image: url('vscodegreat/matlab.svg')
+                }
+                .fileicon[data-code="_f_matlab-alt"] {
+                    background-image: url('vscodegreat/matlab-red.svg')
+                }
+                .fileicon[data-code="_f_mdx"] {
+                    background-image: url('vscodegreat/mdx.svg')
+                }
+                .fileicon[data-code="_f_mjml"] {
+                    background-image: url('vscodegreat/mjml.svg')
+                }
+                .fileicon[data-code="_f_mocha"] {
+                    background-image: url('vscodegreat/mocha.svg')
+                }
+                .fileicon[data-code="_f_mustache"] {
+                    background-image: url('vscodegreat/mustache.png')
+                }
+                .fileicon[data-code="_f_nginx"] {
+                    background-image: url('vscodegreat/nginx.svg')
+                }
+                .fileicon[data-code="_f_nim"] {
+                    background-image: url('vscodegreat/nim.svg')
+                }
+                .fileicon[data-code="_f_node"] {
+                    background-image: url('vscodegreat/node.svg')
+                }
+                .fileicon[data-code="_f_npm"] {
+                    background-image: url('vscodegreat/npm.svg')
+                }
+                .fileicon[data-code="_f_nsis"] {
+                    background-image: url('vscodegreat/nsis.svg')
+                }
+                .fileicon[data-code="_f_nuget"] {
+                    background-image: url('vscodegreat/nuget.svg')
+                }
+                .fileicon[data-code="_f_nunjucks"] {
+                    background-image: url('vscodegreat/nunjucks.svg')
+                }
+                .fileicon[data-code="_f_ocaml"] {
+                    background-image: url('vscodegreat/ocaml.svg')
+                }
+                .fileicon[data-code="_f_paket"] {
+                    background-image: url('vscodegreat/paket.png')
+                }
+                .fileicon[data-code="_f_pdf"] {
+                    background-image: url('vscodegreat/pdf.svg')
+                }
+                .fileicon[data-code="_f_perl"] {
+                    background-image: url('vscodegreat/perl.png')
+                }
+                .fileicon[data-code="_f_phalcon"] {
+                    background-image: url('vscodegreat/phalcon.svg')
+                }
+                .fileicon[data-code="_f_photoshop"] {
+                    background-image: url('vscodegreat/photoshop.svg')
+                }
+                .fileicon[data-code="_f_php"] {
+                    background-image: url('vscodegreat/php.svg')
+                }
+                .fileicon[data-code="_f_postcss"] {
+                    background-image: url('vscodegreat/postcss.svg')
+                }
+                .fileicon[data-code="_f_powershell"] {
+                    background-image: url('vscodegreat/powershell.png')
+                }
+                .fileicon[data-code="_f_pug"] {
+                    background-image: url('vscodegreat/pug.png')
+                }
+                .fileicon[data-code="_f_python"] {
+                    background-image: url('vscodegreat/python.svg')
+                }
+                .fileicon[data-code="_f_razor"] {
+                    background-image: url('vscodegreat/razor.png')
+                }
+                .fileicon[data-code="_f_react"] {
+                    background-image: url('vscodegreat/react.svg')
+                }
+                .fileicon[data-code="_f_react_alt"] {
+                    background-image: url('vscodegreat/react-alt.svg')
+                }
+                .fileicon[data-code="_f_rlang"] {
+                    background-image: url('vscodegreat/rlang.png')
+                }
+                .fileicon[data-code="_f_ruby"] {
+                    background-image: url('vscodegreat/ruby.svg')
+                }
+                .fileicon[data-code="_f_rust"] {
+                    background-image: url('vscodegreat/rust.svg')
+                }
+                .fileicon[data-code="_f_sass"] {
+                    background-image: url('vscodegreat/sass.svg')
+                }
+                .fileicon[data-code="_f_scala"] {
+                    background-image: url('vscodegreat/scala.svg')
+                }
+                .fileicon[data-code="_f_settings"] {
+                    background-image: url('vscodegreat/settings.svg')
+                }
+                .fileicon[data-code="_f_settings-red"] {
+                    background-image: url('vscodegreat/settings-red.svg')
+                }
+                .fileicon[data-code="_f_shell"] {
+                    background-image: url('vscodegreat/shell.png')
+                }
+                .fileicon[data-code="_f_slim"] {
+                    background-image: url('vscodegreat/slim.svg')
+                }
+                .fileicon[data-code="_f_source"] {
+                    background-image: url('vscodegreat/source.svg')
+                }
+                .fileicon[data-code="_f_stylus"] {
+                    background-image: url('vscodegreat/stylus.svg')
+                }
+                .fileicon[data-code="_f_sublime"] {
+                    background-image: url('vscodegreat/sublime.svg')
+                }
+                .fileicon[data-code="_f_svg"] {
+                    background-image: url('vscodegreat/svg.svg')
+                }
+                .fileicon[data-code="_f_swift"] {
+                    background-image: url('vscodegreat/swift.svg')
+                }
+                .fileicon[data-code="_f_tcl"] {
+                    background-image: url('vscodegreat/tcl.png')
+                }
+                .fileicon[data-code="_f_tests"] {
+                    background-image: url('vscodegreat/test.svg')
+                }
+                .fileicon[data-code="_f_testsjs"] {
+                    background-image: url('vscodegreat/testjs.svg')
+                }
+                .fileicon[data-code="_f_tex"] {
+                    background-image: url('vscodegreat/tex.svg')
+                }
+                .fileicon[data-code="_f_textile"] {
+                    background-image: url('vscodegreat/textile.png')
+                }
+                .fileicon[data-code="_f_todo"] {
+                    background-image: url('vscodegreat/todo.svg')
+                }
+                .fileicon[data-code="_f_twig"] {
+                    background-image: url('vscodegreat/twig.png')
+                }
+                .fileicon[data-code="_f_typescript"] {
+                    background-image: url('vscodegreat/typescript.svg')
+                }
+                .fileicon[data-code="_f_url"] {
+                    background-image: url('vscodegreat/url.png')
+                }
+                .fileicon[data-code="_f_valgrind"] {
+                    background-image: url('vscodegreat/valgrind.svg')
+                }
+                .fileicon[data-code="_f_visualstudio"] {
+                    background-image: url('vscodegreat/visualstudio.svg')
+                }
+                .fileicon[data-code="_f_visualstudiocode"] {
+                    background-image: url('vscodegreat/visualstudiocode.svg')
+                }
+                .fileicon[data-code="_f_vue"] {
+                    background-image: url('vscodegreat/vue.svg')
+                }
+                .fileicon[data-code="_f_vitejs"] {
+                    background-image: url('vscodegreat/vitejs.svg')
+                }
+                .fileicon[data-code="_f_snowpackjs"] {
+                    background-image: url('vscodegreat/snowpackjs.svg')
+                }
+                .fileicon[data-code="_f_webpack"] {
+                    background-image: url('vscodegreat/webpack.svg')
+                }
+                .fileicon[data-code="_f_yaml"] {
+                    background-image: url('vscodegreat/yml.svg')
+                }
+                .fileicon[data-code="_f_yarn"] {
+                    background-image: url('vscodegreat/yarn.svg')
+                }
+                .fileicon[data-code="_f_zephir"] {
+                    background-image: url('vscodegreat/zephir.svg')
+                }
+                .fileicon[data-code="_f_zip"] {
+                    background-image: url('vscodegreat/zip.svg')
+                }
+                .fileicon[data-code="_f_audio"] {
+                    background-image: url('vscodegreat/audio.png')
+                }
+                .fileicon[data-code="_f_video"] {
+                    background-image: url('vscodegreat/video.png')
+                }
+                .fileicon[data-code="_f_word"] {
+                    background-image: url('vscodegreat/word.svg')
+                }
+                .fileicon[data-code="_f_excel"] {
+                    background-image: url('vscodegreat/excel.svg')
+                }
+                .fileicon[data-code="_f_powerpoint"] {
+                    background-image: url('vscodegreat/powerpoint.svg')
+                }
+                .fileicon[data-code="_f_favicon"] {
+                    background-image: url('vscodegreat/favicon.svg')
+                }
+                .fileicon[data-code="_f_xaml"] {
+                    background-image: url('vscodegreat/xaml.png')
+                }
+                .fileicon[data-code="_f_unity"] {
+                    background-image: url('vscodegreat/unity.svg')
+                }
+                .fileicon[data-code="_f_contributing"] {
+                    background-image: url('vscodegreat/contributing.png')
+                }
+                .fileicon[data-code="_f_smarty"] {
+                    background-image: url('vscodegreat/smarty.png')
+                }
+                .fileicon[data-code="_f_certificate"] {
+                    background-image: url('vscodegreat/certificate.png')
+                }
+                .fileicon[data-code="_f_babel"] {
+                    background-image: url('vscodegreat/babel.svg')
+                }
+                .fileicon[data-code="_f_gitlab"] {
+                    background-image: url('vscodegreat/gitlab.svg')
+                }
+                .fileicon[data-code="_f_arduino"] {
+                    background-image: url('vscodegreat/arduino.svg')
+                }
+                .fileicon[data-code="_f_opengl"] {
+                    background-image: url('vscodegreat/opengl.svg')
+                }
+                .fileicon[data-code="_f_dart"] {
+                    background-image: url('vscodegreat/dart.svg')
+                }
+                .fileicon[data-code="_f_puppet"] {
+                    background-image: url('vscodegreat/puppet.svg')
+                }
+                .fileicon[data-code="_f_rstudio"] {
+                    background-image: url('vscodegreat/rstudio.svg')
+                }
+                .fileicon[data-code="_f_solidity"] {
+                    background-image: url('vscodegreat/solidity.svg')
+                }
+                .fileicon[data-code="_f_lua"] {
+                    background-image: url('vscodegreat/lua.svg')
+                }
+                .fileicon[data-code="_f_server"] {
+                    background-image: url('vscodegreat/server.png')
+                }
+                .fileicon[data-code="_f_rollup"] {
+                    background-image: url('vscodegreat/rollup.svg')
+                }
+                .fileicon[data-code="_f_editorconfig"] {
+                    background-image: url('vscodegreat/editorconfig.png')
+                }
+                .fileicon[data-code="_f_json5"] {
+                    background-image: url('vscodegreat/json5.svg')
+                }
+                .fileicon[data-code="_f_graphql"] {
+                    background-image: url('vscodegreat/graphql.svg')
+                }
+                .fileicon[data-code="_f_graphqls"] {
+                    background-image: url('vscodegreat/graphqls.svg')
+                }
+                .fileicon[data-code="_f_prettier"] {
+                    background-image: url('vscodegreat/prettier.svg')
+                }
+                .fileicon[data-code="_f_cuda"] {
+                    background-image: url('vscodegreat/cuda.svg')
+                }
+                .fileicon[data-code="_f_foxpro"] {
+                    background-image: url('vscodegreat/foxpro.png')
+                }
+                .fileicon[data-code="_f_kotlin"] {
+                    background-image: url('vscodegreat/kotlin.svg')
+                }
+                .fileicon[data-code="_f_pascal"] {
+                    background-image: url('vscodegreat/pascal.png')
+                }
+                .fileicon[data-code="_f_pascalproject"] {
+                    background-image: url('vscodegreat/pascal-project.svg')
+                }
+                .fileicon[data-code="_f_harbour"] {
+                    background-image: url('vscodegreat/harbour.svg')
+                }
+                .fileicon[data-code="_f_terraform"] {
+                    background-image: url('vscodegreat/terraform.svg')
+                }
+                .fileicon[data-code="_f_visualbasic"] {
+                    background-image: url('vscodegreat/visualbasic.svg')
+                }
+                .fileicon[data-code="_f_rst"] {
+                    background-image: url('vscodegreat/rst.png')
+                }
+                .fileicon[data-code="_f_tslint"] {
+                    background-image: url('vscodegreat/tslint.svg')
+                }
+                .fileicon[data-code="_f_reason"] {
+                    background-image: url('vscodegreat/reason.svg')
+                }
+                .fileicon[data-code="_f_rescript"] {
+                    background-image: url('vscodegreat/rescript.svg')
+                }
+                .fileicon[data-code="_f_bucklescript"] {
+                    background-image: url('vscodegreat/buckle.png')
+                }
+                .fileicon[data-code="_f_jupyter"] {
+                    background-image: url('vscodegreat/jupyter.svg')
+                }
+                .fileicon[data-code="_f_axure"] {
+                    background-image: url('vscodegreat/axure.png')
+                }
+                .fileicon[data-code="_f_d"] {
+                    background-image: url('vscodegreat/d.png')
+                }
+                .fileicon[data-code="_f_livescript"] {
+                    background-image: url('vscodegreat/livescript.svg')
+                }
+                .fileicon[data-code="_f_stylelint"] {
+                    background-image: url('vscodegreat/stylelint.png')
+                }
+                .fileicon[data-code="_f_docz"] {
+                    background-image: url('vscodegreat/docz.png')
+                }
+                .fileicon[data-code="_f_prisma"] {
+                    background-image: url('vscodegreat/prisma.svg')
+                }
+                .fileicon[data-code="_f_toml"] {
+                    background-image: url('vscodegreat/toml.png')
+                }
+                .fileicon[data-code="_f_storybook"] {
+                    background-image: url('vscodegreat/storybook.svg')
+                }
+                .fileicon[data-code="_f_verilog"] {
+                    background-image: url('vscodegreat/verilog.svg')
+                }
+                .fileicon[data-code="_f_verilog_sys"] {
+                    background-image: url('vscodegreat/verilog-sys.svg')
+                }
+                .fileicon[data-code="_f_moleculer"] {
+                    background-image: url('vscodegreat/moleculer.svg')
+                }
+                .fileicon[data-code="_f_svelte"] {
+                    background-image: url('vscodegreat/svelte.svg')
+                }
+                .fileicon[data-code="_f_mwb"] {
+                    background-image: url('vscodegreat/mysql-workbench.svg')
+                }
+                .fileicon[data-code="_f_sketch"] {
+                    background-image: url('vscodegreat/sketch.svg')
+                }
+                .fileicon[data-code="_f_figma"] {
+                    background-image: url('vscodegreat/figma.svg')
+                }
+                .fileicon[data-code="_f_sequelize"] {
+                    background-image: url('vscodegreat/sequelize.svg')
+                }
+                .fileicon[data-code="_f_dhall"] {
+                    background-image: url('vscodegreat/dhall.svg')
+                }
+                .fileicon[data-code="_f_nix"] {
+                    background-image: url('vscodegreat/nix.svg')
+                }
+                .fileicon[data-code="_f_purescript"] {
+                    background-image: url('vscodegreat/purescript.svg')
+                }
+                .fileicon[data-code="_f_scheme"] {
+                    background-image: url('vscodegreat/scheme.svg')
+                }
+                .fileicon[data-code="_f_racket"] {
+                    background-image: url('vscodegreat/racket.svg')
+                }
+                .fileicon[data-code="_f_jinja"] {
+                    background-image: url('vscodegreat/jinja.svg')
+                }
+                .fileicon[data-code="_f_abelljs"] {
+                    background-image: url('vscodegreat/abell.svg')
+                }
+                .fileicon[data-code="_f_webassembly"] {
+                    background-image: url('vscodegreat/wasm.svg')
+                }
+                .fileicon[data-code="_f_log"] {
+                    background-image: url('vscodegreat/log.svg')
+                }
+                .fileicon[data-code="_f_notepad"] {
+                    background-image: url('vscodegreat/notepad.svg')
+                }
+                .fileicon[data-code="_f_browserlist"] {
+                    background-image: url('vscodegreat/browserlist.svg')
+                }
+                .fileicon[data-code="_f_symfony"] {
+                    background-image: url('vscodegreat/symfony.svg')
+                }
+                .fileicon[data-code="_f_nextflow"] {
+                    background-image: url('vscodegreat/nextflow.png')
+                }
+                .fileicon[data-code="_f_singularity"] {
+                    background-image: url('vscodegreat/singularity.svg')
+                }
+                .fileicon[data-code="_f_fortran"] {
+                    background-image: url('vscodegreat/fortran.svg')
+                }
+                .fileicon[data-code="_f_oso"] {
+                    background-image: url('vscodegreat/oso.png')
+                }
+                .fileicon[data-code="_f_asciidoc"] {
+                    background-image: url('vscodegreat/asciidoc.svg')
+                }
+                .fileicon[data-code="_f_asp"] {
+                    background-image: url('vscodegreat/dotnet.svg')
+                }
+                .fileicon[data-code="_f_vim"] {
+                    background-image: url('vscodegreat/vim.svg')
+                }
+                .fileicon[data-code="_f_keystone"] {
+                    background-image: url('vscodegreat/keystone.svg')
+                }
+                .fileicon[data-code="_f_vitest"] {
+                    background-image: url('vscodegreat/vitest.svg')
+                }
+                .fileicon[data-code="_f_turborepo"] {
+                    background-image: url('vscodegreat/turborepo.svg')
+                }
+                .fileicon[data-code="_f_proto"] {
+                    background-image: url('vscodegreat/proto.svg')
+                }
+                .fileicon[data-code="_f_godot"] {
+                    background-image: url('vscodegreat/godot.svg')
+                }
+                .fileicon[data-code="_f_tailwind"] {
+                    background-image: url('vscodegreat/tailwind.svg')
+                }
+                .fileicon[data-code="_f_pnpm"] {
+                    background-image: url('vscodegreat/pnpm.svg')
+                }
+                .fileicon[data-code="_f_assembly"] {
+                    background-image: url('vscodegreat/assembly.svg')
+                }
+                .fileicon[data-code="_f_sentry"] {
+                    background-image: url('vscodegreat/sentry.svg')
+                }
+                .fileicon[data-code="_f_bicep"] {
+                    background-image: url('vscodegreat/bicep.png')
+                }
+                .fileicon[data-code="_f_vercel"] {
+                    background-image: url('vscodegreat/vercel.svg')
+                }
+                .fileicon[data-code="_f_nextjs"] {
+                    background-image: url('vscodegreat/nextjs.svg')
+                }
+                .fileicon[data-code="_f_firebase"] {
+                    background-image: url('vscodegreat/firebase.svg')
+                }
+                .fileicon[data-code="_f_avalonia"] {
+                    background-image: url('vscodegreat/avalonia.svg')
+                }
+                .fileicon[data-code="_f_marko"] {
+                    background-image: url('vscodegreat/marko.svg')
+                }
+                .fileicon[data-code="_f_model"] {
+                    background-image: url('vscodegreat/model.svg')
+                }
+                .fileicon[data-code="_f_serverless"] {
+                    background-image: url('vscodegreat/serverless.png')
+                }
+                .fileicon[data-code="_f_xi"] {
+                    background-image: url('vscodegreat/xi.svg')
+                }
+                .fileicon[data-code="_f_zig"] {
+                    background-image: url('vscodegreat/zig.svg')
+                }
+                .fileicon[data-code="_f_brainfuck"] {
+                    background-image: url('vscodegreat/brainfuck.svg')
+                }
+                .fileicon[data-code="_f_cython"] {
+                    background-image: url('vscodegreat/cython.svg')
+                }
+                .fileicon[data-code="_f_cypress"] {
+                    background-image: url('vscodegreat/cypress.svg')
+                }
+                .fileicon[data-code="_f_objectivec"] {
+                    background-image: url('vscodegreat/objectivec.svg')
+                }
+                .fileicon[data-code="_f_objectivecpp"] {
+                    background-image: url('vscodegreat/objectivecpp.svg')
+                }
+                .fileicon[data-code="_f_flowtyped"] {
+                    background-image: url('vscodegreat/flow.svg')
+                }
+                .fileicon[data-code="_f_vr"] {
+                    background-image: url('vscodegreat/vr.svg')
+                }
+                .fileicon[data-code="_f_prql"] {
+                    background-image: url('vscodegreat/database2.svg')
+                }
+                .fileicon[data-code="_f_prolog"] {
+                    background-image: url('vscodegreat/swi-prolog.svg')
+                }
+                .fileicon[data-code="_f_groovy"] {
+                    background-image: url('vscodegreat/groovy.svg')
+                }
+                .fileicon[data-code="_f_unocss"] {
+                    background-image: url('vscodegreat/unocss.svg')
+                }
+                .fileicon[data-code="_f_nvidia"] {
+                    background-image: url('vscodegreat/nvidia.svg')
+                }
+                .fileicon[data-code="_f_cursor"] {
+                    background-image: url('vscodegreat/cursor.png')
+                }
+                .fileicon[data-code="_f_cue"] {
+                    background-image: url('vscodegreat/cue.svg')
+                }
+                .fileicon[data-code="_f_denizen"] {
+                    background-image: url('vscodegreat/denizen.png')
+                }
+                .fileicon[data-code="_f_taskfile"] {
+                    background-image: url('vscodegreat/taskfile.svg')
+                }
+                .fileicon[data-code="_f_typst"] {
+                    background-image: url('vscodegreat/typst.svg')
+                }
+                .fileicon[data-code="_f_signalstore"] {
+                    background-image: url('vscodegreat/ngrx.svg')
+                }
+                .fileicon[data-code="_f_tarkine"] {
+                    background-image: url('vscodegreat/tarkine.svg')
+                }
+                

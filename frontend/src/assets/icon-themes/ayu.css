@@ -1,0 +1,340 @@
+.fileicon {
+            background: no-repeat center / contain;
+        }
+        .fileicon[data-code="_file"] {
+                    background-image: url('ayu/file_type_default.svg')
+                }
+                .fileicon[data-code="_folder_dark"] {
+                    background-image: url('ayu/folder_dark@2x.png')
+                }
+                .fileicon[data-code="_folder_light"] {
+                    background-image: url('ayu/folder_light@2x.png')
+                }
+                .fileicon[data-code="_folder_open_dark"] {
+                    background-image: url('ayu/folder_opened_dark@2x.png')
+                }
+                .fileicon[data-code="_folder_open_light"] {
+                    background-image: url('ayu/folder_opened_light@2x.png')
+                }
+                .fileicon[data-code="actionscript"] {
+                    background-image: url('ayu/file_type_actionscript@2x.png')
+                }
+                .fileicon[data-code="ai"] {
+                    background-image: url('ayu/file_type_ai@2x.png')
+                }
+                .fileicon[data-code="angular"] {
+                    background-image: url('ayu/file_type_angular.svg')
+                }
+                .fileicon[data-code="apache"] {
+                    background-image: url('ayu/file_type_apache@2x.png')
+                }
+                .fileicon[data-code="applescript"] {
+                    background-image: url('ayu/file_type_applescript@2x.png')
+                }
+                .fileicon[data-code="babel"] {
+                    background-image: url('ayu/file_type_babel@2x.png')
+                }
+                .fileicon[data-code="binary"] {
+                    background-image: url('ayu/file_type_binary.svg')
+                }
+                .fileicon[data-code="blade"] {
+                    background-image: url('ayu/file_type_blade@2x.png')
+                }
+                .fileicon[data-code="bookmark"] {
+                    background-image: url('ayu/file_type_bookmark@2x.png')
+                }
+                .fileicon[data-code="bower"] {
+                    background-image: url('ayu/file_type_bower@2x.png')
+                }
+                .fileicon[data-code="c"] {
+                    background-image: url('ayu/file_type_c.svg')
+                }
+                .fileicon[data-code="cfc"] {
+                    background-image: url('ayu/file_type_cfc@2x.png')
+                }
+                .fileicon[data-code="cfm"] {
+                    background-image: url('ayu/file_type_cfm@2x.png')
+                }
+                .fileicon[data-code="clojure"] {
+                    background-image: url('ayu/file_type_clojure@2x.png')
+                }
+                .fileicon[data-code="coffeescript"] {
+                    background-image: url('ayu/file_type_coffeescript@2x.png')
+                }
+                .fileicon[data-code="cpp"] {
+                    background-image: url('ayu/file_type_cpp.svg')
+                }
+                .fileicon[data-code="csharp"] {
+                    background-image: url('ayu/file_type_csharp.svg')
+                }
+                .fileicon[data-code="css"] {
+                    background-image: url('ayu/file_type_css.svg')
+                }
+                .fileicon[data-code="csv"] {
+                    background-image: url('ayu/file_type_csv.svg')
+                }
+                .fileicon[data-code="dart"] {
+                    background-image: url('ayu/file_type_dart@2x.png')
+                }
+                .fileicon[data-code="dlang"] {
+                    background-image: url('ayu/file_type_dlang@2x.png')
+                }
+                .fileicon[data-code="docker"] {
+                    background-image: url('ayu/file_type_docker@2x.png')
+                }
+                .fileicon[data-code="elm"] {
+                    background-image: url('ayu/file_type_elm@2x.png')
+                }
+                .fileicon[data-code="erb"] {
+                    background-image: url('ayu/file_type_html@2x.png')
+                }
+                .fileicon[data-code="erlang"] {
+                    background-image: url('ayu/file_type_erlang@2x.png')
+                }
+                .fileicon[data-code="eslint"] {
+                    background-image: url('ayu/file_type_eslint@2x.png')
+                }
+                .fileicon[data-code="ex"] {
+                    background-image: url('ayu/file_type_ex@2x.png')
+                }
+                .fileicon[data-code="fish"] {
+                    background-image: url('ayu/file_type_fish@2x.png')
+                }
+                .fileicon[data-code="font"] {
+                    background-image: url('ayu/file_type_font.svg')
+                }
+                .fileicon[data-code="git"] {
+                    background-image: url('ayu/file_type_git.svg')
+                }
+                .fileicon[data-code="go"] {
+                    background-image: url('ayu/file_type_go@2x.png')
+                }
+                .fileicon[data-code="gql"] {
+                    background-image: url('ayu/file_type_gql.svg')
+                }
+                .fileicon[data-code="gradle"] {
+                    background-image: url('ayu/file_type_gradle@2x.png')
+                }
+                .fileicon[data-code="groovy"] {
+                    background-image: url('ayu/file_type_groovy.svg')
+                }
+                .fileicon[data-code="gruntfile"] {
+                    background-image: url('ayu/file_type_gruntfile.svg')
+                }
+                .fileicon[data-code="gulpfile"] {
+                    background-image: url('ayu/file_type_gulpfile@2x.png')
+                }
+                .fileicon[data-code="haml"] {
+                    background-image: url('ayu/file_type_haml@2x.png')
+                }
+                .fileicon[data-code="haskell"] {
+                    background-image: url('ayu/file_type_haskell.svg')
+                }
+                .fileicon[data-code="haxe"] {
+                    background-image: url('ayu/file_type_haxe.svg')
+                }
+                .fileicon[data-code="html"] {
+                    background-image: url('ayu/file_type_html@2x.png')
+                }
+                .fileicon[data-code="image"] {
+                    background-image: url('ayu/file_type_image.svg')
+                }
+                .fileicon[data-code="jade"] {
+                    background-image: url('ayu/file_type_jade@2x.png')
+                }
+                .fileicon[data-code="java"] {
+                    background-image: url('ayu/file_type_java@2x.png')
+                }
+                .fileicon[data-code="jest"] {
+                    background-image: url('ayu/file_type_jest@2x.png')
+                }
+                .fileicon[data-code="js"] {
+                    background-image: url('ayu/file_type_js.svg')
+                }
+                .fileicon[data-code="json"] {
+                    background-image: url('ayu/file_type_json.svg')
+                }
+                .fileicon[data-code="jsp"] {
+                    background-image: url('ayu/file_type_jsp@2x.png')
+                }
+                .fileicon[data-code="jsx"] {
+                    background-image: url('ayu/file_type_jsx@2x.png')
+                }
+                .fileicon[data-code="julia"] {
+                    background-image: url('ayu/file_type_julia@2x.png')
+                }
+                .fileicon[data-code="jupyter"] {
+                    background-image: url('ayu/file_type_jupyter.svg')
+                }
+                .fileicon[data-code="less"] {
+                    background-image: url('ayu/file_type_less@2x.png')
+                }
+                .fileicon[data-code="license"] {
+                    background-image: url('ayu/file_type_license.svg')
+                }
+                .fileicon[data-code="lisp"] {
+                    background-image: url('ayu/file_type_lisp@2x.png')
+                }
+                .fileicon[data-code="list"] {
+                    background-image: url('ayu/file_type_list@2x.png')
+                }
+                .fileicon[data-code="lsl"] {
+                    background-image: url('ayu/file_type_lsl@2x.png')
+                }
+                .fileicon[data-code="lua"] {
+                    background-image: url('ayu/file_type_lua@2x.png')
+                }
+                .fileicon[data-code="markdown"] {
+                    background-image: url('ayu/file_type_markdown.svg')
+                }
+                .fileicon[data-code="markup"] {
+                    background-image: url('ayu/file_type_markup@2x.png')
+                }
+                .fileicon[data-code="matlab"] {
+                    background-image: url('ayu/file_type_matlab@2x.png')
+                }
+                .fileicon[data-code="mjs"] {
+                    background-image: url('ayu/file_type_js.svg')
+                }
+                .fileicon[data-code="mustache"] {
+                    background-image: url('ayu/file_type_mustache@2x.png')
+                }
+                .fileicon[data-code="node"] {
+                    background-image: url('ayu/file_type_node@2x.png')
+                }
+                .fileicon[data-code="npm"] {
+                    background-image: url('ayu/file_type_npm.svg')
+                }
+                .fileicon[data-code="ocaml"] {
+                    background-image: url('ayu/file_type_ocaml@2x.png')
+                }
+                .fileicon[data-code="pdf"] {
+                    background-image: url('ayu/file_type_pdf@2x.png')
+                }
+                .fileicon[data-code="perl"] {
+                    background-image: url('ayu/file_type_perl.svg')
+                }
+                .fileicon[data-code="php"] {
+                    background-image: url('ayu/file_type_php.svg')
+                }
+                .fileicon[data-code="procfile"] {
+                    background-image: url('ayu/file_type_procfile.svg')
+                }
+                .fileicon[data-code="psd"] {
+                    background-image: url('ayu/file_type_psd@2x.png')
+                }
+                .fileicon[data-code="psm"] {
+                    background-image: url('ayu/file_type_psm.svg')
+                }
+                .fileicon[data-code="pug"] {
+                    background-image: url('ayu/file_type_pug@2x.png')
+                }
+                .fileicon[data-code="puppet"] {
+                    background-image: url('ayu/file_type_puppet@2x.png')
+                }
+                .fileicon[data-code="python"] {
+                    background-image: url('ayu/file_type_python.svg')
+                }
+                .fileicon[data-code="R"] {
+                    background-image: url('ayu/file_type_R@2x.png')
+                }
+                .fileicon[data-code="rails"] {
+                    background-image: url('ayu/file_type_rails@2x.png')
+                }
+                .fileicon[data-code="react"] {
+                    background-image: url('ayu/file_type_react@2x.png')
+                }
+                .fileicon[data-code="reasonml"] {
+                    background-image: url('ayu/file_type_reasonml@2x.png')
+                }
+                .fileicon[data-code="rollup"] {
+                    background-image: url('ayu/file_type_rollup.svg')
+                }
+                .fileicon[data-code="ruby"] {
+                    background-image: url('ayu/file_type_ruby.svg')
+                }
+                .fileicon[data-code="rust"] {
+                    background-image: url('ayu/file_type_rust.svg')
+                }
+                .fileicon[data-code="sass"] {
+                    background-image: url('ayu/file_type_sass.svg')
+                }
+                .fileicon[data-code="scala"] {
+                    background-image: url('ayu/file_type_scala@2x.png')
+                }
+                .fileicon[data-code="scss"] {
+                    background-image: url('ayu/file_type_scss.svg')
+                }
+                .fileicon[data-code="settings"] {
+                    background-image: url('ayu/file_type_settings@2x.png')
+                }
+                .fileicon[data-code="shell"] {
+                    background-image: url('ayu/file_type_shell.svg')
+                }
+                .fileicon[data-code="sketch"] {
+                    background-image: url('ayu/file_type_sketch.svg')
+                }
+                .fileicon[data-code="slim"] {
+                    background-image: url('ayu/file_type_slim@2x.png')
+                }
+                .fileicon[data-code="smiley"] {
+                    background-image: url('ayu/file_type_smiley@2x.png')
+                }
+                .fileicon[data-code="source"] {
+                    background-image: url('ayu/file_type_source.svg')
+                }
+                .fileicon[data-code="sql"] {
+                    background-image: url('ayu/file_type_sql@2x.png')
+                }
+                .fileicon[data-code="stylus"] {
+                    background-image: url('ayu/file_type_stylus@2x.png')
+                }
+                .fileicon[data-code="svelte"] {
+                    background-image: url('ayu/file_type_svelte.svg')
+                }
+                .fileicon[data-code="swift"] {
+                    background-image: url('ayu/file_type_swift.svg')
+                }
+                .fileicon[data-code="swig"] {
+                    background-image: url('ayu/file_type_swig@2x.png')
+                }
+                .fileicon[data-code="tcl"] {
+                    background-image: url('ayu/file_type_tcl@2x.png')
+                }
+                .fileicon[data-code="tex"] {
+                    background-image: url('ayu/file_type_tex@2x.png')
+                }
+                .fileicon[data-code="text"] {
+                    background-image: url('ayu/file_type_text@2x.png')
+                }
+                .fileicon[data-code="textile"] {
+                    background-image: url('ayu/file_type_textile@2x.png')
+                }
+                .fileicon[data-code="todo"] {
+                    background-image: url('ayu/file_type_todo@2x.png')
+                }
+                .fileicon[data-code="twig"] {
+                    background-image: url('ayu/file_type_twig@2x.png')
+                }
+                .fileicon[data-code="typescript"] {
+                    background-image: url('ayu/file_type_typescript.svg')
+                }
+                .fileicon[data-code="vue"] {
+                    background-image: url('ayu/file_type_vue.svg')
+                }
+                .fileicon[data-code="wasm"] {
+                    background-image: url('ayu/file_type_wasm.svg')
+                }
+                .fileicon[data-code="webpack"] {
+                    background-image: url('ayu/file_type_webpack@2x.png')
+                }
+                .fileicon[data-code="yaml"] {
+                    background-image: url('ayu/file_type_yaml.svg')
+                }
+                .fileicon[data-code="yarn"] {
+                    background-image: url('ayu/file_type_yarn@2x.png')
+                }
+                .fileicon[data-code="zip"] {
+                    background-image: url('ayu/file_type_archive@2x.png')
+                }
+                

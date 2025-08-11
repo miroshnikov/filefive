@@ -15,6 +15,7 @@ export default async function (path: string, changes: DeepPartial<AppSettings>) 
     const config: AppConfig = {
         mode: settings.mode,
         theme: settings.theme,
+        fileTheme: settings.fileTheme,
         timeFmt: settings.timeFmt,
         sizeFmt: settings.sizeFmt,
         local: getSettings(settings.local),

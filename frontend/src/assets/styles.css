@@ -239,6 +239,7 @@ form {
     --dry-border-radius: .3rem;
     --dry-hover-bg: var(--hover-background);
     --dry-primary: var(--primary);
+    --dry-primary-highlight-text: var(--background);
     
     --dry-resizer-color: var(--border-color);
     --dry-resizer-width: 4px;

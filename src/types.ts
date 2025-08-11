@@ -75,6 +75,7 @@ export interface ConnectionConfig extends Twofold<ExplorerConfig> {
 export interface AppConfig extends Twofold<ExplorerConfig> {
     mode?: 'light'|'system'|'dark'
     theme?: string
+    fileTheme?: string
     timeFmt?: string
     sizeFmt?: string
     path?: Twofold<Path|undefined>
@@ -114,9 +115,11 @@ export interface AppSettings extends Twofold<ExplorerSettings> {
     fileIcons?: {
         file: string
         folder?: string
+        folderExpanded?: string
         fileExtensions?: Record<string, string>
         fileNames?: Record<string, string>
         folderNames?: Record<string, string>
+        folderNamesExpanded?: Record<string, string>
         light?: {
             file?: string
             folder?: string

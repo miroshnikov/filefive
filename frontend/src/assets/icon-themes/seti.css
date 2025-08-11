@@ -1,1928 +1,1928 @@
 @font-face {
-    font-family: "seti"; 
-    src: url('seti.woff')   
-    format("woff"); 
-}
-.fileicon::before {
-    font-family: seti !important;
-    font-style: normal;
-    font-weight: normal !important;
-    vertical-align: top;
-    opacity: .8;
-}
-
-        .fileicon[data-code="_R_light"]::before {
-            color: #498ba7;
-            content: '\E001'; 
-        }
-    
-        .fileicon[data-code="_R"]::before {
-            color: #519aba;
-            content: '\E001'; 
-        }
-    
-        .fileicon[data-code="_argdown_light"]::before {
-            color: #498ba7;
-            content: '\E003'; 
-        }
-    
-        .fileicon[data-code="_argdown"]::before {
-            color: #519aba;
-            content: '\E003'; 
-        }
-    
-        .fileicon[data-code="_asm_light"]::before {
-            color: #b8383d;
-            content: '\E004'; 
-        }
-    
-        .fileicon[data-code="_asm"]::before {
-            color: #cc3e44;
-            content: '\E004'; 
-        }
-    
-        .fileicon[data-code="_audio_light"]::before {
-            color: #9068b0;
-            content: '\E005'; 
-        }
-    
-        .fileicon[data-code="_audio"]::before {
-            color: #a074c4;
-            content: '\E005'; 
-        }
-    
-        .fileicon[data-code="_babel_light"]::before {
-            color: #b7b73b;
-            content: '\E006'; 
-        }
-    
-        .fileicon[data-code="_babel"]::before {
-            color: #cbcb41;
-            content: '\E006'; 
-        }
-    
-        .fileicon[data-code="_bazel_light"]::before {
-            color: #7fae42;
-            content: '\E007'; 
-        }
-    
-        .fileicon[data-code="_bazel"]::before {
-            color: #8dc149;
-            content: '\E007'; 
-        }
-    
-        .fileicon[data-code="_bazel_1_light"]::before {
-            color: #455155;
-            content: '\E007'; 
-        }
-    
-        .fileicon[data-code="_bazel_1"]::before {
-            color: #4d5a5e;
-            content: '\E007'; 
-        }
-    
-        .fileicon[data-code="_bicep_light"]::before {
-            color: #498ba7;
-            content: '\E008'; 
-        }
-    
-        .fileicon[data-code="_bicep"]::before {
-            color: #519aba;
-            content: '\E008'; 
-        }
-    
-        .fileicon[data-code="_bower_light"]::before {
-            color: #cc6d2e;
-            content: '\E009'; 
-        }
-    
-        .fileicon[data-code="_bower"]::before {
-            color: #e37933;
-            content: '\E009'; 
-        }
-    
-        .fileicon[data-code="_bsl_light"]::before {
-            color: #b8383d;
-            content: '\E00A'; 
-        }
-    
-        .fileicon[data-code="_bsl"]::before {
-            color: #cc3e44;
-            content: '\E00A'; 
-        }
-    
-        .fileicon[data-code="_c_light"]::before {
-            color: #498ba7;
-            content: '\E00C'; 
-        }
-    
-        .fileicon[data-code="_c"]::before {
-            color: #519aba;
-            content: '\E00C'; 
-        }
-    
-        .fileicon[data-code="_c-sharp_light"]::before {
-            color: #498ba7;
-            content: '\E00B'; 
-        }
-    
-        .fileicon[data-code="_c-sharp"]::before {
-            color: #519aba;
-            content: '\E00B'; 
-        }
-    
-        .fileicon[data-code="_c_1_light"]::before {
-            color: #9068b0;
-            content: '\E00C'; 
-        }
-    
-        .fileicon[data-code="_c_1"]::before {
-            color: #a074c4;
-            content: '\E00C'; 
-        }
-    
-        .fileicon[data-code="_c_2_light"]::before {
-            color: #b7b73b;
-            content: '\E00C'; 
-        }
-    
-        .fileicon[data-code="_c_2"]::before {
-            color: #cbcb41;
-            content: '\E00C'; 
-        }
-    
-        .fileicon[data-code="_cake_light"]::before {
-            color: #b8383d;
-            content: '\E00D'; 
-        }
-    
-        .fileicon[data-code="_cake"]::before {
-            color: #cc3e44;
-            content: '\E00D'; 
-        }
-    
-        .fileicon[data-code="_cake_php_light"]::before {
-            color: #b8383d;
-            content: '\E00E'; 
-        }
-    
-        .fileicon[data-code="_cake_php"]::before {
-            color: #cc3e44;
-            content: '\E00E'; 
-        }
-    
-        .fileicon[data-code="_clock_light"]::before {
-            color: #498ba7;
-            content: '\E012'; 
-        }
-    
-        .fileicon[data-code="_clock"]::before {
-            color: #519aba;
-            content: '\E012'; 
-        }
-    
-        .fileicon[data-code="_clock_1_light"]::before {
-            color: #627379;
-            content: '\E012'; 
-        }
-    
-        .fileicon[data-code="_clock_1"]::before {
-            color: #6d8086;
-            content: '\E012'; 
-        }
-    
-        .fileicon[data-code="_clojure_light"]::before {
-            color: #7fae42;
-            content: '\E013'; 
-        }
-    
-        .fileicon[data-code="_clojure"]::before {
-            color: #8dc149;
-            content: '\E013'; 
-        }
-    
-        .fileicon[data-code="_clojure_1_light"]::before {
-            color: #498ba7;
-            content: '\E013'; 
-        }
-    
-        .fileicon[data-code="_clojure_1"]::before {
-            color: #519aba;
-            content: '\E013'; 
-        }
-    
-        .fileicon[data-code="_code-climate_light"]::before {
-            color: #7fae42;
-            content: '\E014'; 
-        }
-    
-        .fileicon[data-code="_code-climate"]::before {
-            color: #8dc149;
-            content: '\E014'; 
-        }
-    
-        .fileicon[data-code="_code-search_light"]::before {
-            color: #9068b0;
-            content: '\E015'; 
-        }
-    
-        .fileicon[data-code="_code-search"]::before {
-            color: #a074c4;
-            content: '\E015'; 
-        }
-    
-        .fileicon[data-code="_coffee_light"]::before {
-            color: #b7b73b;
-            content: '\E016'; 
-        }
-    
-        .fileicon[data-code="_coffee"]::before {
-            color: #cbcb41;
-            content: '\E016'; 
-        }
-    
-        .fileicon[data-code="_coldfusion_light"]::before {
-            color: #498ba7;
-            content: '\E018'; 
-        }
-    
-        .fileicon[data-code="_coldfusion"]::before {
-            color: #519aba;
-            content: '\E018'; 
-        }
-    
-        .fileicon[data-code="_config_light"]::before {
-            color: #627379;
-            content: '\E019'; 
-        }
-    
-        .fileicon[data-code="_config"]::before {
-            color: #6d8086;
-            content: '\E019'; 
-        }
-    
-        .fileicon[data-code="_cpp_light"]::before {
-            color: #498ba7;
-            content: '\E01A'; 
-        }
-    
-        .fileicon[data-code="_cpp"]::before {
-            color: #519aba;
-            content: '\E01A'; 
-        }
-    
-        .fileicon[data-code="_cpp_1_light"]::before {
-            color: #9068b0;
-            content: '\E01A'; 
-        }
-    
-        .fileicon[data-code="_cpp_1"]::before {
-            color: #a074c4;
-            content: '\E01A'; 
-        }
-    
-        .fileicon[data-code="_cpp_2_light"]::before {
-            color: #b7b73b;
-            content: '\E01A'; 
-        }
-    
-        .fileicon[data-code="_cpp_2"]::before {
-            color: #cbcb41;
-            content: '\E01A'; 
-        }
-    
-        .fileicon[data-code="_crystal_light"]::before {
-            color: #bfc2c1;
-            content: '\E01B'; 
-        }
-    
-        .fileicon[data-code="_crystal"]::before {
-            color: #d4d7d6;
-            content: '\E01B'; 
-        }
-    
-        .fileicon[data-code="_crystal_embedded_light"]::before {
-            color: #bfc2c1;
-            content: '\E01C'; 
-        }
-    
-        .fileicon[data-code="_crystal_embedded"]::before {
-            color: #d4d7d6;
-            content: '\E01C'; 
-        }
-    
-        .fileicon[data-code="_css_light"]::before {
-            color: #498ba7;
-            content: '\E01D'; 
-        }
-    
-        .fileicon[data-code="_css"]::before {
-            color: #519aba;
-            content: '\E01D'; 
-        }
-    
-        .fileicon[data-code="_csv_light"]::before {
-            color: #7fae42;
-            content: '\E01E'; 
-        }
-    
-        .fileicon[data-code="_csv"]::before {
-            color: #8dc149;
-            content: '\E01E'; 
-        }
-    
-        .fileicon[data-code="_cu_light"]::before {
-            color: #7fae42;
-            content: '\E01F'; 
-        }
-    
-        .fileicon[data-code="_cu"]::before {
-            color: #8dc149;
-            content: '\E01F'; 
-        }
-    
-        .fileicon[data-code="_cu_1_light"]::before {
-            color: #9068b0;
-            content: '\E01F'; 
-        }
-    
-        .fileicon[data-code="_cu_1"]::before {
-            color: #a074c4;
-            content: '\E01F'; 
-        }
-    
-        .fileicon[data-code="_d_light"]::before {
-            color: #b8383d;
-            content: '\E020'; 
-        }
-    
-        .fileicon[data-code="_d"]::before {
-            color: #cc3e44;
-            content: '\E020'; 
-        }
-    
-        .fileicon[data-code="_dart_light"]::before {
-            color: #498ba7;
-            content: '\E021'; 
-        }
-    
-        .fileicon[data-code="_dart"]::before {
-            color: #519aba;
-            content: '\E021'; 
-        }
-    
-        .fileicon[data-code="_db_light"]::before {
-            color: #dd4b78;
-            content: '\E022'; 
-        }
-    
-        .fileicon[data-code="_db"]::before {
-            color: #f55385;
-            content: '\E022'; 
-        }
-    
-        .fileicon[data-code="_db_1_light"]::before {
-            color: #498ba7;
-            content: '\E022'; 
-        }
-    
-        .fileicon[data-code="_db_1"]::before {
-            color: #519aba;
-            content: '\E022'; 
-        }
-    
-        .fileicon[data-code="_default_light"]::before {
-            color: #bfc2c1;
-            content: '\E023'; 
-        }
-    
-        .fileicon[data-code="_default"]::before {
-            color: #d4d7d6;
-            content: '\E023'; 
-        }
-    
-        .fileicon[data-code="_docker_light"]::before {
-            color: #498ba7;
-            content: '\E025'; 
-        }
-    
-        .fileicon[data-code="_docker"]::before {
-            color: #519aba;
-            content: '\E025'; 
-        }
-    
-        .fileicon[data-code="_docker_1_light"]::before {
-            color: #455155;
-            content: '\E025'; 
-        }
-    
-        .fileicon[data-code="_docker_1"]::before {
-            color: #4d5a5e;
-            content: '\E025'; 
-        }
-    
-        .fileicon[data-code="_docker_2_light"]::before {
-            color: #7fae42;
-            content: '\E025'; 
-        }
-    
-        .fileicon[data-code="_docker_2"]::before {
-            color: #8dc149;
-            content: '\E025'; 
-        }
-    
-        .fileicon[data-code="_docker_3_light"]::before {
-            color: #dd4b78;
-            content: '\E025'; 
-        }
-    
-        .fileicon[data-code="_docker_3"]::before {
-            color: #f55385;
-            content: '\E025'; 
-        }
-    
-        .fileicon[data-code="_ejs_light"]::before {
-            color: #b7b73b;
-            content: '\E027'; 
-        }
-    
-        .fileicon[data-code="_ejs"]::before {
-            color: #cbcb41;
-            content: '\E027'; 
-        }
-    
-        .fileicon[data-code="_elixir_light"]::before {
-            color: #9068b0;
-            content: '\E028'; 
-        }
-    
-        .fileicon[data-code="_elixir"]::before {
-            color: #a074c4;
-            content: '\E028'; 
-        }
-    
-        .fileicon[data-code="_elixir_script_light"]::before {
-            color: #9068b0;
-            content: '\E029'; 
-        }
-    
-        .fileicon[data-code="_elixir_script"]::before {
-            color: #a074c4;
-            content: '\E029'; 
-        }
-    
-        .fileicon[data-code="_elm_light"]::before {
-            color: #498ba7;
-            content: '\E02A'; 
-        }
-    
-        .fileicon[data-code="_elm"]::before {
-            color: #519aba;
-            content: '\E02A'; 
-        }
-    
-        .fileicon[data-code="_eslint_light"]::before {
-            color: #9068b0;
-            content: '\E02C'; 
-        }
-    
-        .fileicon[data-code="_eslint"]::before {
-            color: #a074c4;
-            content: '\E02C'; 
-        }
-    
-        .fileicon[data-code="_eslint_1_light"]::before {
-            color: #455155;
-            content: '\E02C'; 
-        }
-    
-        .fileicon[data-code="_eslint_1"]::before {
-            color: #4d5a5e;
-            content: '\E02C'; 
-        }
-    
-        .fileicon[data-code="_ethereum_light"]::before {
-            color: #498ba7;
-            content: '\E02D'; 
-        }
-    
-        .fileicon[data-code="_ethereum"]::before {
-            color: #519aba;
-            content: '\E02D'; 
-        }
-    
-        .fileicon[data-code="_f-sharp_light"]::before {
-            color: #498ba7;
-            content: '\E02E'; 
-        }
-    
-        .fileicon[data-code="_f-sharp"]::before {
-            color: #519aba;
-            content: '\E02E'; 
-        }
-    
-        .fileicon[data-code="_favicon_light"]::before {
-            color: #b7b73b;
-            content: '\E02F'; 
-        }
-    
-        .fileicon[data-code="_favicon"]::before {
-            color: #cbcb41;
-            content: '\E02F'; 
-        }
-    
-        .fileicon[data-code="_firebase_light"]::before {
-            color: #cc6d2e;
-            content: '\E030'; 
-        }
-    
-        .fileicon[data-code="_firebase"]::before {
-            color: #e37933;
-            content: '\E030'; 
-        }
-    
-        .fileicon[data-code="_firefox_light"]::before {
-            color: #cc6d2e;
-            content: '\E031'; 
-        }
-    
-        .fileicon[data-code="_firefox"]::before {
-            color: #e37933;
-            content: '\E031'; 
-        }
-    
-        .fileicon[data-code="_font_light"]::before {
-            color: #b8383d;
-            content: '\E033'; 
-        }
-    
-        .fileicon[data-code="_font"]::before {
-            color: #cc3e44;
-            content: '\E033'; 
-        }
-    
-        .fileicon[data-code="_git_light"]::before {
-            color: #3b4b52;
-            content: '\E034'; 
-        }
-    
-        .fileicon[data-code="_git"]::before {
-            color: #41535b;
-            content: '\E034'; 
-        }
-    
-        .fileicon[data-code="_github_light"]::before {
-            color: #bfc2c1;
-            content: '\E037'; 
-        }
-    
-        .fileicon[data-code="_github"]::before {
-            color: #d4d7d6;
-            content: '\E037'; 
-        }
-    
-        .fileicon[data-code="_gitlab_light"]::before {
-            color: #cc6d2e;
-            content: '\E038'; 
-        }
-    
-        .fileicon[data-code="_gitlab"]::before {
-            color: #e37933;
-            content: '\E038'; 
-        }
-    
-        .fileicon[data-code="_go_light"]::before {
-            color: #498ba7;
-            content: '\E039'; 
-        }
-    
-        .fileicon[data-code="_go"]::before {
-            color: #519aba;
-            content: '\E039'; 
-        }
-    
-        .fileicon[data-code="_go2_light"]::before {
-            color: #498ba7;
-            content: '\E03A'; 
-        }
-    
-        .fileicon[data-code="_go2"]::before {
-            color: #519aba;
-            content: '\E03A'; 
-        }
-    
-        .fileicon[data-code="_godot_light"]::before {
-            color: #498ba7;
-            content: '\E03B'; 
-        }
-    
-        .fileicon[data-code="_godot"]::before {
-            color: #519aba;
-            content: '\E03B'; 
-        }
-    
-        .fileicon[data-code="_godot_1_light"]::before {
-            color: #b8383d;
-            content: '\E03B'; 
-        }
-    
-        .fileicon[data-code="_godot_1"]::before {
-            color: #cc3e44;
-            content: '\E03B'; 
-        }
-    
-        .fileicon[data-code="_godot_2_light"]::before {
-            color: #b7b73b;
-            content: '\E03B'; 
-        }
-    
-        .fileicon[data-code="_godot_2"]::before {
-            color: #cbcb41;
-            content: '\E03B'; 
-        }
-    
-        .fileicon[data-code="_godot_3_light"]::before {
-            color: #9068b0;
-            content: '\E03B'; 
-        }
-    
-        .fileicon[data-code="_godot_3"]::before {
-            color: #a074c4;
-            content: '\E03B'; 
-        }
-    
-        .fileicon[data-code="_gradle_light"]::before {
-            color: #498ba7;
-            content: '\E03C'; 
-        }
-    
-        .fileicon[data-code="_gradle"]::before {
-            color: #519aba;
-            content: '\E03C'; 
-        }
-    
-        .fileicon[data-code="_grails_light"]::before {
-            color: #7fae42;
-            content: '\E03D'; 
-        }
-    
-        .fileicon[data-code="_grails"]::before {
-            color: #8dc149;
-            content: '\E03D'; 
-        }
-    
-        .fileicon[data-code="_graphql_light"]::before {
-            color: #dd4b78;
-            content: '\E03E'; 
-        }
-    
-        .fileicon[data-code="_graphql"]::before {
-            color: #f55385;
-            content: '\E03E'; 
-        }
-    
-        .fileicon[data-code="_grunt_light"]::before {
-            color: #cc6d2e;
-            content: '\E03F'; 
-        }
-    
-        .fileicon[data-code="_grunt"]::before {
-            color: #e37933;
-            content: '\E03F'; 
-        }
-    
-        .fileicon[data-code="_gulp_light"]::before {
-            color: #b8383d;
-            content: '\E040'; 
-        }
-    
-        .fileicon[data-code="_gulp"]::before {
-            color: #cc3e44;
-            content: '\E040'; 
-        }
-    
-        .fileicon[data-code="_hacklang_light"]::before {
-            color: #cc6d2e;
-            content: '\E041'; 
-        }
-    
-        .fileicon[data-code="_hacklang"]::before {
-            color: #e37933;
-            content: '\E041'; 
-        }
-    
-        .fileicon[data-code="_haml_light"]::before {
-            color: #b8383d;
-            content: '\E042'; 
-        }
-    
-        .fileicon[data-code="_haml"]::before {
-            color: #cc3e44;
-            content: '\E042'; 
-        }
-    
-        .fileicon[data-code="_happenings_light"]::before {
-            color: #498ba7;
-            content: '\E043'; 
-        }
-    
-        .fileicon[data-code="_happenings"]::before {
-            color: #519aba;
-            content: '\E043'; 
-        }
-    
-        .fileicon[data-code="_haskell_light"]::before {
-            color: #9068b0;
-            content: '\E044'; 
-        }
-    
-        .fileicon[data-code="_haskell"]::before {
-            color: #a074c4;
-            content: '\E044'; 
-        }
-    
-        .fileicon[data-code="_haxe_light"]::before {
-            color: #cc6d2e;
-            content: '\E045'; 
-        }
-    
-        .fileicon[data-code="_haxe"]::before {
-            color: #e37933;
-            content: '\E045'; 
-        }
-    
-        .fileicon[data-code="_haxe_1_light"]::before {
-            color: #b7b73b;
-            content: '\E045'; 
-        }
-    
-        .fileicon[data-code="_haxe_1"]::before {
-            color: #cbcb41;
-            content: '\E045'; 
-        }
-    
-        .fileicon[data-code="_haxe_2_light"]::before {
-            color: #498ba7;
-            content: '\E045'; 
-        }
-    
-        .fileicon[data-code="_haxe_2"]::before {
-            color: #519aba;
-            content: '\E045'; 
-        }
-    
-        .fileicon[data-code="_haxe_3_light"]::before {
-            color: #9068b0;
-            content: '\E045'; 
-        }
-    
-        .fileicon[data-code="_haxe_3"]::before {
-            color: #a074c4;
-            content: '\E045'; 
-        }
-    
-        .fileicon[data-code="_heroku_light"]::before {
-            color: #9068b0;
-            content: '\E046'; 
-        }
-    
-        .fileicon[data-code="_heroku"]::before {
-            color: #a074c4;
-            content: '\E046'; 
-        }
-    
-        .fileicon[data-code="_hex_light"]::before {
-            color: #b8383d;
-            content: '\E047'; 
-        }
-    
-        .fileicon[data-code="_hex"]::before {
-            color: #cc3e44;
-            content: '\E047'; 
-        }
-    
-        .fileicon[data-code="_html_light"]::before {
-            color: #498ba7;
-            content: '\E048'; 
-        }
-    
-        .fileicon[data-code="_html"]::before {
-            color: #519aba;
-            content: '\E048'; 
-        }
-    
-        .fileicon[data-code="_html_1_light"]::before {
-            color: #7fae42;
-            content: '\E048'; 
-        }
-    
-        .fileicon[data-code="_html_1"]::before {
-            color: #8dc149;
-            content: '\E048'; 
-        }
-    
-        .fileicon[data-code="_html_2_light"]::before {
-            color: #b7b73b;
-            content: '\E048'; 
-        }
-    
-        .fileicon[data-code="_html_2"]::before {
-            color: #cbcb41;
-            content: '\E048'; 
-        }
-    
-        .fileicon[data-code="_html_3_light"]::before {
-            color: #cc6d2e;
-            content: '\E048'; 
-        }
-    
-        .fileicon[data-code="_html_3"]::before {
-            color: #e37933;
-            content: '\E048'; 
-        }
-    
-        .fileicon[data-code="_html_erb_light"]::before {
-            color: #b8383d;
-            content: '\E049'; 
-        }
-    
-        .fileicon[data-code="_html_erb"]::before {
-            color: #cc3e44;
-            content: '\E049'; 
-        }
-    
-        .fileicon[data-code="_ignored_light"]::before {
-            color: #3b4b52;
-            content: '\E04A'; 
-        }
-    
-        .fileicon[data-code="_ignored"]::before {
-            color: #41535b;
-            content: '\E04A'; 
-        }
-    
-        .fileicon[data-code="_illustrator_light"]::before {
-            color: #b7b73b;
-            content: '\E04B'; 
-        }
-    
-        .fileicon[data-code="_illustrator"]::before {
-            color: #cbcb41;
-            content: '\E04B'; 
-        }
-    
-        .fileicon[data-code="_image_light"]::before {
-            color: #9068b0;
-            content: '\E04C'; 
-        }
-    
-        .fileicon[data-code="_image"]::before {
-            color: #a074c4;
-            content: '\E04C'; 
-        }
-    
-        .fileicon[data-code="_info_light"]::before {
-            color: #498ba7;
-            content: '\E04D'; 
-        }
-    
-        .fileicon[data-code="_info"]::before {
-            color: #519aba;
-            content: '\E04D'; 
-        }
-    
-        .fileicon[data-code="_ionic_light"]::before {
-            color: #498ba7;
-            content: '\E04E'; 
-        }
-    
-        .fileicon[data-code="_ionic"]::before {
-            color: #519aba;
-            content: '\E04E'; 
-        }
-    
-        .fileicon[data-code="_jade_light"]::before {
-            color: #b8383d;
-            content: '\E04F'; 
-        }
-    
-        .fileicon[data-code="_jade"]::before {
-            color: #cc3e44;
-            content: '\E04F'; 
-        }
-    
-        .fileicon[data-code="_java_light"]::before {
-            color: #b8383d;
-            content: '\E050'; 
-        }
-    
-        .fileicon[data-code="_java"]::before {
-            color: #cc3e44;
-            content: '\E050'; 
-        }
-    
-        .fileicon[data-code="_java_1_light"]::before {
-            color: #498ba7;
-            content: '\E050'; 
-        }
-    
-        .fileicon[data-code="_java_1"]::before {
-            color: #519aba;
-            content: '\E050'; 
-        }
-    
-        .fileicon[data-code="_javascript_light"]::before {
-            color: #b7b73b;
-            content: '\E051'; 
-        }
-    
-        .fileicon[data-code="_javascript"]::before {
-            color: #cbcb41;
-            content: '\E051'; 
-        }
-    
-        .fileicon[data-code="_javascript_1_light"]::before {
-            color: #cc6d2e;
-            content: '\E051'; 
-        }
-    
-        .fileicon[data-code="_javascript_1"]::before {
-            color: #e37933;
-            content: '\E051'; 
-        }
-    
-        .fileicon[data-code="_javascript_2_light"]::before {
-            color: #498ba7;
-            content: '\E051'; 
-        }
-    
-        .fileicon[data-code="_javascript_2"]::before {
-            color: #519aba;
-            content: '\E051'; 
-        }
-    
-        .fileicon[data-code="_jenkins_light"]::before {
-            color: #b8383d;
-            content: '\E052'; 
-        }
-    
-        .fileicon[data-code="_jenkins"]::before {
-            color: #cc3e44;
-            content: '\E052'; 
-        }
-    
-        .fileicon[data-code="_jinja_light"]::before {
-            color: #b8383d;
-            content: '\E053'; 
-        }
-    
-        .fileicon[data-code="_jinja"]::before {
-            color: #cc3e44;
-            content: '\E053'; 
-        }
-    
-        .fileicon[data-code="_json_light"]::before {
-            color: #b7b73b;
-            content: '\E055'; 
-        }
-    
-        .fileicon[data-code="_json"]::before {
-            color: #cbcb41;
-            content: '\E055'; 
-        }
-    
-        .fileicon[data-code="_json_1_light"]::before {
-            color: #7fae42;
-            content: '\E055'; 
-        }
-    
-        .fileicon[data-code="_json_1"]::before {
-            color: #8dc149;
-            content: '\E055'; 
-        }
-    
-        .fileicon[data-code="_julia_light"]::before {
-            color: #9068b0;
-            content: '\E056'; 
-        }
-    
-        .fileicon[data-code="_julia"]::before {
-            color: #a074c4;
-            content: '\E056'; 
-        }
-    
-        .fileicon[data-code="_karma_light"]::before {
-            color: #7fae42;
-            content: '\E057'; 
-        }
-    
-        .fileicon[data-code="_karma"]::before {
-            color: #8dc149;
-            content: '\E057'; 
-        }
-    
-        .fileicon[data-code="_kotlin_light"]::before {
-            color: #cc6d2e;
-            content: '\E058'; 
-        }
-    
-        .fileicon[data-code="_kotlin"]::before {
-            color: #e37933;
-            content: '\E058'; 
-        }
-    
-        .fileicon[data-code="_less_light"]::before {
-            color: #498ba7;
-            content: '\E059'; 
-        }
-    
-        .fileicon[data-code="_less"]::before {
-            color: #519aba;
-            content: '\E059'; 
-        }
-    
-        .fileicon[data-code="_license_light"]::before {
-            color: #b7b73b;
-            content: '\E05A'; 
-        }
-    
-        .fileicon[data-code="_license"]::before {
-            color: #cbcb41;
-            content: '\E05A'; 
-        }
-    
-        .fileicon[data-code="_license_1_light"]::before {
-            color: #cc6d2e;
-            content: '\E05A'; 
-        }
-    
-        .fileicon[data-code="_license_1"]::before {
-            color: #e37933;
-            content: '\E05A'; 
-        }
-    
-        .fileicon[data-code="_license_2_light"]::before {
-            color: #b8383d;
-            content: '\E05A'; 
-        }
-    
-        .fileicon[data-code="_license_2"]::before {
-            color: #cc3e44;
-            content: '\E05A'; 
-        }
-    
-        .fileicon[data-code="_liquid_light"]::before {
-            color: #7fae42;
-            content: '\E05B'; 
-        }
-    
-        .fileicon[data-code="_liquid"]::before {
-            color: #8dc149;
-            content: '\E05B'; 
-        }
-    
-        .fileicon[data-code="_livescript_light"]::before {
-            color: #498ba7;
-            content: '\E05C'; 
-        }
-    
-        .fileicon[data-code="_livescript"]::before {
-            color: #519aba;
-            content: '\E05C'; 
-        }
-    
-        .fileicon[data-code="_lock_light"]::before {
-            color: #7fae42;
-            content: '\E05D'; 
-        }
-    
-        .fileicon[data-code="_lock"]::before {
-            color: #8dc149;
-            content: '\E05D'; 
-        }
-    
-        .fileicon[data-code="_lua_light"]::before {
-            color: #498ba7;
-            content: '\E05E'; 
-        }
-    
-        .fileicon[data-code="_lua"]::before {
-            color: #519aba;
-            content: '\E05E'; 
-        }
-    
-        .fileicon[data-code="_makefile_light"]::before {
-            color: #cc6d2e;
-            content: '\E05F'; 
-        }
-    
-        .fileicon[data-code="_makefile"]::before {
-            color: #e37933;
-            content: '\E05F'; 
-        }
-    
-        .fileicon[data-code="_makefile_1_light"]::before {
-            color: #9068b0;
-            content: '\E05F'; 
-        }
-    
-        .fileicon[data-code="_makefile_1"]::before {
-            color: #a074c4;
-            content: '\E05F'; 
-        }
-    
-        .fileicon[data-code="_makefile_2_light"]::before {
-            color: #627379;
-            content: '\E05F'; 
-        }
-    
-        .fileicon[data-code="_makefile_2"]::before {
-            color: #6d8086;
-            content: '\E05F'; 
-        }
-    
-        .fileicon[data-code="_makefile_3_light"]::before {
-            color: #498ba7;
-            content: '\E05F'; 
-        }
-    
-        .fileicon[data-code="_makefile_3"]::before {
-            color: #519aba;
-            content: '\E05F'; 
-        }
-    
-        .fileicon[data-code="_markdown_light"]::before {
-            color: #498ba7;
-            content: '\E060'; 
-        }
-    
-        .fileicon[data-code="_markdown"]::before {
-            color: #519aba;
-            content: '\E060'; 
-        }
-    
-        .fileicon[data-code="_maven_light"]::before {
-            color: #b8383d;
-            content: '\E061'; 
-        }
-    
-        .fileicon[data-code="_maven"]::before {
-            color: #cc3e44;
-            content: '\E061'; 
-        }
-    
-        .fileicon[data-code="_mdo_light"]::before {
-            color: #b8383d;
-            content: '\E062'; 
-        }
-    
-        .fileicon[data-code="_mdo"]::before {
-            color: #cc3e44;
-            content: '\E062'; 
-        }
-    
-        .fileicon[data-code="_mustache_light"]::before {
-            color: #cc6d2e;
-            content: '\E063'; 
-        }
-    
-        .fileicon[data-code="_mustache"]::before {
-            color: #e37933;
-            content: '\E063'; 
-        }
-    
-        .fileicon[data-code="_nim_light"]::before {
-            color: #b7b73b;
-            content: '\E065'; 
-        }
-    
-        .fileicon[data-code="_nim"]::before {
-            color: #cbcb41;
-            content: '\E065'; 
-        }
-    
-        .fileicon[data-code="_notebook_light"]::before {
-            color: #498ba7;
-            content: '\E066'; 
-        }
-    
-        .fileicon[data-code="_notebook"]::before {
-            color: #519aba;
-            content: '\E066'; 
-        }
-    
-        .fileicon[data-code="_npm_light"]::before {
-            color: #3b4b52;
-            content: '\E067'; 
-        }
-    
-        .fileicon[data-code="_npm"]::before {
-            color: #41535b;
-            content: '\E067'; 
-        }
-    
-        .fileicon[data-code="_npm_1_light"]::before {
-            color: #b8383d;
-            content: '\E067'; 
-        }
-    
-        .fileicon[data-code="_npm_1"]::before {
-            color: #cc3e44;
-            content: '\E067'; 
-        }
-    
-        .fileicon[data-code="_npm_ignored_light"]::before {
-            color: #3b4b52;
-            content: '\E068'; 
-        }
-    
-        .fileicon[data-code="_npm_ignored"]::before {
-            color: #41535b;
-            content: '\E068'; 
-        }
-    
-        .fileicon[data-code="_nunjucks_light"]::before {
-            color: #7fae42;
-            content: '\E069'; 
-        }
-    
-        .fileicon[data-code="_nunjucks"]::before {
-            color: #8dc149;
-            content: '\E069'; 
-        }
-    
-        .fileicon[data-code="_ocaml_light"]::before {
-            color: #cc6d2e;
-            content: '\E06A'; 
-        }
-    
-        .fileicon[data-code="_ocaml"]::before {
-            color: #e37933;
-            content: '\E06A'; 
-        }
-    
-        .fileicon[data-code="_odata_light"]::before {
-            color: #cc6d2e;
-            content: '\E06B'; 
-        }
-    
-        .fileicon[data-code="_odata"]::before {
-            color: #e37933;
-            content: '\E06B'; 
-        }
-    
-        .fileicon[data-code="_pddl_light"]::before {
-            color: #9068b0;
-            content: '\E06C'; 
-        }
-    
-        .fileicon[data-code="_pddl"]::before {
-            color: #a074c4;
-            content: '\E06C'; 
-        }
-    
-        .fileicon[data-code="_pdf_light"]::before {
-            color: #b8383d;
-            content: '\E06D'; 
-        }
-    
-        .fileicon[data-code="_pdf"]::before {
-            color: #cc3e44;
-            content: '\E06D'; 
-        }
-    
-        .fileicon[data-code="_perl_light"]::before {
-            color: #498ba7;
-            content: '\E06E'; 
-        }
-    
-        .fileicon[data-code="_perl"]::before {
-            color: #519aba;
-            content: '\E06E'; 
-        }
-    
-        .fileicon[data-code="_photoshop_light"]::before {
-            color: #498ba7;
-            content: '\E06F'; 
-        }
-    
-        .fileicon[data-code="_photoshop"]::before {
-            color: #519aba;
-            content: '\E06F'; 
-        }
-    
-        .fileicon[data-code="_php_light"]::before {
-            color: #9068b0;
-            content: '\E070'; 
-        }
-    
-        .fileicon[data-code="_php"]::before {
-            color: #a074c4;
-            content: '\E070'; 
-        }
-    
-        .fileicon[data-code="_pipeline_light"]::before {
-            color: #cc6d2e;
-            content: '\E071'; 
-        }
-    
-        .fileicon[data-code="_pipeline"]::before {
-            color: #e37933;
-            content: '\E071'; 
-        }
-    
-        .fileicon[data-code="_plan_light"]::before {
-            color: #7fae42;
-            content: '\E072'; 
-        }
-    
-        .fileicon[data-code="_plan"]::before {
-            color: #8dc149;
-            content: '\E072'; 
-        }
-    
-        .fileicon[data-code="_platformio_light"]::before {
-            color: #cc6d2e;
-            content: '\E073'; 
-        }
-    
-        .fileicon[data-code="_platformio"]::before {
-            color: #e37933;
-            content: '\E073'; 
-        }
-    
-        .fileicon[data-code="_powershell_light"]::before {
-            color: #498ba7;
-            content: '\E074'; 
-        }
-    
-        .fileicon[data-code="_powershell"]::before {
-            color: #519aba;
-            content: '\E074'; 
-        }
-    
-        .fileicon[data-code="_prisma_light"]::before {
-            color: #498ba7;
-            content: '\E075'; 
-        }
-    
-        .fileicon[data-code="_prisma"]::before {
-            color: #519aba;
-            content: '\E075'; 
-        }
-    
-        .fileicon[data-code="_prolog_light"]::before {
-            color: #cc6d2e;
-            content: '\E077'; 
-        }
-    
-        .fileicon[data-code="_prolog"]::before {
-            color: #e37933;
-            content: '\E077'; 
-        }
-    
-        .fileicon[data-code="_pug_light"]::before {
-            color: #b8383d;
-            content: '\E078'; 
-        }
-    
-        .fileicon[data-code="_pug"]::before {
-            color: #cc3e44;
-            content: '\E078'; 
-        }
-    
-        .fileicon[data-code="_puppet_light"]::before {
-            color: #b7b73b;
-            content: '\E079'; 
-        }
-    
-        .fileicon[data-code="_puppet"]::before {
-            color: #cbcb41;
-            content: '\E079'; 
-        }
-    
-        .fileicon[data-code="_purescript_light"]::before {
-            color: #bfc2c1;
-            content: '\E07A'; 
-        }
-    
-        .fileicon[data-code="_purescript"]::before {
-            color: #d4d7d6;
-            content: '\E07A'; 
-        }
-    
-        .fileicon[data-code="_python_light"]::before {
-            color: #498ba7;
-            content: '\E07B'; 
-        }
-    
-        .fileicon[data-code="_python"]::before {
-            color: #519aba;
-            content: '\E07B'; 
-        }
-    
-        .fileicon[data-code="_react_light"]::before {
-            color: #498ba7;
-            content: '\E07D'; 
-        }
-    
-        .fileicon[data-code="_react"]::before {
-            color: #519aba;
-            content: '\E07D'; 
-        }
-    
-        .fileicon[data-code="_react_1_light"]::before {
-            color: #cc6d2e;
-            content: '\E07D'; 
-        }
-    
-        .fileicon[data-code="_react_1"]::before {
-            color: #e37933;
-            content: '\E07D'; 
-        }
-    
-        .fileicon[data-code="_reasonml_light"]::before {
-            color: #b8383d;
-            content: '\E07E'; 
-        }
-    
-        .fileicon[data-code="_reasonml"]::before {
-            color: #cc3e44;
-            content: '\E07E'; 
-        }
-    
-        .fileicon[data-code="_rescript_light"]::before {
-            color: #b8383d;
-            content: '\E07F'; 
-        }
-    
-        .fileicon[data-code="_rescript"]::before {
-            color: #cc3e44;
-            content: '\E07F'; 
-        }
-    
-        .fileicon[data-code="_rescript_1_light"]::before {
-            color: #dd4b78;
-            content: '\E07F'; 
-        }
-    
-        .fileicon[data-code="_rescript_1"]::before {
-            color: #f55385;
-            content: '\E07F'; 
-        }
-    
-        .fileicon[data-code="_rollup_light"]::before {
-            color: #b8383d;
-            content: '\E080'; 
-        }
-    
-        .fileicon[data-code="_rollup"]::before {
-            color: #cc3e44;
-            content: '\E080'; 
-        }
-    
-        .fileicon[data-code="_ruby_light"]::before {
-            color: #b8383d;
-            content: '\E081'; 
-        }
-    
-        .fileicon[data-code="_ruby"]::before {
-            color: #cc3e44;
-            content: '\E081'; 
-        }
-    
-        .fileicon[data-code="_rust_light"]::before {
-            color: #627379;
-            content: '\E082'; 
-        }
-    
-        .fileicon[data-code="_rust"]::before {
-            color: #6d8086;
-            content: '\E082'; 
-        }
-    
-        .fileicon[data-code="_salesforce_light"]::before {
-            color: #498ba7;
-            content: '\E083'; 
-        }
-    
-        .fileicon[data-code="_salesforce"]::before {
-            color: #519aba;
-            content: '\E083'; 
-        }
-    
-        .fileicon[data-code="_sass_light"]::before {
-            color: #dd4b78;
-            content: '\E084'; 
-        }
-    
-        .fileicon[data-code="_sass"]::before {
-            color: #f55385;
-            content: '\E084'; 
-        }
-    
-        .fileicon[data-code="_sbt_light"]::before {
-            color: #498ba7;
-            content: '\E085'; 
-        }
-    
-        .fileicon[data-code="_sbt"]::before {
-            color: #519aba;
-            content: '\E085'; 
-        }
-    
-        .fileicon[data-code="_scala_light"]::before {
-            color: #b8383d;
-            content: '\E086'; 
-        }
-    
-        .fileicon[data-code="_scala"]::before {
-            color: #cc3e44;
-            content: '\E086'; 
-        }
-    
-        .fileicon[data-code="_shell_light"]::before {
-            color: #7fae42;
-            content: '\E089'; 
-        }
-    
-        .fileicon[data-code="_shell"]::before {
-            color: #8dc149;
-            content: '\E089'; 
-        }
-    
-        .fileicon[data-code="_slim_light"]::before {
-            color: #cc6d2e;
-            content: '\E08A'; 
-        }
-    
-        .fileicon[data-code="_slim"]::before {
-            color: #e37933;
-            content: '\E08A'; 
-        }
-    
-        .fileicon[data-code="_smarty_light"]::before {
-            color: #b7b73b;
-            content: '\E08B'; 
-        }
-    
-        .fileicon[data-code="_smarty"]::before {
-            color: #cbcb41;
-            content: '\E08B'; 
-        }
-    
-        .fileicon[data-code="_spring_light"]::before {
-            color: #7fae42;
-            content: '\E08C'; 
-        }
-    
-        .fileicon[data-code="_spring"]::before {
-            color: #8dc149;
-            content: '\E08C'; 
-        }
-    
-        .fileicon[data-code="_stylelint_light"]::before {
-            color: #bfc2c1;
-            content: '\E08D'; 
-        }
-    
-        .fileicon[data-code="_stylelint"]::before {
-            color: #d4d7d6;
-            content: '\E08D'; 
-        }
-    
-        .fileicon[data-code="_stylelint_1_light"]::before {
-            color: #455155;
-            content: '\E08D'; 
-        }
-    
-        .fileicon[data-code="_stylelint_1"]::before {
-            color: #4d5a5e;
-            content: '\E08D'; 
-        }
-    
-        .fileicon[data-code="_stylus_light"]::before {
-            color: #7fae42;
-            content: '\E08E'; 
-        }
-    
-        .fileicon[data-code="_stylus"]::before {
-            color: #8dc149;
-            content: '\E08E'; 
-        }
-    
-        .fileicon[data-code="_sublime_light"]::before {
-            color: #cc6d2e;
-            content: '\E08F'; 
-        }
-    
-        .fileicon[data-code="_sublime"]::before {
-            color: #e37933;
-            content: '\E08F'; 
-        }
-    
-        .fileicon[data-code="_svelte_light"]::before {
-            color: #b8383d;
-            content: '\E090'; 
-        }
-    
-        .fileicon[data-code="_svelte"]::before {
-            color: #cc3e44;
-            content: '\E090'; 
-        }
-    
-        .fileicon[data-code="_svg_light"]::before {
-            color: #9068b0;
-            content: '\E091'; 
-        }
-    
-        .fileicon[data-code="_svg"]::before {
-            color: #a074c4;
-            content: '\E091'; 
-        }
-    
-        .fileicon[data-code="_svg_1_light"]::before {
-            color: #498ba7;
-            content: '\E091'; 
-        }
-    
-        .fileicon[data-code="_svg_1"]::before {
-            color: #519aba;
-            content: '\E091'; 
-        }
-    
-        .fileicon[data-code="_swift_light"]::before {
-            color: #cc6d2e;
-            content: '\E092'; 
-        }
-    
-        .fileicon[data-code="_swift"]::before {
-            color: #e37933;
-            content: '\E092'; 
-        }
-    
-        .fileicon[data-code="_terraform_light"]::before {
-            color: #9068b0;
-            content: '\E093'; 
-        }
-    
-        .fileicon[data-code="_terraform"]::before {
-            color: #a074c4;
-            content: '\E093'; 
-        }
-    
-        .fileicon[data-code="_tex_light"]::before {
-            color: #498ba7;
-            content: '\E094'; 
-        }
-    
-        .fileicon[data-code="_tex"]::before {
-            color: #519aba;
-            content: '\E094'; 
-        }
-    
-        .fileicon[data-code="_tex_1_light"]::before {
-            color: #b7b73b;
-            content: '\E094'; 
-        }
-    
-        .fileicon[data-code="_tex_1"]::before {
-            color: #cbcb41;
-            content: '\E094'; 
-        }
-    
-        .fileicon[data-code="_tex_2_light"]::before {
-            color: #cc6d2e;
-            content: '\E094'; 
-        }
-    
-        .fileicon[data-code="_tex_2"]::before {
-            color: #e37933;
-            content: '\E094'; 
-        }
-    
-        .fileicon[data-code="_tex_3_light"]::before {
-            color: #bfc2c1;
-            content: '\E094'; 
-        }
-    
-        .fileicon[data-code="_tex_3"]::before {
-            color: #d4d7d6;
-            content: '\E094'; 
-        }
-    
-        .fileicon[data-code="_todo"]::before {
-            color: undefined;
-            content: '\E096'; 
-        }
-    
-        .fileicon[data-code="_tsconfig_light"]::before {
-            color: #498ba7;
-            content: '\E097'; 
-        }
-    
-        .fileicon[data-code="_tsconfig"]::before {
-            color: #519aba;
-            content: '\E097'; 
-        }
-    
-        .fileicon[data-code="_twig_light"]::before {
-            color: #7fae42;
-            content: '\E098'; 
-        }
-    
-        .fileicon[data-code="_twig"]::before {
-            color: #8dc149;
-            content: '\E098'; 
-        }
-    
-        .fileicon[data-code="_typescript_light"]::before {
-            color: #498ba7;
-            content: '\E099'; 
-        }
-    
-        .fileicon[data-code="_typescript"]::before {
-            color: #519aba;
-            content: '\E099'; 
-        }
-    
-        .fileicon[data-code="_typescript_1_light"]::before {
-            color: #cc6d2e;
-            content: '\E099'; 
-        }
-    
-        .fileicon[data-code="_typescript_1"]::before {
-            color: #e37933;
-            content: '\E099'; 
-        }
-    
-        .fileicon[data-code="_vala_light"]::before {
-            color: #627379;
-            content: '\E09A'; 
-        }
-    
-        .fileicon[data-code="_vala"]::before {
-            color: #6d8086;
-            content: '\E09A'; 
-        }
-    
-        .fileicon[data-code="_video_light"]::before {
-            color: #dd4b78;
-            content: '\E09B'; 
-        }
-    
-        .fileicon[data-code="_video"]::before {
-            color: #f55385;
-            content: '\E09B'; 
-        }
-    
-        .fileicon[data-code="_vite_light"]::before {
-            color: #b7b73b;
-            content: '\E09C'; 
-        }
-    
-        .fileicon[data-code="_vite"]::before {
-            color: #cbcb41;
-            content: '\E09C'; 
-        }
-    
-        .fileicon[data-code="_vue_light"]::before {
-            color: #7fae42;
-            content: '\E09D'; 
-        }
-    
-        .fileicon[data-code="_vue"]::before {
-            color: #8dc149;
-            content: '\E09D'; 
-        }
-    
-        .fileicon[data-code="_wasm_light"]::before {
-            color: #9068b0;
-            content: '\E09E'; 
-        }
-    
-        .fileicon[data-code="_wasm"]::before {
-            color: #a074c4;
-            content: '\E09E'; 
-        }
-    
-        .fileicon[data-code="_wat_light"]::before {
-            color: #9068b0;
-            content: '\E09F'; 
-        }
-    
-        .fileicon[data-code="_wat"]::before {
-            color: #a074c4;
-            content: '\E09F'; 
-        }
-    
-        .fileicon[data-code="_webpack_light"]::before {
-            color: #498ba7;
-            content: '\E0A0'; 
-        }
-    
-        .fileicon[data-code="_webpack"]::before {
-            color: #519aba;
-            content: '\E0A0'; 
-        }
-    
-        .fileicon[data-code="_wgt_light"]::before {
-            color: #498ba7;
-            content: '\E0A1'; 
-        }
-    
-        .fileicon[data-code="_wgt"]::before {
-            color: #519aba;
-            content: '\E0A1'; 
-        }
-    
-        .fileicon[data-code="_windows_light"]::before {
-            color: #498ba7;
-            content: '\E0A2'; 
-        }
-    
-        .fileicon[data-code="_windows"]::before {
-            color: #519aba;
-            content: '\E0A2'; 
-        }
-    
-        .fileicon[data-code="_word_light"]::before {
-            color: #498ba7;
-            content: '\E0A3'; 
-        }
-    
-        .fileicon[data-code="_word"]::before {
-            color: #519aba;
-            content: '\E0A3'; 
-        }
-    
-        .fileicon[data-code="_xls_light"]::before {
-            color: #7fae42;
-            content: '\E0A4'; 
-        }
-    
-        .fileicon[data-code="_xls"]::before {
-            color: #8dc149;
-            content: '\E0A4'; 
-        }
-    
-        .fileicon[data-code="_xml_light"]::before {
-            color: #cc6d2e;
-            content: '\E0A5'; 
-        }
-    
-        .fileicon[data-code="_xml"]::before {
-            color: #e37933;
-            content: '\E0A5'; 
-        }
-    
-        .fileicon[data-code="_yarn_light"]::before {
-            color: #498ba7;
-            content: '\E0A6'; 
-        }
-    
-        .fileicon[data-code="_yarn"]::before {
-            color: #519aba;
-            content: '\E0A6'; 
-        }
-    
-        .fileicon[data-code="_yml_light"]::before {
-            color: #9068b0;
-            content: '\E0A7'; 
-        }
-    
-        .fileicon[data-code="_yml"]::before {
-            color: #a074c4;
-            content: '\E0A7'; 
-        }
-    
-        .fileicon[data-code="_zig_light"]::before {
-            color: #cc6d2e;
-            content: '\E0A8'; 
-        }
-    
-        .fileicon[data-code="_zig"]::before {
-            color: #e37933;
-            content: '\E0A8'; 
-        }
-    
-        .fileicon[data-code="_zip_light"]::before {
-            color: #b8383d;
-            content: '\E0A9'; 
-        }
-    
-        .fileicon[data-code="_zip"]::before {
-            color: #cc3e44;
-            content: '\E0A9'; 
-        }
-    
-        .fileicon[data-code="_zip_1_light"]::before {
-            color: #627379;
-            content: '\E0A9'; 
-        }
-    
-        .fileicon[data-code="_zip_1"]::before {
-            color: #6d8086;
-            content: '\E0A9'; 
-        }
-    
+        font-family: "seti"; 
+        src: url('seti.woff')   
+        format("woff"); 
+    }
+    .fileicon::before {
+        font-family: seti !important;
+        font-style: normal;
+        font-weight: normal !important;
+        vertical-align: top;
+        opacity: .8;
+    }
+    
+            .fileicon[data-code="_R_light"]::before {
+                color: #498ba7;
+                content: '\E001'; 
+            }
+        
+            .fileicon[data-code="_R"]::before {
+                color: #519aba;
+                content: '\E001'; 
+            }
+        
+            .fileicon[data-code="_argdown_light"]::before {
+                color: #498ba7;
+                content: '\E003'; 
+            }
+        
+            .fileicon[data-code="_argdown"]::before {
+                color: #519aba;
+                content: '\E003'; 
+            }
+        
+            .fileicon[data-code="_asm_light"]::before {
+                color: #b8383d;
+                content: '\E004'; 
+            }
+        
+            .fileicon[data-code="_asm"]::before {
+                color: #cc3e44;
+                content: '\E004'; 
+            }
+        
+            .fileicon[data-code="_audio_light"]::before {
+                color: #9068b0;
+                content: '\E005'; 
+            }
+        
+            .fileicon[data-code="_audio"]::before {
+                color: #a074c4;
+                content: '\E005'; 
+            }
+        
+            .fileicon[data-code="_babel_light"]::before {
+                color: #b7b73b;
+                content: '\E006'; 
+            }
+        
+            .fileicon[data-code="_babel"]::before {
+                color: #cbcb41;
+                content: '\E006'; 
+            }
+        
+            .fileicon[data-code="_bazel_light"]::before {
+                color: #7fae42;
+                content: '\E007'; 
+            }
+        
+            .fileicon[data-code="_bazel"]::before {
+                color: #8dc149;
+                content: '\E007'; 
+            }
+        
+            .fileicon[data-code="_bazel_1_light"]::before {
+                color: #455155;
+                content: '\E007'; 
+            }
+        
+            .fileicon[data-code="_bazel_1"]::before {
+                color: #4d5a5e;
+                content: '\E007'; 
+            }
+        
+            .fileicon[data-code="_bicep_light"]::before {
+                color: #498ba7;
+                content: '\E008'; 
+            }
+        
+            .fileicon[data-code="_bicep"]::before {
+                color: #519aba;
+                content: '\E008'; 
+            }
+        
+            .fileicon[data-code="_bower_light"]::before {
+                color: #cc6d2e;
+                content: '\E009'; 
+            }
+        
+            .fileicon[data-code="_bower"]::before {
+                color: #e37933;
+                content: '\E009'; 
+            }
+        
+            .fileicon[data-code="_bsl_light"]::before {
+                color: #b8383d;
+                content: '\E00A'; 
+            }
+        
+            .fileicon[data-code="_bsl"]::before {
+                color: #cc3e44;
+                content: '\E00A'; 
+            }
+        
+            .fileicon[data-code="_c_light"]::before {
+                color: #498ba7;
+                content: '\E00C'; 
+            }
+        
+            .fileicon[data-code="_c"]::before {
+                color: #519aba;
+                content: '\E00C'; 
+            }
+        
+            .fileicon[data-code="_c-sharp_light"]::before {
+                color: #498ba7;
+                content: '\E00B'; 
+            }
+        
+            .fileicon[data-code="_c-sharp"]::before {
+                color: #519aba;
+                content: '\E00B'; 
+            }
+        
+            .fileicon[data-code="_c_1_light"]::before {
+                color: #9068b0;
+                content: '\E00C'; 
+            }
+        
+            .fileicon[data-code="_c_1"]::before {
+                color: #a074c4;
+                content: '\E00C'; 
+            }
+        
+            .fileicon[data-code="_c_2_light"]::before {
+                color: #b7b73b;
+                content: '\E00C'; 
+            }
+        
+            .fileicon[data-code="_c_2"]::before {
+                color: #cbcb41;
+                content: '\E00C'; 
+            }
+        
+            .fileicon[data-code="_cake_light"]::before {
+                color: #b8383d;
+                content: '\E00D'; 
+            }
+        
+            .fileicon[data-code="_cake"]::before {
+                color: #cc3e44;
+                content: '\E00D'; 
+            }
+        
+            .fileicon[data-code="_cake_php_light"]::before {
+                color: #b8383d;
+                content: '\E00E'; 
+            }
+        
+            .fileicon[data-code="_cake_php"]::before {
+                color: #cc3e44;
+                content: '\E00E'; 
+            }
+        
+            .fileicon[data-code="_clock_light"]::before {
+                color: #498ba7;
+                content: '\E012'; 
+            }
+        
+            .fileicon[data-code="_clock"]::before {
+                color: #519aba;
+                content: '\E012'; 
+            }
+        
+            .fileicon[data-code="_clock_1_light"]::before {
+                color: #627379;
+                content: '\E012'; 
+            }
+        
+            .fileicon[data-code="_clock_1"]::before {
+                color: #6d8086;
+                content: '\E012'; 
+            }
+        
+            .fileicon[data-code="_clojure_light"]::before {
+                color: #7fae42;
+                content: '\E013'; 
+            }
+        
+            .fileicon[data-code="_clojure"]::before {
+                color: #8dc149;
+                content: '\E013'; 
+            }
+        
+            .fileicon[data-code="_clojure_1_light"]::before {
+                color: #498ba7;
+                content: '\E013'; 
+            }
+        
+            .fileicon[data-code="_clojure_1"]::before {
+                color: #519aba;
+                content: '\E013'; 
+            }
+        
+            .fileicon[data-code="_code-climate_light"]::before {
+                color: #7fae42;
+                content: '\E014'; 
+            }
+        
+            .fileicon[data-code="_code-climate"]::before {
+                color: #8dc149;
+                content: '\E014'; 
+            }
+        
+            .fileicon[data-code="_code-search_light"]::before {
+                color: #9068b0;
+                content: '\E015'; 
+            }
+        
+            .fileicon[data-code="_code-search"]::before {
+                color: #a074c4;
+                content: '\E015'; 
+            }
+        
+            .fileicon[data-code="_coffee_light"]::before {
+                color: #b7b73b;
+                content: '\E016'; 
+            }
+        
+            .fileicon[data-code="_coffee"]::before {
+                color: #cbcb41;
+                content: '\E016'; 
+            }
+        
+            .fileicon[data-code="_coldfusion_light"]::before {
+                color: #498ba7;
+                content: '\E018'; 
+            }
+        
+            .fileicon[data-code="_coldfusion"]::before {
+                color: #519aba;
+                content: '\E018'; 
+            }
+        
+            .fileicon[data-code="_config_light"]::before {
+                color: #627379;
+                content: '\E019'; 
+            }
+        
+            .fileicon[data-code="_config"]::before {
+                color: #6d8086;
+                content: '\E019'; 
+            }
+        
+            .fileicon[data-code="_cpp_light"]::before {
+                color: #498ba7;
+                content: '\E01A'; 
+            }
+        
+            .fileicon[data-code="_cpp"]::before {
+                color: #519aba;
+                content: '\E01A'; 
+            }
+        
+            .fileicon[data-code="_cpp_1_light"]::before {
+                color: #9068b0;
+                content: '\E01A'; 
+            }
+        
+            .fileicon[data-code="_cpp_1"]::before {
+                color: #a074c4;
+                content: '\E01A'; 
+            }
+        
+            .fileicon[data-code="_cpp_2_light"]::before {
+                color: #b7b73b;
+                content: '\E01A'; 
+            }
+        
+            .fileicon[data-code="_cpp_2"]::before {
+                color: #cbcb41;
+                content: '\E01A'; 
+            }
+        
+            .fileicon[data-code="_crystal_light"]::before {
+                color: #bfc2c1;
+                content: '\E01B'; 
+            }
+        
+            .fileicon[data-code="_crystal"]::before {
+                color: #d4d7d6;
+                content: '\E01B'; 
+            }
+        
+            .fileicon[data-code="_crystal_embedded_light"]::before {
+                color: #bfc2c1;
+                content: '\E01C'; 
+            }
+        
+            .fileicon[data-code="_crystal_embedded"]::before {
+                color: #d4d7d6;
+                content: '\E01C'; 
+            }
+        
+            .fileicon[data-code="_css_light"]::before {
+                color: #498ba7;
+                content: '\E01D'; 
+            }
+        
+            .fileicon[data-code="_css"]::before {
+                color: #519aba;
+                content: '\E01D'; 
+            }
+        
+            .fileicon[data-code="_csv_light"]::before {
+                color: #7fae42;
+                content: '\E01E'; 
+            }
+        
+            .fileicon[data-code="_csv"]::before {
+                color: #8dc149;
+                content: '\E01E'; 
+            }
+        
+            .fileicon[data-code="_cu_light"]::before {
+                color: #7fae42;
+                content: '\E01F'; 
+            }
+        
+            .fileicon[data-code="_cu"]::before {
+                color: #8dc149;
+                content: '\E01F'; 
+            }
+        
+            .fileicon[data-code="_cu_1_light"]::before {
+                color: #9068b0;
+                content: '\E01F'; 
+            }
+        
+            .fileicon[data-code="_cu_1"]::before {
+                color: #a074c4;
+                content: '\E01F'; 
+            }
+        
+            .fileicon[data-code="_d_light"]::before {
+                color: #b8383d;
+                content: '\E020'; 
+            }
+        
+            .fileicon[data-code="_d"]::before {
+                color: #cc3e44;
+                content: '\E020'; 
+            }
+        
+            .fileicon[data-code="_dart_light"]::before {
+                color: #498ba7;
+                content: '\E021'; 
+            }
+        
+            .fileicon[data-code="_dart"]::before {
+                color: #519aba;
+                content: '\E021'; 
+            }
+        
+            .fileicon[data-code="_db_light"]::before {
+                color: #dd4b78;
+                content: '\E022'; 
+            }
+        
+            .fileicon[data-code="_db"]::before {
+                color: #f55385;
+                content: '\E022'; 
+            }
+        
+            .fileicon[data-code="_db_1_light"]::before {
+                color: #498ba7;
+                content: '\E022'; 
+            }
+        
+            .fileicon[data-code="_db_1"]::before {
+                color: #519aba;
+                content: '\E022'; 
+            }
+        
+            .fileicon[data-code="_default_light"]::before {
+                color: #bfc2c1;
+                content: '\E023'; 
+            }
+        
+            .fileicon[data-code="_default"]::before {
+                color: #d4d7d6;
+                content: '\E023'; 
+            }
+        
+            .fileicon[data-code="_docker_light"]::before {
+                color: #498ba7;
+                content: '\E025'; 
+            }
+        
+            .fileicon[data-code="_docker"]::before {
+                color: #519aba;
+                content: '\E025'; 
+            }
+        
+            .fileicon[data-code="_docker_1_light"]::before {
+                color: #455155;
+                content: '\E025'; 
+            }
+        
+            .fileicon[data-code="_docker_1"]::before {
+                color: #4d5a5e;
+                content: '\E025'; 
+            }
+        
+            .fileicon[data-code="_docker_2_light"]::before {
+                color: #7fae42;
+                content: '\E025'; 
+            }
+        
+            .fileicon[data-code="_docker_2"]::before {
+                color: #8dc149;
+                content: '\E025'; 
+            }
+        
+            .fileicon[data-code="_docker_3_light"]::before {
+                color: #dd4b78;
+                content: '\E025'; 
+            }
+        
+            .fileicon[data-code="_docker_3"]::before {
+                color: #f55385;
+                content: '\E025'; 
+            }
+        
+            .fileicon[data-code="_ejs_light"]::before {
+                color: #b7b73b;
+                content: '\E027'; 
+            }
+        
+            .fileicon[data-code="_ejs"]::before {
+                color: #cbcb41;
+                content: '\E027'; 
+            }
+        
+            .fileicon[data-code="_elixir_light"]::before {
+                color: #9068b0;
+                content: '\E028'; 
+            }
+        
+            .fileicon[data-code="_elixir"]::before {
+                color: #a074c4;
+                content: '\E028'; 
+            }
+        
+            .fileicon[data-code="_elixir_script_light"]::before {
+                color: #9068b0;
+                content: '\E029'; 
+            }
+        
+            .fileicon[data-code="_elixir_script"]::before {
+                color: #a074c4;
+                content: '\E029'; 
+            }
+        
+            .fileicon[data-code="_elm_light"]::before {
+                color: #498ba7;
+                content: '\E02A'; 
+            }
+        
+            .fileicon[data-code="_elm"]::before {
+                color: #519aba;
+                content: '\E02A'; 
+            }
+        
+            .fileicon[data-code="_eslint_light"]::before {
+                color: #9068b0;
+                content: '\E02C'; 
+            }
+        
+            .fileicon[data-code="_eslint"]::before {
+                color: #a074c4;
+                content: '\E02C'; 
+            }
+        
+            .fileicon[data-code="_eslint_1_light"]::before {
+                color: #455155;
+                content: '\E02C'; 
+            }
+        
+            .fileicon[data-code="_eslint_1"]::before {
+                color: #4d5a5e;
+                content: '\E02C'; 
+            }
+        
+            .fileicon[data-code="_ethereum_light"]::before {
+                color: #498ba7;
+                content: '\E02D'; 
+            }
+        
+            .fileicon[data-code="_ethereum"]::before {
+                color: #519aba;
+                content: '\E02D'; 
+            }
+        
+            .fileicon[data-code="_f-sharp_light"]::before {
+                color: #498ba7;
+                content: '\E02E'; 
+            }
+        
+            .fileicon[data-code="_f-sharp"]::before {
+                color: #519aba;
+                content: '\E02E'; 
+            }
+        
+            .fileicon[data-code="_favicon_light"]::before {
+                color: #b7b73b;
+                content: '\E02F'; 
+            }
+        
+            .fileicon[data-code="_favicon"]::before {
+                color: #cbcb41;
+                content: '\E02F'; 
+            }
+        
+            .fileicon[data-code="_firebase_light"]::before {
+                color: #cc6d2e;
+                content: '\E030'; 
+            }
+        
+            .fileicon[data-code="_firebase"]::before {
+                color: #e37933;
+                content: '\E030'; 
+            }
+        
+            .fileicon[data-code="_firefox_light"]::before {
+                color: #cc6d2e;
+                content: '\E031'; 
+            }
+        
+            .fileicon[data-code="_firefox"]::before {
+                color: #e37933;
+                content: '\E031'; 
+            }
+        
+            .fileicon[data-code="_font_light"]::before {
+                color: #b8383d;
+                content: '\E033'; 
+            }
+        
+            .fileicon[data-code="_font"]::before {
+                color: #cc3e44;
+                content: '\E033'; 
+            }
+        
+            .fileicon[data-code="_git_light"]::before {
+                color: #3b4b52;
+                content: '\E034'; 
+            }
+        
+            .fileicon[data-code="_git"]::before {
+                color: #41535b;
+                content: '\E034'; 
+            }
+        
+            .fileicon[data-code="_github_light"]::before {
+                color: #bfc2c1;
+                content: '\E037'; 
+            }
+        
+            .fileicon[data-code="_github"]::before {
+                color: #d4d7d6;
+                content: '\E037'; 
+            }
+        
+            .fileicon[data-code="_gitlab_light"]::before {
+                color: #cc6d2e;
+                content: '\E038'; 
+            }
+        
+            .fileicon[data-code="_gitlab"]::before {
+                color: #e37933;
+                content: '\E038'; 
+            }
+        
+            .fileicon[data-code="_go_light"]::before {
+                color: #498ba7;
+                content: '\E039'; 
+            }
+        
+            .fileicon[data-code="_go"]::before {
+                color: #519aba;
+                content: '\E039'; 
+            }
+        
+            .fileicon[data-code="_go2_light"]::before {
+                color: #498ba7;
+                content: '\E03A'; 
+            }
+        
+            .fileicon[data-code="_go2"]::before {
+                color: #519aba;
+                content: '\E03A'; 
+            }
+        
+            .fileicon[data-code="_godot_light"]::before {
+                color: #498ba7;
+                content: '\E03B'; 
+            }
+        
+            .fileicon[data-code="_godot"]::before {
+                color: #519aba;
+                content: '\E03B'; 
+            }
+        
+            .fileicon[data-code="_godot_1_light"]::before {
+                color: #b8383d;
+                content: '\E03B'; 
+            }
+        
+            .fileicon[data-code="_godot_1"]::before {
+                color: #cc3e44;
+                content: '\E03B'; 
+            }
+        
+            .fileicon[data-code="_godot_2_light"]::before {
+                color: #b7b73b;
+                content: '\E03B'; 
+            }
+        
+            .fileicon[data-code="_godot_2"]::before {
+                color: #cbcb41;
+                content: '\E03B'; 
+            }
+        
+            .fileicon[data-code="_godot_3_light"]::before {
+                color: #9068b0;
+                content: '\E03B'; 
+            }
+        
+            .fileicon[data-code="_godot_3"]::before {
+                color: #a074c4;
+                content: '\E03B'; 
+            }
+        
+            .fileicon[data-code="_gradle_light"]::before {
+                color: #498ba7;
+                content: '\E03C'; 
+            }
+        
+            .fileicon[data-code="_gradle"]::before {
+                color: #519aba;
+                content: '\E03C'; 
+            }
+        
+            .fileicon[data-code="_grails_light"]::before {
+                color: #7fae42;
+                content: '\E03D'; 
+            }
+        
+            .fileicon[data-code="_grails"]::before {
+                color: #8dc149;
+                content: '\E03D'; 
+            }
+        
+            .fileicon[data-code="_graphql_light"]::before {
+                color: #dd4b78;
+                content: '\E03E'; 
+            }
+        
+            .fileicon[data-code="_graphql"]::before {
+                color: #f55385;
+                content: '\E03E'; 
+            }
+        
+            .fileicon[data-code="_grunt_light"]::before {
+                color: #cc6d2e;
+                content: '\E03F'; 
+            }
+        
+            .fileicon[data-code="_grunt"]::before {
+                color: #e37933;
+                content: '\E03F'; 
+            }
+        
+            .fileicon[data-code="_gulp_light"]::before {
+                color: #b8383d;
+                content: '\E040'; 
+            }
+        
+            .fileicon[data-code="_gulp"]::before {
+                color: #cc3e44;
+                content: '\E040'; 
+            }
+        
+            .fileicon[data-code="_hacklang_light"]::before {
+                color: #cc6d2e;
+                content: '\E041'; 
+            }
+        
+            .fileicon[data-code="_hacklang"]::before {
+                color: #e37933;
+                content: '\E041'; 
+            }
+        
+            .fileicon[data-code="_haml_light"]::before {
+                color: #b8383d;
+                content: '\E042'; 
+            }
+        
+            .fileicon[data-code="_haml"]::before {
+                color: #cc3e44;
+                content: '\E042'; 
+            }
+        
+            .fileicon[data-code="_happenings_light"]::before {
+                color: #498ba7;
+                content: '\E043'; 
+            }
+        
+            .fileicon[data-code="_happenings"]::before {
+                color: #519aba;
+                content: '\E043'; 
+            }
+        
+            .fileicon[data-code="_haskell_light"]::before {
+                color: #9068b0;
+                content: '\E044'; 
+            }
+        
+            .fileicon[data-code="_haskell"]::before {
+                color: #a074c4;
+                content: '\E044'; 
+            }
+        
+            .fileicon[data-code="_haxe_light"]::before {
+                color: #cc6d2e;
+                content: '\E045'; 
+            }
+        
+            .fileicon[data-code="_haxe"]::before {
+                color: #e37933;
+                content: '\E045'; 
+            }
+        
+            .fileicon[data-code="_haxe_1_light"]::before {
+                color: #b7b73b;
+                content: '\E045'; 
+            }
+        
+            .fileicon[data-code="_haxe_1"]::before {
+                color: #cbcb41;
+                content: '\E045'; 
+            }
+        
+            .fileicon[data-code="_haxe_2_light"]::before {
+                color: #498ba7;
+                content: '\E045'; 
+            }
+        
+            .fileicon[data-code="_haxe_2"]::before {
+                color: #519aba;
+                content: '\E045'; 
+            }
+        
+            .fileicon[data-code="_haxe_3_light"]::before {
+                color: #9068b0;
+                content: '\E045'; 
+            }
+        
+            .fileicon[data-code="_haxe_3"]::before {
+                color: #a074c4;
+                content: '\E045'; 
+            }
+        
+            .fileicon[data-code="_heroku_light"]::before {
+                color: #9068b0;
+                content: '\E046'; 
+            }
+        
+            .fileicon[data-code="_heroku"]::before {
+                color: #a074c4;
+                content: '\E046'; 
+            }
+        
+            .fileicon[data-code="_hex_light"]::before {
+                color: #b8383d;
+                content: '\E047'; 
+            }
+        
+            .fileicon[data-code="_hex"]::before {
+                color: #cc3e44;
+                content: '\E047'; 
+            }
+        
+            .fileicon[data-code="_html_light"]::before {
+                color: #498ba7;
+                content: '\E048'; 
+            }
+        
+            .fileicon[data-code="_html"]::before {
+                color: #519aba;
+                content: '\E048'; 
+            }
+        
+            .fileicon[data-code="_html_1_light"]::before {
+                color: #7fae42;
+                content: '\E048'; 
+            }
+        
+            .fileicon[data-code="_html_1"]::before {
+                color: #8dc149;
+                content: '\E048'; 
+            }
+        
+            .fileicon[data-code="_html_2_light"]::before {
+                color: #b7b73b;
+                content: '\E048'; 
+            }
+        
+            .fileicon[data-code="_html_2"]::before {
+                color: #cbcb41;
+                content: '\E048'; 
+            }
+        
+            .fileicon[data-code="_html_3_light"]::before {
+                color: #cc6d2e;
+                content: '\E048'; 
+            }
+        
+            .fileicon[data-code="_html_3"]::before {
+                color: #e37933;
+                content: '\E048'; 
+            }
+        
+            .fileicon[data-code="_html_erb_light"]::before {
+                color: #b8383d;
+                content: '\E049'; 
+            }
+        
+            .fileicon[data-code="_html_erb"]::before {
+                color: #cc3e44;
+                content: '\E049'; 
+            }
+        
+            .fileicon[data-code="_ignored_light"]::before {
+                color: #3b4b52;
+                content: '\E04A'; 
+            }
+        
+            .fileicon[data-code="_ignored"]::before {
+                color: #41535b;
+                content: '\E04A'; 
+            }
+        
+            .fileicon[data-code="_illustrator_light"]::before {
+                color: #b7b73b;
+                content: '\E04B'; 
+            }
+        
+            .fileicon[data-code="_illustrator"]::before {
+                color: #cbcb41;
+                content: '\E04B'; 
+            }
+        
+            .fileicon[data-code="_image_light"]::before {
+                color: #9068b0;
+                content: '\E04C'; 
+            }
+        
+            .fileicon[data-code="_image"]::before {
+                color: #a074c4;
+                content: '\E04C'; 
+            }
+        
+            .fileicon[data-code="_info_light"]::before {
+                color: #498ba7;
+                content: '\E04D'; 
+            }
+        
+            .fileicon[data-code="_info"]::before {
+                color: #519aba;
+                content: '\E04D'; 
+            }
+        
+            .fileicon[data-code="_ionic_light"]::before {
+                color: #498ba7;
+                content: '\E04E'; 
+            }
+        
+            .fileicon[data-code="_ionic"]::before {
+                color: #519aba;
+                content: '\E04E'; 
+            }
+        
+            .fileicon[data-code="_jade_light"]::before {
+                color: #b8383d;
+                content: '\E04F'; 
+            }
+        
+            .fileicon[data-code="_jade"]::before {
+                color: #cc3e44;
+                content: '\E04F'; 
+            }
+        
+            .fileicon[data-code="_java_light"]::before {
+                color: #b8383d;
+                content: '\E050'; 
+            }
+        
+            .fileicon[data-code="_java"]::before {
+                color: #cc3e44;
+                content: '\E050'; 
+            }
+        
+            .fileicon[data-code="_java_1_light"]::before {
+                color: #498ba7;
+                content: '\E050'; 
+            }
+        
+            .fileicon[data-code="_java_1"]::before {
+                color: #519aba;
+                content: '\E050'; 
+            }
+        
+            .fileicon[data-code="_javascript_light"]::before {
+                color: #b7b73b;
+                content: '\E051'; 
+            }
+        
+            .fileicon[data-code="_javascript"]::before {
+                color: #cbcb41;
+                content: '\E051'; 
+            }
+        
+            .fileicon[data-code="_javascript_1_light"]::before {
+                color: #cc6d2e;
+                content: '\E051'; 
+            }
+        
+            .fileicon[data-code="_javascript_1"]::before {
+                color: #e37933;
+                content: '\E051'; 
+            }
+        
+            .fileicon[data-code="_javascript_2_light"]::before {
+                color: #498ba7;
+                content: '\E051'; 
+            }
+        
+            .fileicon[data-code="_javascript_2"]::before {
+                color: #519aba;
+                content: '\E051'; 
+            }
+        
+            .fileicon[data-code="_jenkins_light"]::before {
+                color: #b8383d;
+                content: '\E052'; 
+            }
+        
+            .fileicon[data-code="_jenkins"]::before {
+                color: #cc3e44;
+                content: '\E052'; 
+            }
+        
+            .fileicon[data-code="_jinja_light"]::before {
+                color: #b8383d;
+                content: '\E053'; 
+            }
+        
+            .fileicon[data-code="_jinja"]::before {
+                color: #cc3e44;
+                content: '\E053'; 
+            }
+        
+            .fileicon[data-code="_json_light"]::before {
+                color: #b7b73b;
+                content: '\E055'; 
+            }
+        
+            .fileicon[data-code="_json"]::before {
+                color: #cbcb41;
+                content: '\E055'; 
+            }
+        
+            .fileicon[data-code="_json_1_light"]::before {
+                color: #7fae42;
+                content: '\E055'; 
+            }
+        
+            .fileicon[data-code="_json_1"]::before {
+                color: #8dc149;
+                content: '\E055'; 
+            }
+        
+            .fileicon[data-code="_julia_light"]::before {
+                color: #9068b0;
+                content: '\E056'; 
+            }
+        
+            .fileicon[data-code="_julia"]::before {
+                color: #a074c4;
+                content: '\E056'; 
+            }
+        
+            .fileicon[data-code="_karma_light"]::before {
+                color: #7fae42;
+                content: '\E057'; 
+            }
+        
+            .fileicon[data-code="_karma"]::before {
+                color: #8dc149;
+                content: '\E057'; 
+            }
+        
+            .fileicon[data-code="_kotlin_light"]::before {
+                color: #cc6d2e;
+                content: '\E058'; 
+            }
+        
+            .fileicon[data-code="_kotlin"]::before {
+                color: #e37933;
+                content: '\E058'; 
+            }
+        
+            .fileicon[data-code="_less_light"]::before {
+                color: #498ba7;
+                content: '\E059'; 
+            }
+        
+            .fileicon[data-code="_less"]::before {
+                color: #519aba;
+                content: '\E059'; 
+            }
+        
+            .fileicon[data-code="_license_light"]::before {
+                color: #b7b73b;
+                content: '\E05A'; 
+            }
+        
+            .fileicon[data-code="_license"]::before {
+                color: #cbcb41;
+                content: '\E05A'; 
+            }
+        
+            .fileicon[data-code="_license_1_light"]::before {
+                color: #cc6d2e;
+                content: '\E05A'; 
+            }
+        
+            .fileicon[data-code="_license_1"]::before {
+                color: #e37933;
+                content: '\E05A'; 
+            }
+        
+            .fileicon[data-code="_license_2_light"]::before {
+                color: #b8383d;
+                content: '\E05A'; 
+            }
+        
+            .fileicon[data-code="_license_2"]::before {
+                color: #cc3e44;
+                content: '\E05A'; 
+            }
+        
+            .fileicon[data-code="_liquid_light"]::before {
+                color: #7fae42;
+                content: '\E05B'; 
+            }
+        
+            .fileicon[data-code="_liquid"]::before {
+                color: #8dc149;
+                content: '\E05B'; 
+            }
+        
+            .fileicon[data-code="_livescript_light"]::before {
+                color: #498ba7;
+                content: '\E05C'; 
+            }
+        
+            .fileicon[data-code="_livescript"]::before {
+                color: #519aba;
+                content: '\E05C'; 
+            }
+        
+            .fileicon[data-code="_lock_light"]::before {
+                color: #7fae42;
+                content: '\E05D'; 
+            }
+        
+            .fileicon[data-code="_lock"]::before {
+                color: #8dc149;
+                content: '\E05D'; 
+            }
+        
+            .fileicon[data-code="_lua_light"]::before {
+                color: #498ba7;
+                content: '\E05E'; 
+            }
+        
+            .fileicon[data-code="_lua"]::before {
+                color: #519aba;
+                content: '\E05E'; 
+            }
+        
+            .fileicon[data-code="_makefile_light"]::before {
+                color: #cc6d2e;
+                content: '\E05F'; 
+            }
+        
+            .fileicon[data-code="_makefile"]::before {
+                color: #e37933;
+                content: '\E05F'; 
+            }
+        
+            .fileicon[data-code="_makefile_1_light"]::before {
+                color: #9068b0;
+                content: '\E05F'; 
+            }
+        
+            .fileicon[data-code="_makefile_1"]::before {
+                color: #a074c4;
+                content: '\E05F'; 
+            }
+        
+            .fileicon[data-code="_makefile_2_light"]::before {
+                color: #627379;
+                content: '\E05F'; 
+            }
+        
+            .fileicon[data-code="_makefile_2"]::before {
+                color: #6d8086;
+                content: '\E05F'; 
+            }
+        
+            .fileicon[data-code="_makefile_3_light"]::before {
+                color: #498ba7;
+                content: '\E05F'; 
+            }
+        
+            .fileicon[data-code="_makefile_3"]::before {
+                color: #519aba;
+                content: '\E05F'; 
+            }
+        
+            .fileicon[data-code="_markdown_light"]::before {
+                color: #498ba7;
+                content: '\E060'; 
+            }
+        
+            .fileicon[data-code="_markdown"]::before {
+                color: #519aba;
+                content: '\E060'; 
+            }
+        
+            .fileicon[data-code="_maven_light"]::before {
+                color: #b8383d;
+                content: '\E061'; 
+            }
+        
+            .fileicon[data-code="_maven"]::before {
+                color: #cc3e44;
+                content: '\E061'; 
+            }
+        
+            .fileicon[data-code="_mdo_light"]::before {
+                color: #b8383d;
+                content: '\E062'; 
+            }
+        
+            .fileicon[data-code="_mdo"]::before {
+                color: #cc3e44;
+                content: '\E062'; 
+            }
+        
+            .fileicon[data-code="_mustache_light"]::before {
+                color: #cc6d2e;
+                content: '\E063'; 
+            }
+        
+            .fileicon[data-code="_mustache"]::before {
+                color: #e37933;
+                content: '\E063'; 
+            }
+        
+            .fileicon[data-code="_nim_light"]::before {
+                color: #b7b73b;
+                content: '\E065'; 
+            }
+        
+            .fileicon[data-code="_nim"]::before {
+                color: #cbcb41;
+                content: '\E065'; 
+            }
+        
+            .fileicon[data-code="_notebook_light"]::before {
+                color: #498ba7;
+                content: '\E066'; 
+            }
+        
+            .fileicon[data-code="_notebook"]::before {
+                color: #519aba;
+                content: '\E066'; 
+            }
+        
+            .fileicon[data-code="_npm_light"]::before {
+                color: #3b4b52;
+                content: '\E067'; 
+            }
+        
+            .fileicon[data-code="_npm"]::before {
+                color: #41535b;
+                content: '\E067'; 
+            }
+        
+            .fileicon[data-code="_npm_1_light"]::before {
+                color: #b8383d;
+                content: '\E067'; 
+            }
+        
+            .fileicon[data-code="_npm_1"]::before {
+                color: #cc3e44;
+                content: '\E067'; 
+            }
+        
+            .fileicon[data-code="_npm_ignored_light"]::before {
+                color: #3b4b52;
+                content: '\E068'; 
+            }
+        
+            .fileicon[data-code="_npm_ignored"]::before {
+                color: #41535b;
+                content: '\E068'; 
+            }
+        
+            .fileicon[data-code="_nunjucks_light"]::before {
+                color: #7fae42;
+                content: '\E069'; 
+            }
+        
+            .fileicon[data-code="_nunjucks"]::before {
+                color: #8dc149;
+                content: '\E069'; 
+            }
+        
+            .fileicon[data-code="_ocaml_light"]::before {
+                color: #cc6d2e;
+                content: '\E06A'; 
+            }
+        
+            .fileicon[data-code="_ocaml"]::before {
+                color: #e37933;
+                content: '\E06A'; 
+            }
+        
+            .fileicon[data-code="_odata_light"]::before {
+                color: #cc6d2e;
+                content: '\E06B'; 
+            }
+        
+            .fileicon[data-code="_odata"]::before {
+                color: #e37933;
+                content: '\E06B'; 
+            }
+        
+            .fileicon[data-code="_pddl_light"]::before {
+                color: #9068b0;
+                content: '\E06C'; 
+            }
+        
+            .fileicon[data-code="_pddl"]::before {
+                color: #a074c4;
+                content: '\E06C'; 
+            }
+        
+            .fileicon[data-code="_pdf_light"]::before {
+                color: #b8383d;
+                content: '\E06D'; 
+            }
+        
+            .fileicon[data-code="_pdf"]::before {
+                color: #cc3e44;
+                content: '\E06D'; 
+            }
+        
+            .fileicon[data-code="_perl_light"]::before {
+                color: #498ba7;
+                content: '\E06E'; 
+            }
+        
+            .fileicon[data-code="_perl"]::before {
+                color: #519aba;
+                content: '\E06E'; 
+            }
+        
+            .fileicon[data-code="_photoshop_light"]::before {
+                color: #498ba7;
+                content: '\E06F'; 
+            }
+        
+            .fileicon[data-code="_photoshop"]::before {
+                color: #519aba;
+                content: '\E06F'; 
+            }
+        
+            .fileicon[data-code="_php_light"]::before {
+                color: #9068b0;
+                content: '\E070'; 
+            }
+        
+            .fileicon[data-code="_php"]::before {
+                color: #a074c4;
+                content: '\E070'; 
+            }
+        
+            .fileicon[data-code="_pipeline_light"]::before {
+                color: #cc6d2e;
+                content: '\E071'; 
+            }
+        
+            .fileicon[data-code="_pipeline"]::before {
+                color: #e37933;
+                content: '\E071'; 
+            }
+        
+            .fileicon[data-code="_plan_light"]::before {
+                color: #7fae42;
+                content: '\E072'; 
+            }
+        
+            .fileicon[data-code="_plan"]::before {
+                color: #8dc149;
+                content: '\E072'; 
+            }
+        
+            .fileicon[data-code="_platformio_light"]::before {
+                color: #cc6d2e;
+                content: '\E073'; 
+            }
+        
+            .fileicon[data-code="_platformio"]::before {
+                color: #e37933;
+                content: '\E073'; 
+            }
+        
+            .fileicon[data-code="_powershell_light"]::before {
+                color: #498ba7;
+                content: '\E074'; 
+            }
+        
+            .fileicon[data-code="_powershell"]::before {
+                color: #519aba;
+                content: '\E074'; 
+            }
+        
+            .fileicon[data-code="_prisma_light"]::before {
+                color: #498ba7;
+                content: '\E075'; 
+            }
+        
+            .fileicon[data-code="_prisma"]::before {
+                color: #519aba;
+                content: '\E075'; 
+            }
+        
+            .fileicon[data-code="_prolog_light"]::before {
+                color: #cc6d2e;
+                content: '\E077'; 
+            }
+        
+            .fileicon[data-code="_prolog"]::before {
+                color: #e37933;
+                content: '\E077'; 
+            }
+        
+            .fileicon[data-code="_pug_light"]::before {
+                color: #b8383d;
+                content: '\E078'; 
+            }
+        
+            .fileicon[data-code="_pug"]::before {
+                color: #cc3e44;
+                content: '\E078'; 
+            }
+        
+            .fileicon[data-code="_puppet_light"]::before {
+                color: #b7b73b;
+                content: '\E079'; 
+            }
+        
+            .fileicon[data-code="_puppet"]::before {
+                color: #cbcb41;
+                content: '\E079'; 
+            }
+        
+            .fileicon[data-code="_purescript_light"]::before {
+                color: #bfc2c1;
+                content: '\E07A'; 
+            }
+        
+            .fileicon[data-code="_purescript"]::before {
+                color: #d4d7d6;
+                content: '\E07A'; 
+            }
+        
+            .fileicon[data-code="_python_light"]::before {
+                color: #498ba7;
+                content: '\E07B'; 
+            }
+        
+            .fileicon[data-code="_python"]::before {
+                color: #519aba;
+                content: '\E07B'; 
+            }
+        
+            .fileicon[data-code="_react_light"]::before {
+                color: #498ba7;
+                content: '\E07D'; 
+            }
+        
+            .fileicon[data-code="_react"]::before {
+                color: #519aba;
+                content: '\E07D'; 
+            }
+        
+            .fileicon[data-code="_react_1_light"]::before {
+                color: #cc6d2e;
+                content: '\E07D'; 
+            }
+        
+            .fileicon[data-code="_react_1"]::before {
+                color: #e37933;
+                content: '\E07D'; 
+            }
+        
+            .fileicon[data-code="_reasonml_light"]::before {
+                color: #b8383d;
+                content: '\E07E'; 
+            }
+        
+            .fileicon[data-code="_reasonml"]::before {
+                color: #cc3e44;
+                content: '\E07E'; 
+            }
+        
+            .fileicon[data-code="_rescript_light"]::before {
+                color: #b8383d;
+                content: '\E07F'; 
+            }
+        
+            .fileicon[data-code="_rescript"]::before {
+                color: #cc3e44;
+                content: '\E07F'; 
+            }
+        
+            .fileicon[data-code="_rescript_1_light"]::before {
+                color: #dd4b78;
+                content: '\E07F'; 
+            }
+        
+            .fileicon[data-code="_rescript_1"]::before {
+                color: #f55385;
+                content: '\E07F'; 
+            }
+        
+            .fileicon[data-code="_rollup_light"]::before {
+                color: #b8383d;
+                content: '\E080'; 
+            }
+        
+            .fileicon[data-code="_rollup"]::before {
+                color: #cc3e44;
+                content: '\E080'; 
+            }
+        
+            .fileicon[data-code="_ruby_light"]::before {
+                color: #b8383d;
+                content: '\E081'; 
+            }
+        
+            .fileicon[data-code="_ruby"]::before {
+                color: #cc3e44;
+                content: '\E081'; 
+            }
+        
+            .fileicon[data-code="_rust_light"]::before {
+                color: #627379;
+                content: '\E082'; 
+            }
+        
+            .fileicon[data-code="_rust"]::before {
+                color: #6d8086;
+                content: '\E082'; 
+            }
+        
+            .fileicon[data-code="_salesforce_light"]::before {
+                color: #498ba7;
+                content: '\E083'; 
+            }
+        
+            .fileicon[data-code="_salesforce"]::before {
+                color: #519aba;
+                content: '\E083'; 
+            }
+        
+            .fileicon[data-code="_sass_light"]::before {
+                color: #dd4b78;
+                content: '\E084'; 
+            }
+        
+            .fileicon[data-code="_sass"]::before {
+                color: #f55385;
+                content: '\E084'; 
+            }
+        
+            .fileicon[data-code="_sbt_light"]::before {
+                color: #498ba7;
+                content: '\E085'; 
+            }
+        
+            .fileicon[data-code="_sbt"]::before {
+                color: #519aba;
+                content: '\E085'; 
+            }
+        
+            .fileicon[data-code="_scala_light"]::before {
+                color: #b8383d;
+                content: '\E086'; 
+            }
+        
+            .fileicon[data-code="_scala"]::before {
+                color: #cc3e44;
+                content: '\E086'; 
+            }
+        
+            .fileicon[data-code="_shell_light"]::before {
+                color: #7fae42;
+                content: '\E089'; 
+            }
+        
+            .fileicon[data-code="_shell"]::before {
+                color: #8dc149;
+                content: '\E089'; 
+            }
+        
+            .fileicon[data-code="_slim_light"]::before {
+                color: #cc6d2e;
+                content: '\E08A'; 
+            }
+        
+            .fileicon[data-code="_slim"]::before {
+                color: #e37933;
+                content: '\E08A'; 
+            }
+        
+            .fileicon[data-code="_smarty_light"]::before {
+                color: #b7b73b;
+                content: '\E08B'; 
+            }
+        
+            .fileicon[data-code="_smarty"]::before {
+                color: #cbcb41;
+                content: '\E08B'; 
+            }
+        
+            .fileicon[data-code="_spring_light"]::before {
+                color: #7fae42;
+                content: '\E08C'; 
+            }
+        
+            .fileicon[data-code="_spring"]::before {
+                color: #8dc149;
+                content: '\E08C'; 
+            }
+        
+            .fileicon[data-code="_stylelint_light"]::before {
+                color: #bfc2c1;
+                content: '\E08D'; 
+            }
+        
+            .fileicon[data-code="_stylelint"]::before {
+                color: #d4d7d6;
+                content: '\E08D'; 
+            }
+        
+            .fileicon[data-code="_stylelint_1_light"]::before {
+                color: #455155;
+                content: '\E08D'; 
+            }
+        
+            .fileicon[data-code="_stylelint_1"]::before {
+                color: #4d5a5e;
+                content: '\E08D'; 
+            }
+        
+            .fileicon[data-code="_stylus_light"]::before {
+                color: #7fae42;
+                content: '\E08E'; 
+            }
+        
+            .fileicon[data-code="_stylus"]::before {
+                color: #8dc149;
+                content: '\E08E'; 
+            }
+        
+            .fileicon[data-code="_sublime_light"]::before {
+                color: #cc6d2e;
+                content: '\E08F'; 
+            }
+        
+            .fileicon[data-code="_sublime"]::before {
+                color: #e37933;
+                content: '\E08F'; 
+            }
+        
+            .fileicon[data-code="_svelte_light"]::before {
+                color: #b8383d;
+                content: '\E090'; 
+            }
+        
+            .fileicon[data-code="_svelte"]::before {
+                color: #cc3e44;
+                content: '\E090'; 
+            }
+        
+            .fileicon[data-code="_svg_light"]::before {
+                color: #9068b0;
+                content: '\E091'; 
+            }
+        
+            .fileicon[data-code="_svg"]::before {
+                color: #a074c4;
+                content: '\E091'; 
+            }
+        
+            .fileicon[data-code="_svg_1_light"]::before {
+                color: #498ba7;
+                content: '\E091'; 
+            }
+        
+            .fileicon[data-code="_svg_1"]::before {
+                color: #519aba;
+                content: '\E091'; 
+            }
+        
+            .fileicon[data-code="_swift_light"]::before {
+                color: #cc6d2e;
+                content: '\E092'; 
+            }
+        
+            .fileicon[data-code="_swift"]::before {
+                color: #e37933;
+                content: '\E092'; 
+            }
+        
+            .fileicon[data-code="_terraform_light"]::before {
+                color: #9068b0;
+                content: '\E093'; 
+            }
+        
+            .fileicon[data-code="_terraform"]::before {
+                color: #a074c4;
+                content: '\E093'; 
+            }
+        
+            .fileicon[data-code="_tex_light"]::before {
+                color: #498ba7;
+                content: '\E094'; 
+            }
+        
+            .fileicon[data-code="_tex"]::before {
+                color: #519aba;
+                content: '\E094'; 
+            }
+        
+            .fileicon[data-code="_tex_1_light"]::before {
+                color: #b7b73b;
+                content: '\E094'; 
+            }
+        
+            .fileicon[data-code="_tex_1"]::before {
+                color: #cbcb41;
+                content: '\E094'; 
+            }
+        
+            .fileicon[data-code="_tex_2_light"]::before {
+                color: #cc6d2e;
+                content: '\E094'; 
+            }
+        
+            .fileicon[data-code="_tex_2"]::before {
+                color: #e37933;
+                content: '\E094'; 
+            }
+        
+            .fileicon[data-code="_tex_3_light"]::before {
+                color: #bfc2c1;
+                content: '\E094'; 
+            }
+        
+            .fileicon[data-code="_tex_3"]::before {
+                color: #d4d7d6;
+                content: '\E094'; 
+            }
+        
+            .fileicon[data-code="_todo"]::before {
+                color: undefined;
+                content: '\E096'; 
+            }
+        
+            .fileicon[data-code="_tsconfig_light"]::before {
+                color: #498ba7;
+                content: '\E097'; 
+            }
+        
+            .fileicon[data-code="_tsconfig"]::before {
+                color: #519aba;
+                content: '\E097'; 
+            }
+        
+            .fileicon[data-code="_twig_light"]::before {
+                color: #7fae42;
+                content: '\E098'; 
+            }
+        
+            .fileicon[data-code="_twig"]::before {
+                color: #8dc149;
+                content: '\E098'; 
+            }
+        
+            .fileicon[data-code="_typescript_light"]::before {
+                color: #498ba7;
+                content: '\E099'; 
+            }
+        
+            .fileicon[data-code="_typescript"]::before {
+                color: #519aba;
+                content: '\E099'; 
+            }
+        
+            .fileicon[data-code="_typescript_1_light"]::before {
+                color: #cc6d2e;
+                content: '\E099'; 
+            }
+        
+            .fileicon[data-code="_typescript_1"]::before {
+                color: #e37933;
+                content: '\E099'; 
+            }
+        
+            .fileicon[data-code="_vala_light"]::before {
+                color: #627379;
+                content: '\E09A'; 
+            }
+        
+            .fileicon[data-code="_vala"]::before {
+                color: #6d8086;
+                content: '\E09A'; 
+            }
+        
+            .fileicon[data-code="_video_light"]::before {
+                color: #dd4b78;
+                content: '\E09B'; 
+            }
+        
+            .fileicon[data-code="_video"]::before {
+                color: #f55385;
+                content: '\E09B'; 
+            }
+        
+            .fileicon[data-code="_vite_light"]::before {
+                color: #b7b73b;
+                content: '\E09C'; 
+            }
+        
+            .fileicon[data-code="_vite"]::before {
+                color: #cbcb41;
+                content: '\E09C'; 
+            }
+        
+            .fileicon[data-code="_vue_light"]::before {
+                color: #7fae42;
+                content: '\E09D'; 
+            }
+        
+            .fileicon[data-code="_vue"]::before {
+                color: #8dc149;
+                content: '\E09D'; 
+            }
+        
+            .fileicon[data-code="_wasm_light"]::before {
+                color: #9068b0;
+                content: '\E09E'; 
+            }
+        
+            .fileicon[data-code="_wasm"]::before {
+                color: #a074c4;
+                content: '\E09E'; 
+            }
+        
+            .fileicon[data-code="_wat_light"]::before {
+                color: #9068b0;
+                content: '\E09F'; 
+            }
+        
+            .fileicon[data-code="_wat"]::before {
+                color: #a074c4;
+                content: '\E09F'; 
+            }
+        
+            .fileicon[data-code="_webpack_light"]::before {
+                color: #498ba7;
+                content: '\E0A0'; 
+            }
+        
+            .fileicon[data-code="_webpack"]::before {
+                color: #519aba;
+                content: '\E0A0'; 
+            }
+        
+            .fileicon[data-code="_wgt_light"]::before {
+                color: #498ba7;
+                content: '\E0A1'; 
+            }
+        
+            .fileicon[data-code="_wgt"]::before {
+                color: #519aba;
+                content: '\E0A1'; 
+            }
+        
+            .fileicon[data-code="_windows_light"]::before {
+                color: #498ba7;
+                content: '\E0A2'; 
+            }
+        
+            .fileicon[data-code="_windows"]::before {
+                color: #519aba;
+                content: '\E0A2'; 
+            }
+        
+            .fileicon[data-code="_word_light"]::before {
+                color: #498ba7;
+                content: '\E0A3'; 
+            }
+        
+            .fileicon[data-code="_word"]::before {
+                color: #519aba;
+                content: '\E0A3'; 
+            }
+        
+            .fileicon[data-code="_xls_light"]::before {
+                color: #7fae42;
+                content: '\E0A4'; 
+            }
+        
+            .fileicon[data-code="_xls"]::before {
+                color: #8dc149;
+                content: '\E0A4'; 
+            }
+        
+            .fileicon[data-code="_xml_light"]::before {
+                color: #cc6d2e;
+                content: '\E0A5'; 
+            }
+        
+            .fileicon[data-code="_xml"]::before {
+                color: #e37933;
+                content: '\E0A5'; 
+            }
+        
+            .fileicon[data-code="_yarn_light"]::before {
+                color: #498ba7;
+                content: '\E0A6'; 
+            }
+        
+            .fileicon[data-code="_yarn"]::before {
+                color: #519aba;
+                content: '\E0A6'; 
+            }
+        
+            .fileicon[data-code="_yml_light"]::before {
+                color: #9068b0;
+                content: '\E0A7'; 
+            }
+        
+            .fileicon[data-code="_yml"]::before {
+                color: #a074c4;
+                content: '\E0A7'; 
+            }
+        
+            .fileicon[data-code="_zig_light"]::before {
+                color: #cc6d2e;
+                content: '\E0A8'; 
+            }
+        
+            .fileicon[data-code="_zig"]::before {
+                color: #e37933;
+                content: '\E0A8'; 
+            }
+        
+            .fileicon[data-code="_zip_light"]::before {
+                color: #b8383d;
+                content: '\E0A9'; 
+            }
+        
+            .fileicon[data-code="_zip"]::before {
+                color: #cc3e44;
+                content: '\E0A9'; 
+            }
+        
+            .fileicon[data-code="_zip_1_light"]::before {
+                color: #627379;
+                content: '\E0A9'; 
+            }
+        
+            .fileicon[data-code="_zip_1"]::before {
+                color: #6d8086;
+                content: '\E0A9'; 
+            }
+        

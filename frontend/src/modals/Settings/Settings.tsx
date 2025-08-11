@@ -1,17 +1,26 @@
 import React, { useState, useContext } from "react"
-import { Modal, ModalButtonID } from '../../ui/components'
+import { Modal, ModalButtonID, Select } from '../../ui/components'
 import classNames from "classnames"
 import { useSubscribe } from '../../hooks'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
 import { createURI } from '../../../../src/utils/URI'
-import { mergeRight } from 'ramda'
+import { mergeRight, omit } from 'ramda'
 import { LocalFileSystemID, AppSettings } from '../../../../src/types'
 import styles from './Settings.less'
 
 export const themes = ['black', 'blue', 'green', 'pink']
 
+const fileIconThemes = [
+    { value: '', label: 'None' },
+    { value: 'seti', label: 'Seti (Visual Studio Code)' },
+    { value: 'material', label: 'Material Icon Theme' },
+    { value: 'vsicons', label: 'VSCode Icons' },
+    { value: 'ayu', label: 'Ayu' },
+    { value: 'vscodegreat', label: 'VSCode Great Icons' },
+    { value: 'nomo', label: 'Nomo Dark' }
+]
 
 const buttons = [
     {
@@ -30,6 +39,7 @@ export default function Settings() {
     const [shown, show] = useState(false)
     const [mode, setMode] = useState<AppSettings['mode']>(appSettings.mode)
     const [theme, setTheme] = useState(appSettings.theme)
+    const [fileTheme, setFileTheme] = useState(appSettings.fileTheme ?? '')
     const [timeFmt, setTimeFmt] = useState(appSettings.timeFmt)
     const [sizeFmt, setSizeFmt] = useState(appSettings.sizeFmt)
 
@@ -47,9 +57,10 @@ export default function Settings() {
     const onClose = (id: ModalButtonID) => {
         show(false)
         if (id == ModalButtonID.Ok) {
+            const settings = omit(['fileIcons'], appSettings) 
             window.f5.write(
-                createURI(LocalFileSystemID, appSettings.settings),
-                JSON.stringify( mergeRight(appSettings, { mode, theme, timeFmt, sizeFmt }) )
+                createURI(LocalFileSystemID, settings.settings),
+                JSON.stringify( mergeRight(settings, { mode, theme, fileTheme, timeFmt, sizeFmt }) )
             )
         }
     }
@@ -74,6 +85,9 @@ export default function Settings() {
                     ></span>
                 )}
             </div>
+
+            <label>File Icon Theme:</label>
+            <Select value={fileTheme} options={fileIconThemes} onChange={setFileTheme} />
 
             <label>Date/time format:</label>
             <input className={classNames('dry')} 

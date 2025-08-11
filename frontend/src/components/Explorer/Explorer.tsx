@@ -288,7 +288,11 @@ export default function Explorer ({
                     const i = files.findIndex(({path}) => path == dir)
                     return i >= 0 ? insertAll(i+1, sortFiles(filterFiles(folders.current[dir as string], filterPredicate), columns), files) : files
                 }, sortFiles(filterFiles(folders.current[root] ?? [], filterPredicate), columns)),
-                appSettings.fileIcons ? map(f => ({...f, icon: fileicon(appSettings.fileIcons, f.path, f.dir)})) : identity,
+                appSettings.fileIcons ? 
+                    map(f => ({
+                        ...f, 
+                        icon: fileicon(appSettings.fileIcons, f.path, f.dir ? expanded.current.includes(f.path) : null)
+                    })) : identity,
                 toColumns(columns, formatters),
             )(folders.current)
         )
@@ -491,6 +495,12 @@ export default function Explorer ({
         } else {
             expanded.current.push(dir)
             watch(onlyVisible(expanded.current.filter(descendantOf(dir))))            
+        }
+        if (appSettings.fileIcons) {
+            setFiles(files => files.map(f => ({
+                ...f,
+                icon: fileicon(appSettings.fileIcons, f.path, f.dir ? expanded.current.includes(f.path) : null)
+            })))
         }
     }
 

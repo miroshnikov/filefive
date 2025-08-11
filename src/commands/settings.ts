@@ -18,20 +18,23 @@ export default async function (path: string): Promise<AppSettings> {
         config = JSON.parse( await read(path) )
     } catch (e) {}
 
-    return {
+    const settings: AppSettings = {
         home: homedir(),
         settings: join(homedir(), '.f5', 'settings.json'),
         connections: join(homedir(), '.f5', 'connections'),
         keybindings,
         mode: config?.mode ?? 'system',
         theme: config?.theme ?? 'black',
+        fileTheme: config?.fileTheme ?? '',
         timeFmt: config?.timeFmt ?? 'yyyy-MM-dd HH:mm',
         sizeFmt: config?.sizeFmt ?? '0.0 b',
         local: explorerSettings(LOCAL_ATTRIBUTES, config?.local), 
         remote: explorerSettings(LOCAL_ATTRIBUTES, config?.remote),
         path: config?.path ?? { local: homedir(), remote: homedir() },
-        sync: config?.sync ?? null,
-        // fileTheme: 'seti',
-        // fileIcons: { languages, ...(await loadFileIcons('seti')).default }
+        sync: config?.sync ?? null
     }
+    if (settings.fileTheme) {
+        settings.fileIcons = { languages, ...(await loadFileIcons(settings.fileTheme)).default }
+    }
+    return settings
 }

@@ -94,8 +94,13 @@
                             // > .icon + span {
                             //     padding-left: .3em;
                             // }
-                            > .fileicon::before {
-                                font-size: 1.2rem;
+                            > .fileicon {
+                                opacity: .8;
+                                width: 1.1rem;
+                                height: 1.1rem;
+                                &::before {
+                                    font-size: 1.1rem;
+                                }
                             }
                             > span {
                                 white-space: nowrap;

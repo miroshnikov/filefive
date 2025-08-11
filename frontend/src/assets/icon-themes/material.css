@@ -1,0 +1,3385 @@
+.fileicon {
+            background: no-repeat center / contain;
+        }
+        .fileicon[data-code="git"] {
+                    background-image: url('material/git.svg')
+                }
+                .fileicon[data-code="github-actions-workflow"] {
+                    background-image: url('material/github-actions-workflow.svg')
+                }
+                .fileicon[data-code="yaml"] {
+                    background-image: url('material/yaml.svg')
+                }
+                .fileicon[data-code="xml"] {
+                    background-image: url('material/xml.svg')
+                }
+                .fileicon[data-code="matlab"] {
+                    background-image: url('material/matlab.svg')
+                }
+                .fileicon[data-code="settings"] {
+                    background-image: url('material/settings.svg')
+                }
+                .fileicon[data-code="toml"] {
+                    background-image: url('material/toml.svg')
+                }
+                .fileicon[data-code="toml_light"] {
+                    background-image: url('material/toml_light.svg')
+                }
+                .fileicon[data-code="diff"] {
+                    background-image: url('material/diff.svg')
+                }
+                .fileicon[data-code="json"] {
+                    background-image: url('material/json.svg')
+                }
+                .fileicon[data-code="blink"] {
+                    background-image: url('material/blink.svg')
+                }
+                .fileicon[data-code="java"] {
+                    background-image: url('material/java.svg')
+                }
+                .fileicon[data-code="razor"] {
+                    background-image: url('material/razor.svg')
+                }
+                .fileicon[data-code="python"] {
+                    background-image: url('material/python.svg')
+                }
+                .fileicon[data-code="mojo"] {
+                    background-image: url('material/mojo.svg')
+                }
+                .fileicon[data-code="javascript"] {
+                    background-image: url('material/javascript.svg')
+                }
+                .fileicon[data-code="typescript"] {
+                    background-image: url('material/typescript.svg')
+                }
+                .fileicon[data-code="scala"] {
+                    background-image: url('material/scala.svg')
+                }
+                .fileicon[data-code="handlebars"] {
+                    background-image: url('material/handlebars.svg')
+                }
+                .fileicon[data-code="perl"] {
+                    background-image: url('material/perl.svg')
+                }
+                .fileicon[data-code="haxe"] {
+                    background-image: url('material/haxe.svg')
+                }
+                .fileicon[data-code="puppet"] {
+                    background-image: url('material/puppet.svg')
+                }
+                .fileicon[data-code="elixir"] {
+                    background-image: url('material/elixir.svg')
+                }
+                .fileicon[data-code="livescript"] {
+                    background-image: url('material/livescript.svg')
+                }
+                .fileicon[data-code="erlang"] {
+                    background-image: url('material/erlang.svg')
+                }
+                .fileicon[data-code="twig"] {
+                    background-image: url('material/twig.svg')
+                }
+                .fileicon[data-code="julia"] {
+                    background-image: url('material/julia.svg')
+                }
+                .fileicon[data-code="elm"] {
+                    background-image: url('material/elm.svg')
+                }
+                .fileicon[data-code="purescript"] {
+                    background-image: url('material/purescript.svg')
+                }
+                .fileicon[data-code="stylus"] {
+                    background-image: url('material/stylus.svg')
+                }
+                .fileicon[data-code="nunjucks"] {
+                    background-image: url('material/nunjucks.svg')
+                }
+                .fileicon[data-code="pug"] {
+                    background-image: url('material/pug.svg')
+                }
+                .fileicon[data-code="robot"] {
+                    background-image: url('material/robot.svg')
+                }
+                .fileicon[data-code="sass"] {
+                    background-image: url('material/sass.svg')
+                }
+                .fileicon[data-code="less"] {
+                    background-image: url('material/less.svg')
+                }
+                .fileicon[data-code="css"] {
+                    background-image: url('material/css.svg')
+                }
+                .fileicon[data-code="visualstudio"] {
+                    background-image: url('material/visualstudio.svg')
+                }
+                .fileicon[data-code="angular"] {
+                    background-image: url('material/angular.svg')
+                }
+                .fileicon[data-code="graphql"] {
+                    background-image: url('material/graphql.svg')
+                }
+                .fileicon[data-code="solidity"] {
+                    background-image: url('material/solidity.svg')
+                }
+                .fileicon[data-code="autoit"] {
+                    background-image: url('material/autoit.svg')
+                }
+                .fileicon[data-code="haml"] {
+                    background-image: url('material/haml.svg')
+                }
+                .fileicon[data-code="yang"] {
+                    background-image: url('material/yang.svg')
+                }
+                .fileicon[data-code="terraform"] {
+                    background-image: url('material/terraform.svg')
+                }
+                .fileicon[data-code="applescript"] {
+                    background-image: url('material/applescript.svg')
+                }
+                .fileicon[data-code="cake"] {
+                    background-image: url('material/cake.svg')
+                }
+                .fileicon[data-code="cucumber"] {
+                    background-image: url('material/cucumber.svg')
+                }
+                .fileicon[data-code="nim"] {
+                    background-image: url('material/nim.svg')
+                }
+                .fileicon[data-code="apiblueprint"] {
+                    background-image: url('material/apiblueprint.svg')
+                }
+                .fileicon[data-code="riot"] {
+                    background-image: url('material/riot.svg')
+                }
+                .fileicon[data-code="postcss"] {
+                    background-image: url('material/postcss.svg')
+                }
+                .fileicon[data-code="coldfusion"] {
+                    background-image: url('material/coldfusion.svg')
+                }
+                .fileicon[data-code="haskell"] {
+                    background-image: url('material/haskell.svg')
+                }
+                .fileicon[data-code="dhall"] {
+                    background-image: url('material/dhall.svg')
+                }
+                .fileicon[data-code="cabal"] {
+                    background-image: url('material/cabal.svg')
+                }
+                .fileicon[data-code="nix"] {
+                    background-image: url('material/nix.svg')
+                }
+                .fileicon[data-code="ruby"] {
+                    background-image: url('material/ruby.svg')
+                }
+                .fileicon[data-code="slim"] {
+                    background-image: url('material/slim.svg')
+                }
+                .fileicon[data-code="php"] {
+                    background-image: url('material/php.svg')
+                }
+                .fileicon[data-code="php_elephant"] {
+                    background-image: url('material/php_elephant.svg')
+                }
+                .fileicon[data-code="php_elephant_pink"] {
+                    background-image: url('material/php_elephant_pink.svg')
+                }
+                .fileicon[data-code="hack"] {
+                    background-image: url('material/hack.svg')
+                }
+                .fileicon[data-code="react"] {
+                    background-image: url('material/react.svg')
+                }
+                .fileicon[data-code="mjml"] {
+                    background-image: url('material/mjml.svg')
+                }
+                .fileicon[data-code="processing"] {
+                    background-image: url('material/processing.svg')
+                }
+                .fileicon[data-code="hcl"] {
+                    background-image: url('material/hcl.svg')
+                }
+                .fileicon[data-code="go"] {
+                    background-image: url('material/go.svg')
+                }
+                .fileicon[data-code="go_gopher"] {
+                    background-image: url('material/go_gopher.svg')
+                }
+                .fileicon[data-code="nodejs_alt"] {
+                    background-image: url('material/nodejs_alt.svg')
+                }
+                .fileicon[data-code="django"] {
+                    background-image: url('material/django.svg')
+                }
+                .fileicon[data-code="html"] {
+                    background-image: url('material/html.svg')
+                }
+                .fileicon[data-code="godot"] {
+                    background-image: url('material/godot.svg')
+                }
+                .fileicon[data-code="godot-assets"] {
+                    background-image: url('material/godot-assets.svg')
+                }
+                .fileicon[data-code="vim"] {
+                    background-image: url('material/vim.svg')
+                }
+                .fileicon[data-code="silverstripe"] {
+                    background-image: url('material/silverstripe.svg')
+                }
+                .fileicon[data-code="prolog"] {
+                    background-image: url('material/prolog.svg')
+                }
+                .fileicon[data-code="pawn"] {
+                    background-image: url('material/pawn.svg')
+                }
+                .fileicon[data-code="reason"] {
+                    background-image: url('material/reason.svg')
+                }
+                .fileicon[data-code="sml"] {
+                    background-image: url('material/sml.svg')
+                }
+                .fileicon[data-code="tex"] {
+                    background-image: url('material/tex.svg')
+                }
+                .fileicon[data-code="latex"] {
+                    background-image: url('material/latex.clone.svg')
+                }
+                .fileicon[data-code="latex-class"] {
+                    background-image: url('material/latex-class.clone.svg')
+                }
+                .fileicon[data-code="latex-package"] {
+                    background-image: url('material/latex-package.clone.svg')
+                }
+                .fileicon[data-code="context"] {
+                    background-image: url('material/context.svg')
+                }
+                .fileicon[data-code="doctex"] {
+                    background-image: url('material/doctex.clone.svg')
+                }
+                .fileicon[data-code="doctex-installer"] {
+                    background-image: url('material/doctex-installer.svg')
+                }
+                .fileicon[data-code="bibliography"] {
+                    background-image: url('material/bibliography.svg')
+                }
+                .fileicon[data-code="bibtex-style"] {
+                    background-image: url('material/bibtex-style.svg')
+                }
+                .fileicon[data-code="salesforce"] {
+                    background-image: url('material/salesforce.svg')
+                }
+                .fileicon[data-code="sas"] {
+                    background-image: url('material/sas.svg')
+                }
+                .fileicon[data-code="docker"] {
+                    background-image: url('material/docker.svg')
+                }
+                .fileicon[data-code="table"] {
+                    background-image: url('material/table.svg')
+                }
+                .fileicon[data-code="csharp"] {
+                    background-image: url('material/csharp.svg')
+                }
+                .fileicon[data-code="console"] {
+                    background-image: url('material/console.svg')
+                }
+                .fileicon[data-code="c"] {
+                    background-image: url('material/c.svg')
+                }
+                .fileicon[data-code="cpp"] {
+                    background-image: url('material/cpp.svg')
+                }
+                .fileicon[data-code="objective-c"] {
+                    background-image: url('material/objective-c.svg')
+                }
+                .fileicon[data-code="objective-cpp"] {
+                    background-image: url('material/objective-cpp.svg')
+                }
+                .fileicon[data-code="c3"] {
+                    background-image: url('material/c3.svg')
+                }
+                .fileicon[data-code="coffee"] {
+                    background-image: url('material/coffee.svg')
+                }
+                .fileicon[data-code="fsharp"] {
+                    background-image: url('material/fsharp.svg')
+                }
+                .fileicon[data-code="editorconfig"] {
+                    background-image: url('material/editorconfig.svg')
+                }
+                .fileicon[data-code="clojure"] {
+                    background-image: url('material/clojure.svg')
+                }
+                .fileicon[data-code="groovy"] {
+                    background-image: url('material/groovy.svg')
+                }
+                .fileicon[data-code="markdoc"] {
+                    background-image: url('material/markdoc.svg')
+                }
+                .fileicon[data-code="markdown"] {
+                    background-image: url('material/markdown.svg')
+                }
+                .fileicon[data-code="jinja"] {
+                    background-image: url('material/jinja.svg')
+                }
+                .fileicon[data-code="proto"] {
+                    background-image: url('material/proto.svg')
+                }
+                .fileicon[data-code="python-misc"] {
+                    background-image: url('material/python-misc.svg')
+                }
+                .fileicon[data-code="vue"] {
+                    background-image: url('material/vue.svg')
+                }
+                .fileicon[data-code="lua"] {
+                    background-image: url('material/lua.svg')
+                }
+                .fileicon[data-code="log"] {
+                    background-image: url('material/log.svg')
+                }
+                .fileicon[data-code="jupyter"] {
+                    background-image: url('material/jupyter.svg')
+                }
+                .fileicon[data-code="document"] {
+                    background-image: url('material/document.svg')
+                }
+                .fileicon[data-code="pdf"] {
+                    background-image: url('material/pdf.svg')
+                }
+                .fileicon[data-code="powershell"] {
+                    background-image: url('material/powershell.svg')
+                }
+                .fileicon[data-code="r"] {
+                    background-image: url('material/r.svg')
+                }
+                .fileicon[data-code="rust"] {
+                    background-image: url('material/rust.svg')
+                }
+                .fileicon[data-code="database"] {
+                    background-image: url('material/database.svg')
+                }
+                .fileicon[data-code="kusto"] {
+                    background-image: url('material/kusto.svg')
+                }
+                .fileicon[data-code="lock"] {
+                    background-image: url('material/lock.svg')
+                }
+                .fileicon[data-code="svg"] {
+                    background-image: url('material/svg.svg')
+                }
+                .fileicon[data-code="swift"] {
+                    background-image: url('material/swift.svg')
+                }
+                .fileicon[data-code="react_ts"] {
+                    background-image: url('material/react_ts.svg')
+                }
+                .fileicon[data-code="search"] {
+                    background-image: url('material/search.svg')
+                }
+                .fileicon[data-code="minecraft"] {
+                    background-image: url('material/minecraft.svg')
+                }
+                .fileicon[data-code="rescript"] {
+                    background-image: url('material/rescript.svg')
+                }
+                .fileicon[data-code="otne"] {
+                    background-image: url('material/otne.svg')
+                }
+                .fileicon[data-code="twine"] {
+                    background-image: url('material/twine.svg')
+                }
+                .fileicon[data-code="grain"] {
+                    background-image: url('material/grain.svg')
+                }
+                .fileicon[data-code="lolcode"] {
+                    background-image: url('material/lolcode.svg')
+                }
+                .fileicon[data-code="idris"] {
+                    background-image: url('material/idris.svg')
+                }
+                .fileicon[data-code="chess"] {
+                    background-image: url('material/chess.svg')
+                }
+                .fileicon[data-code="gemini"] {
+                    background-image: url('material/gemini.svg')
+                }
+                .fileicon[data-code="vlang"] {
+                    background-image: url('material/vlang.svg')
+                }
+                .fileicon[data-code="wolframlanguage"] {
+                    background-image: url('material/wolframlanguage.svg')
+                }
+                .fileicon[data-code="shader"] {
+                    background-image: url('material/shader.svg')
+                }
+                .fileicon[data-code="tree"] {
+                    background-image: url('material/tree.svg')
+                }
+                .fileicon[data-code="svelte"] {
+                    background-image: url('material/svelte.svg')
+                }
+                .fileicon[data-code="dart"] {
+                    background-image: url('material/dart.svg')
+                }
+                .fileicon[data-code="cadence"] {
+                    background-image: url('material/cadence.svg')
+                }
+                .fileicon[data-code="stylable"] {
+                    background-image: url('material/stylable.svg')
+                }
+                .fileicon[data-code="hjson"] {
+                    background-image: url('material/hjson.svg')
+                }
+                .fileicon[data-code="huff"] {
+                    background-image: url('material/huff.svg')
+                }
+                .fileicon[data-code="cds"] {
+                    background-image: url('material/cds.svg')
+                }
+                .fileicon[data-code="concourse"] {
+                    background-image: url('material/concourse.svg')
+                }
+                .fileicon[data-code="systemd"] {
+                    background-image: url('material/systemd.svg')
+                }
+                .fileicon[data-code="systemd_light"] {
+                    background-image: url('material/systemd_light.svg')
+                }
+                .fileicon[data-code="slint"] {
+                    background-image: url('material/slint.svg')
+                }
+                .fileicon[data-code="luau"] {
+                    background-image: url('material/luau.svg')
+                }
+                .fileicon[data-code="hosts"] {
+                    background-image: url('material/hosts.svg')
+                }
+                .fileicon[data-code="beancount"] {
+                    background-image: url('material/beancount.svg')
+                }
+                .fileicon[data-code="ahk2"] {
+                    background-image: url('material/ahk2.clone.svg')
+                }
+                .fileicon[data-code="gnuplot"] {
+                    background-image: url('material/gnuplot.svg')
+                }
+                .fileicon[data-code="helm"] {
+                    background-image: url('material/helm.svg')
+                }
+                .fileicon[data-code="blink_light"] {
+                    background-image: url('material/blink_light.svg')
+                }
+                .fileicon[data-code="just"] {
+                    background-image: url('material/just.svg')
+                }
+                .fileicon[data-code="jinja_light"] {
+                    background-image: url('material/jinja_light.svg')
+                }
+                .fileicon[data-code="playwright"] {
+                    background-image: url('material/playwright.svg')
+                }
+                .fileicon[data-code="sublime"] {
+                    background-image: url('material/sublime.svg')
+                }
+                .fileicon[data-code="simulink"] {
+                    background-image: url('material/simulink.svg')
+                }
+                .fileicon[data-code="image"] {
+                    background-image: url('material/image.svg')
+                }
+                .fileicon[data-code="palette"] {
+                    background-image: url('material/palette.svg')
+                }
+                .fileicon[data-code="rocket"] {
+                    background-image: url('material/rocket.svg')
+                }
+                .fileicon[data-code="routing"] {
+                    background-image: url('material/routing.svg')
+                }
+                .fileicon[data-code="redux-action"] {
+                    background-image: url('material/redux-action.svg')
+                }
+                .fileicon[data-code="redux-reducer"] {
+                    background-image: url('material/redux-reducer.svg')
+                }
+                .fileicon[data-code="redux-selector"] {
+                    background-image: url('material/redux-selector.svg')
+                }
+                .fileicon[data-code="redux-store"] {
+                    background-image: url('material/redux-store.svg')
+                }
+                .fileicon[data-code="typescript-def"] {
+                    background-image: url('material/typescript-def.svg')
+                }
+                .fileicon[data-code="markdoc-config"] {
+                    background-image: url('material/markdoc-config.svg')
+                }
+                .fileicon[data-code="markojs"] {
+                    background-image: url('material/markojs.svg')
+                }
+                .fileicon[data-code="astro"] {
+                    background-image: url('material/astro.svg')
+                }
+                .fileicon[data-code="astro-config"] {
+                    background-image: url('material/astro-config.svg')
+                }
+                .fileicon[data-code="vscode"] {
+                    background-image: url('material/vscode.svg')
+                }
+                .fileicon[data-code="qsharp"] {
+                    background-image: url('material/qsharp.svg')
+                }
+                .fileicon[data-code="zip"] {
+                    background-image: url('material/zip.svg')
+                }
+                .fileicon[data-code="vala"] {
+                    background-image: url('material/vala.svg')
+                }
+                .fileicon[data-code="zig"] {
+                    background-image: url('material/zig.svg')
+                }
+                .fileicon[data-code="exe"] {
+                    background-image: url('material/exe.svg')
+                }
+                .fileicon[data-code="hex"] {
+                    background-image: url('material/hex.svg')
+                }
+                .fileicon[data-code="jar"] {
+                    background-image: url('material/jar.svg')
+                }
+                .fileicon[data-code="javaclass"] {
+                    background-image: url('material/javaclass.svg')
+                }
+                .fileicon[data-code="h"] {
+                    background-image: url('material/h.svg')
+                }
+                .fileicon[data-code="hpp"] {
+                    background-image: url('material/hpp.svg')
+                }
+                .fileicon[data-code="rc"] {
+                    background-image: url('material/rc.svg')
+                }
+                .fileicon[data-code="go-mod"] {
+                    background-image: url('material/go-mod.svg')
+                }
+                .fileicon[data-code="ruff"] {
+                    background-image: url('material/ruff.svg')
+                }
+                .fileicon[data-code="uv"] {
+                    background-image: url('material/uv.svg')
+                }
+                .fileicon[data-code="scons"] {
+                    background-image: url('material/scons.svg')
+                }
+                .fileicon[data-code="scons_light"] {
+                    background-image: url('material/scons_light.svg')
+                }
+                .fileicon[data-code="url"] {
+                    background-image: url('material/url.svg')
+                }
+                .fileicon[data-code="excalidraw"] {
+                    background-image: url('material/excalidraw.svg')
+                }
+                .fileicon[data-code="gradle"] {
+                    background-image: url('material/gradle.svg')
+                }
+                .fileicon[data-code="word"] {
+                    background-image: url('material/word.svg')
+                }
+                .fileicon[data-code="certificate"] {
+                    background-image: url('material/certificate.svg')
+                }
+                .fileicon[data-code="key"] {
+                    background-image: url('material/key.svg')
+                }
+                .fileicon[data-code="keystatic"] {
+                    background-image: url('material/keystatic.svg')
+                }
+                .fileicon[data-code="font"] {
+                    background-image: url('material/font.svg')
+                }
+                .fileicon[data-code="lib"] {
+                    background-image: url('material/lib.svg')
+                }
+                .fileicon[data-code="dll"] {
+                    background-image: url('material/dll.svg')
+                }
+                .fileicon[data-code="gemfile"] {
+                    background-image: url('material/gemfile.svg')
+                }
+                .fileicon[data-code="rubocop"] {
+                    background-image: url('material/rubocop.svg')
+                }
+                .fileicon[data-code="rubocop_light"] {
+                    background-image: url('material/rubocop_light.svg')
+                }
+                .fileicon[data-code="rspec"] {
+                    background-image: url('material/rspec.svg')
+                }
+                .fileicon[data-code="arduino"] {
+                    background-image: url('material/arduino.svg')
+                }
+                .fileicon[data-code="sty"] {
+                    background-image: url('material/sty.clone.svg')
+                }
+                .fileicon[data-code="dtx"] {
+                    background-image: url('material/dtx.clone.svg')
+                }
+                .fileicon[data-code="bbx"] {
+                    background-image: url('material/bbx.svg')
+                }
+                .fileicon[data-code="cbx"] {
+                    background-image: url('material/cbx.svg')
+                }
+                .fileicon[data-code="lbx"] {
+                    background-image: url('material/lbx.svg')
+                }
+                .fileicon[data-code="latexmk"] {
+                    background-image: url('material/latexmk.svg')
+                }
+                .fileicon[data-code="powerpoint"] {
+                    background-image: url('material/powerpoint.svg')
+                }
+                .fileicon[data-code="video"] {
+                    background-image: url('material/video.svg')
+                }
+                .fileicon[data-code="virtual"] {
+                    background-image: url('material/virtual.svg')
+                }
+                .fileicon[data-code="vedic"] {
+                    background-image: url('material/vedic.svg')
+                }
+                .fileicon[data-code="email"] {
+                    background-image: url('material/email.svg')
+                }
+                .fileicon[data-code="audio"] {
+                    background-image: url('material/audio.svg')
+                }
+                .fileicon[data-code="lyric"] {
+                    background-image: url('material/lyric.svg')
+                }
+                .fileicon[data-code="raml"] {
+                    background-image: url('material/raml.svg')
+                }
+                .fileicon[data-code="xaml"] {
+                    background-image: url('material/xaml.svg')
+                }
+                .fileicon[data-code="kotlin"] {
+                    background-image: url('material/kotlin.svg')
+                }
+                .fileicon[data-code="mist"] {
+                    background-image: url('material/mist.clone.svg')
+                }
+                .fileicon[data-code="dart_generated"] {
+                    background-image: url('material/dart_generated.svg')
+                }
+                .fileicon[data-code="actionscript"] {
+                    background-image: url('material/actionscript.svg')
+                }
+                .fileicon[data-code="mxml"] {
+                    background-image: url('material/mxml.svg')
+                }
+                .fileicon[data-code="autohotkey"] {
+                    background-image: url('material/autohotkey.svg')
+                }
+                .fileicon[data-code="flash"] {
+                    background-image: url('material/flash.svg')
+                }
+                .fileicon[data-code="adobe-swc"] {
+                    background-image: url('material/adobe-swc.svg')
+                }
+                .fileicon[data-code="swc"] {
+                    background-image: url('material/swc.svg')
+                }
+                .fileicon[data-code="cmake"] {
+                    background-image: url('material/cmake.svg')
+                }
+                .fileicon[data-code="assembly"] {
+                    background-image: url('material/assembly.svg')
+                }
+                .fileicon[data-code="semgrep"] {
+                    background-image: url('material/semgrep.svg')
+                }
+                .fileicon[data-code="vue-config"] {
+                    background-image: url('material/vue-config.svg')
+                }
+                .fileicon[data-code="vuex-store"] {
+                    background-image: url('material/vuex-store.svg')
+                }
+                .fileicon[data-code="nuxt"] {
+                    background-image: url('material/nuxt.svg')
+                }
+                .fileicon[data-code="harmonix"] {
+                    background-image: url('material/harmonix.svg')
+                }
+                .fileicon[data-code="ocaml"] {
+                    background-image: url('material/ocaml.svg')
+                }
+                .fileicon[data-code="odin"] {
+                    background-image: url('material/odin.svg')
+                }
+                .fileicon[data-code="javascript-map"] {
+                    background-image: url('material/javascript-map.svg')
+                }
+                .fileicon[data-code="css-map"] {
+                    background-image: url('material/css-map.svg')
+                }
+                .fileicon[data-code="test-ts"] {
+                    background-image: url('material/test-ts.svg')
+                }
+                .fileicon[data-code="test-jsx"] {
+                    background-image: url('material/test-jsx.svg')
+                }
+                .fileicon[data-code="test-js"] {
+                    background-image: url('material/test-js.svg')
+                }
+                .fileicon[data-code="angular-component"] {
+                    background-image: url('material/angular-component.clone.svg')
+                }
+                .fileicon[data-code="angular-guard"] {
+                    background-image: url('material/angular-guard.clone.svg')
+                }
+                .fileicon[data-code="angular-service"] {
+                    background-image: url('material/angular-service.clone.svg')
+                }
+                .fileicon[data-code="angular-pipe"] {
+                    background-image: url('material/angular-pipe.clone.svg')
+                }
+                .fileicon[data-code="angular-directive"] {
+                    background-image: url('material/angular-directive.clone.svg')
+                }
+                .fileicon[data-code="angular-resolver"] {
+                    background-image: url('material/angular-resolver.clone.svg')
+                }
+                .fileicon[data-code="angular-interceptor"] {
+                    background-image: url('material/angular-interceptor.clone.svg')
+                }
+                .fileicon[data-code="smarty"] {
+                    background-image: url('material/smarty.svg')
+                }
+                .fileicon[data-code="bucklescript"] {
+                    background-image: url('material/bucklescript.svg')
+                }
+                .fileicon[data-code="merlin"] {
+                    background-image: url('material/merlin.svg')
+                }
+                .fileicon[data-code="verilog"] {
+                    background-image: url('material/verilog.svg')
+                }
+                .fileicon[data-code="mathematica"] {
+                    background-image: url('material/mathematica.svg')
+                }
+                .fileicon[data-code="vercel"] {
+                    background-image: url('material/vercel.svg')
+                }
+                .fileicon[data-code="vercel_light"] {
+                    background-image: url('material/vercel_light.svg')
+                }
+                .fileicon[data-code="liara"] {
+                    background-image: url('material/liara.svg')
+                }
+                .fileicon[data-code="verdaccio"] {
+                    background-image: url('material/verdaccio.svg')
+                }
+                .fileicon[data-code="payload"] {
+                    background-image: url('material/payload.svg')
+                }
+                .fileicon[data-code="payload_light"] {
+                    background-image: url('material/payload_light.svg')
+                }
+                .fileicon[data-code="next"] {
+                    background-image: url('material/next.svg')
+                }
+                .fileicon[data-code="next_light"] {
+                    background-image: url('material/next_light.svg')
+                }
+                .fileicon[data-code="remark"] {
+                    background-image: url('material/remark.svg')
+                }
+                .fileicon[data-code="remix"] {
+                    background-image: url('material/remix.svg')
+                }
+                .fileicon[data-code="remix_light"] {
+                    background-image: url('material/remix_light.svg')
+                }
+                .fileicon[data-code="laravel"] {
+                    background-image: url('material/laravel.svg')
+                }
+                .fileicon[data-code="vfl"] {
+                    background-image: url('material/vfl.svg')
+                }
+                .fileicon[data-code="kl"] {
+                    background-image: url('material/kl.svg')
+                }
+                .fileicon[data-code="posthtml"] {
+                    background-image: url('material/posthtml.svg')
+                }
+                .fileicon[data-code="todo"] {
+                    background-image: url('material/todo.svg')
+                }
+                .fileicon[data-code="http"] {
+                    background-image: url('material/http.svg')
+                }
+                .fileicon[data-code="restql"] {
+                    background-image: url('material/restql.svg')
+                }
+                .fileicon[data-code="kivy"] {
+                    background-image: url('material/kivy.svg')
+                }
+                .fileicon[data-code="graphcool"] {
+                    background-image: url('material/graphcool.svg')
+                }
+                .fileicon[data-code="sbt"] {
+                    background-image: url('material/sbt.svg')
+                }
+                .fileicon[data-code="webpack"] {
+                    background-image: url('material/webpack.svg')
+                }
+                .fileicon[data-code="ionic"] {
+                    background-image: url('material/ionic.svg')
+                }
+                .fileicon[data-code="gulp"] {
+                    background-image: url('material/gulp.svg')
+                }
+                .fileicon[data-code="nodejs"] {
+                    background-image: url('material/nodejs.svg')
+                }
+                .fileicon[data-code="npm"] {
+                    background-image: url('material/npm.svg')
+                }
+                .fileicon[data-code="yarn"] {
+                    background-image: url('material/yarn.svg')
+                }
+                .fileicon[data-code="android"] {
+                    background-image: url('material/android.svg')
+                }
+                .fileicon[data-code="tune"] {
+                    background-image: url('material/tune.svg')
+                }
+                .fileicon[data-code="turborepo"] {
+                    background-image: url('material/turborepo.svg')
+                }
+                .fileicon[data-code="turborepo_light"] {
+                    background-image: url('material/turborepo_light.svg')
+                }
+                .fileicon[data-code="babel"] {
+                    background-image: url('material/babel.svg')
+                }
+                .fileicon[data-code="blitz"] {
+                    background-image: url('material/blitz.svg')
+                }
+                .fileicon[data-code="contributing"] {
+                    background-image: url('material/contributing.svg')
+                }
+                .fileicon[data-code="readme"] {
+                    background-image: url('material/readme.svg')
+                }
+                .fileicon[data-code="changelog"] {
+                    background-image: url('material/changelog.svg')
+                }
+                .fileicon[data-code="architecture"] {
+                    background-image: url('material/architecture.svg')
+                }
+                .fileicon[data-code="credits"] {
+                    background-image: url('material/credits.svg')
+                }
+                .fileicon[data-code="authors"] {
+                    background-image: url('material/authors.svg')
+                }
+                .fileicon[data-code="flow"] {
+                    background-image: url('material/flow.svg')
+                }
+                .fileicon[data-code="favicon"] {
+                    background-image: url('material/favicon.svg')
+                }
+                .fileicon[data-code="karma"] {
+                    background-image: url('material/karma.svg')
+                }
+                .fileicon[data-code="bithound"] {
+                    background-image: url('material/bithound.svg')
+                }
+                .fileicon[data-code="svgo"] {
+                    background-image: url('material/svgo.svg')
+                }
+                .fileicon[data-code="appveyor"] {
+                    background-image: url('material/appveyor.svg')
+                }
+                .fileicon[data-code="travis"] {
+                    background-image: url('material/travis.svg')
+                }
+                .fileicon[data-code="codecov"] {
+                    background-image: url('material/codecov.svg')
+                }
+                .fileicon[data-code="sonarcloud"] {
+                    background-image: url('material/sonarcloud.svg')
+                }
+                .fileicon[data-code="protractor"] {
+                    background-image: url('material/protractor.svg')
+                }
+                .fileicon[data-code="fusebox"] {
+                    background-image: url('material/fusebox.svg')
+                }
+                .fileicon[data-code="heroku"] {
+                    background-image: url('material/heroku.svg')
+                }
+                .fileicon[data-code="gitlab"] {
+                    background-image: url('material/gitlab.svg')
+                }
+                .fileicon[data-code="bower"] {
+                    background-image: url('material/bower.svg')
+                }
+                .fileicon[data-code="eslint"] {
+                    background-image: url('material/eslint.svg')
+                }
+                .fileicon[data-code="conduct"] {
+                    background-image: url('material/conduct.svg')
+                }
+                .fileicon[data-code="watchman"] {
+                    background-image: url('material/watchman.svg')
+                }
+                .fileicon[data-code="aurelia"] {
+                    background-image: url('material/aurelia.svg')
+                }
+                .fileicon[data-code="auto"] {
+                    background-image: url('material/auto.svg')
+                }
+                .fileicon[data-code="auto_light"] {
+                    background-image: url('material/auto_light.svg')
+                }
+                .fileicon[data-code="mocha"] {
+                    background-image: url('material/mocha.svg')
+                }
+                .fileicon[data-code="jenkins"] {
+                    background-image: url('material/jenkins.svg')
+                }
+                .fileicon[data-code="firebase"] {
+                    background-image: url('material/firebase.svg')
+                }
+                .fileicon[data-code="figma"] {
+                    background-image: url('material/figma.svg')
+                }
+                .fileicon[data-code="rollup"] {
+                    background-image: url('material/rollup.svg')
+                }
+                .fileicon[data-code="huff_light"] {
+                    background-image: url('material/huff_light.svg')
+                }
+                .fileicon[data-code="hardhat"] {
+                    background-image: url('material/hardhat.svg')
+                }
+                .fileicon[data-code="stylelint"] {
+                    background-image: url('material/stylelint.svg')
+                }
+                .fileicon[data-code="stylelint_light"] {
+                    background-image: url('material/stylelint_light.svg')
+                }
+                .fileicon[data-code="code-climate"] {
+                    background-image: url('material/code-climate.svg')
+                }
+                .fileicon[data-code="code-climate_light"] {
+                    background-image: url('material/code-climate_light.svg')
+                }
+                .fileicon[data-code="prettier"] {
+                    background-image: url('material/prettier.svg')
+                }
+                .fileicon[data-code="renovate"] {
+                    background-image: url('material/renovate.svg')
+                }
+                .fileicon[data-code="apollo"] {
+                    background-image: url('material/apollo.svg')
+                }
+                .fileicon[data-code="nodemon"] {
+                    background-image: url('material/nodemon.svg')
+                }
+                .fileicon[data-code="ngrx-reducer"] {
+                    background-image: url('material/ngrx-reducer.svg')
+                }
+                .fileicon[data-code="ngrx-state"] {
+                    background-image: url('material/ngrx-state.svg')
+                }
+                .fileicon[data-code="ngrx-actions"] {
+                    background-image: url('material/ngrx-actions.svg')
+                }
+                .fileicon[data-code="ngrx-effects"] {
+                    background-image: url('material/ngrx-effects.svg')
+                }
+                .fileicon[data-code="ngrx-entity"] {
+                    background-image: url('material/ngrx-entity.svg')
+                }
+                .fileicon[data-code="ngrx-selectors"] {
+                    background-image: url('material/ngrx-selectors.svg')
+                }
+                .fileicon[data-code="webhint"] {
+                    background-image: url('material/webhint.svg')
+                }
+                .fileicon[data-code="browserlist"] {
+                    background-image: url('material/browserlist.svg')
+                }
+                .fileicon[data-code="browserlist_light"] {
+                    background-image: url('material/browserlist_light.svg')
+                }
+                .fileicon[data-code="crystal"] {
+                    background-image: url('material/crystal.svg')
+                }
+                .fileicon[data-code="crystal_light"] {
+                    background-image: url('material/crystal_light.svg')
+                }
+                .fileicon[data-code="snyk"] {
+                    background-image: url('material/snyk.svg')
+                }
+                .fileicon[data-code="drone"] {
+                    background-image: url('material/drone.svg')
+                }
+                .fileicon[data-code="drone_light"] {
+                    background-image: url('material/drone_light.svg')
+                }
+                .fileicon[data-code="cuda"] {
+                    background-image: url('material/cuda.svg')
+                }
+                .fileicon[data-code="dotjs"] {
+                    background-image: url('material/dotjs.svg')
+                }
+                .fileicon[data-code="ejs"] {
+                    background-image: url('material/ejs.svg')
+                }
+                .fileicon[data-code="sequelize"] {
+                    background-image: url('material/sequelize.svg')
+                }
+                .fileicon[data-code="gatsby"] {
+                    background-image: url('material/gatsby.svg')
+                }
+                .fileicon[data-code="wakatime"] {
+                    background-image: url('material/wakatime.svg')
+                }
+                .fileicon[data-code="wakatime_light"] {
+                    background-image: url('material/wakatime_light.svg')
+                }
+                .fileicon[data-code="circleci"] {
+                    background-image: url('material/circleci.svg')
+                }
+                .fileicon[data-code="circleci_light"] {
+                    background-image: url('material/circleci_light.svg')
+                }
+                .fileicon[data-code="cloudfoundry"] {
+                    background-image: url('material/cloudfoundry.svg')
+                }
+                .fileicon[data-code="grunt"] {
+                    background-image: url('material/grunt.svg')
+                }
+                .fileicon[data-code="jest"] {
+                    background-image: url('material/jest.svg')
+                }
+                .fileicon[data-code="storybook"] {
+                    background-image: url('material/storybook.svg')
+                }
+                .fileicon[data-code="wepy"] {
+                    background-image: url('material/wepy.svg')
+                }
+                .fileicon[data-code="fastlane"] {
+                    background-image: url('material/fastlane.svg')
+                }
+                .fileicon[data-code="hcl_light"] {
+                    background-image: url('material/hcl_light.svg')
+                }
+                .fileicon[data-code="san"] {
+                    background-image: url('material/san.svg')
+                }
+                .fileicon[data-code="quokka"] {
+                    background-image: url('material/quokka.svg')
+                }
+                .fileicon[data-code="wallaby"] {
+                    background-image: url('material/wallaby.svg')
+                }
+                .fileicon[data-code="stencil"] {
+                    background-image: url('material/stencil.svg')
+                }
+                .fileicon[data-code="red"] {
+                    background-image: url('material/red.svg')
+                }
+                .fileicon[data-code="makefile"] {
+                    background-image: url('material/makefile.svg')
+                }
+                .fileicon[data-code="foxpro"] {
+                    background-image: url('material/foxpro.svg')
+                }
+                .fileicon[data-code="i18n"] {
+                    background-image: url('material/i18n.svg')
+                }
+                .fileicon[data-code="webassembly"] {
+                    background-image: url('material/webassembly.svg')
+                }
+                .fileicon[data-code="semantic-release"] {
+                    background-image: url('material/semantic-release.svg')
+                }
+                .fileicon[data-code="semantic-release_light"] {
+                    background-image: url('material/semantic-release_light.svg')
+                }
+                .fileicon[data-code="bitbucket"] {
+                    background-image: url('material/bitbucket.svg')
+                }
+                .fileicon[data-code="d"] {
+                    background-image: url('material/d.svg')
+                }
+                .fileicon[data-code="mdx"] {
+                    background-image: url('material/mdx.svg')
+                }
+                .fileicon[data-code="mdsvex"] {
+                    background-image: url('material/mdsvex.svg')
+                }
+                .fileicon[data-code="ballerina"] {
+                    background-image: url('material/ballerina.svg')
+                }
+                .fileicon[data-code="racket"] {
+                    background-image: url('material/racket.svg')
+                }
+                .fileicon[data-code="bazel"] {
+                    background-image: url('material/bazel.svg')
+                }
+                .fileicon[data-code="mint"] {
+                    background-image: url('material/mint.svg')
+                }
+                .fileicon[data-code="velocity"] {
+                    background-image: url('material/velocity.svg')
+                }
+                .fileicon[data-code="azure-pipelines"] {
+                    background-image: url('material/azure-pipelines.svg')
+                }
+                .fileicon[data-code="azure"] {
+                    background-image: url('material/azure.svg')
+                }
+                .fileicon[data-code="vagrant"] {
+                    background-image: url('material/vagrant.svg')
+                }
+                .fileicon[data-code="prisma"] {
+                    background-image: url('material/prisma.svg')
+                }
+                .fileicon[data-code="abc"] {
+                    background-image: url('material/abc.svg')
+                }
+                .fileicon[data-code="asciidoc"] {
+                    background-image: url('material/asciidoc.svg')
+                }
+                .fileicon[data-code="istanbul"] {
+                    background-image: url('material/istanbul.svg')
+                }
+                .fileicon[data-code="edge"] {
+                    background-image: url('material/edge.svg')
+                }
+                .fileicon[data-code="scheme"] {
+                    background-image: url('material/scheme.svg')
+                }
+                .fileicon[data-code="lisp"] {
+                    background-image: url('material/lisp.svg')
+                }
+                .fileicon[data-code="tailwindcss"] {
+                    background-image: url('material/tailwindcss.svg')
+                }
+                .fileicon[data-code="3d"] {
+                    background-image: url('material/3d.svg')
+                }
+                .fileicon[data-code="buildkite"] {
+                    background-image: url('material/buildkite.svg')
+                }
+                .fileicon[data-code="netlify"] {
+                    background-image: url('material/netlify.svg')
+                }
+                .fileicon[data-code="netlify_light"] {
+                    background-image: url('material/netlify_light.svg')
+                }
+                .fileicon[data-code="adobe-illustrator"] {
+                    background-image: url('material/adobe-illustrator.svg')
+                }
+                .fileicon[data-code="adobe-illustrator_light"] {
+                    background-image: url('material/adobe-illustrator_light.svg')
+                }
+                .fileicon[data-code="adobe-photoshop"] {
+                    background-image: url('material/adobe-photoshop.svg')
+                }
+                .fileicon[data-code="adobe-photoshop_light"] {
+                    background-image: url('material/adobe-photoshop_light.svg')
+                }
+                .fileicon[data-code="svelte_js"] {
+                    background-image: url('material/svelte_js.clone.svg')
+                }
+                .fileicon[data-code="svelte_ts"] {
+                    background-image: url('material/svelte_ts.clone.svg')
+                }
+                .fileicon[data-code="nest"] {
+                    background-image: url('material/nest.svg')
+                }
+                .fileicon[data-code="nest-controller"] {
+                    background-image: url('material/nest-controller.clone.svg')
+                }
+                .fileicon[data-code="nest-middleware"] {
+                    background-image: url('material/nest-middleware.clone.svg')
+                }
+                .fileicon[data-code="nest-module"] {
+                    background-image: url('material/nest-module.clone.svg')
+                }
+                .fileicon[data-code="nest-service"] {
+                    background-image: url('material/nest-service.clone.svg')
+                }
+                .fileicon[data-code="nest-decorator"] {
+                    background-image: url('material/nest-decorator.clone.svg')
+                }
+                .fileicon[data-code="nest-pipe"] {
+                    background-image: url('material/nest-pipe.clone.svg')
+                }
+                .fileicon[data-code="nest-filter"] {
+                    background-image: url('material/nest-filter.clone.svg')
+                }
+                .fileicon[data-code="nest-gateway"] {
+                    background-image: url('material/nest-gateway.clone.svg')
+                }
+                .fileicon[data-code="nest-guard"] {
+                    background-image: url('material/nest-guard.clone.svg')
+                }
+                .fileicon[data-code="nest-resolver"] {
+                    background-image: url('material/nest-resolver.clone.svg')
+                }
+                .fileicon[data-code="nest-interceptor"] {
+                    background-image: url('material/nest-interceptor.clone.svg')
+                }
+                .fileicon[data-code="moon"] {
+                    background-image: url('material/moon.svg')
+                }
+                .fileicon[data-code="moonscript"] {
+                    background-image: url('material/moonscript.svg')
+                }
+                .fileicon[data-code="percy"] {
+                    background-image: url('material/percy.svg')
+                }
+                .fileicon[data-code="gitpod"] {
+                    background-image: url('material/gitpod.svg')
+                }
+                .fileicon[data-code="stackblitz"] {
+                    background-image: url('material/stackblitz.svg')
+                }
+                .fileicon[data-code="advpl"] {
+                    background-image: url('material/advpl.svg')
+                }
+                .fileicon[data-code="advpl-ptm"] {
+                    background-image: url('material/advpl-ptm.clone.svg')
+                }
+                .fileicon[data-code="advpl-tlpp"] {
+                    background-image: url('material/advpl-tlpp.clone.svg')
+                }
+                .fileicon[data-code="advpl-include"] {
+                    background-image: url('material/advpl-include.clone.svg')
+                }
+                .fileicon[data-code="codeowners"] {
+                    background-image: url('material/codeowners.svg')
+                }
+                .fileicon[data-code="gcp"] {
+                    background-image: url('material/gcp.svg')
+                }
+                .fileicon[data-code="amplify"] {
+                    background-image: url('material/amplify.svg')
+                }
+                .fileicon[data-code="disc"] {
+                    background-image: url('material/disc.svg')
+                }
+                .fileicon[data-code="fortran"] {
+                    background-image: url('material/fortran.svg')
+                }
+                .fileicon[data-code="tcl"] {
+                    background-image: url('material/tcl.svg')
+                }
+                .fileicon[data-code="liquid"] {
+                    background-image: url('material/liquid.svg')
+                }
+                .fileicon[data-code="husky"] {
+                    background-image: url('material/husky.svg')
+                }
+                .fileicon[data-code="coconut"] {
+                    background-image: url('material/coconut.svg')
+                }
+                .fileicon[data-code="tilt"] {
+                    background-image: url('material/tilt.svg')
+                }
+                .fileicon[data-code="capacitor"] {
+                    background-image: url('material/capacitor.svg')
+                }
+                .fileicon[data-code="sketch"] {
+                    background-image: url('material/sketch.svg')
+                }
+                .fileicon[data-code="adonis"] {
+                    background-image: url('material/adonis.svg')
+                }
+                .fileicon[data-code="forth"] {
+                    background-image: url('material/forth.svg')
+                }
+                .fileicon[data-code="uml"] {
+                    background-image: url('material/uml.svg')
+                }
+                .fileicon[data-code="uml_light"] {
+                    background-image: url('material/uml_light.svg')
+                }
+                .fileicon[data-code="meson"] {
+                    background-image: url('material/meson.svg')
+                }
+                .fileicon[data-code="commitizen"] {
+                    background-image: url('material/commitizen.svg')
+                }
+                .fileicon[data-code="commitlint"] {
+                    background-image: url('material/commitlint.svg')
+                }
+                .fileicon[data-code="buck"] {
+                    background-image: url('material/buck.svg')
+                }
+                .fileicon[data-code="nx"] {
+                    background-image: url('material/nx.svg')
+                }
+                .fileicon[data-code="opam"] {
+                    background-image: url('material/opam.svg')
+                }
+                .fileicon[data-code="dune"] {
+                    background-image: url('material/dune.svg')
+                }
+                .fileicon[data-code="imba"] {
+                    background-image: url('material/imba.svg')
+                }
+                .fileicon[data-code="drawio"] {
+                    background-image: url('material/drawio.svg')
+                }
+                .fileicon[data-code="pascal"] {
+                    background-image: url('material/pascal.svg')
+                }
+                .fileicon[data-code="unity"] {
+                    background-image: url('material/unity.svg')
+                }
+                .fileicon[data-code="roadmap"] {
+                    background-image: url('material/roadmap.svg')
+                }
+                .fileicon[data-code="nuget"] {
+                    background-image: url('material/nuget.svg')
+                }
+                .fileicon[data-code="command"] {
+                    background-image: url('material/command.svg')
+                }
+                .fileicon[data-code="stryker"] {
+                    background-image: url('material/stryker.svg')
+                }
+                .fileicon[data-code="denizenscript"] {
+                    background-image: url('material/denizenscript.svg')
+                }
+                .fileicon[data-code="modernizr"] {
+                    background-image: url('material/modernizr.svg')
+                }
+                .fileicon[data-code="slug"] {
+                    background-image: url('material/slug.svg')
+                }
+                .fileicon[data-code="stitches"] {
+                    background-image: url('material/stitches.svg')
+                }
+                .fileicon[data-code="stitches_light"] {
+                    background-image: url('material/stitches_light.svg')
+                }
+                .fileicon[data-code="nginx"] {
+                    background-image: url('material/nginx.svg')
+                }
+                .fileicon[data-code="replit"] {
+                    background-image: url('material/replit.svg')
+                }
+                .fileicon[data-code="rescript-interface"] {
+                    background-image: url('material/rescript-interface.svg')
+                }
+                .fileicon[data-code="duc"] {
+                    background-image: url('material/duc.svg')
+                }
+                .fileicon[data-code="snowpack"] {
+                    background-image: url('material/snowpack.svg')
+                }
+                .fileicon[data-code="snowpack_light"] {
+                    background-image: url('material/snowpack_light.svg')
+                }
+                .fileicon[data-code="brainfuck"] {
+                    background-image: url('material/brainfuck.svg')
+                }
+                .fileicon[data-code="bicep"] {
+                    background-image: url('material/bicep.svg')
+                }
+                .fileicon[data-code="cobol"] {
+                    background-image: url('material/cobol.svg')
+                }
+                .fileicon[data-code="quasar"] {
+                    background-image: url('material/quasar.svg')
+                }
+                .fileicon[data-code="dependabot"] {
+                    background-image: url('material/dependabot.svg')
+                }
+                .fileicon[data-code="pipeline"] {
+                    background-image: url('material/pipeline.svg')
+                }
+                .fileicon[data-code="vite"] {
+                    background-image: url('material/vite.svg')
+                }
+                .fileicon[data-code="vitest"] {
+                    background-image: url('material/vitest.svg')
+                }
+                .fileicon[data-code="velite"] {
+                    background-image: url('material/velite.svg')
+                }
+                .fileicon[data-code="opa"] {
+                    background-image: url('material/opa.svg')
+                }
+                .fileicon[data-code="lerna"] {
+                    background-image: url('material/lerna.svg')
+                }
+                .fileicon[data-code="windicss"] {
+                    background-image: url('material/windicss.svg')
+                }
+                .fileicon[data-code="textlint"] {
+                    background-image: url('material/textlint.svg')
+                }
+                .fileicon[data-code="lilypond"] {
+                    background-image: url('material/lilypond.svg')
+                }
+                .fileicon[data-code="chess_light"] {
+                    background-image: url('material/chess_light.svg')
+                }
+                .fileicon[data-code="sentry"] {
+                    background-image: url('material/sentry.svg')
+                }
+                .fileicon[data-code="contentlayer"] {
+                    background-image: url('material/contentlayer.svg')
+                }
+                .fileicon[data-code="phpunit"] {
+                    background-image: url('material/phpunit.svg')
+                }
+                .fileicon[data-code="php-cs-fixer"] {
+                    background-image: url('material/php-cs-fixer.svg')
+                }
+                .fileicon[data-code="robots"] {
+                    background-image: url('material/robots.svg')
+                }
+                .fileicon[data-code="tsconfig"] {
+                    background-image: url('material/tsconfig.svg')
+                }
+                .fileicon[data-code="tauri"] {
+                    background-image: url('material/tauri.svg')
+                }
+                .fileicon[data-code="jsconfig"] {
+                    background-image: url('material/jsconfig.svg')
+                }
+                .fileicon[data-code="maven"] {
+                    background-image: url('material/maven.svg')
+                }
+                .fileicon[data-code="ada"] {
+                    background-image: url('material/ada.svg')
+                }
+                .fileicon[data-code="serverless"] {
+                    background-image: url('material/serverless.svg')
+                }
+                .fileicon[data-code="supabase"] {
+                    background-image: url('material/supabase.svg')
+                }
+                .fileicon[data-code="ember"] {
+                    background-image: url('material/ember.svg')
+                }
+                .fileicon[data-code="horusec"] {
+                    background-image: url('material/horusec.svg')
+                }
+                .fileicon[data-code="poetry"] {
+                    background-image: url('material/poetry.svg')
+                }
+                .fileicon[data-code="pdm"] {
+                    background-image: url('material/pdm.svg')
+                }
+                .fileicon[data-code="coala"] {
+                    background-image: url('material/coala.svg')
+                }
+                .fileicon[data-code="parcel"] {
+                    background-image: url('material/parcel.svg')
+                }
+                .fileicon[data-code="dinophp"] {
+                    background-image: url('material/dinophp.svg')
+                }
+                .fileicon[data-code="teal"] {
+                    background-image: url('material/teal.svg')
+                }
+                .fileicon[data-code="template"] {
+                    background-image: url('material/template.svg')
+                }
+                .fileicon[data-code="astyle"] {
+                    background-image: url('material/astyle.svg')
+                }
+                .fileicon[data-code="lighthouse"] {
+                    background-image: url('material/lighthouse.svg')
+                }
+                .fileicon[data-code="svgr"] {
+                    background-image: url('material/svgr.svg')
+                }
+                .fileicon[data-code="rome"] {
+                    background-image: url('material/rome.svg')
+                }
+                .fileicon[data-code="cypress"] {
+                    background-image: url('material/cypress.svg')
+                }
+                .fileicon[data-code="siyuan"] {
+                    background-image: url('material/siyuan.svg')
+                }
+                .fileicon[data-code="ndst"] {
+                    background-image: url('material/ndst.svg')
+                }
+                .fileicon[data-code="plop"] {
+                    background-image: url('material/plop.svg')
+                }
+                .fileicon[data-code="tobi"] {
+                    background-image: url('material/tobi.svg')
+                }
+                .fileicon[data-code="tobimake"] {
+                    background-image: url('material/tobimake.svg')
+                }
+                .fileicon[data-code="gleam"] {
+                    background-image: url('material/gleam.svg')
+                }
+                .fileicon[data-code="pnpm"] {
+                    background-image: url('material/pnpm.svg')
+                }
+                .fileicon[data-code="pnpm_light"] {
+                    background-image: url('material/pnpm_light.svg')
+                }
+                .fileicon[data-code="gridsome"] {
+                    background-image: url('material/gridsome.svg')
+                }
+                .fileicon[data-code="steadybit"] {
+                    background-image: url('material/steadybit.svg')
+                }
+                .fileicon[data-code="capnp"] {
+                    background-image: url('material/capnp.svg')
+                }
+                .fileicon[data-code="caddy"] {
+                    background-image: url('material/caddy.svg')
+                }
+                .fileicon[data-code="openapi"] {
+                    background-image: url('material/openapi.svg')
+                }
+                .fileicon[data-code="openapi_light"] {
+                    background-image: url('material/openapi_light.svg')
+                }
+                .fileicon[data-code="swagger"] {
+                    background-image: url('material/swagger.svg')
+                }
+                .fileicon[data-code="bun"] {
+                    background-image: url('material/bun.svg')
+                }
+                .fileicon[data-code="bun_light"] {
+                    background-image: url('material/bun_light.svg')
+                }
+                .fileicon[data-code="antlr"] {
+                    background-image: url('material/antlr.svg')
+                }
+                .fileicon[data-code="pinejs"] {
+                    background-image: url('material/pinejs.svg')
+                }
+                .fileicon[data-code="nano-staged"] {
+                    background-image: url('material/nano-staged.svg')
+                }
+                .fileicon[data-code="nano-staged_light"] {
+                    background-image: url('material/nano-staged_light.svg')
+                }
+                .fileicon[data-code="knip"] {
+                    background-image: url('material/knip.svg')
+                }
+                .fileicon[data-code="taskfile"] {
+                    background-image: url('material/taskfile.svg')
+                }
+                .fileicon[data-code="craco"] {
+                    background-image: url('material/craco.svg')
+                }
+                .fileicon[data-code="gamemaker"] {
+                    background-image: url('material/gamemaker.svg')
+                }
+                .fileicon[data-code="tldraw"] {
+                    background-image: url('material/tldraw.svg')
+                }
+                .fileicon[data-code="tldraw_light"] {
+                    background-image: url('material/tldraw_light.svg')
+                }
+                .fileicon[data-code="mercurial"] {
+                    background-image: url('material/mercurial.svg')
+                }
+                .fileicon[data-code="deno"] {
+                    background-image: url('material/deno.svg')
+                }
+                .fileicon[data-code="deno_light"] {
+                    background-image: url('material/deno_light.svg')
+                }
+                .fileicon[data-code="plastic"] {
+                    background-image: url('material/plastic.svg')
+                }
+                .fileicon[data-code="typst"] {
+                    background-image: url('material/typst.svg')
+                }
+                .fileicon[data-code="unocss"] {
+                    background-image: url('material/unocss.svg')
+                }
+                .fileicon[data-code="ifanr-cloud"] {
+                    background-image: url('material/ifanr-cloud.svg')
+                }
+                .fileicon[data-code="qwik"] {
+                    background-image: url('material/qwik.svg')
+                }
+                .fileicon[data-code="mermaid"] {
+                    background-image: url('material/mermaid.svg')
+                }
+                .fileicon[data-code="syncpack"] {
+                    background-image: url('material/syncpack.svg')
+                }
+                .fileicon[data-code="werf"] {
+                    background-image: url('material/werf.svg')
+                }
+                .fileicon[data-code="roblox"] {
+                    background-image: url('material/roblox.svg')
+                }
+                .fileicon[data-code="rojo"] {
+                    background-image: url('material/rojo.svg')
+                }
+                .fileicon[data-code="wally"] {
+                    background-image: url('material/wally.svg')
+                }
+                .fileicon[data-code="rbxmk"] {
+                    background-image: url('material/rbxmk.svg')
+                }
+                .fileicon[data-code="panda"] {
+                    background-image: url('material/panda.svg')
+                }
+                .fileicon[data-code="biome"] {
+                    background-image: url('material/biome.svg')
+                }
+                .fileicon[data-code="esbuild"] {
+                    background-image: url('material/esbuild.svg')
+                }
+                .fileicon[data-code="spwn"] {
+                    background-image: url('material/spwn.svg')
+                }
+                .fileicon[data-code="templ"] {
+                    background-image: url('material/templ.svg')
+                }
+                .fileicon[data-code="chrome"] {
+                    background-image: url('material/chrome.svg')
+                }
+                .fileicon[data-code="stan"] {
+                    background-image: url('material/stan.svg')
+                }
+                .fileicon[data-code="abap"] {
+                    background-image: url('material/abap.svg')
+                }
+                .fileicon[data-code="drizzle"] {
+                    background-image: url('material/drizzle.svg')
+                }
+                .fileicon[data-code="lottie"] {
+                    background-image: url('material/lottie.svg')
+                }
+                .fileicon[data-code="puppeteer"] {
+                    background-image: url('material/puppeteer.svg')
+                }
+                .fileicon[data-code="apps-script"] {
+                    background-image: url('material/apps-script.svg')
+                }
+                .fileicon[data-code="garden"] {
+                    background-image: url('material/garden.svg')
+                }
+                .fileicon[data-code="pkl"] {
+                    background-image: url('material/pkl.svg')
+                }
+                .fileicon[data-code="kubernetes"] {
+                    background-image: url('material/kubernetes.svg')
+                }
+                .fileicon[data-code="phpstan"] {
+                    background-image: url('material/phpstan.svg')
+                }
+                .fileicon[data-code="screwdriver"] {
+                    background-image: url('material/screwdriver.svg')
+                }
+                .fileicon[data-code="snapcraft"] {
+                    background-image: url('material/snapcraft.svg')
+                }
+                .fileicon[data-code="container"] {
+                    background-image: url('material/container.clone.svg')
+                }
+                .fileicon[data-code="kcl"] {
+                    background-image: url('material/kcl.svg')
+                }
+                .fileicon[data-code="verified"] {
+                    background-image: url('material/verified.svg')
+                }
+                .fileicon[data-code="bruno"] {
+                    background-image: url('material/bruno.svg')
+                }
+                .fileicon[data-code="cairo"] {
+                    background-image: url('material/cairo.svg')
+                }
+                .fileicon[data-code="grafana-alloy"] {
+                    background-image: url('material/grafana-alloy.svg')
+                }
+                .fileicon[data-code="clangd"] {
+                    background-image: url('material/clangd.svg')
+                }
+                .fileicon[data-code="freemarker"] {
+                    background-image: url('material/freemarker.svg')
+                }
+                .fileicon[data-code="markdownlint"] {
+                    background-image: url('material/markdownlint.svg')
+                }
+                .fileicon[data-code="tsil"] {
+                    background-image: url('material/tsil.svg')
+                }
+                .fileicon[data-code="trigger"] {
+                    background-image: url('material/trigger.svg')
+                }
+                .fileicon[data-code="deepsource"] {
+                    background-image: url('material/deepsource.svg')
+                }
+                .fileicon[data-code="tape"] {
+                    background-image: url('material/tape.clone.svg')
+                }
+                .fileicon[data-code="hurl"] {
+                    background-image: url('material/hurl.svg')
+                }
+                .fileicon[data-code="jsr"] {
+                    background-image: url('material/jsr.svg')
+                }
+                .fileicon[data-code="jsr_light"] {
+                    background-image: url('material/jsr_light.svg')
+                }
+                .fileicon[data-code="coderabbit-ai"] {
+                    background-image: url('material/coderabbit-ai.svg')
+                }
+                .fileicon[data-code="gemini-ai"] {
+                    background-image: url('material/gemini-ai.svg')
+                }
+                .fileicon[data-code="taze"] {
+                    background-image: url('material/taze.svg')
+                }
+                .fileicon[data-code="wxt"] {
+                    background-image: url('material/wxt.svg')
+                }
+                .fileicon[data-code="sway"] {
+                    background-image: url('material/sway.svg')
+                }
+                .fileicon[data-code="lefthook"] {
+                    background-image: url('material/lefthook.svg')
+                }
+                .fileicon[data-code="label"] {
+                    background-image: url('material/label.svg')
+                }
+                .fileicon[data-code="zeabur"] {
+                    background-image: url('material/zeabur.svg')
+                }
+                .fileicon[data-code="zeabur_light"] {
+                    background-image: url('material/zeabur_light.svg')
+                }
+                .fileicon[data-code="copilot"] {
+                    background-image: url('material/copilot.svg')
+                }
+                .fileicon[data-code="copilot_light"] {
+                    background-image: url('material/copilot_light.svg')
+                }
+                .fileicon[data-code="bench-ts"] {
+                    background-image: url('material/bench-ts.svg')
+                }
+                .fileicon[data-code="bench-jsx"] {
+                    background-image: url('material/bench-jsx.svg')
+                }
+                .fileicon[data-code="bench-js"] {
+                    background-image: url('material/bench-js.svg')
+                }
+                .fileicon[data-code="pre-commit"] {
+                    background-image: url('material/pre-commit.svg')
+                }
+                .fileicon[data-code="controller"] {
+                    background-image: url('material/controller.svg')
+                }
+                .fileicon[data-code="dependencies-update"] {
+                    background-image: url('material/dependencies-update.svg')
+                }
+                .fileicon[data-code="histoire"] {
+                    background-image: url('material/histoire.svg')
+                }
+                .fileicon[data-code="installation"] {
+                    background-image: url('material/installation.svg')
+                }
+                .fileicon[data-code="github-sponsors"] {
+                    background-image: url('material/github-sponsors.svg')
+                }
+                .fileicon[data-code="minecraft-fabric"] {
+                    background-image: url('material/minecraft-fabric.svg')
+                }
+                .fileicon[data-code="umi"] {
+                    background-image: url('material/umi.svg')
+                }
+                .fileicon[data-code="pm2-ecosystem"] {
+                    background-image: url('material/pm2-ecosystem.svg')
+                }
+                .fileicon[data-code="hosts_light"] {
+                    background-image: url('material/hosts_light.svg')
+                }
+                .fileicon[data-code="citation"] {
+                    background-image: url('material/citation.svg')
+                }
+                .fileicon[data-code="xmake"] {
+                    background-image: url('material/xmake.svg')
+                }
+                .fileicon[data-code="subtitles"] {
+                    background-image: url('material/subtitles.svg')
+                }
+                .fileicon[data-code="wrangler"] {
+                    background-image: url('material/wrangler.svg')
+                }
+                .fileicon[data-code="epub"] {
+                    background-image: url('material/epub.svg')
+                }
+                .fileicon[data-code="regedit"] {
+                    background-image: url('material/regedit.svg')
+                }
+                .fileicon[data-code="cline"] {
+                    background-image: url('material/cline.svg')
+                }
+                .fileicon[data-code="packship"] {
+                    background-image: url('material/packship.svg')
+                }
+                .fileicon[data-code="snakemake"] {
+                    background-image: url('material/snakemake.svg')
+                }
+                .fileicon[data-code="hadolint"] {
+                    background-image: url('material/hadolint.svg')
+                }
+                .fileicon[data-code="coloredpetrinets"] {
+                    background-image: url('material/coloredpetrinets.svg')
+                }
+                .fileicon[data-code="pytorch"] {
+                    background-image: url('material/pytorch.svg')
+                }
+                .fileicon[data-code="blender"] {
+                    background-image: url('material/blender.svg')
+                }
+                .fileicon[data-code="tsdoc"] {
+                    background-image: url('material/tsdoc.svg')
+                }
+                .fileicon[data-code="oxlint"] {
+                    background-image: url('material/oxlint.svg')
+                }
+                .fileicon[data-code="file"] {
+                    background-image: url('material/file.svg')
+                }
+                .fileicon[data-code="folder-rust"] {
+                    background-image: url('material/folder-rust.svg')
+                }
+                .fileicon[data-code="folder-rust-open"] {
+                    background-image: url('material/folder-rust-open.svg')
+                }
+                .fileicon[data-code="folder-robot"] {
+                    background-image: url('material/folder-robot.svg')
+                }
+                .fileicon[data-code="folder-robot-open"] {
+                    background-image: url('material/folder-robot-open.svg')
+                }
+                .fileicon[data-code="folder-src"] {
+                    background-image: url('material/folder-src.svg')
+                }
+                .fileicon[data-code="folder-src-open"] {
+                    background-image: url('material/folder-src-open.svg')
+                }
+                .fileicon[data-code="folder-dist"] {
+                    background-image: url('material/folder-dist.svg')
+                }
+                .fileicon[data-code="folder-dist-open"] {
+                    background-image: url('material/folder-dist-open.svg')
+                }
+                .fileicon[data-code="folder-css"] {
+                    background-image: url('material/folder-css.svg')
+                }
+                .fileicon[data-code="folder-css-open"] {
+                    background-image: url('material/folder-css-open.svg')
+                }
+                .fileicon[data-code="folder-sass"] {
+                    background-image: url('material/folder-sass.svg')
+                }
+                .fileicon[data-code="folder-sass-open"] {
+                    background-image: url('material/folder-sass-open.svg')
+                }
+                .fileicon[data-code="folder-television"] {
+                    background-image: url('material/folder-television.svg')
+                }
+                .fileicon[data-code="folder-television-open"] {
+                    background-image: url('material/folder-television-open.svg')
+                }
+                .fileicon[data-code="folder-desktop"] {
+                    background-image: url('material/folder-desktop.svg')
+                }
+                .fileicon[data-code="folder-desktop-open"] {
+                    background-image: url('material/folder-desktop-open.svg')
+                }
+                .fileicon[data-code="folder-console"] {
+                    background-image: url('material/folder-console.svg')
+                }
+                .fileicon[data-code="folder-console-open"] {
+                    background-image: url('material/folder-console-open.svg')
+                }
+                .fileicon[data-code="folder-images"] {
+                    background-image: url('material/folder-images.svg')
+                }
+                .fileicon[data-code="folder-images-open"] {
+                    background-image: url('material/folder-images-open.svg')
+                }
+                .fileicon[data-code="folder-scripts"] {
+                    background-image: url('material/folder-scripts.svg')
+                }
+                .fileicon[data-code="folder-scripts-open"] {
+                    background-image: url('material/folder-scripts-open.svg')
+                }
+                .fileicon[data-code="folder-node"] {
+                    background-image: url('material/folder-node.svg')
+                }
+                .fileicon[data-code="folder-node-open"] {
+                    background-image: url('material/folder-node-open.svg')
+                }
+                .fileicon[data-code="folder-javascript"] {
+                    background-image: url('material/folder-javascript.svg')
+                }
+                .fileicon[data-code="folder-javascript-open"] {
+                    background-image: url('material/folder-javascript-open.svg')
+                }
+                .fileicon[data-code="folder-json"] {
+                    background-image: url('material/folder-json.svg')
+                }
+                .fileicon[data-code="folder-json-open"] {
+                    background-image: url('material/folder-json-open.svg')
+                }
+                .fileicon[data-code="folder-font"] {
+                    background-image: url('material/folder-font.svg')
+                }
+                .fileicon[data-code="folder-font-open"] {
+                    background-image: url('material/folder-font-open.svg')
+                }
+                .fileicon[data-code="folder-bower"] {
+                    background-image: url('material/folder-bower.svg')
+                }
+                .fileicon[data-code="folder-bower-open"] {
+                    background-image: url('material/folder-bower-open.svg')
+                }
+                .fileicon[data-code="folder-test"] {
+                    background-image: url('material/folder-test.svg')
+                }
+                .fileicon[data-code="folder-test-open"] {
+                    background-image: url('material/folder-test-open.svg')
+                }
+                .fileicon[data-code="folder-directive"] {
+                    background-image: url('material/folder-directive.svg')
+                }
+                .fileicon[data-code="folder-directive-open"] {
+                    background-image: url('material/folder-directive-open.svg')
+                }
+                .fileicon[data-code="folder-jinja"] {
+                    background-image: url('material/folder-jinja.svg')
+                }
+                .fileicon[data-code="folder-jinja-open"] {
+                    background-image: url('material/folder-jinja-open.svg')
+                }
+                .fileicon[data-code="folder-jinja_light"] {
+                    background-image: url('material/folder-jinja_light.svg')
+                }
+                .fileicon[data-code="folder-jinja-open_light"] {
+                    background-image: url('material/folder-jinja-open_light.svg')
+                }
+                .fileicon[data-code="folder-markdown"] {
+                    background-image: url('material/folder-markdown.svg')
+                }
+                .fileicon[data-code="folder-markdown-open"] {
+                    background-image: url('material/folder-markdown-open.svg')
+                }
+                .fileicon[data-code="folder-pdm"] {
+                    background-image: url('material/folder-pdm.svg')
+                }
+                .fileicon[data-code="folder-pdm-open"] {
+                    background-image: url('material/folder-pdm-open.svg')
+                }
+                .fileicon[data-code="folder-php"] {
+                    background-image: url('material/folder-php.svg')
+                }
+                .fileicon[data-code="folder-php-open"] {
+                    background-image: url('material/folder-php-open.svg')
+                }
+                .fileicon[data-code="folder-phpmailer"] {
+                    background-image: url('material/folder-phpmailer.svg')
+                }
+                .fileicon[data-code="folder-phpmailer-open"] {
+                    background-image: url('material/folder-phpmailer-open.svg')
+                }
+                .fileicon[data-code="folder-sublime"] {
+                    background-image: url('material/folder-sublime.svg')
+                }
+                .fileicon[data-code="folder-sublime-open"] {
+                    background-image: url('material/folder-sublime-open.svg')
+                }
+                .fileicon[data-code="folder-docs"] {
+                    background-image: url('material/folder-docs.svg')
+                }
+                .fileicon[data-code="folder-docs-open"] {
+                    background-image: url('material/folder-docs-open.svg')
+                }
+                .fileicon[data-code="folder-gh-workflows"] {
+                    background-image: url('material/folder-gh-workflows.svg')
+                }
+                .fileicon[data-code="folder-gh-workflows-open"] {
+                    background-image: url('material/folder-gh-workflows-open.svg')
+                }
+                .fileicon[data-code="folder-git"] {
+                    background-image: url('material/folder-git.svg')
+                }
+                .fileicon[data-code="folder-git-open"] {
+                    background-image: url('material/folder-git-open.svg')
+                }
+                .fileicon[data-code="folder-github"] {
+                    background-image: url('material/folder-github.svg')
+                }
+                .fileicon[data-code="folder-github-open"] {
+                    background-image: url('material/folder-github-open.svg')
+                }
+                .fileicon[data-code="folder-gitea"] {
+                    background-image: url('material/folder-gitea.svg')
+                }
+                .fileicon[data-code="folder-gitea-open"] {
+                    background-image: url('material/folder-gitea-open.svg')
+                }
+                .fileicon[data-code="folder-gitlab"] {
+                    background-image: url('material/folder-gitlab.svg')
+                }
+                .fileicon[data-code="folder-gitlab-open"] {
+                    background-image: url('material/folder-gitlab-open.svg')
+                }
+                .fileicon[data-code="folder-forgejo"] {
+                    background-image: url('material/folder-forgejo.svg')
+                }
+                .fileicon[data-code="folder-forgejo-open"] {
+                    background-image: url('material/folder-forgejo-open.svg')
+                }
+                .fileicon[data-code="folder-vscode"] {
+                    background-image: url('material/folder-vscode.svg')
+                }
+                .fileicon[data-code="folder-vscode-open"] {
+                    background-image: url('material/folder-vscode-open.svg')
+                }
+                .fileicon[data-code="folder-views"] {
+                    background-image: url('material/folder-views.svg')
+                }
+                .fileicon[data-code="folder-views-open"] {
+                    background-image: url('material/folder-views-open.svg')
+                }
+                .fileicon[data-code="folder-vue"] {
+                    background-image: url('material/folder-vue.svg')
+                }
+                .fileicon[data-code="folder-vue-open"] {
+                    background-image: url('material/folder-vue-open.svg')
+                }
+                .fileicon[data-code="folder-vuepress"] {
+                    background-image: url('material/folder-vuepress.svg')
+                }
+                .fileicon[data-code="folder-vuepress-open"] {
+                    background-image: url('material/folder-vuepress-open.svg')
+                }
+                .fileicon[data-code="folder-expo"] {
+                    background-image: url('material/folder-expo.svg')
+                }
+                .fileicon[data-code="folder-expo-open"] {
+                    background-image: url('material/folder-expo-open.svg')
+                }
+                .fileicon[data-code="folder-config"] {
+                    background-image: url('material/folder-config.svg')
+                }
+                .fileicon[data-code="folder-config-open"] {
+                    background-image: url('material/folder-config-open.svg')
+                }
+                .fileicon[data-code="folder-i18n"] {
+                    background-image: url('material/folder-i18n.svg')
+                }
+                .fileicon[data-code="folder-i18n-open"] {
+                    background-image: url('material/folder-i18n-open.svg')
+                }
+                .fileicon[data-code="folder-components"] {
+                    background-image: url('material/folder-components.svg')
+                }
+                .fileicon[data-code="folder-components-open"] {
+                    background-image: url('material/folder-components-open.svg')
+                }
+                .fileicon[data-code="folder-verdaccio"] {
+                    background-image: url('material/folder-verdaccio.svg')
+                }
+                .fileicon[data-code="folder-verdaccio-open"] {
+                    background-image: url('material/folder-verdaccio-open.svg')
+                }
+                .fileicon[data-code="folder-aurelia"] {
+                    background-image: url('material/folder-aurelia.svg')
+                }
+                .fileicon[data-code="folder-aurelia-open"] {
+                    background-image: url('material/folder-aurelia-open.svg')
+                }
+                .fileicon[data-code="folder-resource"] {
+                    background-image: url('material/folder-resource.svg')
+                }
+                .fileicon[data-code="folder-resource-open"] {
+                    background-image: url('material/folder-resource-open.svg')
+                }
+                .fileicon[data-code="folder-lib"] {
+                    background-image: url('material/folder-lib.svg')
+                }
+                .fileicon[data-code="folder-lib-open"] {
+                    background-image: url('material/folder-lib-open.svg')
+                }
+                .fileicon[data-code="folder-theme"] {
+                    background-image: url('material/folder-theme.svg')
+                }
+                .fileicon[data-code="folder-theme-open"] {
+                    background-image: url('material/folder-theme-open.svg')
+                }
+                .fileicon[data-code="folder-webpack"] {
+                    background-image: url('material/folder-webpack.svg')
+                }
+                .fileicon[data-code="folder-webpack-open"] {
+                    background-image: url('material/folder-webpack-open.svg')
+                }
+                .fileicon[data-code="folder-global"] {
+                    background-image: url('material/folder-global.svg')
+                }
+                .fileicon[data-code="folder-global-open"] {
+                    background-image: url('material/folder-global-open.svg')
+                }
+                .fileicon[data-code="folder-public"] {
+                    background-image: url('material/folder-public.svg')
+                }
+                .fileicon[data-code="folder-public-open"] {
+                    background-image: url('material/folder-public-open.svg')
+                }
+                .fileicon[data-code="folder-include"] {
+                    background-image: url('material/folder-include.svg')
+                }
+                .fileicon[data-code="folder-include-open"] {
+                    background-image: url('material/folder-include-open.svg')
+                }
+                .fileicon[data-code="folder-docker"] {
+                    background-image: url('material/folder-docker.svg')
+                }
+                .fileicon[data-code="folder-docker-open"] {
+                    background-image: url('material/folder-docker-open.svg')
+                }
+                .fileicon[data-code="folder-ngrx-store"] {
+                    background-image: url('material/folder-ngrx-store.svg')
+                }
+                .fileicon[data-code="folder-ngrx-store-open"] {
+                    background-image: url('material/folder-ngrx-store-open.svg')
+                }
+                .fileicon[data-code="folder-ngrx-effects"] {
+                    background-image: url('material/folder-ngrx-effects.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-effects-open"] {
+                    background-image: url('material/folder-ngrx-effects-open.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-state"] {
+                    background-image: url('material/folder-ngrx-state.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-state-open"] {
+                    background-image: url('material/folder-ngrx-state-open.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-reducer"] {
+                    background-image: url('material/folder-ngrx-reducer.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-reducer-open"] {
+                    background-image: url('material/folder-ngrx-reducer-open.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-actions"] {
+                    background-image: url('material/folder-ngrx-actions.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-actions-open"] {
+                    background-image: url('material/folder-ngrx-actions-open.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-entities"] {
+                    background-image: url('material/folder-ngrx-entities.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-entities-open"] {
+                    background-image: url('material/folder-ngrx-entities-open.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-selectors"] {
+                    background-image: url('material/folder-ngrx-selectors.clone.svg')
+                }
+                .fileicon[data-code="folder-ngrx-selectors-open"] {
+                    background-image: url('material/folder-ngrx-selectors-open.clone.svg')
+                }
+                .fileicon[data-code="folder-redux-reducer"] {
+                    background-image: url('material/folder-redux-reducer.svg')
+                }
+                .fileicon[data-code="folder-redux-reducer-open"] {
+                    background-image: url('material/folder-redux-reducer-open.svg')
+                }
+                .fileicon[data-code="folder-redux-actions"] {
+                    background-image: url('material/folder-redux-actions.clone.svg')
+                }
+                .fileicon[data-code="folder-redux-actions-open"] {
+                    background-image: url('material/folder-redux-actions-open.clone.svg')
+                }
+                .fileicon[data-code="folder-redux-selector"] {
+                    background-image: url('material/folder-redux-selector.clone.svg')
+                }
+                .fileicon[data-code="folder-redux-selector-open"] {
+                    background-image: url('material/folder-redux-selector-open.clone.svg')
+                }
+                .fileicon[data-code="folder-redux-store"] {
+                    background-image: url('material/folder-redux-store.clone.svg')
+                }
+                .fileicon[data-code="folder-redux-store-open"] {
+                    background-image: url('material/folder-redux-store-open.clone.svg')
+                }
+                .fileicon[data-code="folder-react-components"] {
+                    background-image: url('material/folder-react-components.svg')
+                }
+                .fileicon[data-code="folder-react-components-open"] {
+                    background-image: url('material/folder-react-components-open.svg')
+                }
+                .fileicon[data-code="folder-astro"] {
+                    background-image: url('material/folder-astro.svg')
+                }
+                .fileicon[data-code="folder-astro-open"] {
+                    background-image: url('material/folder-astro-open.svg')
+                }
+                .fileicon[data-code="folder-database"] {
+                    background-image: url('material/folder-database.svg')
+                }
+                .fileicon[data-code="folder-database-open"] {
+                    background-image: url('material/folder-database-open.svg')
+                }
+                .fileicon[data-code="folder-log"] {
+                    background-image: url('material/folder-log.svg')
+                }
+                .fileicon[data-code="folder-log-open"] {
+                    background-image: url('material/folder-log-open.svg')
+                }
+                .fileicon[data-code="folder-target"] {
+                    background-image: url('material/folder-target.svg')
+                }
+                .fileicon[data-code="folder-target-open"] {
+                    background-image: url('material/folder-target-open.svg')
+                }
+                .fileicon[data-code="folder-temp"] {
+                    background-image: url('material/folder-temp.svg')
+                }
+                .fileicon[data-code="folder-temp-open"] {
+                    background-image: url('material/folder-temp-open.svg')
+                }
+                .fileicon[data-code="folder-aws"] {
+                    background-image: url('material/folder-aws.svg')
+                }
+                .fileicon[data-code="folder-aws-open"] {
+                    background-image: url('material/folder-aws-open.svg')
+                }
+                .fileicon[data-code="folder-audio"] {
+                    background-image: url('material/folder-audio.svg')
+                }
+                .fileicon[data-code="folder-audio-open"] {
+                    background-image: url('material/folder-audio-open.svg')
+                }
+                .fileicon[data-code="folder-video"] {
+                    background-image: url('material/folder-video.svg')
+                }
+                .fileicon[data-code="folder-video-open"] {
+                    background-image: url('material/folder-video-open.svg')
+                }
+                .fileicon[data-code="folder-kubernetes"] {
+                    background-image: url('material/folder-kubernetes.svg')
+                }
+                .fileicon[data-code="folder-kubernetes-open"] {
+                    background-image: url('material/folder-kubernetes-open.svg')
+                }
+                .fileicon[data-code="folder-import"] {
+                    background-image: url('material/folder-import.svg')
+                }
+                .fileicon[data-code="folder-import-open"] {
+                    background-image: url('material/folder-import-open.svg')
+                }
+                .fileicon[data-code="folder-export"] {
+                    background-image: url('material/folder-export.svg')
+                }
+                .fileicon[data-code="folder-export-open"] {
+                    background-image: url('material/folder-export-open.svg')
+                }
+                .fileicon[data-code="folder-wakatime"] {
+                    background-image: url('material/folder-wakatime.svg')
+                }
+                .fileicon[data-code="folder-wakatime-open"] {
+                    background-image: url('material/folder-wakatime-open.svg')
+                }
+                .fileicon[data-code="folder-circleci"] {
+                    background-image: url('material/folder-circleci.svg')
+                }
+                .fileicon[data-code="folder-circleci-open"] {
+                    background-image: url('material/folder-circleci-open.svg')
+                }
+                .fileicon[data-code="folder-wordpress"] {
+                    background-image: url('material/folder-wordpress.svg')
+                }
+                .fileicon[data-code="folder-wordpress-open"] {
+                    background-image: url('material/folder-wordpress-open.svg')
+                }
+                .fileicon[data-code="folder-gradle"] {
+                    background-image: url('material/folder-gradle.svg')
+                }
+                .fileicon[data-code="folder-gradle-open"] {
+                    background-image: url('material/folder-gradle-open.svg')
+                }
+                .fileicon[data-code="folder-coverage"] {
+                    background-image: url('material/folder-coverage.svg')
+                }
+                .fileicon[data-code="folder-coverage-open"] {
+                    background-image: url('material/folder-coverage-open.svg')
+                }
+                .fileicon[data-code="folder-class"] {
+                    background-image: url('material/folder-class.svg')
+                }
+                .fileicon[data-code="folder-class-open"] {
+                    background-image: url('material/folder-class-open.svg')
+                }
+                .fileicon[data-code="folder-other"] {
+                    background-image: url('material/folder-other.svg')
+                }
+                .fileicon[data-code="folder-other-open"] {
+                    background-image: url('material/folder-other-open.svg')
+                }
+                .fileicon[data-code="folder-lua"] {
+                    background-image: url('material/folder-lua.svg')
+                }
+                .fileicon[data-code="folder-lua-open"] {
+                    background-image: url('material/folder-lua-open.svg')
+                }
+                .fileicon[data-code="folder-turborepo"] {
+                    background-image: url('material/folder-turborepo.svg')
+                }
+                .fileicon[data-code="folder-turborepo-open"] {
+                    background-image: url('material/folder-turborepo-open.svg')
+                }
+                .fileicon[data-code="folder-typescript"] {
+                    background-image: url('material/folder-typescript.svg')
+                }
+                .fileicon[data-code="folder-typescript-open"] {
+                    background-image: url('material/folder-typescript-open.svg')
+                }
+                .fileicon[data-code="folder-graphql"] {
+                    background-image: url('material/folder-graphql.svg')
+                }
+                .fileicon[data-code="folder-graphql-open"] {
+                    background-image: url('material/folder-graphql-open.svg')
+                }
+                .fileicon[data-code="folder-routes"] {
+                    background-image: url('material/folder-routes.svg')
+                }
+                .fileicon[data-code="folder-routes-open"] {
+                    background-image: url('material/folder-routes-open.svg')
+                }
+                .fileicon[data-code="folder-ci"] {
+                    background-image: url('material/folder-ci.svg')
+                }
+                .fileicon[data-code="folder-ci-open"] {
+                    background-image: url('material/folder-ci-open.svg')
+                }
+                .fileicon[data-code="folder-benchmark"] {
+                    background-image: url('material/folder-benchmark.svg')
+                }
+                .fileicon[data-code="folder-benchmark-open"] {
+                    background-image: url('material/folder-benchmark-open.svg')
+                }
+                .fileicon[data-code="folder-messages"] {
+                    background-image: url('material/folder-messages.svg')
+                }
+                .fileicon[data-code="folder-messages-open"] {
+                    background-image: url('material/folder-messages-open.svg')
+                }
+                .fileicon[data-code="folder-less"] {
+                    background-image: url('material/folder-less.svg')
+                }
+                .fileicon[data-code="folder-less-open"] {
+                    background-image: url('material/folder-less-open.svg')
+                }
+                .fileicon[data-code="folder-gulp"] {
+                    background-image: url('material/folder-gulp.svg')
+                }
+                .fileicon[data-code="folder-gulp-open"] {
+                    background-image: url('material/folder-gulp-open.svg')
+                }
+                .fileicon[data-code="folder-python"] {
+                    background-image: url('material/folder-python.svg')
+                }
+                .fileicon[data-code="folder-python-open"] {
+                    background-image: url('material/folder-python-open.svg')
+                }
+                .fileicon[data-code="folder-sandbox"] {
+                    background-image: url('material/folder-sandbox.svg')
+                }
+                .fileicon[data-code="folder-sandbox-open"] {
+                    background-image: url('material/folder-sandbox-open.svg')
+                }
+                .fileicon[data-code="folder-scons"] {
+                    background-image: url('material/folder-scons.svg')
+                }
+                .fileicon[data-code="folder-scons-open"] {
+                    background-image: url('material/folder-scons-open.svg')
+                }
+                .fileicon[data-code="folder-mojo"] {
+                    background-image: url('material/folder-mojo.svg')
+                }
+                .fileicon[data-code="folder-mojo-open"] {
+                    background-image: url('material/folder-mojo-open.svg')
+                }
+                .fileicon[data-code="folder-moon"] {
+                    background-image: url('material/folder-moon.svg')
+                }
+                .fileicon[data-code="folder-moon-open"] {
+                    background-image: url('material/folder-moon-open.svg')
+                }
+                .fileicon[data-code="folder-debug"] {
+                    background-image: url('material/folder-debug.svg')
+                }
+                .fileicon[data-code="folder-debug-open"] {
+                    background-image: url('material/folder-debug-open.svg')
+                }
+                .fileicon[data-code="folder-fastlane"] {
+                    background-image: url('material/folder-fastlane.svg')
+                }
+                .fileicon[data-code="folder-fastlane-open"] {
+                    background-image: url('material/folder-fastlane-open.svg')
+                }
+                .fileicon[data-code="folder-plugin"] {
+                    background-image: url('material/folder-plugin.svg')
+                }
+                .fileicon[data-code="folder-plugin-open"] {
+                    background-image: url('material/folder-plugin-open.svg')
+                }
+                .fileicon[data-code="folder-middleware"] {
+                    background-image: url('material/folder-middleware.svg')
+                }
+                .fileicon[data-code="folder-middleware-open"] {
+                    background-image: url('material/folder-middleware-open.svg')
+                }
+                .fileicon[data-code="folder-controller"] {
+                    background-image: url('material/folder-controller.svg')
+                }
+                .fileicon[data-code="folder-controller-open"] {
+                    background-image: url('material/folder-controller-open.svg')
+                }
+                .fileicon[data-code="folder-ansible"] {
+                    background-image: url('material/folder-ansible.svg')
+                }
+                .fileicon[data-code="folder-ansible-open"] {
+                    background-image: url('material/folder-ansible-open.svg')
+                }
+                .fileicon[data-code="folder-server"] {
+                    background-image: url('material/folder-server.svg')
+                }
+                .fileicon[data-code="folder-server-open"] {
+                    background-image: url('material/folder-server-open.svg')
+                }
+                .fileicon[data-code="folder-client"] {
+                    background-image: url('material/folder-client.svg')
+                }
+                .fileicon[data-code="folder-client-open"] {
+                    background-image: url('material/folder-client-open.svg')
+                }
+                .fileicon[data-code="folder-tasks"] {
+                    background-image: url('material/folder-tasks.svg')
+                }
+                .fileicon[data-code="folder-tasks-open"] {
+                    background-image: url('material/folder-tasks-open.svg')
+                }
+                .fileicon[data-code="folder-android"] {
+                    background-image: url('material/folder-android.svg')
+                }
+                .fileicon[data-code="folder-android-open"] {
+                    background-image: url('material/folder-android-open.svg')
+                }
+                .fileicon[data-code="folder-ios"] {
+                    background-image: url('material/folder-ios.svg')
+                }
+                .fileicon[data-code="folder-ios-open"] {
+                    background-image: url('material/folder-ios-open.svg')
+                }
+                .fileicon[data-code="folder-ui"] {
+                    background-image: url('material/folder-ui.svg')
+                }
+                .fileicon[data-code="folder-ui-open"] {
+                    background-image: url('material/folder-ui-open.svg')
+                }
+                .fileicon[data-code="folder-upload"] {
+                    background-image: url('material/folder-upload.svg')
+                }
+                .fileicon[data-code="folder-upload-open"] {
+                    background-image: url('material/folder-upload-open.svg')
+                }
+                .fileicon[data-code="folder-download"] {
+                    background-image: url('material/folder-download.svg')
+                }
+                .fileicon[data-code="folder-download-open"] {
+                    background-image: url('material/folder-download-open.svg')
+                }
+                .fileicon[data-code="folder-tools"] {
+                    background-image: url('material/folder-tools.svg')
+                }
+                .fileicon[data-code="folder-tools-open"] {
+                    background-image: url('material/folder-tools-open.svg')
+                }
+                .fileicon[data-code="folder-helper"] {
+                    background-image: url('material/folder-helper.svg')
+                }
+                .fileicon[data-code="folder-helper-open"] {
+                    background-image: url('material/folder-helper-open.svg')
+                }
+                .fileicon[data-code="folder-serverless"] {
+                    background-image: url('material/folder-serverless.svg')
+                }
+                .fileicon[data-code="folder-serverless-open"] {
+                    background-image: url('material/folder-serverless-open.svg')
+                }
+                .fileicon[data-code="folder-api"] {
+                    background-image: url('material/folder-api.svg')
+                }
+                .fileicon[data-code="folder-api-open"] {
+                    background-image: url('material/folder-api-open.svg')
+                }
+                .fileicon[data-code="folder-app"] {
+                    background-image: url('material/folder-app.svg')
+                }
+                .fileicon[data-code="folder-app-open"] {
+                    background-image: url('material/folder-app-open.svg')
+                }
+                .fileicon[data-code="folder-apollo"] {
+                    background-image: url('material/folder-apollo.svg')
+                }
+                .fileicon[data-code="folder-apollo-open"] {
+                    background-image: url('material/folder-apollo-open.svg')
+                }
+                .fileicon[data-code="folder-archive"] {
+                    background-image: url('material/folder-archive.svg')
+                }
+                .fileicon[data-code="folder-archive-open"] {
+                    background-image: url('material/folder-archive-open.svg')
+                }
+                .fileicon[data-code="folder-backup"] {
+                    background-image: url('material/folder-backup.svg')
+                }
+                .fileicon[data-code="folder-backup-open"] {
+                    background-image: url('material/folder-backup-open.svg')
+                }
+                .fileicon[data-code="folder-batch"] {
+                    background-image: url('material/folder-batch.svg')
+                }
+                .fileicon[data-code="folder-batch-open"] {
+                    background-image: url('material/folder-batch-open.svg')
+                }
+                .fileicon[data-code="folder-buildkite"] {
+                    background-image: url('material/folder-buildkite.svg')
+                }
+                .fileicon[data-code="folder-buildkite-open"] {
+                    background-image: url('material/folder-buildkite-open.svg')
+                }
+                .fileicon[data-code="folder-cluster"] {
+                    background-image: url('material/folder-cluster.svg')
+                }
+                .fileicon[data-code="folder-cluster-open"] {
+                    background-image: url('material/folder-cluster-open.svg')
+                }
+                .fileicon[data-code="folder-command"] {
+                    background-image: url('material/folder-command.svg')
+                }
+                .fileicon[data-code="folder-command-open"] {
+                    background-image: url('material/folder-command-open.svg')
+                }
+                .fileicon[data-code="folder-constant"] {
+                    background-image: url('material/folder-constant.svg')
+                }
+                .fileicon[data-code="folder-constant-open"] {
+                    background-image: url('material/folder-constant-open.svg')
+                }
+                .fileicon[data-code="folder-container"] {
+                    background-image: url('material/folder-container.svg')
+                }
+                .fileicon[data-code="folder-container-open"] {
+                    background-image: url('material/folder-container-open.svg')
+                }
+                .fileicon[data-code="folder-content"] {
+                    background-image: url('material/folder-content.svg')
+                }
+                .fileicon[data-code="folder-content-open"] {
+                    background-image: url('material/folder-content-open.svg')
+                }
+                .fileicon[data-code="folder-context"] {
+                    background-image: url('material/folder-context.svg')
+                }
+                .fileicon[data-code="folder-context-open"] {
+                    background-image: url('material/folder-context-open.svg')
+                }
+                .fileicon[data-code="folder-core"] {
+                    background-image: url('material/folder-core.svg')
+                }
+                .fileicon[data-code="folder-core-open"] {
+                    background-image: url('material/folder-core-open.svg')
+                }
+                .fileicon[data-code="folder-delta"] {
+                    background-image: url('material/folder-delta.svg')
+                }
+                .fileicon[data-code="folder-delta-open"] {
+                    background-image: url('material/folder-delta-open.svg')
+                }
+                .fileicon[data-code="folder-dump"] {
+                    background-image: url('material/folder-dump.svg')
+                }
+                .fileicon[data-code="folder-dump-open"] {
+                    background-image: url('material/folder-dump-open.svg')
+                }
+                .fileicon[data-code="folder-examples"] {
+                    background-image: url('material/folder-examples.svg')
+                }
+                .fileicon[data-code="folder-examples-open"] {
+                    background-image: url('material/folder-examples-open.svg')
+                }
+                .fileicon[data-code="folder-environment"] {
+                    background-image: url('material/folder-environment.svg')
+                }
+                .fileicon[data-code="folder-environment-open"] {
+                    background-image: url('material/folder-environment-open.svg')
+                }
+                .fileicon[data-code="folder-functions"] {
+                    background-image: url('material/folder-functions.svg')
+                }
+                .fileicon[data-code="folder-functions-open"] {
+                    background-image: url('material/folder-functions-open.svg')
+                }
+                .fileicon[data-code="folder-generator"] {
+                    background-image: url('material/folder-generator.svg')
+                }
+                .fileicon[data-code="folder-generator-open"] {
+                    background-image: url('material/folder-generator-open.svg')
+                }
+                .fileicon[data-code="folder-hook"] {
+                    background-image: url('material/folder-hook.svg')
+                }
+                .fileicon[data-code="folder-hook-open"] {
+                    background-image: url('material/folder-hook-open.svg')
+                }
+                .fileicon[data-code="folder-trigger"] {
+                    background-image: url('material/folder-trigger.svg')
+                }
+                .fileicon[data-code="folder-trigger-open"] {
+                    background-image: url('material/folder-trigger-open.svg')
+                }
+                .fileicon[data-code="folder-job"] {
+                    background-image: url('material/folder-job.svg')
+                }
+                .fileicon[data-code="folder-job-open"] {
+                    background-image: url('material/folder-job-open.svg')
+                }
+                .fileicon[data-code="folder-keys"] {
+                    background-image: url('material/folder-keys.svg')
+                }
+                .fileicon[data-code="folder-keys-open"] {
+                    background-image: url('material/folder-keys-open.svg')
+                }
+                .fileicon[data-code="folder-layout"] {
+                    background-image: url('material/folder-layout.svg')
+                }
+                .fileicon[data-code="folder-layout-open"] {
+                    background-image: url('material/folder-layout-open.svg')
+                }
+                .fileicon[data-code="folder-mail"] {
+                    background-image: url('material/folder-mail.svg')
+                }
+                .fileicon[data-code="folder-mail-open"] {
+                    background-image: url('material/folder-mail-open.svg')
+                }
+                .fileicon[data-code="folder-mappings"] {
+                    background-image: url('material/folder-mappings.svg')
+                }
+                .fileicon[data-code="folder-mappings-open"] {
+                    background-image: url('material/folder-mappings-open.svg')
+                }
+                .fileicon[data-code="folder-meta"] {
+                    background-image: url('material/folder-meta.svg')
+                }
+                .fileicon[data-code="folder-meta-open"] {
+                    background-image: url('material/folder-meta-open.svg')
+                }
+                .fileicon[data-code="folder-changesets"] {
+                    background-image: url('material/folder-changesets.svg')
+                }
+                .fileicon[data-code="folder-changesets-open"] {
+                    background-image: url('material/folder-changesets-open.svg')
+                }
+                .fileicon[data-code="folder-packages"] {
+                    background-image: url('material/folder-packages.svg')
+                }
+                .fileicon[data-code="folder-packages-open"] {
+                    background-image: url('material/folder-packages-open.svg')
+                }
+                .fileicon[data-code="folder-shared"] {
+                    background-image: url('material/folder-shared.svg')
+                }
+                .fileicon[data-code="folder-shared-open"] {
+                    background-image: url('material/folder-shared-open.svg')
+                }
+                .fileicon[data-code="folder-shader"] {
+                    background-image: url('material/folder-shader.svg')
+                }
+                .fileicon[data-code="folder-shader-open"] {
+                    background-image: url('material/folder-shader-open.svg')
+                }
+                .fileicon[data-code="folder-stack"] {
+                    background-image: url('material/folder-stack.svg')
+                }
+                .fileicon[data-code="folder-stack-open"] {
+                    background-image: url('material/folder-stack-open.svg')
+                }
+                .fileicon[data-code="folder-template"] {
+                    background-image: url('material/folder-template.svg')
+                }
+                .fileicon[data-code="folder-template-open"] {
+                    background-image: url('material/folder-template-open.svg')
+                }
+                .fileicon[data-code="folder-utils"] {
+                    background-image: url('material/folder-utils.svg')
+                }
+                .fileicon[data-code="folder-utils-open"] {
+                    background-image: url('material/folder-utils-open.svg')
+                }
+                .fileicon[data-code="folder-supabase"] {
+                    background-image: url('material/folder-supabase.svg')
+                }
+                .fileicon[data-code="folder-supabase-open"] {
+                    background-image: url('material/folder-supabase-open.svg')
+                }
+                .fileicon[data-code="folder-private"] {
+                    background-image: url('material/folder-private.svg')
+                }
+                .fileicon[data-code="folder-private-open"] {
+                    background-image: url('material/folder-private-open.svg')
+                }
+                .fileicon[data-code="folder-linux"] {
+                    background-image: url('material/folder-linux.svg')
+                }
+                .fileicon[data-code="folder-linux-open"] {
+                    background-image: url('material/folder-linux-open.svg')
+                }
+                .fileicon[data-code="folder-windows"] {
+                    background-image: url('material/folder-windows.svg')
+                }
+                .fileicon[data-code="folder-windows-open"] {
+                    background-image: url('material/folder-windows-open.svg')
+                }
+                .fileicon[data-code="folder-macos"] {
+                    background-image: url('material/folder-macos.svg')
+                }
+                .fileicon[data-code="folder-macos-open"] {
+                    background-image: url('material/folder-macos-open.svg')
+                }
+                .fileicon[data-code="folder-error"] {
+                    background-image: url('material/folder-error.svg')
+                }
+                .fileicon[data-code="folder-error-open"] {
+                    background-image: url('material/folder-error-open.svg')
+                }
+                .fileicon[data-code="folder-event"] {
+                    background-image: url('material/folder-event.svg')
+                }
+                .fileicon[data-code="folder-event-open"] {
+                    background-image: url('material/folder-event-open.svg')
+                }
+                .fileicon[data-code="folder-secure"] {
+                    background-image: url('material/folder-secure.svg')
+                }
+                .fileicon[data-code="folder-secure-open"] {
+                    background-image: url('material/folder-secure-open.svg')
+                }
+                .fileicon[data-code="folder-custom"] {
+                    background-image: url('material/folder-custom.svg')
+                }
+                .fileicon[data-code="folder-custom-open"] {
+                    background-image: url('material/folder-custom-open.svg')
+                }
+                .fileicon[data-code="folder-mock"] {
+                    background-image: url('material/folder-mock.svg')
+                }
+                .fileicon[data-code="folder-mock-open"] {
+                    background-image: url('material/folder-mock-open.svg')
+                }
+                .fileicon[data-code="folder-syntax"] {
+                    background-image: url('material/folder-syntax.svg')
+                }
+                .fileicon[data-code="folder-syntax-open"] {
+                    background-image: url('material/folder-syntax-open.svg')
+                }
+                .fileicon[data-code="folder-vm"] {
+                    background-image: url('material/folder-vm.svg')
+                }
+                .fileicon[data-code="folder-vm-open"] {
+                    background-image: url('material/folder-vm-open.svg')
+                }
+                .fileicon[data-code="folder-stylus"] {
+                    background-image: url('material/folder-stylus.svg')
+                }
+                .fileicon[data-code="folder-stylus-open"] {
+                    background-image: url('material/folder-stylus-open.svg')
+                }
+                .fileicon[data-code="folder-flow"] {
+                    background-image: url('material/folder-flow.svg')
+                }
+                .fileicon[data-code="folder-flow-open"] {
+                    background-image: url('material/folder-flow-open.svg')
+                }
+                .fileicon[data-code="folder-rules"] {
+                    background-image: url('material/folder-rules.svg')
+                }
+                .fileicon[data-code="folder-rules-open"] {
+                    background-image: url('material/folder-rules-open.svg')
+                }
+                .fileicon[data-code="folder-review"] {
+                    background-image: url('material/folder-review.svg')
+                }
+                .fileicon[data-code="folder-review-open"] {
+                    background-image: url('material/folder-review-open.svg')
+                }
+                .fileicon[data-code="folder-animation"] {
+                    background-image: url('material/folder-animation.svg')
+                }
+                .fileicon[data-code="folder-animation-open"] {
+                    background-image: url('material/folder-animation-open.svg')
+                }
+                .fileicon[data-code="folder-guard"] {
+                    background-image: url('material/folder-guard.svg')
+                }
+                .fileicon[data-code="folder-guard-open"] {
+                    background-image: url('material/folder-guard-open.svg')
+                }
+                .fileicon[data-code="folder-prisma"] {
+                    background-image: url('material/folder-prisma.svg')
+                }
+                .fileicon[data-code="folder-prisma-open"] {
+                    background-image: url('material/folder-prisma-open.svg')
+                }
+                .fileicon[data-code="folder-pipe"] {
+                    background-image: url('material/folder-pipe.svg')
+                }
+                .fileicon[data-code="folder-pipe-open"] {
+                    background-image: url('material/folder-pipe-open.svg')
+                }
+                .fileicon[data-code="folder-svg"] {
+                    background-image: url('material/folder-svg.svg')
+                }
+                .fileicon[data-code="folder-svg-open"] {
+                    background-image: url('material/folder-svg-open.svg')
+                }
+                .fileicon[data-code="folder-vuex-store"] {
+                    background-image: url('material/folder-vuex-store.svg')
+                }
+                .fileicon[data-code="folder-vuex-store-open"] {
+                    background-image: url('material/folder-vuex-store-open.svg')
+                }
+                .fileicon[data-code="folder-nuxt"] {
+                    background-image: url('material/folder-nuxt.svg')
+                }
+                .fileicon[data-code="folder-nuxt-open"] {
+                    background-image: url('material/folder-nuxt-open.svg')
+                }
+                .fileicon[data-code="folder-vue-directives"] {
+                    background-image: url('material/folder-vue-directives.svg')
+                }
+                .fileicon[data-code="folder-vue-directives-open"] {
+                    background-image: url('material/folder-vue-directives-open.svg')
+                }
+                .fileicon[data-code="folder-terraform"] {
+                    background-image: url('material/folder-terraform.svg')
+                }
+                .fileicon[data-code="folder-terraform-open"] {
+                    background-image: url('material/folder-terraform-open.svg')
+                }
+                .fileicon[data-code="folder-mobile"] {
+                    background-image: url('material/folder-mobile.svg')
+                }
+                .fileicon[data-code="folder-mobile-open"] {
+                    background-image: url('material/folder-mobile-open.svg')
+                }
+                .fileicon[data-code="folder-stencil"] {
+                    background-image: url('material/folder-stencil.svg')
+                }
+                .fileicon[data-code="folder-stencil-open"] {
+                    background-image: url('material/folder-stencil-open.svg')
+                }
+                .fileicon[data-code="folder-firebase"] {
+                    background-image: url('material/folder-firebase.svg')
+                }
+                .fileicon[data-code="folder-firebase-open"] {
+                    background-image: url('material/folder-firebase-open.svg')
+                }
+                .fileicon[data-code="folder-firestore"] {
+                    background-image: url('material/folder-firestore.svg')
+                }
+                .fileicon[data-code="folder-firestore-open"] {
+                    background-image: url('material/folder-firestore-open.svg')
+                }
+                .fileicon[data-code="folder-cloud-functions"] {
+                    background-image: url('material/folder-cloud-functions.svg')
+                }
+                .fileicon[data-code="folder-cloud-functions-open"] {
+                    background-image: url('material/folder-cloud-functions-open.svg')
+                }
+                .fileicon[data-code="folder-svelte"] {
+                    background-image: url('material/folder-svelte.svg')
+                }
+                .fileicon[data-code="folder-svelte-open"] {
+                    background-image: url('material/folder-svelte-open.svg')
+                }
+                .fileicon[data-code="folder-update"] {
+                    background-image: url('material/folder-update.svg')
+                }
+                .fileicon[data-code="folder-update-open"] {
+                    background-image: url('material/folder-update-open.svg')
+                }
+                .fileicon[data-code="folder-intellij"] {
+                    background-image: url('material/folder-intellij.svg')
+                }
+                .fileicon[data-code="folder-intellij-open"] {
+                    background-image: url('material/folder-intellij-open.svg')
+                }
+                .fileicon[data-code="folder-intellij_light"] {
+                    background-image: url('material/folder-intellij_light.svg')
+                }
+                .fileicon[data-code="folder-intellij-open_light"] {
+                    background-image: url('material/folder-intellij-open_light.svg')
+                }
+                .fileicon[data-code="folder-azure-pipelines"] {
+                    background-image: url('material/folder-azure-pipelines.svg')
+                }
+                .fileicon[data-code="folder-azure-pipelines-open"] {
+                    background-image: url('material/folder-azure-pipelines-open.svg')
+                }
+                .fileicon[data-code="folder-mjml"] {
+                    background-image: url('material/folder-mjml.svg')
+                }
+                .fileicon[data-code="folder-mjml-open"] {
+                    background-image: url('material/folder-mjml-open.svg')
+                }
+                .fileicon[data-code="folder-admin"] {
+                    background-image: url('material/folder-admin.svg')
+                }
+                .fileicon[data-code="folder-admin-open"] {
+                    background-image: url('material/folder-admin-open.svg')
+                }
+                .fileicon[data-code="folder-jupyter"] {
+                    background-image: url('material/folder-jupyter.svg')
+                }
+                .fileicon[data-code="folder-jupyter-open"] {
+                    background-image: url('material/folder-jupyter-open.svg')
+                }
+                .fileicon[data-code="folder-scala"] {
+                    background-image: url('material/folder-scala.svg')
+                }
+                .fileicon[data-code="folder-scala-open"] {
+                    background-image: url('material/folder-scala-open.svg')
+                }
+                .fileicon[data-code="folder-connection"] {
+                    background-image: url('material/folder-connection.svg')
+                }
+                .fileicon[data-code="folder-connection-open"] {
+                    background-image: url('material/folder-connection-open.svg')
+                }
+                .fileicon[data-code="folder-quasar"] {
+                    background-image: url('material/folder-quasar.svg')
+                }
+                .fileicon[data-code="folder-quasar-open"] {
+                    background-image: url('material/folder-quasar-open.svg')
+                }
+                .fileicon[data-code="folder-next"] {
+                    background-image: url('material/folder-next.svg')
+                }
+                .fileicon[data-code="folder-next-open"] {
+                    background-image: url('material/folder-next-open.svg')
+                }
+                .fileicon[data-code="folder-cobol"] {
+                    background-image: url('material/folder-cobol.svg')
+                }
+                .fileicon[data-code="folder-cobol-open"] {
+                    background-image: url('material/folder-cobol-open.svg')
+                }
+                .fileicon[data-code="folder-yarn"] {
+                    background-image: url('material/folder-yarn.svg')
+                }
+                .fileicon[data-code="folder-yarn-open"] {
+                    background-image: url('material/folder-yarn-open.svg')
+                }
+                .fileicon[data-code="folder-husky"] {
+                    background-image: url('material/folder-husky.svg')
+                }
+                .fileicon[data-code="folder-husky-open"] {
+                    background-image: url('material/folder-husky-open.svg')
+                }
+                .fileicon[data-code="folder-storybook"] {
+                    background-image: url('material/folder-storybook.svg')
+                }
+                .fileicon[data-code="folder-storybook-open"] {
+                    background-image: url('material/folder-storybook-open.svg')
+                }
+                .fileicon[data-code="folder-base"] {
+                    background-image: url('material/folder-base.svg')
+                }
+                .fileicon[data-code="folder-base-open"] {
+                    background-image: url('material/folder-base-open.svg')
+                }
+                .fileicon[data-code="folder-cart"] {
+                    background-image: url('material/folder-cart.svg')
+                }
+                .fileicon[data-code="folder-cart-open"] {
+                    background-image: url('material/folder-cart-open.svg')
+                }
+                .fileicon[data-code="folder-home"] {
+                    background-image: url('material/folder-home.svg')
+                }
+                .fileicon[data-code="folder-home-open"] {
+                    background-image: url('material/folder-home-open.svg')
+                }
+                .fileicon[data-code="folder-project"] {
+                    background-image: url('material/folder-project.svg')
+                }
+                .fileicon[data-code="folder-project-open"] {
+                    background-image: url('material/folder-project-open.svg')
+                }
+                .fileicon[data-code="folder-interface"] {
+                    background-image: url('material/folder-interface.svg')
+                }
+                .fileicon[data-code="folder-interface-open"] {
+                    background-image: url('material/folder-interface-open.svg')
+                }
+                .fileicon[data-code="folder-netlify"] {
+                    background-image: url('material/folder-netlify.svg')
+                }
+                .fileicon[data-code="folder-netlify-open"] {
+                    background-image: url('material/folder-netlify-open.svg')
+                }
+                .fileicon[data-code="folder-enum"] {
+                    background-image: url('material/folder-enum.svg')
+                }
+                .fileicon[data-code="folder-enum-open"] {
+                    background-image: url('material/folder-enum-open.svg')
+                }
+                .fileicon[data-code="folder-contract"] {
+                    background-image: url('material/folder-contract.svg')
+                }
+                .fileicon[data-code="folder-contract-open"] {
+                    background-image: url('material/folder-contract-open.svg')
+                }
+                .fileicon[data-code="folder-helm"] {
+                    background-image: url('material/folder-helm.svg')
+                }
+                .fileicon[data-code="folder-helm-open"] {
+                    background-image: url('material/folder-helm-open.svg')
+                }
+                .fileicon[data-code="folder-queue"] {
+                    background-image: url('material/folder-queue.svg')
+                }
+                .fileicon[data-code="folder-queue-open"] {
+                    background-image: url('material/folder-queue-open.svg')
+                }
+                .fileicon[data-code="folder-vercel"] {
+                    background-image: url('material/folder-vercel.svg')
+                }
+                .fileicon[data-code="folder-vercel-open"] {
+                    background-image: url('material/folder-vercel-open.svg')
+                }
+                .fileicon[data-code="folder-cypress"] {
+                    background-image: url('material/folder-cypress.svg')
+                }
+                .fileicon[data-code="folder-cypress-open"] {
+                    background-image: url('material/folder-cypress-open.svg')
+                }
+                .fileicon[data-code="folder-decorators"] {
+                    background-image: url('material/folder-decorators.svg')
+                }
+                .fileicon[data-code="folder-decorators-open"] {
+                    background-image: url('material/folder-decorators-open.svg')
+                }
+                .fileicon[data-code="folder-java"] {
+                    background-image: url('material/folder-java.svg')
+                }
+                .fileicon[data-code="folder-java-open"] {
+                    background-image: url('material/folder-java-open.svg')
+                }
+                .fileicon[data-code="folder-resolver"] {
+                    background-image: url('material/folder-resolver.svg')
+                }
+                .fileicon[data-code="folder-resolver-open"] {
+                    background-image: url('material/folder-resolver-open.svg')
+                }
+                .fileicon[data-code="folder-angular"] {
+                    background-image: url('material/folder-angular.svg')
+                }
+                .fileicon[data-code="folder-angular-open"] {
+                    background-image: url('material/folder-angular-open.svg')
+                }
+                .fileicon[data-code="folder-unity"] {
+                    background-image: url('material/folder-unity.svg')
+                }
+                .fileicon[data-code="folder-unity-open"] {
+                    background-image: url('material/folder-unity-open.svg')
+                }
+                .fileicon[data-code="folder-pdf"] {
+                    background-image: url('material/folder-pdf.svg')
+                }
+                .fileicon[data-code="folder-pdf-open"] {
+                    background-image: url('material/folder-pdf-open.svg')
+                }
+                .fileicon[data-code="folder-proto"] {
+                    background-image: url('material/folder-proto.svg')
+                }
+                .fileicon[data-code="folder-proto-open"] {
+                    background-image: url('material/folder-proto-open.svg')
+                }
+                .fileicon[data-code="folder-plastic"] {
+                    background-image: url('material/folder-plastic.svg')
+                }
+                .fileicon[data-code="folder-plastic-open"] {
+                    background-image: url('material/folder-plastic-open.svg')
+                }
+                .fileicon[data-code="folder-gamemaker"] {
+                    background-image: url('material/folder-gamemaker.svg')
+                }
+                .fileicon[data-code="folder-gamemaker-open"] {
+                    background-image: url('material/folder-gamemaker-open.svg')
+                }
+                .fileicon[data-code="folder-mercurial"] {
+                    background-image: url('material/folder-mercurial.svg')
+                }
+                .fileicon[data-code="folder-mercurial-open"] {
+                    background-image: url('material/folder-mercurial-open.svg')
+                }
+                .fileicon[data-code="folder-godot"] {
+                    background-image: url('material/folder-godot.svg')
+                }
+                .fileicon[data-code="folder-godot-open"] {
+                    background-image: url('material/folder-godot-open.svg')
+                }
+                .fileicon[data-code="folder-lottie"] {
+                    background-image: url('material/folder-lottie.svg')
+                }
+                .fileicon[data-code="folder-lottie-open"] {
+                    background-image: url('material/folder-lottie-open.svg')
+                }
+                .fileicon[data-code="folder-taskfile"] {
+                    background-image: url('material/folder-taskfile.svg')
+                }
+                .fileicon[data-code="folder-taskfile-open"] {
+                    background-image: url('material/folder-taskfile-open.svg')
+                }
+                .fileicon[data-code="folder-drizzle"] {
+                    background-image: url('material/folder-drizzle.svg')
+                }
+                .fileicon[data-code="folder-drizzle-open"] {
+                    background-image: url('material/folder-drizzle-open.svg')
+                }
+                .fileicon[data-code="folder-cloudflare"] {
+                    background-image: url('material/folder-cloudflare.svg')
+                }
+                .fileicon[data-code="folder-cloudflare-open"] {
+                    background-image: url('material/folder-cloudflare-open.svg')
+                }
+                .fileicon[data-code="folder-seeders"] {
+                    background-image: url('material/folder-seeders.svg')
+                }
+                .fileicon[data-code="folder-seeders-open"] {
+                    background-image: url('material/folder-seeders-open.svg')
+                }
+                .fileicon[data-code="folder-store"] {
+                    background-image: url('material/folder-store.svg')
+                }
+                .fileicon[data-code="folder-store-open"] {
+                    background-image: url('material/folder-store-open.svg')
+                }
+                .fileicon[data-code="folder-bicep"] {
+                    background-image: url('material/folder-bicep.svg')
+                }
+                .fileicon[data-code="folder-bicep-open"] {
+                    background-image: url('material/folder-bicep-open.svg')
+                }
+                .fileicon[data-code="folder-snapcraft"] {
+                    background-image: url('material/folder-snapcraft.svg')
+                }
+                .fileicon[data-code="folder-snapcraft-open"] {
+                    background-image: url('material/folder-snapcraft-open.svg')
+                }
+                .fileicon[data-code="folder-development"] {
+                    background-image: url('material/folder-development.clone.svg')
+                }
+                .fileicon[data-code="folder-development-open"] {
+                    background-image: url('material/folder-development-open.clone.svg')
+                }
+                .fileicon[data-code="folder-flutter"] {
+                    background-image: url('material/folder-flutter.svg')
+                }
+                .fileicon[data-code="folder-flutter-open"] {
+                    background-image: url('material/folder-flutter-open.svg')
+                }
+                .fileicon[data-code="folder-snippet"] {
+                    background-image: url('material/folder-snippet.svg')
+                }
+                .fileicon[data-code="folder-snippet-open"] {
+                    background-image: url('material/folder-snippet-open.svg')
+                }
+                .fileicon[data-code="folder-element"] {
+                    background-image: url('material/folder-element.svg')
+                }
+                .fileicon[data-code="folder-element-open"] {
+                    background-image: url('material/folder-element-open.svg')
+                }
+                .fileicon[data-code="folder-src-tauri"] {
+                    background-image: url('material/folder-src-tauri.svg')
+                }
+                .fileicon[data-code="folder-src-tauri-open"] {
+                    background-image: url('material/folder-src-tauri-open.svg')
+                }
+                .fileicon[data-code="folder-favicon"] {
+                    background-image: url('material/folder-favicon.svg')
+                }
+                .fileicon[data-code="folder-favicon-open"] {
+                    background-image: url('material/folder-favicon-open.svg')
+                }
+                .fileicon[data-code="folder-lefthook"] {
+                    background-image: url('material/folder-lefthook.svg')
+                }
+                .fileicon[data-code="folder-lefthook-open"] {
+                    background-image: url('material/folder-lefthook-open.svg')
+                }
+                .fileicon[data-code="folder-bloc"] {
+                    background-image: url('material/folder-bloc.svg')
+                }
+                .fileicon[data-code="folder-bloc-open"] {
+                    background-image: url('material/folder-bloc-open.svg')
+                }
+                .fileicon[data-code="folder-powershell"] {
+                    background-image: url('material/folder-powershell.svg')
+                }
+                .fileicon[data-code="folder-powershell-open"] {
+                    background-image: url('material/folder-powershell-open.svg')
+                }
+                .fileicon[data-code="folder-repository"] {
+                    background-image: url('material/folder-repository.svg')
+                }
+                .fileicon[data-code="folder-repository-open"] {
+                    background-image: url('material/folder-repository-open.svg')
+                }
+                .fileicon[data-code="folder-luau"] {
+                    background-image: url('material/folder-luau.svg')
+                }
+                .fileicon[data-code="folder-luau-open"] {
+                    background-image: url('material/folder-luau-open.svg')
+                }
+                .fileicon[data-code="folder-obsidian"] {
+                    background-image: url('material/folder-obsidian.svg')
+                }
+                .fileicon[data-code="folder-obsidian-open"] {
+                    background-image: url('material/folder-obsidian-open.svg')
+                }
+                .fileicon[data-code="folder-trash"] {
+                    background-image: url('material/folder-trash.svg')
+                }
+                .fileicon[data-code="folder-trash-open"] {
+                    background-image: url('material/folder-trash-open.svg')
+                }
+                .fileicon[data-code="folder-cline"] {
+                    background-image: url('material/folder-cline.svg')
+                }
+                .fileicon[data-code="folder-cline-open"] {
+                    background-image: url('material/folder-cline-open.svg')
+                }
+                .fileicon[data-code="folder-liquibase"] {
+                    background-image: url('material/folder-liquibase.svg')
+                }
+                .fileicon[data-code="folder-liquibase-open"] {
+                    background-image: url('material/folder-liquibase-open.svg')
+                }
+                .fileicon[data-code="folder-dart"] {
+                    background-image: url('material/folder-dart.svg')
+                }
+                .fileicon[data-code="folder-dart-open"] {
+                    background-image: url('material/folder-dart-open.svg')
+                }
+                .fileicon[data-code="folder-zeabur"] {
+                    background-image: url('material/folder-zeabur.svg')
+                }
+                .fileicon[data-code="folder-zeabur-open"] {
+                    background-image: url('material/folder-zeabur-open.svg')
+                }
+                .fileicon[data-code="folder-kusto"] {
+                    background-image: url('material/folder-kusto.svg')
+                }
+                .fileicon[data-code="folder-kusto-open"] {
+                    background-image: url('material/folder-kusto-open.svg')
+                }
+                .fileicon[data-code="folder-policy"] {
+                    background-image: url('material/folder-policy.svg')
+                }
+                .fileicon[data-code="folder-policy-open"] {
+                    background-image: url('material/folder-policy-open.svg')
+                }
+                .fileicon[data-code="folder-attachment"] {
+                    background-image: url('material/folder-attachment.svg')
+                }
+                .fileicon[data-code="folder-attachment-open"] {
+                    background-image: url('material/folder-attachment-open.svg')
+                }
+                .fileicon[data-code="folder-bibliography"] {
+                    background-image: url('material/folder-bibliography.svg')
+                }
+                .fileicon[data-code="folder-bibliography-open"] {
+                    background-image: url('material/folder-bibliography-open.svg')
+                }
+                .fileicon[data-code="folder-link"] {
+                    background-image: url('material/folder-link.svg')
+                }
+                .fileicon[data-code="folder-link-open"] {
+                    background-image: url('material/folder-link-open.svg')
+                }
+                .fileicon[data-code="folder-pytorch"] {
+                    background-image: url('material/folder-pytorch.svg')
+                }
+                .fileicon[data-code="folder-pytorch-open"] {
+                    background-image: url('material/folder-pytorch-open.svg')
+                }
+                .fileicon[data-code="folder-blender"] {
+                    background-image: url('material/folder-blender.svg')
+                }
+                .fileicon[data-code="folder-blender-open"] {
+                    background-image: url('material/folder-blender-open.svg')
+                }
+                .fileicon[data-code="folder-atom"] {
+                    background-image: url('material/folder-atom.svg')
+                }
+                .fileicon[data-code="folder-atom-open"] {
+                    background-image: url('material/folder-atom-open.svg')
+                }
+                .fileicon[data-code="folder-molecule"] {
+                    background-image: url('material/folder-molecule.svg')
+                }
+                .fileicon[data-code="folder-molecule-open"] {
+                    background-image: url('material/folder-molecule-open.svg')
+                }
+                .fileicon[data-code="folder-organism"] {
+                    background-image: url('material/folder-organism.svg')
+                }
+                .fileicon[data-code="folder-organism-open"] {
+                    background-image: url('material/folder-organism-open.svg')
+                }
+                .fileicon[data-code="folder"] {
+                    background-image: url('material/folder.svg')
+                }
+                .fileicon[data-code="folder-open"] {
+                    background-image: url('material/folder-open.svg')
+                }
+                .fileicon[data-code="folder-root"] {
+                    background-image: url('material/folder-root.svg')
+                }
+                .fileicon[data-code="folder-root-open"] {
+                    background-image: url('material/folder-root-open.svg')
+                }
+                

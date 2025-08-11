@@ -21,12 +21,16 @@ function getLangId(languages: AppSettings['fileIcons']['languages'], path: strin
     return id
 }
 
-const fileicon = curry((icons: AppSettings['fileIcons'], path: string, dir: boolean) => {
+const fileicon = curry((icons: AppSettings['fileIcons'], path: string, dir: boolean|null) => {
     path = path.toLocaleLowerCase()
     const name = basename(path)
 
-    if (dir) {
-        return icons.folderNames?.[name]
+    if (dir !== null) {
+        return (
+            (dir ? icons.folderNamesExpanded?.[name] : null) ?? 
+            icons.folderNames?.[name] ?? 
+            (dir ? icons.folderExpanded ?? icons.folder : icons.folder)
+        )
     }
 
     const ext = name.match(/[^.]?\.(.+)$/)?.[1]

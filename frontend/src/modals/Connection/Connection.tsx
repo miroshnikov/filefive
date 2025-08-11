@@ -53,12 +53,10 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
     })
     const [theme, setTheme] = useState(appSettings.theme)
 
-    // const [host, setHost] = useState('')
     const [username, setUsername] = useState('')
     const [pass, setPass] = useState('')
     const [savePassword, setSavePassword] = useState(false)
     const [usePrivateKey, setUsePrivateKey] = useState(false)
-
 
     useEffect(() => { 
         if (file.length) {
