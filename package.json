@@ -1,6 +1,6 @@
 {
   "name": "filefive",
-  "description": "A SFTP/FTP client and dual-panel file manager for macOS and Linux",
+  "description": "SFTP/FTP/Amazon S3 client and dual-panel file manager for macOS and Linux",
   "version": "1.5.0",
   "license": "GPL-3.0",
   "author": "Max Miroshnikov",

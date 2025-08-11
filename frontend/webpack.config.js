@@ -2,6 +2,7 @@ const path = require('path')
 const util = require('node:util')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 const config = {
   entry: './src/index.tsx',
@@ -44,7 +45,12 @@ const config = {
         developerName: 'Max Miroshnikov',
         developerURL: 'https://github.com/miroshnikov'
       }
-    })
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'src/assets/icon-themes/', to: 'icon-themes' }
+      ],
+    }),
   ],
   module: {
       rules: [

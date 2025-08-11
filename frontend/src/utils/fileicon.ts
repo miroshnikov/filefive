@@ -1,0 +1,41 @@
+import { AppSettings } from '../../../src/types'
+import { basename } from './path'
+import { curry } from 'ramda'
+
+
+function getLangId(languages: AppSettings['fileIcons']['languages'], path: string, name: string, ext: string) {
+    let id =
+        languages
+            .find(({filenamePatterns}) => 
+                (filenamePatterns ?? [])
+                    .map(s => new RegExp(s.replace('**', '^.+').replace('*', '[^/]+')))
+                    .find(p => path.match(p))
+            )?.id ??
+        languages.find(({filenames}) => (filenames ?? []).includes(name))?.id ??
+        languages.find(({extensions}) => (extensions ?? []).includes('.'+ext))?.id
+    if (ext && !id) {
+        for (const parts = ext.split('.').slice(1); parts.length && !id; parts.unshift()) {
+            id = languages.find(({extensions}) => (extensions ?? []).includes('.'+parts.join('.')))?.id
+        }
+    }
+    return id
+}
+
+const fileicon = curry((icons: AppSettings['fileIcons'], path: string, dir: boolean) => {
+    path = path.toLocaleLowerCase()
+    const name = basename(path)
+
+    if (dir) {
+        return icons.folderNames?.[name]
+    }
+
+    const ext = name.match(/[^.]?\.(.+)$/)?.[1]
+    return (
+        icons.fileNames?.[name] ?? 
+        (ext && icons.fileExtensions?.[ext]) ??
+        icons.languageIds[getLangId(icons.languages, path, name, ext)] ??
+        icons.file
+    )
+})
+
+export default fileicon

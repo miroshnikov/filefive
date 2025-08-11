@@ -84,14 +84,18 @@
                         > div {
                             display: flex;
                             align-items: center;   
+                            gap: 0 .3em;
                             &.expanded > .icon {
                                 transform: rotate(90deg);
                             }
                             > .icon {
                                 opacity: .6;
                             }
-                            > .icon + span {
-                                padding-left: .3em;
+                            // > .icon + span {
+                            //     padding-left: .3em;
+                            // }
+                            > .fileicon::before {
+                                font-size: 1.2rem;
                             }
                             > span {
                                 white-space: nowrap;
@@ -109,7 +113,7 @@
                             }
                         }
 
-                        &:not(.d) > div {
+                        &:not(.d):not(.i) > div {
                             padding-left: calc(var(--icon-size) + .3em);
                         }
 

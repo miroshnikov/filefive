@@ -17,6 +17,7 @@ import {
 import { parseURI, createURI } from '../../../../src/utils/URI'
 import { filterRegExp } from '../../../../src/utils/filter'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
+import fileicon from '../../utils/fileicon'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
 import Filter from '../Filter/Filter'
@@ -44,7 +45,9 @@ import {
     takeLast,
     equals,
     adjust,
-    sort
+    sort,
+    identity,
+    map
 } from 'ramda'
 import numeral from 'numeral'
 import { DropEffect } from '../List/List'
@@ -94,7 +97,7 @@ const rightsToStr = (n: number) =>
 
 const toColumns = curry((columns: Columns, formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => string}, files: Files) => {
     return files.map(file => ({
-        ...pick(['URI', 'path', 'dir', 'target', FileAttrsAttr], file),
+        ...pick(['URI', 'path', 'dir', 'target', 'icon', FileAttrsAttr], file),
         ...{ rawSize: file.size },
         ...columns.reduce((props, {name}) => ({...props, 
             [name]: new String(name=='size' && file.dir ? '' : name in formatters ? formatters[name](file[name]) : file[name])
@@ -285,6 +288,7 @@ export default function Explorer ({
                     const i = files.findIndex(({path}) => path == dir)
                     return i >= 0 ? insertAll(i+1, sortFiles(filterFiles(folders.current[dir as string], filterPredicate), columns), files) : files
                 }, sortFiles(filterFiles(folders.current[root] ?? [], filterPredicate), columns)),
+                appSettings.fileIcons ? map(f => ({...f, icon: fileicon(appSettings.fileIcons, f.path, f.dir)})) : identity,
                 toColumns(columns, formatters),
             )(folders.current)
         )

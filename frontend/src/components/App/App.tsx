@@ -56,7 +56,13 @@ export default function App () {
     useLayoutEffect(() => {
         if (appSettings) {
             document.documentElement.setAttribute('data-mode', appSettings.mode == 'system' ? defaultMode : appSettings.mode)            
-            document.documentElement.setAttribute('data-theme', appSettings.theme)            
+            document.documentElement.setAttribute('data-theme', appSettings.theme)
+            if (appSettings.fileTheme) {
+                const link = document.createElement('link')
+                link.rel = 'stylesheet'
+                link.href = `icon-themes/${appSettings.fileTheme}.css`
+                document.head.appendChild(link)
+            }
         }
     }, [appSettings, defaultMode])
 

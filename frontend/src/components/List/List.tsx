@@ -28,7 +28,7 @@ export interface Column {
 }
 export type Columns = Column[]
 
-export type Item = FileInfo
+export type Item = FileInfo & { icon?: string }
 export type Items = Item[]
 
 export enum DropEffect {
@@ -514,13 +514,16 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                         {columns.map(({name, type}, i) =>
                                             i == 0 ?
                                                 <td key={name}
-                                                    className={classNames({d: item.dir})}
+                                                    className={classNames({d: item.dir, i: !!item.icon})}
                                                     data-depth={depth(item.path)-rootDepth}
                                                     data-f5-attributes={Object.entries(item[FileAttrsAttr] ?? {}).map(([id]) => id).join(' ')}
                                                 >
                                                     <div className={classNames({expanded: expanded.includes(item.path)})}>
                                                         {item.dir && 
                                                             <i className="icon">arrow_forward_ios</i>
+                                                        }
+                                                        {item.icon &&
+                                                            <i className="fileicon" data-code={item.icon}></i>
                                                         }
                                                         <span data-tooltip={item.path}>{item[name]}</span>
                                                         <ul>

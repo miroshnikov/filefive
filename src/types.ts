@@ -110,6 +110,28 @@ export interface AppSettings extends Twofold<ExplorerSettings> {
     sizeFmt: string
     path: Twofold<Path|undefined>
     sync: Twofold<Path>|null
+    fileTheme?: string
+    fileIcons?: {
+        file: string
+        folder?: string
+        fileExtensions?: Record<string, string>
+        fileNames?: Record<string, string>
+        folderNames?: Record<string, string>
+        light?: {
+            file?: string
+            folder?: string
+            fileExtensions?: Record<string, string>
+            fileNames?: Record<string, string>
+            folderNames?: Record<string, string>
+        }
+        languageIds: Record<string, string>
+        languages: {
+            id: string
+            extensions?: string[]
+            filenames?: string
+            filenamePatterns?: string[]
+        }[]
+    }
 }
 
 

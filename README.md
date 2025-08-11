@@ -4,11 +4,11 @@
 
 
 # FileFive: SFTP/FTP client and dual-panel file manager for macOS and Linux
-FileFive is a free open-source SFTP/FTP client and file manager with intuitive and modern dual-panel interface, available on Mac, and Linux. 
+FileFive is a free open-source SFTP/FTP/Amazon S3 client and file manager with intuitive and modern dual-panel interface, available on Mac, and Linux. 
 
 It is installed as a Node.js package and uses the web browser as GUI.
 
-FileFive has a unique set of features and may be an alternative to FileZilla, Cyberduck, Transmit, and ForkLift.
+FileFive has a unique set of features and may be a free alternative to FileZilla Pro, Transmit, ForkLift and Cyberduck.
 
 <p align="center">
     <img src="https://github.com/miroshnikov/filefive/blob/main/docs/screenshots/screenshot-1.png" alt="FileFive" />
@@ -43,8 +43,11 @@ Options:
 ```
 
 ## Features
-- Cross-platform, runs on Mac OS, Linux and any *nix with Node.js
-- Supports SSH File Transfer Protocol (SFTP) and FTP
+- Cross-platform, runs on MacOS, Linux and any *nix with Node.js
+- Supports 
+  - SSH File Transfer Protocol (SFTP)
+  - File Transfer Protocol (FTP)
+  - Amazon Simple Storage Service (Amazon S3)
 - Minimalistic and intuitive UI, mimicing the look and feel of VSCode Explorer view
 - Search/filter files using wildcards and JavaScript Regular Expressions
 - Synchronized browsing
@@ -52,7 +55,7 @@ Options:
 - Remote file editing
 - Files' Git statuses (uses your machine's Git installation)
 - Connections/servers are plain files stored on your filesystem, no need to export/import
-- Easy to backup connections and settings in `~/.f5` folder, e.g. by putting them into a Git repo
+- Easy to copy and backup connections and settings in `~/.f5` folder, e.g. by putting them into a Git repo
 - Drag & drop, copy & paste files support
 - Use browser tabs to browse more than one server or transfer files simultaneously
 - Utilize the built-in browser password manager to store passwords
