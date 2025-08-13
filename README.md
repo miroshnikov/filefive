@@ -4,9 +4,9 @@
 
 
 # FileFive: SFTP/FTP/AWS S3 GUI client and dual-panel file manager for macOS and Linux
-FileFive is a free open-source SFTP/FTP/Amazon S3 client and file manager with intuitive and modern dual-panel interface, available on Mac, and Linux. 
+FileFive is a free open-source SFTP/FTP/Amazon S3 client and file manager with intuitive and modern dual-panel user interface, available on Mac, and Linux. 
 
-It is installed as a Node.js package and uses the web browser as GUI.
+It is installed as an NPM package and uses the web browser as GUI.
 
 FileFive has a unique set of features and may be a free alternative to FileZilla Pro, Transmit, ForkLift and Cyberduck.
 
