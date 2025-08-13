@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
 import { Split } from '../../ui/components'
 import Explorer from '../Explorer/Explorer'
-import Connections from '../Connections'
+import Connections from '../Connections/Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
 import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial, QueueEventType } from '../../../../src/types'
 import { createURI, isLocal, parseURI } from '../../../../src/utils/URI'
@@ -15,7 +15,7 @@ import { useEffectOnUpdate, useSubscribe, useConcatAsyncEffect } from '../../hoo
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
-import { basename, dirname, join, descendantOf } from '../../utils/path'
+import { basename, dirname, join } from '../../utils/path'
 import classNames from 'classnames'
 import MissingDir from './MissingDir'
 import styles from './Workspace.less'

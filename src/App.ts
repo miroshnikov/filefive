@@ -116,6 +116,8 @@ export default class App {
                     message: `
                         <p>A new version of the FileFive is available!</p>
                         <p>Current version: <em>${versions[0]}</em> → New version: <em>${versions[1]}</em></p>
+                        <p>To update, run:</p>
+                        <pre> npm update -g filefive</pre>
                     `
                 })
             }

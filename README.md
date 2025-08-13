@@ -48,7 +48,7 @@ Options:
   - SSH File Transfer Protocol (SFTP)
   - File Transfer Protocol (FTP)
   - Amazon Simple Storage Service (Amazon S3)
-- Minimalistic and intuitive UI, mimicing the look and feel of VSCode Explorer view
+- Minimalistic and intuitive UI, that mimics the look and feel of VSCode Explorer view, including VS Code file icon themes
 - Search/filter files using wildcards and JavaScript Regular Expressions
 - Synchronized browsing
 - Copy files keeping relative paths, allows synchronization files in nested folders in one click
@@ -60,7 +60,7 @@ Options:
 - Use browser tabs to browse more than one server or transfer files simultaneously
 - Utilize the built-in browser password manager to store passwords
 - Open files and folders in default app or Visual Studio Code
-- Theming: System preference, Light, Dark; a different color theme per connection
+- Theming: System preference, Light, Dark; a different color theme per connection; the most popular file and folder icon themes from VS Code
 - Search On Type
 
 ## Feedbacks

@@ -33,7 +33,6 @@ export default function App () {
     const [appSettings, setAppSettings] = useState<AppSettings>(null)
 
     const currAppSettings = useRef<AppSettings>(null)
-
     const settingsFile = useRef('')
     const [settingsChanges, setSettingsChanges] = useState<AppSettingsChanges>({})
     const allSettingsChanges = useRef<AppSettingsChanges>({})
@@ -89,8 +88,12 @@ export default function App () {
             if (path == settingsFile.current) {
                 window.f5.settings().then(settings => {
                     if (!equals(currAppSettings.current, settings)) {
-                        currAppSettings.current = settings
-                        setAppSettings(settings)
+                        if (currAppSettings.current.fileTheme != settings.fileTheme) {
+                            location.reload()
+                        } else {
+                            currAppSettings.current = settings
+                            setAppSettings(settings)
+                        }
                     }
                 }) 
             }

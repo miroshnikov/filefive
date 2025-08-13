@@ -8,3 +8,5 @@ test
 yarn-error.log
 frontend/src/ui
 frontend/src/hooks
+frontend/src/asssets/icon-themes
+src/icon-themes

@@ -1,18 +1,20 @@
 import React, { useState, useContext } from "react"
-import { LocalFileSystemID, URI, Path, SortOrder, ExplorerSettings } from '../../../src/types'
-import { FileAttributeType } from '../../../src/FileSystem'
-import { AppSettingsContext } from '../context/config'
-import { MenuItem } from '../ui/components'
-import { parseURI } from '../../../src/utils/URI'
-import Explorer from './Explorer/Explorer'
-import dirMenu from '../menu/connectionsDir'
-import fileMenu from '../menu/connection'
-import ConnectionForm from '../modals/Connection/Connection'
-import { ToolbarItem } from './Toolbar/Toolbar'
-import { useSubscribe } from '../hooks'
-import { CommandID } from '../commands'
-import { command$ } from '../observables/command'
-import NoConnections from './NoConnections'
+import { LocalFileSystemID, URI, Path, SortOrder, ExplorerSettings } from '../../../../src/types'
+import { FileAttributeType } from '../../../../src/FileSystem'
+import { AppSettingsContext } from '../../context/config'
+import { MenuItem } from '../../ui/components'
+import { parseURI } from '../../../../src/utils/URI'
+import Explorer from '../Explorer/Explorer'
+import dirMenu from '../../menu/connectionsDir'
+import fileMenu from '../../menu/connection'
+import ConnectionForm from '../../modals/Connection/Connection'
+import { ToolbarItem } from '../Toolbar/Toolbar'
+import { useSubscribe } from '../../hooks'
+import { CommandID } from '../../commands'
+import { command$ } from '../../observables/command'
+import NoConnections from '../NoConnections'
+import classNames from 'classnames'
+import styles from './Connections.less'
 
 
 interface Props {
@@ -72,7 +74,7 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
         )
     }
 
-    return <>
+    return <div className={classNames(styles.root)}>
         <Explorer 
             icon='cloud_upload'
             connection={LocalFileSystemID}
@@ -91,5 +93,5 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
             onBlur={onBlur}
         ><NoConnections /></Explorer>
         <ConnectionForm file={connectionFile} onConnect={connect} onClose={() => setConnectionFile('')} />
-    </>
+    </div>
 }

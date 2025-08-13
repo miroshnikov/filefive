@@ -14,7 +14,7 @@ function getLangId(languages: AppSettings['fileIcons']['languages'], path: strin
         languages.find(({filenames}) => (filenames ?? []).includes(name))?.id ??
         languages.find(({extensions}) => (extensions ?? []).includes('.'+ext))?.id
     if (ext && !id) {
-        for (const parts = ext.split('.').slice(1); parts.length && !id; parts.unshift()) {
+        for (const parts = ext.split('.').slice(1); parts.length && !id; parts.shift()) {
             id = languages.find(({extensions}) => (extensions ?? []).includes('.'+parts.join('.')))?.id
         }
     }
@@ -34,9 +34,18 @@ const fileicon = curry((icons: AppSettings['fileIcons'], path: string, dir: bool
     }
 
     const ext = name.match(/[^.]?\.(.+)$/)?.[1]
+
+    const byExt = () => {
+        let id = null
+        for (const parts = ext.split('.'); parts.length && !id; parts.shift()) {
+            id = icons.fileExtensions?.[parts.join('.')]
+        }
+        return id
+    }
+
     return (
         icons.fileNames?.[name] ?? 
-        (ext && icons.fileExtensions?.[ext]) ??
+        (ext && byExt()) ??
         icons.languageIds[getLangId(icons.languages, path, name, ext)] ??
         icons.file
     )

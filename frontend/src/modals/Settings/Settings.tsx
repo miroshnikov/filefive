@@ -19,6 +19,7 @@ const fileIconThemes = [
     { value: 'vsicons', label: 'VSCode Icons' },
     { value: 'ayu', label: 'Ayu' },
     { value: 'vscodegreat', label: 'VSCode Great Icons' },
+    { value: 'fileicons', label: 'File Icons' },
     { value: 'nomo', label: 'Nomo Dark' }
 ]
 
