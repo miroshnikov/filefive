@@ -3,7 +3,7 @@
 </p>
 
 
-# FileFive: SFTP/FTP client and dual-panel file manager for macOS and Linux
+# FileFive: SFTP/FTP/AWS S3 GUI client and dual-panel file manager for macOS and Linux
 FileFive is a free open-source SFTP/FTP/Amazon S3 client and file manager with intuitive and modern dual-panel interface, available on Mac, and Linux. 
 
 It is installed as a Node.js package and uses the web browser as GUI.
@@ -33,7 +33,7 @@ Run `f5` and FileFive will be opened in the default browser. Press <kbd>ctrl</kb
 > f5 --help
 Usage: F5 [options]
 
-SFTP/FTP client, dual-panel file manager in the browser
+SFTP/FTP/S3 client, dual-panel file manager in the browser
 
 Options:
   -V, --version        output the version number
@@ -43,24 +43,24 @@ Options:
 ```
 
 ## Features
-- Cross-platform, runs on MacOS, Linux and any *nix with Node.js
+- **Cross-platform**, runs on MacOS, Linux and any *nix with Node.js
 - Supports 
-  - SSH File Transfer Protocol (SFTP)
-  - File Transfer Protocol (FTP)
-  - Amazon Simple Storage Service (Amazon S3)
-- Minimalistic and intuitive UI, that mimics the look and feel of VSCode Explorer view, including VS Code file icon themes
-- Search/filter files using wildcards and JavaScript Regular Expressions
-- Synchronized browsing
-- Copy files keeping relative paths, allows synchronization files in nested folders in one click
-- Remote file editing
-- Files' Git statuses (uses your machine's Git installation)
-- Connections/servers are plain files stored on your filesystem, no need to export/import
-- Easy to copy and backup connections and settings in `~/.f5` folder, e.g. by putting them into a Git repo
-- Drag & drop, copy & paste files support
-- Use browser tabs to browse more than one server or transfer files simultaneously
-- Utilize the built-in browser password manager to store passwords
-- Open files and folders in default app or Visual Studio Code
-- Theming: System preference, Light, Dark; a different color theme per connection; the most popular file and folder icon themes from VS Code
+  - SSH File Transfer Protocol (**SFTP**)
+  - File Transfer Protocol (**FTP**)
+  - Amazon Simple Storage Service (**Amazon S3**)
+- Minimalistic and intuitive UI, that **mimics the look and feel of VSCode Explorer view**, including VS Code file icon themes
+- **Search/filter** files using wildcards and **JavaScript Regular Expressions**
+- **Synchronized browsing**
+- Copy files keeping relative paths, allows **synchronization files in nested folders in one click**
+- **Remote file editing**
+- **Files' Git statuses** (uses your machine's Git installation)
+- Connections/servers are **plain files stored on your filesystem**, no need to export/import
+- **Easy to copy and backup connections and settings** in `~/.f5` folder, e.g. by putting them into a Git repo
+- **Drag & drop**, **copy & paste** files support
+- Use browser **tabs** to browse more than one server or transfer files simultaneously
+- Utilize the **built-in browser password manager** to store passwords
+- **Open files and folders** in default app or **Visual Studio Code**
+- **Theming**: System preference, Light, Dark; a different color theme per connection; the most popular file and folder icon themes from VS Code
 - Search On Type
 
 ## Feedbacks
