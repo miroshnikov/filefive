@@ -96,11 +96,11 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     }, [remotePath, localPath])
 
     const openLocal = (path: string) => {
-        command$.next({ id: CommandID.Transfer, uri: createURI(LocalFileSystemID, path) })
+        command$.next({ id: CommandID.Upload, uri: createURI(LocalFileSystemID, path) })
     }
 
     const openRemote = (path: string) => {
-        command$.next({ id: CommandID.Transfer, uri: createURI(connection?.id ?? LocalFileSystemID, path) })
+        command$.next({ id: CommandID.Download, uri: createURI(connection?.id ?? LocalFileSystemID, path) })
     }
 
     const connect = (path: string) => {
@@ -197,7 +197,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         {
             id: CommandID.SelectAllFiles,
             icon: 'select',
-            title: 'Select All Files',
+            title: 'Select Only Files',
             onClick: () => command$.next({id: CommandID.SelectAllFiles})
         },
         {
@@ -209,21 +209,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     ]
 
     const localToolbar: ToolbarItem[] = [
-        {
-            id: CommandID.Transfer,
-            icon: connection ? 'upload' : 'file_copy',
-            title: connection ? 'Upload Selected' : 'Copy Selected',
-            disabled: !localSelected.length,
-            onClick: () => command$.next({id: CommandID.Transfer})
-        },
-        {
-            id: 'transfer_keep_paths',
-            icon: connection ? 'upload_2' : 'folder_copy',
-            title: (connection ? 'Upload Selected' : 'Copy Selected') + ' Keep Relative Paths',
-            disabled: !localSelected.length,
-            onClick: () => command$.next({ id: CommandID.Transfer, root: localPath })
-        },
-
         ...toolbar,
         {
             id: CommandID.Delete,
@@ -235,20 +220,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     ]
 
     const remoteToolbar: ToolbarItem[] = [
-        {
-            id: CommandID.Transfer,
-            icon: connection ? 'download' : 'file_copy',
-            title: connection ? 'Download Selected' : 'Copy Selected',
-            disabled: !remoteSelected.length,
-            onClick: () => command$.next({id: CommandID.Transfer})
-        },
-        {
-            id: 'transfer_keep_paths',
-            icon: connection ? 'download_2' : 'folder_copy',
-            title: (connection ? 'Download Selected' : 'Copy Selected') + ' Keep Relative Paths',
-            disabled: !remoteSelected.length,
-            onClick: () => command$.next({ id: CommandID.Transfer, root: remotePath })
-        },
         ...toolbar,
         {
             id: CommandID.Delete,
@@ -291,8 +262,17 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         if (id == LocalFileSystemID) {
             const copyTo = remote ? createURI(LocalFileSystemID, localPath) : createURI(connection?.id ?? LocalFileSystemID, remotePath)
             setMenu(dir ? 
-                localDirMenu(path, remote ? remoteSelected : localSelected, copyTo, path == (remote ? remotePath : localPath)) : 
-                localFileMenu(path, remote ? remoteSelected : localSelected, copyTo)
+                localDirMenu(
+                    path, 
+                    remote ? remoteSelected : localSelected, 
+                    copyTo, 
+                    path == (remote ? remotePath : localPath)
+                ) : 
+                localFileMenu(
+                    path, 
+                    remote ? remoteSelected : localSelected, 
+                    copyTo
+                )
             )
         } else {
             setMenu(dir ? 
@@ -309,41 +289,44 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     setShowConnections(true)
                     break
                 }
-                case CommandID.Transfer: {
-                    if (focused.current) {
-                        let local = focused.current == 'local'
-                        let files = local ? localSelected : remoteSelected
-                        if (cmd.uri) {
-                            local = isLocal(cmd.uri)
-                            const { path } = parseURI(cmd.uri)
-                            files = (local ? localSelected : remoteSelected).includes(path) ? 
-                                (local ? localSelected : remoteSelected) : 
-                                [path]
-                        }
-                        if (!files.length) {
-                            return
-                        }
-
-                        const qid = local ?
-                            window.f5.copy(
-                                files.map(path => createURI(LocalFileSystemID, path)), 
-                                connection?.id ? 
-                                    createURI(connection.id, remotePath) :
-                                    createURI(LocalFileSystemID, focused.current == 'local' ? remotePath : localPath),
-                                false,
-                                (connection ?? appSettings).local.filter,
-                                cmd.root,
-                                sid.current
-                            ) :
-                            window.f5.copy(
-                                files.map(path => createURI(showConnections ? LocalFileSystemID : connection?.id ?? LocalFileSystemID, path)), 
-                                createURI(LocalFileSystemID, localPath),
-                                false,
-                                showConnections ? null : (connection ?? appSettings).remote.filter,
-                                cmd.root,
-                                sid.current
-                            )
-                        qid.then(id => createQueue(id))
+                case CommandID.Upload: 
+                case CommandID.MirrorLocal: {
+                    console.log(cmd)
+                    let files = localSelected
+                    if (cmd.uri) {
+                        const { path } = parseURI(cmd.uri)
+                        files = localSelected.includes(path) ? localSelected : [path]
+                    }
+                    if (files.length) {
+                        window.f5.copy(
+                            files.map(path => createURI(LocalFileSystemID, path)), 
+                            connection?.id ? 
+                                createURI(connection.id, remotePath) :
+                                createURI(LocalFileSystemID, remotePath),
+                            false,
+                            (connection ?? appSettings).local.filter,
+                            cmd.id == CommandID.MirrorLocal ? localPath : null,
+                            sid.current
+                        ).then(createQueue)
+                    }
+                    break
+                }
+                case CommandID.Download: 
+                case CommandID.MirrorRemote: {
+                    let files = remoteSelected
+                    if (cmd.uri) {
+                        const { path } = parseURI(cmd.uri)
+                        files = remoteSelected.includes(path) ? remoteSelected : [path]
+                    }
+                    if (files.length) {
+                        window.f5.copy(
+                            files.map(path => createURI(showConnections ? LocalFileSystemID : connection?.id ?? LocalFileSystemID, path)), 
+                            createURI(LocalFileSystemID, localPath),
+                            false,
+                            showConnections ? null : (connection ?? appSettings).remote.filter,
+                            cmd.id == CommandID.MirrorRemote ? remotePath : null,
+                            sid.current
+                        ).then(createQueue)
                     }
                     break
                 }
@@ -563,6 +546,44 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     data-tooltip={`Synchronized Browsing is ${sync ? 'On' : 'Off'}`}
                     data-command={CommandID.SyncBrowsing}
                 >{sync ? 'sync_lock' : 'sync'}</button>
+                <div className={styles.transfertoolbar}>
+                    <button 
+                        className="icon"
+                        data-command={CommandID.Upload}
+                        data-tooltip={connection ? 'Upload' : 'Copy'}
+                        disabled={!localSelected.length}
+                        onClick={() => command$.next({id: CommandID.Upload})}
+                    >
+                        arrow_shape_up
+                    </button>
+                    <button 
+                        className="icon"
+                        data-command={CommandID.MirrorLocal}
+                        data-tooltip={connection ? 'Mirror Upload' : 'Mirror Copy'}
+                        disabled={!localSelected.length}
+                        onClick={() => command$.next({id: CommandID.MirrorLocal})}
+                    >
+                        arrow_shape_up_stack
+                    </button>
+                    <button 
+                        className="icon"
+                        data-command={CommandID.Download}
+                        data-tooltip={connection ? 'Download' : 'Copy'}
+                        disabled={!remoteSelected.length}
+                        onClick={() => command$.next({id: CommandID.Download})}
+                    >
+                        arrow_shape_up
+                    </button>
+                    <button 
+                        className="icon"
+                        data-command={CommandID.MirrorRemote}
+                        data-tooltip={connection ? 'Mirror Download' : 'Mirror Copy'}
+                        disabled={!remoteSelected.length}
+                        onClick={() => command$.next({id: CommandID.MirrorRemote})}
+                    >
+                        arrow_shape_up_stack
+                    </button>
+                </div>
             </Tooltips>
         </Split>
     </>)

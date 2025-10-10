@@ -17,6 +17,50 @@
     }
 }
 
+:local(.transfertoolbar) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bar-background);
+    color: var(--border-color);
+    border: 1px solid var(--dry-resizer-color);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: .2em;
+    cursor: auto;
+    user-select: none;
+    z-index: 1;
+    > .icon {
+        font-size: 1.15rem;
+        color: var(--bar-color);
+        padding: .2em .1em;
+        border-radius: 6px;
+        cursor: pointer;
+        &:hover {
+            background-color: var(--hover-background);
+        }
+        &:disabled {
+            opacity: .6;
+            cursor: auto;
+            &:hover {
+                background-color: inherit;
+                color: revert;
+            }
+        }
+        &:nth-child(1), &:nth-child(2) {
+            transform: rotate(90deg);
+        }
+        &:nth-child(2) {
+            margin-bottom: .6em;
+        }
+        &:nth-child(3), &:nth-child(4) {
+            transform: rotate(-90deg);
+        }
+    }
+}
+
 .left > div .path {
     padding-right: 1rem;
 }

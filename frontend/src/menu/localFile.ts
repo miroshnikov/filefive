@@ -11,12 +11,17 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
     const { id, path: to } = parseURI(copyTo)
     return [
         {
-            id: CommandID.Transfer,
+            id: CommandID.Upload,
             label: id == LocalFileSystemID ? `Copy to ${basename(to)}` : 'Upload',
-            click: () => command$.next({ id: CommandID.Transfer, uri: createURI(LocalFileSystemID, path) }),
+            click: () => command$.next({ id: CommandID.Upload, uri: createURI(LocalFileSystemID, path) })
+        },
+        {
+            id: CommandID.MirrorLocal,
+            label: id == LocalFileSystemID ? `Mirror to ${basename(to)}` : 'Mirror Upload',
+            click: () => command$.next({ id: CommandID.MirrorLocal, uri: createURI(LocalFileSystemID, path) }),
             separator: true
         },
-
+        
         {
             id: CommandID.TriggerCopy,
             label: 'Copy',

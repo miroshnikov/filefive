@@ -10,14 +10,20 @@ import { error$ } from '../observables/error'
 export default function (path: Path, selected: Path[], copyTo: URI, isRoot: boolean): MenuItem[] {
     const { id, path: to } = parseURI(copyTo)
     return [
+        {
+            id: CommandID.Upload,
+            label: id == LocalFileSystemID ? `Copy to ${basename(to)}` : 'Upload',
+            click: () => command$.next({ id: CommandID.Upload, uri: createURI(LocalFileSystemID, path) }),
+            separator: isRoot
+        },
         ...(isRoot ? [] : [
             {
-                id: CommandID.Transfer,
-                label: id == LocalFileSystemID ? `Copy to ${basename(to)}` : 'Upload',
-                click: () => command$.next({ id: CommandID.Transfer, uri: createURI(LocalFileSystemID, path) }),
+                id: CommandID.MirrorLocal,
+                label: id == LocalFileSystemID ? `Mirror to ${basename(to)}` : 'Mirror Upload',
+                click: () => command$.next({ id: CommandID.MirrorLocal, uri: createURI(LocalFileSystemID, path) }),
                 separator: true
             },
-        ]),
+         ]),
 
         {
             id: 'new-dir',
@@ -41,11 +47,13 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
             label: 'Copy Path',
             click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(LocalFileSystemID, path) })
         },
-        {
-            id: CommandID.CopyRelativePath,
-            label: 'Copy Relative Path',
-            click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
-        },
+        ...(isRoot ? [] : [ 
+            {
+                id: CommandID.CopyRelativePath,
+                label: 'Copy Relative Path',
+                click: () => command$.next({ id: CommandID.CopyRelativePath, uri: createURI(LocalFileSystemID, path) })
+            }
+        ]),
         {
             id: CommandID.CopyName,
             label: 'Copy Name',

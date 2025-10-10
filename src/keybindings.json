@@ -40,8 +40,20 @@
         "command": "copy-name"
     },
     {
-        "key": "f5",
-        "command": "transfer"
+        "key": "alt+arrowright",
+        "command": "upload"
+    },
+    {
+        "key": "meta+arrowright",
+        "command": "mirror-local"
+    },
+    {
+        "key": "alt+arrowleft",
+        "command": "download"
+    },
+    {
+        "key": "meta+arrowleft",
+        "command": "mirror-remote"
     },
     {
         "key": "ctrl+f",

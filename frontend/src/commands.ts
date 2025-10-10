@@ -2,7 +2,10 @@ import { URI, Path } from '../../src/types'
 
 
 export enum CommandID {
-    Transfer = 'transfer',
+    Upload = 'upload',
+    MirrorLocal = 'mirror-local',
+    Download = 'download',
+    MirrorRemote = 'mirror-remote',
     Delete = 'delete',
     SelectAll = 'select-all',
     SelectAllFiles = 'select-all-files',
@@ -50,6 +53,10 @@ export type KeyShortcutCommand =
     | CommandID.SyncBrowsing
 
 type FileCommand = 
+    | CommandID.Upload
+    | CommandID.MirrorLocal
+    | CommandID.Download
+    | CommandID.MirrorRemote
     | CommandID.Rename
     | CommandID.Duplicate
     | CommandID.ClearContents
@@ -65,11 +72,6 @@ export type Command = { label?: string } & (
     | { 
         id: FileCommand, 
         uri?: URI
-      } 
-    | {
-        id: CommandID.Transfer,
-        uri?: URI,
-        root?: Path
       }
     | { id: CommandID.Paste, files?: File[], uris?: URI[] }
     | { id: CommandID.Copy, e: ClipboardEvent }

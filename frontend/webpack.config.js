@@ -41,7 +41,7 @@ const config = {
       favicons: {
         appName: 'FileFive',
         appShortName: 'F5',
-        appDescription: 'SFTP/FTP client, dual-panel file manager',
+        appDescription: 'SFTP/FTP/S3 client, dual-panel file manager',
         developerName: 'Max Miroshnikov',
         developerURL: 'https://github.com/miroshnikov'
       }

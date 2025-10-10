@@ -9,11 +9,19 @@ import { error$ } from '../observables/error'
 export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path, isRoot: boolean): MenuItem[] {
     return [
         {
-            id: CommandID.Transfer,
+            id: CommandID.Download,
             label: 'Download',
-            click: () => command$.next({ id: CommandID.Transfer, uri: createURI(id, path) }),
-            separator: true
+            click: () => command$.next({ id: CommandID.Download, uri: createURI(id, path) }),
+            separator: isRoot
         },
+        ...(isRoot ? [] : [
+            {
+                id: CommandID.MirrorRemote,
+                label: 'Mirror Download',
+                click: () => command$.next({ id: CommandID.MirrorRemote, uri: createURI(id, path) }),
+                separator: true
+            },
+        ]),
 
         {
             id: 'new-dir',

@@ -17,7 +17,7 @@ import options from './options'
 
 program
     .name('F5')
-    .description('SFTP/FTP client, dual-panel file manager in the browser')
+    .description('SFTP/FTP/S3 client, dual-panel file manager in the browser')
     .version(info.version)
     .option('-p, --port <number>','port number', '3113')
     .option('--log', 'prints the log information')

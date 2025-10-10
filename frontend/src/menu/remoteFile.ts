@@ -10,9 +10,14 @@ import { createQueue } from '../observables/queue'
 export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path): MenuItem[] {
     return [
         {
-            id: CommandID.Transfer,
+            id: CommandID.Download,
             label: 'Download',
-            click: () => command$.next({ id: CommandID.Transfer, uri: createURI(id, path) }),
+            click: () => command$.next({ id: CommandID.Download, uri: createURI(id, path) })
+        },
+        {
+            id: CommandID.MirrorRemote,
+            label: 'Mirror Download',
+            click: () => command$.next({ id: CommandID.MirrorRemote, uri: createURI(id, path) }),
             separator: true
         },
 
@@ -51,12 +56,12 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'vscode',
             label: "Open in VS Code",
-            click: () => window.f5.open(createURI(id, path), 'code').then(qid => createQueue(qid))
+            click: () => window.f5.open(createURI(id, path), 'code').then(createQueue)
         },
         {
             id: 'open',
             label: 'Open in Default App',
-            click: () => { window.f5.open(createURI(id, path)).then(qid => createQueue(qid)) },
+            click: () => { window.f5.open(createURI(id, path)).then(createQueue) },
             separator: true
         },
 
