@@ -1,12 +1,14 @@
 :local(.root) {
     display: contents;
-    .fileicon {
-        background: none !important;
-        &::before {
-            font-family: 'Material Symbols Outlined' !important;
-            opacity: .6;
-            font-size: 1rem !important;
-            content: 'cloud_upload' !important;
+    td:not(.d) {
+        .fileicon {
+            background: none !important;
+            &::before {
+                font-family: 'Material Symbols Outlined' !important;
+                opacity: .6;
+                font-size: 1rem !important;
+                content: 'cloud_upload' !important;
+            }
         }
     }
 }

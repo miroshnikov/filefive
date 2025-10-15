@@ -25,7 +25,7 @@ export default async function (path: string): Promise<AppSettings> {
         keybindings,
         mode: config?.mode ?? 'system',
         theme: config?.theme ?? 'black',
-        fileTheme: config?.fileTheme ?? '',
+        fileTheme: typeof config?.fileTheme === 'string' ? config.fileTheme : 'material',
         timeFmt: config?.timeFmt ?? 'yyyy-MM-dd HH:mm',
         sizeFmt: config?.sizeFmt ?? '0.0 b',
         local: explorerSettings(LOCAL_ATTRIBUTES, config?.local), 

@@ -76,7 +76,7 @@ export default function Filter({ show, initial, onChange, onClose }: FilterProps
                 <button data-on={value.matchCase} data-tooltip="Match Case" onClick={() => update({matchCase: !value.matchCase})}>Aa</button>
                 <button className="wholeWord" data-on={value.wholeWord} data-tooltip="Match Whole Word" onClick={() => update({wholeWord: !value.wholeWord})}>ab</button>
                 <button data-on={value.useRe} data-tooltip="Use JavaScript Regular Expression" onClick={() => update({useRe: !value.useRe})}>.*</button>
-                <button data-on={value.folders} data-tooltip="Apply to Folders" onClick={() => update({folders: !value.folders})}>
+                <button data-on={value.folders} data-tooltip="Include Folders" onClick={() => update({folders: !value.folders})}>
                     <i className="icon">folder</i>
                 </button>
                 <button data-on={value.invert} data-tooltip="Invert (Exclude Matched)" onClick={() => update({invert: !value.invert})}>

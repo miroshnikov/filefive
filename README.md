@@ -6,7 +6,9 @@
 # FileFive: SFTP/FTP/AWS S3 GUI client and dual-panel file manager for macOS and Linux
 FileFive is a free open-source SFTP/FTP/Amazon S3 client and file manager with intuitive and modern dual-panel user interface, available on Mac, and Linux. 
 
-FileFive has a unique set of features and may be a free alternative to FileZilla Pro, Transmit, ForkLift and Cyberduck.
+It has a unique set of features and may be a free alternative to `FileZilla Pro`, `Transmit`, `ForkLift` and `Cyberduck`.
+
+FileFive is also a visual, no-code and easy-to-use backup and CI/CD tool for developers and system administrators with user-friendly UI interface, offering similar functionality to `rsync`, `rclone` and `sshfs`.
 
 <p align="center">
     <img src="https://github.com/miroshnikov/filefive/blob/main/docs/screenshots/screenshot-1.png" alt="FileFive" />
@@ -47,7 +49,7 @@ Options:
   - File Transfer Protocol (**FTP**)
   - Amazon Simple Storage Service (**Amazon S3**)
 - Powerful, intuitive and minimalistic UI, that **mimics the look and feel of VSCode Explorer view**, including VS Code file icon themes
-- **Search/filter** files using wildcards and **JavaScript Regular Expressions**
+- **Search/filter** files using wildcards, **JavaScript Regular Expressions** and Git status
 - **Synchronized browsing**
 - **Upload/download/copy files and folders preserving relative paths**, similar to `cp --parents`, `rsync -R` or MacOS `ditto` commands. Any necessary parent directories in the destination will be created to replicate the path of the source files. It allows **synchronization files in nested folders in one click**
 - **Remote file editing**
