@@ -6,6 +6,8 @@ import { whereEq } from 'ramda'
 import Connection from '../Connection'
 import { stat as localStat } from '../Local'
 import { filterRegExp } from '../utils/filter'
+import LocalTransformer from '../transformers/Local'
+import { createURI } from '../utils/URI'
 
 
 export interface Queue {
@@ -99,6 +101,20 @@ export default abstract class TransmitQueue implements Queue {
         if (this.filter) {
             const re = filterRegExp(this.filter)
             matchFilter = (file: FileItem) => {
+                if (this.filter.ignored === true && 'git_i' in file.attributes) {
+                    return false
+                }
+                if (this.filter.uncommited === true &&
+                    !(  'git_u' in file.attributes || 
+                        'git_m' in file.attributes || 
+                        'git_a' in file.attributes || 
+                        'git_c' in file.attributes 
+                    ) ) {
+                    return false
+                }
+                if (!re) {
+                    return true
+                }
                 const found = re.exec(file.name)
                 return this.filter?.invert ?? false ? found === null : found !== null
             }
@@ -218,8 +234,15 @@ export default abstract class TransmitQueue implements Queue {
     }
 
     protected ls(connId: ConnectionID): (path: string) => Promise<FileItem[]|null> {
+        const transformer = new LocalTransformer()
         return connId == LocalFileSystemID ? 
-            (dir: string) => Connection.get(connId).ls(dir) : 
+            async (dir: string) => {
+                return transformer.transform(
+                    dir,
+                    (await Connection.get(connId).ls(dir))
+                        .map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
+                )
+            } : 
             lsRemote(connId)
     }
 

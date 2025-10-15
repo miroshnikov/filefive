@@ -6,34 +6,38 @@ import { command$ } from '../observables/command'
 import { error$ } from '../observables/error'
 
 
-export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path, isRoot: boolean): MenuItem[] {
+export default function (id: ConnectionID, path: Path, selected: Path[], copyTo: Path, isRoot: boolean, isParent: boolean): MenuItem[] {
     return [
-        {
-            id: CommandID.Download,
-            label: 'Download',
-            click: () => command$.next({ id: CommandID.Download, uri: createURI(id, path) }),
-            separator: isRoot
-        },
-        ...(isRoot ? [] : [
+        ...(isParent ? [] : [
+            {
+                id: CommandID.Download,
+                label: 'Download',
+                click: () => command$.next({ id: CommandID.Download, uri: createURI(id, path) }),
+                separator: isRoot
+            }
+        ]),
+        ...((isParent || isRoot) ? [] : [
             {
                 id: CommandID.MirrorRemote,
-                label: 'Mirror Download',
+                label: 'Download with Relative Path',
                 click: () => command$.next({ id: CommandID.MirrorRemote, uri: createURI(id, path) }),
                 separator: true
             },
         ]),
 
-        {
-            id: 'new-dir',
-            label: 'New Folder...',
-            click: () => command$.next({id: CommandID.NewDir})
-        },
-        {
-            id: 'new-file',
-            label: 'New File...',
-            click: () => command$.next({id: CommandID.NewFile}),
-            separator: true
-        },
+        ...(isParent ? [] : [
+            {
+                id: 'new-dir',
+                label: 'New Folder...',
+                click: () => command$.next({id: CommandID.NewDir})
+            },
+            {
+                id: 'new-file',
+                label: 'New File...',
+                click: () => command$.next({id: CommandID.NewFile}),
+                separator: true
+            }
+        ]),
 
         {
             id: CommandID.TriggerCopy,
@@ -50,7 +54,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
             label: 'Copy Path',
             click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(id, path) })
         },
-        ...(isRoot ? [] : [ 
+        ...((isParent || isRoot) ? [] : [ 
             {
                 id: CommandID.CopyRelativePath,
                 label: 'Copy Relative Path',
@@ -61,10 +65,10 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
             id: CommandID.CopyName,
             label: 'Copy Name',
             click: () => command$.next({ id: CommandID.CopyName, uri: createURI(id, path) }),
-            separator: true
+            separator: !isParent
         },
 
-        ...(isRoot ? [] : [ 
+        ...((isParent || isRoot) ? [] : [ 
             {
                 id: 'rename',
                 label: 'Rename...',
@@ -88,10 +92,12 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
             }
         ]),
         
-        {
-            id: 'refresh',
-            label: 'Refresh',
-            click: () => command$.next({id: CommandID.Refresh})
-        }
+        ...(isParent ? [] : [
+            {
+                id: 'refresh',
+                label: 'Refresh',
+                click: () => command$.next({id: CommandID.Refresh})
+            }
+        ])
     ]
 }

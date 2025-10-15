@@ -285,6 +285,10 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                     rename(cmd.uri ?? target.URI)
                     break
                 }
+                case CommandID.GoUp: {
+                    isActive.current && parent && onGo(parent)
+                    break
+                }
             }
         }),
         [target, items, expanded]
@@ -465,8 +469,10 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                 <tr 
                                     key={parent} 
                                     className='up'
-                                    onDoubleClick={() => onGo(parent)}
+                                    onClick={() => onGo(parent)}
                                     onContextMenu={e => {e.stopPropagation(); onMenu(parent, true)}}
+                                    data-tooltip={'Go Up'}
+                                    data-command={CommandID.GoUp}
                                 >
                                     <td colSpan={columns.length + 1}><span className="icon">keyboard_return</span>..</td>
                                 </tr>

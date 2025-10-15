@@ -4,18 +4,19 @@
     gap: .6em;
     padding: .4em 1em .4em .4em;
     background-color: var(--bar-background);
-    > i {
-        flex: 1em 0 0;
-        color: var(--bar-color);
-        font-size: 1.5em;
-    }
     > div {
+        > i {
+            flex: 1em 0 0;
+            color: var(--bar-color);
+            font-size: 1.3em;
+            opacity: .6;
+        }
         flex: 100% 1 1;
         display: flex;
         align-items: center;
         gap: .2em;
         background-color: var(--background);
-        padding: .2em .6em;
+        padding: .2em .6em .2em .3em;
         border-radius: var(--dry-border-radius);
         > input {
             flex: 100% 1 1;
@@ -33,6 +34,7 @@
             font-size: .7rem;
             border-radius: 2px;
             padding: .2em .4em;
+            opacity: .8;
             cursor: pointer;
             &:hover {
                 background-color: var(--hover-background);
@@ -41,7 +43,7 @@
                 background-color: var(--selected-background);
             }
 
-            &:nth-child(2) {
+            &.wholeWord {
                 text-decoration: underline;
             }
 
@@ -53,6 +55,25 @@
         &[data-error="true"] {
             > input {
                 color: var(--dry-error-text);
+            }
+        }
+        position: relative;
+        padding-bottom: 1.6em;
+        .git {
+            position: absolute;
+            right: .5rem;
+            bottom: .2rem;
+            border-radius: 2px;
+            display: flex;
+            gap: .2em;
+            align-items: center;
+            > i {
+                opacity: .3;
+            }
+            > button {
+                border-radius: 2px;
+                padding: 0em .4em;
+                white-space: nowrap;
             }
         }
     }

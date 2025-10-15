@@ -46,7 +46,10 @@ export interface FilterSettings {
     matchCase?: boolean
     wholeWord?: boolean
     useRe?: boolean
+    folders?: boolean
     invert?: boolean
+    uncommited?: boolean
+    ignored?: boolean
 }
 
 export interface ExplorerConfig {

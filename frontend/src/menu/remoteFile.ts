@@ -16,7 +16,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         },
         {
             id: CommandID.MirrorRemote,
-            label: 'Mirror Download',
+            label: 'Download with Relative Path',
             click: () => command$.next({ id: CommandID.MirrorRemote, uri: createURI(id, path) }),
             separator: true
         },

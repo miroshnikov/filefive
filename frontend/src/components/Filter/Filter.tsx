@@ -24,7 +24,10 @@ export default function Filter({ show, initial, onChange, onClose }: FilterProps
             matchCase: initial?.matchCase ?? false,
             wholeWord: initial?.wholeWord ?? false,
             useRe: initial?.useRe ?? false,
-            invert: initial?.invert ?? false
+            folders: initial?.folders ?? false,
+            invert: initial?.invert ?? false,
+            uncommited: initial?.uncommited ?? false,
+            ignored: initial?.ignored ?? false
         })
     }, [initial])
 
@@ -59,8 +62,8 @@ export default function Filter({ show, initial, onChange, onClose }: FilterProps
     }
 
     return show && <div className={styles.root}>
-        <i className='icon'>filter_alt</i>
         <div data-error={error}>
+            <i className='icon'>filter_alt</i>
             <input 
                 ref={input} 
                 value={value.text}
@@ -71,11 +74,33 @@ export default function Filter({ show, initial, onChange, onClose }: FilterProps
             />
             <Tooltips>
                 <button data-on={value.matchCase} data-tooltip="Match Case" onClick={() => update({matchCase: !value.matchCase})}>Aa</button>
-                <button data-on={value.wholeWord} data-tooltip="Match Whole Word" onClick={() => update({wholeWord: !value.wholeWord})}>ab</button>
+                <button className="wholeWord" data-on={value.wholeWord} data-tooltip="Match Whole Word" onClick={() => update({wholeWord: !value.wholeWord})}>ab</button>
                 <button data-on={value.useRe} data-tooltip="Use JavaScript Regular Expression" onClick={() => update({useRe: !value.useRe})}>.*</button>
+                <button data-on={value.folders} data-tooltip="Apply to Folders" onClick={() => update({folders: !value.folders})}>
+                    <i className="icon">folder</i>
+                </button>
                 <button data-on={value.invert} data-tooltip="Invert (Exclude Matched)" onClick={() => update({invert: !value.invert})}>
                     <i className="icon">block</i>
                 </button>
+                <div className="git">
+                    <i className="icon">graph_1</i>
+                    <button 
+                        className="changed" 
+                        data-on={value.uncommited} 
+                        data-tooltip="Git Uncommitted"
+                        onClick={() => update({uncommited: !value.uncommited})}
+                    >
+                        Uncommitted
+                    </button>
+                    <button 
+                        className="ignored" 
+                        data-on={value.ignored} 
+                        data-tooltip="Exclude Files in .gitignore"
+                        onClick={() => update({ignored: !value.ignored})}
+                    >
+                        Hide Ignored
+                    </button>
+                </div>
             </Tooltips>
         </div>
         <button onClick={e => onClose()}>✕</button>

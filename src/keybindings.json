@@ -40,19 +40,19 @@
         "command": "copy-name"
     },
     {
-        "key": "alt+arrowright",
+        "key": "shift+arrowright",
         "command": "upload"
     },
     {
-        "key": "meta+arrowright",
+        "key": "alt+arrowright",
         "command": "mirror-local"
     },
     {
-        "key": "alt+arrowleft",
+        "key": "shift+arrowleft",
         "command": "download"
     },
     {
-        "key": "meta+arrowleft",
+        "key": "alt+arrowleft",
         "command": "mirror-remote"
     },
     {
@@ -60,12 +60,16 @@
         "command": "show-filter"
     },
     {
-        "key": "ctrl+bracketleft",
+        "key": "meta+bracketleft",
         "command": "go-back"
     },
     {
-        "key": "ctrl+bracketright",
+        "key": "meta+bracketright",
         "command": "go-forward"
+    },
+    {
+        "key": "meta+arrowup",
+        "command": "go-up"
     },
     {
         "key": "meta+y",

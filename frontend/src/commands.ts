@@ -18,6 +18,7 @@ export enum CommandID {
     ShowFilter = 'show-filter',
     GoBack = 'go-back',
     GoForward = 'go-forward',
+    GoUp = 'go-up',
     SyncBrowsing = 'sync-browsing',
     
     Rename = 'rename',
@@ -50,6 +51,7 @@ export type KeyShortcutCommand =
     | CommandID.TriggerPaste
     | CommandID.GoBack
     | CommandID.GoForward
+    | CommandID.GoUp
     | CommandID.SyncBrowsing
 
 type FileCommand = 

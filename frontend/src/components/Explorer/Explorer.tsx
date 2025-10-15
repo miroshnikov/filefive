@@ -267,9 +267,27 @@ export default function Explorer ({
     }
 
     const filterPredicate = (file: FileInfo) => {
-        if (file.dir) {
+        if (!showFilter) {
             return true
         }
+        if (filterSettings.current) {
+            if (filterSettings.current.ignored === true &&
+                'git_i' in file.attributes) {
+                return false
+            }
+            if (filterSettings.current.uncommited === true &&
+                !(  'git_u' in file.attributes || 
+                    'git_m' in file.attributes || 
+                    'git_a' in file.attributes || 
+                    'git_c' in file.attributes 
+                ) ) {
+                return false
+            }
+        }
+        if (filterSettings.current?.folders !== true && file.dir) {
+            return true
+        }
+
         if (filterRe.current) {
             const found = filterRe.current.exec(file.name)
             return filterSettings.current?.invert ?? false ? found === null : found !== null
@@ -647,7 +665,7 @@ export default function Explorer ({
                         onClick={() => command$.next({id: CommandID.GoForward})}
                     >arrow_forward</button>
                     {connection != LocalFileSystemID && <>
-                        <button className="icon" data-command="refresh" data-tooltip="Refresh"
+                        <button className="icon" data-command={CommandID.Refresh} data-tooltip="Refresh"
                             onClick={() => command$.next({id: CommandID.Refresh})}
                         >refresh</button>
                         {homeDir &&

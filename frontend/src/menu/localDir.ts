@@ -7,35 +7,39 @@ import { command$ } from '../observables/command'
 import { error$ } from '../observables/error'
 
 
-export default function (path: Path, selected: Path[], copyTo: URI, isRoot: boolean): MenuItem[] {
+export default function (path: Path, selected: Path[], copyTo: URI, isRoot: boolean, isParent: boolean): MenuItem[] {
     const { id, path: to } = parseURI(copyTo)
     return [
-        {
-            id: CommandID.Upload,
-            label: id == LocalFileSystemID ? `Copy to ${basename(to)}` : 'Upload',
-            click: () => command$.next({ id: CommandID.Upload, uri: createURI(LocalFileSystemID, path) }),
-            separator: isRoot
-        },
-        ...(isRoot ? [] : [
+        ...(isParent ? [] : [
+            {
+                id: CommandID.Upload,
+                label: id == LocalFileSystemID ? 'Copy' : 'Upload',
+                click: () => command$.next({ id: CommandID.Upload, uri: createURI(LocalFileSystemID, path) }),
+                separator: isRoot
+            }
+        ]),
+        ...((isParent || isRoot) ? [] : [
             {
                 id: CommandID.MirrorLocal,
-                label: id == LocalFileSystemID ? `Mirror to ${basename(to)}` : 'Mirror Upload',
+                label: (id == LocalFileSystemID ? 'Copy' : 'Upload') + ' with Relative Path',
                 click: () => command$.next({ id: CommandID.MirrorLocal, uri: createURI(LocalFileSystemID, path) }),
                 separator: true
             },
          ]),
 
-        {
-            id: 'new-dir',
-            label: 'New Folder...',
-            click: () => command$.next({id: CommandID.NewDir})
-        },
-        {
-            id: 'new-file',
-            label: 'New File...',
-            click: () => command$.next({id: CommandID.NewFile}),
-            separator: true
-        },
+        ...(isParent ? [] : [
+            {
+                id: 'new-dir',
+                label: 'New Folder...',
+                click: () => command$.next({id: CommandID.NewDir})
+            },
+            {
+                id: 'new-file',
+                label: 'New File...',
+                click: () => command$.next({id: CommandID.NewFile}),
+                separator: true
+            },
+        ]),
 
         {
             id: CommandID.TriggerCopy,
@@ -47,7 +51,7 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
             label: 'Copy Path',
             click: () => command$.next({ id: CommandID.CopyPath, uri: createURI(LocalFileSystemID, path) })
         },
-        ...(isRoot ? [] : [ 
+        ...((isParent || isRoot) ? [] : [ 
             {
                 id: CommandID.CopyRelativePath,
                 label: 'Copy Relative Path',
@@ -70,10 +74,10 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
             id: 'open',
             label: 'Show in Finder',
             click: () => { window.f5.open(createURI(LocalFileSystemID, path)) },
-            separator: !isRoot
+            separator: !isParent && !isRoot
         },
         
-        ...(isRoot ? [] : [ 
+        ...((isParent || isRoot) ? [] : [ 
             {
                 id: 'rename',
                 label: 'Rename...',

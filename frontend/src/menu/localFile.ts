@@ -12,12 +12,12 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
     return [
         {
             id: CommandID.Upload,
-            label: id == LocalFileSystemID ? `Copy to ${basename(to)}` : 'Upload',
+            label: id == LocalFileSystemID ? 'Copy' : 'Upload',
             click: () => command$.next({ id: CommandID.Upload, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: CommandID.MirrorLocal,
-            label: id == LocalFileSystemID ? `Mirror to ${basename(to)}` : 'Mirror Upload',
+            label: id == LocalFileSystemID ? `Copy with Relative Path` : 'Upload with Relative Path',
             click: () => command$.next({ id: CommandID.MirrorLocal, uri: createURI(LocalFileSystemID, path) }),
             separator: true
         },

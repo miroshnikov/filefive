@@ -185,7 +185,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         {
             id: CommandID.ShowFilter,
             icon: 'filter_alt',
-            title: 'Filter...',
+            title: 'Toggle Filter...',
             onClick: () => command$.next({id: CommandID.ShowFilter})
         },
         {
@@ -266,7 +266,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     path, 
                     remote ? remoteSelected : localSelected, 
                     copyTo, 
-                    path == (remote ? remotePath : localPath)
+                    path == (remote ? remotePath : localPath),
+                    remote ? (path.length < remotePath.length) : (path.length < localPath.length)
                 ) : 
                 localFileMenu(
                     path, 
@@ -276,7 +277,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             )
         } else {
             setMenu(dir ? 
-                remoteDirMenu(id, path, remoteSelected, localPath, path == remotePath) : 
+                remoteDirMenu(id, path, remoteSelected, localPath, path == remotePath, path.length < remotePath.length) : 
                 remoteFileMenu(id, path, remoteSelected, localPath)
             )
         }
@@ -291,7 +292,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                 }
                 case CommandID.Upload: 
                 case CommandID.MirrorLocal: {
-                    console.log(cmd)
                     let files = localSelected
                     if (cmd.uri) {
                         const { path } = parseURI(cmd.uri)
@@ -559,7 +559,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     <button 
                         className="icon"
                         data-command={CommandID.MirrorLocal}
-                        data-tooltip={connection ? 'Mirror Upload' : 'Mirror Copy'}
+                        data-tooltip={(connection ? 'Upload' : 'Copy') + ' with Relative Path'}
                         disabled={!localSelected.length}
                         onClick={() => command$.next({id: CommandID.MirrorLocal})}
                     >
@@ -577,7 +577,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     <button 
                         className="icon"
                         data-command={CommandID.MirrorRemote}
-                        data-tooltip={connection ? 'Mirror Download' : 'Mirror Copy'}
+                        data-tooltip={(connection ? 'Download' : 'Copy') + ' with Relative Path'}
                         disabled={!remoteSelected.length}
                         onClick={() => command$.next({id: CommandID.MirrorRemote})}
                     >
