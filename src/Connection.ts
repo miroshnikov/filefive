@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
-import { homedir } from 'node:os'
-import { join } from 'node:path'
+import { pwd } from './Local'
+import { join } from 'node:path/posix'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import { FileSystem, FileAttributes } from './FileSystem'
 import { URI, ConnectionID, LocalFileSystemID, Files, Path } from './types'
@@ -44,7 +44,7 @@ export default class {
 
         if (privatekey) {
             if (privatekey.startsWith('~')) {
-                privatekey = join(homedir(), privatekey.substring(1))
+                privatekey = join(pwd(), privatekey.substring(1))
             }
             this.credentials.set(id, ['key', readFileSync(privatekey)])
         } else {

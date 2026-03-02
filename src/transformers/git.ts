@@ -1,6 +1,6 @@
 import { promisify } from 'node:util'
 import { execFile } from 'node:child_process'
-import { join, dirname } from 'node:path'
+import { join, dirname } from 'node:path/posix'
 import { Files, FileAttrsAttr, Path } from '../types'
 import { partition } from 'ramda'
 

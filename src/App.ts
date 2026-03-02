@@ -1,6 +1,4 @@
-import { homedir } from 'node:os'
-import { join } from 'node:path'
-import { mkdir } from 'node:fs/promises'
+import { join } from 'node:path/posix'
 import { 
     Path, 
     ConnectionID, 
@@ -22,7 +20,7 @@ import RemoteWatcher from './RemoteWatcher'
 import { queues } from './queues/Queue'
 import Password from './Password'
 import { commands } from './commands'
-import { touch, stat, LocalFileItem } from './Local'
+import { pwd, touch, stat, LocalFileItem, mkDirRecursive } from './Local'
 import { createURI } from './utils/URI'
 import { SaveConnectionSettings } from './commands/saveConnection'
 import LocalTransformer from './transformers/Local'
@@ -34,9 +32,9 @@ export default class App {
        
     static async bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter, opener: (file: string) => void) {
 
-        const dataPath = join(homedir(), '.f5')
+        const dataPath = join(pwd(), '.f5')
         const connPath = join(dataPath, 'connections')
-        mkdir(connPath, { recursive: true })
+        mkDirRecursive(connPath)
         touch(join(dataPath, 'credentials.json'), JSON.stringify([]))
         const settingsPath = join(dataPath, 'settings.json')
         if (!stat(settingsPath)) {

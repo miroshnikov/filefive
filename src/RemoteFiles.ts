@@ -2,7 +2,7 @@ import { URI, Path, LocalFileSystemID } from './types'
 import { parseURI, createURI } from './utils/URI'
 import { commands } from './commands'
 import { tmpdir } from 'node:os'
-import { join, basename, dirname } from 'node:path'
+import { join, basename, dirname } from 'node:path/posix'
 import { mkdtemp, rm } from 'node:fs/promises';
 import FileWatcher from './FileWatcher'
 import Connection from './Connection'

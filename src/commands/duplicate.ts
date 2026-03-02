@@ -1,5 +1,5 @@
 import { URI, Path } from '../types'
-import { dirname } from 'node:path'
+import { dirname } from 'node:path/posix'
 import { parseURI } from '../utils/URI'
 import { QueueEventType, QueueType, FilterSettings, FailureType } from '../types'
 import { queues } from '../queues/Queue'

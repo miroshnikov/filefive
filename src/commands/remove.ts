@@ -1,6 +1,5 @@
 import { URI, QueueEventType, QueueType, FailureType } from '../types'
-import { rm } from 'node:fs/promises'
-import { stat } from '../Local'
+import { stat, del } from '../Local'
 import { isLocal, parseURI } from '../utils/URI'
 import unqid from '../utils/uniqid'
 import { queues } from '../queues/Queue'
@@ -18,7 +17,7 @@ export default async function (files: URI[], connPath: string, immediately = fal
     if (isLocal(files[0])) {
         const paths = files.map(p => parseURI(p)['path'])
         if (immediately) {
-            paths.forEach(path => rm(path, { recursive: true, force: true }))
+            paths.forEach(path => del(path))
         } else {
             (await trash).default(paths)
         }

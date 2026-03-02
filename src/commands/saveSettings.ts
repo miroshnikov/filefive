@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises'
+import { touch } from '../Local'
 import { AppConfig, AppSettings, DeepPartial } from '../types'
 import { getSettings } from './saveConnection'
 import { mergeDeepRight } from 'ramda'
@@ -23,5 +23,5 @@ export default async function (path: string, changes: DeepPartial<AppSettings>) 
         path: settings.path,
         sync: settings.sync
     }
-    await writeFile(path, JSON.stringify(config))
+    await touch(path, JSON.stringify(config))
 }

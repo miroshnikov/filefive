@@ -1,8 +1,7 @@
-import { watch } from 'node:fs/promises'
 import { WatchEventType } from 'node:fs'
-import { basename, dirname, join } from 'node:path'
+import { basename, dirname, join } from 'node:path/posix'
 import { Path } from './types'
-import { stat, LocalFileItem } from './Local'
+import { stat, LocalFileItem, watchChanges } from './Local'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 
 
@@ -16,7 +15,7 @@ export default class {
         try {
             const ac = new AbortController()
             this.watched.set(path, ac)
-            for await (const {eventType, filename} of watch(path, { signal: ac.signal })) {
+            for await (const {eventType, filename} of watchChanges(path, ac)) {
                 let newPath = path
                 if (eventType == "rename" && basename(path) !== filename) {
                     newPath = join(dirname(path), filename)

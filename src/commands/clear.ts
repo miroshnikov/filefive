@@ -1,5 +1,5 @@
-import { dirname } from 'node:path'
-import { URI, Path, LocalFileSystemID, FailureType } from '../types'
+import { dirname } from 'node:path/posix'
+import { URI, LocalFileSystemID, FailureType } from '../types'
 import { createURI, parseURI } from '../utils/URI'
 import Connection from '../Connection'
 import App from '../App'

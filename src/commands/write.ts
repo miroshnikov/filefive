@@ -1,7 +1,7 @@
 import { URI } from '../types'
 import Connection from '../Connection'
 import { parseURI, createURI, isLocal } from '../utils/URI'
-import { dirname } from 'node:path'
+import { dirname } from 'node:path/posix'
 import App from '../App'
 
 

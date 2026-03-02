@@ -1,9 +1,8 @@
 import { read } from '../Local'
 import { connectionID } from '../utils/URI'
 import { Path, ConnectionSettings, ExplorerSettings, ExplorerConfig, ConnectionConfig } from '../types'
-import { stat } from '../Local'
+import { stat, touch } from '../Local'
 import { whereEq, omit } from 'ramda'
-import { writeFile } from 'node:fs/promises'
 import Password from '../Password'
 
 
@@ -53,5 +52,5 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
     if (!config) {
         throw new Error(`Save invalid config into ${path}`)
     }
-    await writeFile(path, JSON.stringify(config))
+    await touch(path, JSON.stringify(config))
 }

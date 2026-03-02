@@ -1,4 +1,4 @@
-import { join, isAbsolute, basename, normalize } from 'node:path'
+import { join, isAbsolute, basename, normalize } from 'node:path/posix'
 import { tmpdir } from 'node:os'
 import { writeFile, rm } from 'node:fs/promises'
 import * as fs from 'fs'

@@ -1,4 +1,4 @@
-import { basename, dirname, join } from 'node:path'
+import { basename, dirname, join } from 'node:path/posix'
 import { Path, URI, ConnectionID, QueueType, QueueState, QueueActionType, QueueAction, FailureType } from './types'
 import { FileSystem, FileItem } from './FileSystem'
 import { stat, touch, list } from './Local'

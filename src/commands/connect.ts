@@ -1,5 +1,5 @@
-import { readFileSync, statSync } from 'node:fs';
 import { parse } from 'path'
+import { read } from '../Local'
 import { Path, ConnectionID, ConnectionConfig, ConnectionSettings, ExplorerConfig, ExplorerSettings, SortOrder } from '../types'
 import { FileAttributes } from '../FileSystem'
 import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
@@ -36,14 +36,14 @@ export function explorerSettings(attributes: FileAttributes, config?: ExplorerCo
 export default async function (file: Path, onError: (id: ConnectionID, e: any) => void): 
         Promise<{ id: ConnectionID, sid: string, settings: ConnectionSettings } | false> {
 
-    const stat = statSync(file)
+/*    const stat = statSync(file) // TODO
     if (!stat.isFile() && !stat.isSymbolicLink()) {
         return false
     }
-    
+*/    
     let config: ConnectionConfig
     try {
-        config = JSON.parse( readFileSync(file).toString() ) as ConnectionConfig
+        config = JSON.parse( await read(file) ) as ConnectionConfig
     } catch (e) {
         throw new Error(`Invalid connection file ${file}`)
     }

@@ -1,4 +1,4 @@
-import { basename, dirname, normalize, join, sep, parse } from 'node:path'
+import { basename, dirname, normalize, join, sep, parse } from 'node:path/posix'
 import { Path, ConnectionID, QueueState, QueueActionType, QueueAction, LocalFileSystemID, FilterSettings } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'
 import { Subject, Subscription } from 'rxjs'

@@ -1,4 +1,3 @@
-import { sep }  from 'node:path'
 import { URI, Files } from './types'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import Connection from './Connection'
@@ -24,7 +23,7 @@ export default class RemoteWatcher {
         if (this.watched.has(uri)) {
             this.list(uri)
             Array.from(this.watched.keys()).forEach(dir => {
-                if (dir.startsWith(uri + sep)) {
+                if (dir.startsWith(uri + '/')) {
                     this.list(dir)
                 }
             })

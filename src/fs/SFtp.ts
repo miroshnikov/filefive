@@ -1,4 +1,4 @@
-import { join, dirname, isAbsolute, normalize } from 'node:path'
+import { join, dirname, isAbsolute, normalize } from 'node:path/posix'
 import { Client, SFTPWrapper, Stats } from 'ssh2'
 import { Path } from '../types'
 import { FileSystem, FileItem, FileAttributes, FileAttributeType } from '../FileSystem'

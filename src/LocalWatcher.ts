@@ -1,5 +1,5 @@
 import { WatchEventType } from 'node:fs';
-import { join } from 'node:path'
+import { join } from 'node:path/posix'
 import { Path } from './types'
 import { list, watch, LocalFiles, stat } from './Local'
 import ReferenceCountMap from './utils/ReferenceCountMap'

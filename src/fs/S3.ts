@@ -1,7 +1,8 @@
-import { join, basename, dirname, resolve } from 'node:path'
-import { createReadStream, createWriteStream } from 'node:fs';
+import { join, basename, dirname, resolve } from 'node:path/posix'
+import { createReadStream, createWriteStream } from 'node:fs'
 import { split } from '../utils/path'
 import { Path } from '../types'
+import { osify } from '../Local'
 import { FileSystem, FileItem, FileAttributes, FileAttributeType } from '../FileSystem'
 import { S3Client, 
     ListBucketsCommand, ListObjectsCommand, GetObjectCommand, PutObjectCommand,
@@ -122,7 +123,7 @@ export default class S3 extends FileSystem {
 
         if (output.Body) {
             const body = output.Body as NodeJsRuntimeStreamingBlobPayloadOutputTypes
-            const writeStream = createWriteStream(toLocal)
+            const writeStream = createWriteStream(osify(toLocal))
             body.pipe(writeStream)
 
             return new Promise<void>((resolve, reject) => {
@@ -145,7 +146,7 @@ export default class S3 extends FileSystem {
 
         const partSize = 5 * 1024 * 1024
 
-        const fromStream = createReadStream(fromLocal, { highWaterMark: partSize });
+        const fromStream = createReadStream(osify(fromLocal), { highWaterMark: partSize });
         let buffer: any[] = [];
         let partNumber = 1
         const uploadParts: { ETag: string|undefined, PartNumber: number }[] = []

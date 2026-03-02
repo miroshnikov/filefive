@@ -1,4 +1,4 @@
-import { basename, dirname, normalize, sep } from 'node:path'
+import { basename, dirname, normalize, sep } from 'node:path/posix'
 import { Queue } from './Queue'
 import { Path, ConnectionID, QueueState, QueueAction } from '../types'
 import Connection from '../Connection'

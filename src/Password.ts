@@ -1,5 +1,5 @@
-import { readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { read, touch } from './Local'
+import { join } from 'node:path/posix'
 import { ConnectionID } from './types'
 
 
@@ -10,7 +10,7 @@ export default class Passwords {
         this.resolve = onMiss
         this.store = new Map(
             (JSON.parse(
-                (await readFile(this.saveFile)).toString()
+                (await read(this.saveFile)).toString()
             ) as [ConnectionID, string][]).map(([id, password]) => [id, [password, true]])
         )
     }
@@ -48,7 +48,7 @@ export default class Passwords {
 
 
     private static dump() {
-        writeFile(
+        touch(
             this.saveFile,
             JSON.stringify(
                 Array.from(this.store.entries())

@@ -1,4 +1,4 @@
-import { join } from 'node:path'
+import { join } from 'node:path/posix'
 import TransmitQueue from './Queue'
 import { LocalFileSystemID, Path, ConnectionID, QueueState, FilterSettings } from '../types'
 import { FileSystem, FileItem } from '../FileSystem'

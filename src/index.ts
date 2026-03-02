@@ -2,9 +2,9 @@
 
 import express from 'express'
 import multer from 'multer'
-import { resolve, join, dirname } from 'path'
+import { resolve, join, dirname } from 'node:path/posix'
 import { tmpdir } from 'node:os'
-import { rename, rm } from 'node:fs/promises'
+import { move, del } from './Local'
 import MainApp, { Emitter } from './App'
 import { WebSocketServer } from 'ws'
 const open = import("open")
@@ -67,7 +67,7 @@ app.post('/api/upload', upload.array('files'), async function (req, res) {
         const src: string[] = []
         for (const {path, originalname} of req.files) {
             const fnm = join(dirname(path), originalname)
-            await rename(path, fnm)
+            await move(path, fnm)
             src.push(fnm)
         }
         commands.copy(
@@ -77,7 +77,7 @@ app.post('/api/upload', upload.array('files'), async function (req, res) {
             null,
             null,
             null,
-            () => src.forEach(path => rm(path, { force: true }))
+            () => src.forEach(path => del(path))
         )
     }
     res.json(true)

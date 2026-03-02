@@ -1,4 +1,4 @@
-import { dirname, join } from 'node:path'
+import { dirname, join } from 'node:path/posix'
 import { URI } from '../types'
 import { isLocal, parseURI, createURI } from '../utils/URI'
 import Connection from '../Connection'
