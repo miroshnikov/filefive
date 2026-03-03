@@ -1,4 +1,4 @@
-import { read, touch } from './Local'
+import { read, write } from './Local'
 import { join } from 'node:path/posix'
 import { ConnectionID } from './types'
 
@@ -48,7 +48,7 @@ export default class Passwords {
 
 
     private static dump() {
-        touch(
+        write(
             this.saveFile,
             JSON.stringify(
                 Array.from(this.store.entries())

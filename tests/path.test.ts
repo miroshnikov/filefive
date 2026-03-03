@@ -17,5 +17,7 @@ describe('path', () => {
     test('unixToWin', () => {
         expect( unixToWin('/C:/Users/Max') ).toBe('C:\\Users\\Max')
         expect( unixToWin('/C:/Users/Max/') ).toBe('C:\\Users\\Max\\')
+        expect( unixToWin('C:') ).toBe('C:\\')
+        expect( unixToWin('/') ).toBe('\\')
     })
 })

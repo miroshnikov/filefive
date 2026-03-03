@@ -5,7 +5,7 @@ import { readdirSync, statSync, lstatSync, readlinkSync, watch as fsWatch, Watch
 import { mkdir, unlink, rename, cp, open, rm, readFile, writeFile, watch as asyncWatch } from 'node:fs/promises'
 import { winToUnix, unixToWin } from './utils/path'
 import { FileItem } from './FileSystem'
-
+import { getDrives } from './win'
 
 
 export type LocalFileItem = FileItem & { inode: number }
@@ -31,7 +31,7 @@ export function pwd(): string {
 export function stat(path: string): LocalFileItem|null {
     path = normalize(path)
     const actualPath = osify(path)
-    console.log('stat:', actualPath)
+//    console.log('stat:', path, actualPath)
     try {
         let stat = lstatSync(actualPath)
         let target: string
@@ -57,8 +57,12 @@ export function stat(path: string): LocalFileItem|null {
 }
 
 export function list(dir: string): LocalFiles {
-    console.log('list:', dir, osify(dir))
-    return readdirSync(osify(dir)).map(name => stat(join(dir, name))).filter(f => f)
+    let actialDir = osify(dir)
+    // console.log('list:', dir, actialDir)
+    if (actialDir == '\\') {
+        return getDrives().map(path => stat(unosify(path))).filter(f => f)
+    }
+    return readdirSync(actialDir).map(name => stat(join(dir, name))).filter(f => f)
 }
 
 export async function mkDirRecursive(path: string) {
@@ -98,6 +102,10 @@ export async function touch(path: string, data?: string): Promise<void> {
         await mkDirRecursive(dirname(path))
         data !== undefined ? await writeFile(osify(path), data) : await (await open(osify(path), 'a')).close()
     }
+}
+
+export async function write(path: string, data: string): Promise<void> {
+    return writeFile(osify(path), data)
 }
 
 export function watch(path: string, listener: (event: WatchEventType, file: string) => void): () => void {

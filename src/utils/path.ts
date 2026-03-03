@@ -5,7 +5,13 @@ export function winToUnix(path: string): string {
 }
 
 export function unixToWin(path: string): string {
-    return path.replace(/^\//, '').replace(/\//g, '\\')
+    path = path.replace(/^\//, '').replace(/\//g, '\\')
+    if (!path) {
+        path = '\\'
+    } else if (path.match(/^[a-zA-Z]:$/)) {
+        path += '\\'
+    }
+    return path
 }
 
 export function split(path: string): string[] {

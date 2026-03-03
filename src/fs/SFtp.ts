@@ -2,6 +2,7 @@ import { join, dirname, isAbsolute, normalize } from 'node:path/posix'
 import { Client, SFTPWrapper, Stats } from 'ssh2'
 import { Path } from '../types'
 import { FileSystem, FileItem, FileAttributes, FileAttributeType } from '../FileSystem'
+import { osify } from '../Local'
 
 // https://github.com/mscdex/ssh2/blob/master/SFTP.md
 // https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer-13#section-4.3
@@ -191,14 +192,14 @@ export default class SFtp extends FileSystem {
     async get(fromRemote: Path, toLocal: Path): Promise<void> {
         const sftp = await this.open()
         return new Promise((resolve, reject) => {
-            sftp.fastGet(fromRemote, toLocal, (e) => e ? reject(new Error(this.decodeError(e))) : resolve())
+            sftp.fastGet(fromRemote, osify(toLocal), (e) => e ? reject(new Error(this.decodeError(e))) : resolve())
         })
     }
 
     async put(fromLocal: Path, toRemote: Path): Promise<void> {
         const sftp = await this.open() 
         return new Promise((resolve, reject) => {
-            sftp.fastPut(fromLocal, toRemote, e => e ? reject(new Error(this.decodeError(e) + ` ${toRemote}`)) : resolve())
+            sftp.fastPut(osify(fromLocal), toRemote, e => e ? reject(new Error(this.decodeError(e) + ` ${toRemote}`)) : resolve())
         })
     }
 

@@ -1,5 +1,5 @@
 import { URI, QueueEventType, QueueType, FailureType } from '../types'
-import { stat, del } from '../Local'
+import { stat, del, osify } from '../Local'
 import { isLocal, parseURI } from '../utils/URI'
 import unqid from '../utils/uniqid'
 import { queues } from '../queues/Queue'
@@ -19,7 +19,7 @@ export default async function (files: URI[], connPath: string, immediately = fal
         if (immediately) {
             paths.forEach(path => del(path))
         } else {
-            (await trash).default(paths)
+            (await trash).default(paths.map(path => osify(path)))
         }
         paths.forEach(path => {
             if (path.startsWith(connPath) && !stat(path)?.dir) {

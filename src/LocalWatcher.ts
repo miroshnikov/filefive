@@ -13,21 +13,25 @@ export default class {
 
     watch(dir: Path): LocalFiles {
         try {
-            this.watched.inc(dir) || this.watched.set(dir, watch(dir, (event, target) => {
-                if (event == 'rename') {
-                    const child = join(dir, target)
-                    if (this.watched.has(child) && !stat(child)) {
-                        this.watched.del(child)
-                        this.onMissing(child)
+            try {
+                this.watched.inc(dir) || this.watched.set(dir, watch(dir, (event, target) => {
+                    if (event == 'rename') {
+                        const child = join(dir, target)
+                        if (this.watched.has(child) && !stat(child)) {
+                            this.watched.del(child)
+                            this.onMissing(child)
+                        }
                     }
-                }
-                try {
-                    this.listener(dir, list(dir), event, target)
-                } catch (e) {
-                    this.watched.del(dir)
-                    this.onMissing(dir)
-                }
-            }))
+                    try {
+                        this.listener(dir, list(dir), event, target)
+                    } catch (e) {
+                        this.watched.del(dir)
+                        this.onMissing(dir)
+                    }
+                }))
+            } catch (e) {   // an existing dir may be not watchable, e.g. network drive in Windows
+                this.watched.del(dir)
+            }
     
             const files = list(dir)
             this.listener(dir, files)

@@ -1,7 +1,7 @@
 import { cp } from 'node:fs/promises'
 import { dirname } from 'node:path/posix'
 import { FileItem, FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
-import { pwd, list, copy, del, move, mkDirRecursive, touch, osify } from '../Local'
+import { pwd, list, copy, del, move, mkDirRecursive, write, osify } from '../Local'
 import { Path, LocalFileSystemID } from '../types'
 
 
@@ -74,6 +74,6 @@ export default class Local extends FileSystem {
     }
 
     async write(path: Path, data: string): Promise<void> {
-        return touch(path, data)
+        return write(path, data)
     }
 }
