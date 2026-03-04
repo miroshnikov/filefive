@@ -3,7 +3,7 @@ import { normalize, basename, dirname, join, isAbsolute } from 'node:path/posix'
 import osPath from 'node:path'
 import { readdirSync, statSync, lstatSync, readlinkSync, watch as fsWatch, WatchEventType } from 'node:fs';
 import { mkdir, unlink, rename, cp, open, rm, readFile, writeFile, watch as asyncWatch } from 'node:fs/promises'
-import { winToUnix, unixToWin } from './utils/path'
+import { winToUnix, unixToWin } from './utils/os'
 import { FileItem } from './FileSystem'
 import { getDrives } from './win'
 
@@ -31,7 +31,6 @@ export function pwd(): string {
 export function stat(path: string): LocalFileItem|null {
     path = normalize(path)
     const actualPath = osify(path)
-//    console.log('stat:', path, actualPath)
     try {
         let stat = lstatSync(actualPath)
         let target: string
@@ -58,7 +57,6 @@ export function stat(path: string): LocalFileItem|null {
 
 export function list(dir: string): LocalFiles {
     let actialDir = osify(dir)
-    // console.log('list:', dir, actialDir)
     if (actialDir == '\\') {
         return getDrives().map(path => stat(unosify(path))).filter(f => f)
     }
@@ -104,6 +102,16 @@ export async function touch(path: string, data?: string): Promise<void> {
     }
 }
 
+export async function read(path: string): Promise<string> {
+    return readFile(osify(path), { encoding: 'utf8' })
+}
+
+export async function readInBuffer(path: string): Promise<Buffer> {
+    return readFile(osify(path))
+}
+
+
+
 export async function write(path: string, data: string): Promise<void> {
     return writeFile(osify(path), data)
 }
@@ -115,9 +123,4 @@ export function watch(path: string, listener: (event: WatchEventType, file: stri
 
 export function watchChanges(path: string, ac: AbortController) {
     return asyncWatch(osify(path), { signal: ac.signal })
-}
-
-
-export async function read(path: string): Promise<string> {
-    return await readFile(osify(path), { encoding: 'utf8' })
 }

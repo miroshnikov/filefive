@@ -104,6 +104,7 @@ export interface ConnectionSettings extends Twofold<ExplorerSettings> {
 }
 
 export interface AppSettings extends Twofold<ExplorerSettings> {
+    isWin: boolean
     home: Path
     settings: Path
     connections: Path

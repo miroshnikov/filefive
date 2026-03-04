@@ -1,5 +1,4 @@
-import { readFileSync } from 'node:fs'
-import { pwd } from './Local'
+import { pwd, readInBuffer } from './Local'
 import { join } from 'node:path/posix'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 import { FileSystem, FileAttributes } from './FileSystem'
@@ -46,7 +45,7 @@ export default class {
             if (privatekey.startsWith('~')) {
                 privatekey = join(pwd(), privatekey.substring(1))
             }
-            this.credentials.set(id, ['key', readFileSync(privatekey)])
+            this.credentials.set(id, ['key', await readInBuffer(privatekey)])
         } else {
             this.credentials.set(id, ['password', password])
         }

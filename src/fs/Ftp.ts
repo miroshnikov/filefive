@@ -5,6 +5,7 @@ import * as fs from 'fs'
 import Client from 'ftp'
 import { Path } from '../types'
 import { FileItem, FileSystem, FileSystemURI, FileAttributes, FileAttributeType } from '../FileSystem'
+import { osify } from '../Local'
 
 // https://github.com/mscdex/node-ftp
 
@@ -119,7 +120,7 @@ export default class Ftp extends FileSystem {
                 if (err) {
                     reject(err)
                 } else {
-                    const dest = fs.createWriteStream(toLocal)
+                    const dest = fs.createWriteStream(osify(toLocal))
                     dest.on('finish', () => resolve())
                     source.pipe(dest)
                 }
@@ -130,7 +131,7 @@ export default class Ftp extends FileSystem {
     async put(fromLocal: Path, toRemote: Path): Promise<void> {
         await this.open()    
         return new Promise((resolve, reject) => {
-            this.connection.put(fromLocal, toRemote, e => e ? reject(e) : resolve())
+            this.connection.put(osify(fromLocal), toRemote, e => e ? reject(e) : resolve())
         })
     }
 

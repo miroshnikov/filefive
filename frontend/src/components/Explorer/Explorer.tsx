@@ -17,6 +17,7 @@ import {
 import { parseURI, createURI } from '../../../../src/utils/URI'
 import { filterRegExp } from '../../../../src/utils/filter'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
+import { unixToWin } from '../../../../src/utils/os'
 import fileicon from '../../utils/fileicon'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
@@ -413,17 +414,20 @@ export default function Explorer ({
                 case CommandID.CopyPath: {
                     const path = cmd.uri ? parseURI(cmd.uri).path : target.current
                     if (path) {
-                        navigator.clipboard.writeText((selected.current?.includes(path) ? selected.current : [path]).join(' '))
+                        const paths = selected.current?.includes(path) ? selected.current : [path]
+                        navigator.clipboard.writeText(
+                            (connection == LocalFileSystemID && appSettings.isWin ? paths.map(unixToWin) : paths).join(' ')
+                        )
                     }
                     break
                 }
                 case CommandID.CopyRelativePath: {
                     const path = cmd.uri ? parseURI(cmd.uri).path : target.current
                     if (path) {
-                        navigator.clipboard.writeText(
-                            (selected.current?.includes(path) ? selected.current : [path])
+                        const paths = (selected.current?.includes(path) ? selected.current : [path])
                                 .map(path => path.substring(root.length+1))
-                                .join(' ')
+                        navigator.clipboard.writeText(
+                            (connection == LocalFileSystemID && appSettings.isWin ? paths.map(unixToWin) : paths).join(' ')
                         )
                     }
                     break

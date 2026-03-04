@@ -4,7 +4,7 @@ import express from 'express'
 import multer from 'multer'
 import { resolve, join, dirname } from 'node:path/posix'
 import { tmpdir } from 'node:os'
-import { move, del } from './Local'
+import { move, del, unosify } from './Local'
 import MainApp, { Emitter } from './App'
 import { WebSocketServer } from 'ws'
 const open = import("open")
@@ -65,7 +65,8 @@ const upload = multer({ dest: tmpdir() })
 app.post('/api/upload', upload.array('files'), async function (req, res) {
     if (Array.isArray(req.files)) {
         const src: string[] = []
-        for (const {path, originalname} of req.files) {
+        for (const {path: osPath, originalname} of req.files) {
+            const path = unosify(osPath)
             const fnm = join(dirname(path), originalname)
             await move(path, fnm)
             src.push(fnm)

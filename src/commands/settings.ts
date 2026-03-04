@@ -1,6 +1,6 @@
 import { join } from 'node:path/posix'
 import { AppConfig, AppSettings } from '../types'
-import { read, pwd } from '../Local'
+import { read, pwd, isWin } from '../Local'
 import { ATTRIBUTES as LOCAL_ATTRIBUTES } from '../fs/Local'
 import { explorerSettings } from './connect'
 import keybindings from '../keybindings.json'
@@ -20,6 +20,7 @@ export default async function (path: string): Promise<AppSettings> {
     const home = pwd()
 
     const settings: AppSettings = {
+        isWin: isWin(),
         home,
         settings: join(home, '.f5', 'settings.json'),
         connections: join(home, '.f5', 'connections'),

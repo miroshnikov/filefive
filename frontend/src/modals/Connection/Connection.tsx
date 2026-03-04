@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { Path } from '../../../../src/types'
+import { unixToWin } from '../../../../src/utils/os'
 import { Modal, ModalButtonID, Select, Password, Checkbox } from '../../ui/components'
 import { useForm, Controller } from "react-hook-form"
 import { parse } from '../../utils/path'
@@ -131,6 +132,8 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         }[protocol] ?? ''
     }
 
+    const defaultKeyFile = '~/.ssh/id_ed25519'
+
     const onModalClose = async (id: string) => {
         if (id == 'save' || id == ModalButtonID.Ok) {
 
@@ -142,7 +145,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
 
             if (protocol == 'sftp') {
                 if (usePrivateKey) {
-                    data.privatekey ||= '~/.ssh/id_ed25519'
+                    data.privatekey ||= defaultKeyFile
                 } else {
                     data.privatekey = ''
                 }
@@ -236,7 +239,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         <label>Key File Path:</label>
                         <input className='dry'
                             {...register("privatekey")}
-                            placeholder="~/.ssh/id_ed25519 (by default)"
+                            placeholder={`${appSettings.isWin ? unixToWin(defaultKeyFile) : defaultKeyFile} (by default)`}
                             autoComplete="off"
                         />
                     </>}

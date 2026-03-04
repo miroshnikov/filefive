@@ -1,18 +1,4 @@
-import { basename, dirname } from 'path'
-
-export function winToUnix(path: string): string {
-    return '/' + path.replace(/\\/g, '/')
-}
-
-export function unixToWin(path: string): string {
-    path = path.replace(/^\//, '').replace(/\//g, '\\')
-    if (!path) {
-        path = '\\'
-    } else if (path.match(/^[a-zA-Z]:$/)) {
-        path += '\\'
-    }
-    return path
-}
+import { basename, dirname } from 'node:path/posix'
 
 export function split(path: string): string[] {
     const parts = []

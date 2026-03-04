@@ -2,6 +2,7 @@ import { promisify } from 'node:util'
 import { execFile } from 'node:child_process'
 import { join, dirname } from 'node:path/posix'
 import { Files, FileAttrsAttr, Path } from '../types'
+import { osify, unosify } from '../Local'
 import { partition } from 'ramda'
 
 
@@ -9,14 +10,14 @@ export default async function(path: Path, files: Files): Promise<Files> {
     const run = promisify(execFile)
 
     try {
-        let { stdout: repoRoot } = await run('git', ['rev-parse', '--show-toplevel'], { cwd: path })
-        repoRoot = repoRoot.trim()
+        let { stdout: repoRoot } = await run('git', ['rev-parse', '--show-toplevel'], { cwd: osify(path) })
+        repoRoot = unosify(repoRoot.trim())
 
-        const { stdout: statuses } = await run('git', ['status', '-z', '.'], { cwd: path })
+        const { stdout: statuses } = await run('git', ['status', '-z', '.'], { cwd: osify(path) })
 
         const [inRoot, inSubfolders] = partition( 
             ([p]) => dirname(p) == path,
-            statuses
+            unosify(statuses)
                 .replace(/\0$/, '')
                 .split('\0')
                 .map(s => [join(repoRoot, s.substring(3)), s.substring(0, 2)])
@@ -49,11 +50,11 @@ export default async function(path: Path, files: Files): Promise<Files> {
         }
 
 
-        const { stdout: ignored } = await run('git', ['ls-files', '--others', '--ignored', '--exclude-standard', '--directory', '-z'], { cwd: path })
+        const { stdout: ignored } = await run('git', ['ls-files', '--others', '--ignored', '--exclude-standard', '--directory', '-z'], { cwd: osify(path) })
         if (ignored == './\0') {
             files.forEach(f => f[FileAttrsAttr][GitStatus.Ignored] = statusNames[GitStatus.Ignored])
         } else {
-            ignored
+            unosify(ignored)
                 .replace(/\0$/, '')
                 .split('\0')
                 .map(s => join(path, s.replace(/\/$/, '')))
