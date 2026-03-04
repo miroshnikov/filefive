@@ -28,7 +28,7 @@ export default class {
                         this.watched.del(dir)
                         this.onMissing(dir)
                     }
-                }))
+                }, () => this.watched.del(dir)))
             } catch (e) {   // an existing dir may be not watchable, e.g. network drive in Windows
                 this.watched.del(dir)
             }

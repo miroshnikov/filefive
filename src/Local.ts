@@ -116,8 +116,13 @@ export async function write(path: string, data: string): Promise<void> {
     return writeFile(osify(path), data)
 }
 
-export function watch(path: string, listener: (event: WatchEventType, file: string) => void): () => void {
+export function watch(
+    path: string, 
+    listener: (event: WatchEventType, file: string) => void, 
+    onError: (e: Error) => void
+): () => void {
     const watcher = fsWatch(osify(path), listener)
+    watcher.on('error', onError)
     return () => watcher.close()
 }
 
