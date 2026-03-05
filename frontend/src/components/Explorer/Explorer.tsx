@@ -98,7 +98,7 @@ const rightsToStr = (n: number) =>
 
 const toColumns = curry((columns: Columns, formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => string}, files: Files) => {
     return files.map(file => ({
-        ...pick(['URI', 'path', 'dir', 'target', 'icon', FileAttrsAttr], file),
+        ...pick(['URI', 'path', 'dir', 'target', 'icon', 'tooltip', FileAttrsAttr], file),
         ...{ rawSize: file.size },
         ...columns.reduce((props, {name}) => ({...props, 
             [name]: new String(name=='size' && file.dir ? '' : name in formatters ? formatters[name](file[name]) : file[name])
@@ -310,7 +310,8 @@ export default function Explorer ({
                 appSettings.fileIcons ? 
                     map(f => ({
                         ...f, 
-                        icon: fileicon(appSettings.fileIcons, f.path, f.dir ? expanded.current.includes(f.path) : null)
+                        icon: fileicon(appSettings.fileIcons, f.path, f.dir ? expanded.current.includes(f.path) : null),
+                        tooltip: LocalFileSystemID && appSettings.isWin ? unixToWin(f.path) : f.path
                     })) : identity,
                 toColumns(columns, formatters),
             )(folders.current)

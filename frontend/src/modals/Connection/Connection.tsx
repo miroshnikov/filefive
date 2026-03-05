@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { Path } from '../../../../src/types'
-import { unixToWin } from '../../../../src/utils/os'
+import { unixToWin, winToUnix } from '../../../../src/utils/os'
 import { Modal, ModalButtonID, Select, Password, Checkbox } from '../../ui/components'
 import { useForm, Controller } from "react-hook-form"
 import { parse } from '../../utils/path'
@@ -65,7 +65,14 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             window.f5.get(file).then(config => {
                 if (config) {
                     const {scheme, host, port, user, password, privatekey} = config
-                    setValues({scheme, host, port: String(port), user, password, privatekey})
+                    setValues({
+                        scheme, 
+                        host, 
+                        port: String(port), 
+                        user, 
+                        password, 
+                        privatekey: appSettings.isWin ? unixToWin(privatekey) : privatekey
+                    })
                     setTheme(config.theme ?? appSettings.theme)
                     setSavePassword(password.length > 0)
                     setUsePrivateKey(privatekey.length > 0)
@@ -145,7 +152,13 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
 
             if (protocol == 'sftp') {
                 if (usePrivateKey) {
-                    data.privatekey ||= defaultKeyFile
+                    if (data.privatekey) {
+                        if (appSettings.isWin) {
+                            data.privatekey = winToUnix(data.privatekey)
+                        }
+                    } else {
+                        data.privatekey = defaultKeyFile
+                    }
                 } else {
                     data.privatekey = ''
                 }

@@ -28,7 +28,10 @@ export interface Column {
 }
 export type Columns = Column[]
 
-export type Item = FileInfo & { icon?: string }
+export type Item = FileInfo & { 
+    icon?: string 
+    tootip?: string
+}
 export type Items = Item[]
 
 export enum DropEffect {
@@ -187,10 +190,9 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     ), [items])
 
     const [widths, setWidths] = useState([]) 
-    useEffect(
-        () => { setWidths(columns.map(prop('width'))) }, 
-        [columns]
-    )
+    useEffect(() => { 
+        setWidths(columns.map(prop('width'))) 
+    }, [columns])
 
     const toggle = (dir: string) => {
         setExpanded(expanded.includes(dir) ? without([dir], expanded) : [...expanded, dir])
@@ -531,7 +533,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                                         {item.icon &&
                                                             <i className="fileicon" data-code={item.icon}></i>
                                                         }
-                                                        <span data-tooltip={item.path}>{item[name]}</span>
+                                                        <span data-tooltip={item.tooltip ?? item.path}>{item[name]}</span>
                                                         <ul>
                                                             {item.target &&
                                                                 <li className="icon" data-tooltip={'Symbolic Link to ' + item.target}>prompt_suggestion</li>
