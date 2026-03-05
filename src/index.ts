@@ -2,7 +2,8 @@
 
 import express from 'express'
 import multer from 'multer'
-import { resolve, join, dirname } from 'node:path/posix'
+import { join, dirname } from 'node:path/posix'
+import osPath from 'node:path'
 import { tmpdir } from 'node:os'
 import { move, del, unosify } from './Local'
 import MainApp, { Emitter } from './App'
@@ -36,10 +37,7 @@ app.use(function (req, res, next) {
 })
 
 app.use(express.json())
-app.use(express.static(resolve(__dirname, 'public')))
-
-app.use(express.static(resolve(__dirname, '../dist/public')))
-
+app.use(express.static(osPath.resolve(__dirname, 'public')))
 
 const server = app.listen(port, async () => {
     console.log(`FileFive is up on http://localhost:${port}`)
