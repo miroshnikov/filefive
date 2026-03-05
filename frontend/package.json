@@ -39,13 +39,13 @@
   "dependencies": {
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
-    "i18next": "^25.7.3",
+    "i18next": "^25.8.14",
     "numeral": "^2.0.6",
     "ramda": "^0.32.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-hook-form": "^7.70.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hook-form": "^7.71.2",
     "rxjs": "^7.8.2",
-    "whatwg-url": "^15.1.0"
+    "whatwg-url": "^16.0.1"
   }
 }
