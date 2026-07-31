@@ -10,9 +10,9 @@ import {
     QueueAction, 
     DeepPartial,
     FilterSettings 
-} from '../../src/types'
-import { LocalFileItem } from '../../src/Local'
-import { SaveConnectionSettings } from '../../src/commands/saveConnection'
+} from './shared/types'
+import { LocalFileItem } from './shared/Local'
+import { SaveConnectionSettings } from './shared/saveConnection'
 
 
 export interface F5 {
@@ -55,4 +55,3 @@ declare global {
         f5: F5
     }
 }
-

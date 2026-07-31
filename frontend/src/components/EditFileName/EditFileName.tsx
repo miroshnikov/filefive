@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function ({name, sublings, onOk, onCancel}: Props) {
-    const inputEl = useRef(null)
+    const inputEl = useRef<HTMLInputElement>(null)
     const [newName, setNewName] = useState(name)
     const [error, setError] = useState(false)
     const done = useRef(false)

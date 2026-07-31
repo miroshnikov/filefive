@@ -14,20 +14,20 @@ import { where, whereEq, isNotNil, isNotEmpty } from 'ramda'
 export function explorerSettings(attributes: FileAttributes, config?: ExplorerConfig): ExplorerSettings {
         return { 
             columns: config ? [
-                ...config.columns
+                ...(config.columns ?? [])
                     .map(({name, width}) => {
                         const attribute = attributes.find(whereEq({name}))
                         return attribute ? { ...attribute, visible: true, width } : null
                     })
                     .filter(isNotNil),
                 ...attributes
-                    .filter(({name}) => !config.columns.find(c => name == c.name))
+                    .filter(({name}) => !(config.columns ?? []).find(c => name == c.name))
                     .map(a => ({...a, visible: false, width: 250}))
                 ] : attributes.map(a => ({...a, visible: true, width: 250})), 
             ...({ 
                 sort: config?.sort ?? ['name', SortOrder.Asc],
                 history: config?.history ?? [],
-                filter: config?.filter ?? null
+                filter: config?.filter
             })
         }
 }
@@ -81,7 +81,11 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
             password,
             config.privatekey
         )
-        const pwd = await Connection.get(id).pwd()
+        const connection = Connection.get(id)
+        if (!connection) {
+            throw new Error(`Invalid connection: ${id}`)
+        }
+        const pwd = await connection.pwd()
         const settings: ConnectionSettings = {
             name: parse(file).name,
             attributes,

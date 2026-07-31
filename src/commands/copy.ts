@@ -61,7 +61,7 @@ export default function (
             filter,
             root,
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
-            onConflict.bind(queue),
+            onConflict,
             error => {
                 App.onError({
                     type: FailureType.RemoteError,
@@ -84,7 +84,7 @@ export default function (
                 filter,
                 root,
                 state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
-                onConflict.bind(queue),
+                onConflict,
                 error => App.onError(error),
                 onFinish
             ) : 
@@ -95,7 +95,7 @@ export default function (
                 filter,
                 root,
                 state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
-                onConflict.bind(queue),
+                onConflict,
                 error => App.onError(error),
                 onFinish,
                 App.remoteWatcher

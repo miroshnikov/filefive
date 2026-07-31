@@ -35,7 +35,7 @@ export class LogFS extends FileSystem {
             return res
         } catch (e) {
             let msg = `Could not connect to ${this.id}`
-            if ('message' in e) {
+            if (e && typeof e == 'object' && 'message' in e) {
                 msg += ': ' + e.message
             }
             logger.error(await err(msg))
@@ -138,7 +138,11 @@ export class LogFS extends FileSystem {
         try {
             return await this.fs.cp(from, to, recursive)
         } catch (e) {
-            logger.error(await err(e.message)) 
+            const message = String((e && typeof e === 'object' && 'message' in e)
+                ? e.message
+                : e
+            )
+            logger.error(await err(message)) 
             throw e
         }
     }

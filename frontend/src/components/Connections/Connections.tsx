@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react"
-import { LocalFileSystemID, URI, Path, SortOrder, ExplorerSettings } from '../../../../src/types'
-import { FileAttributeType } from '../../../../src/FileSystem'
+import { LocalFileSystemID, URI, Path, SortOrder, ExplorerSettings } from '../../shared/types'
+import { FileAttributeType } from '../../shared/FileSystem'
 import { AppSettingsContext } from '../../context/config'
 import { MenuItem } from '../../ui/components'
-import { parseURI } from '../../../../src/utils/URI'
+import { parseURI } from '../../shared/utils/URI'
 import Explorer from '../Explorer/Explorer'
 import dirMenu from '../../menu/connectionsDir'
 import fileMenu from '../../menu/connection'
@@ -47,7 +47,7 @@ const settings: ExplorerSettings = {
     ],
     sort: ['name', SortOrder.Asc],
     history: [],
-    filter: null
+    filter: undefined
 }
 
 export default function Connections({ path, onChange, onSelect, connect, toolbar, onFocus, onBlur, tabindex }: Props) {
@@ -60,7 +60,7 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
     useSubscribe(() => command$.subscribe(cmd => {
         if (cmd.id == CommandID.Edit && cmd.uri) {
             const {id, path} = parseURI(cmd.uri)
-            if (id == LocalFileSystemID && path.startsWith(appSettings.connections)) {
+            if (id == LocalFileSystemID && path.startsWith(appSettings!.connections)) {
                 setConnectionFile(path)
             }
         }
@@ -69,7 +69,7 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
     const onContextMenu = (file: URI, dir: boolean) => {
         const { path } = parseURI(file)
         setMenu(dir ? 
-            dirMenu(path, selected, path == appSettings.connections) : 
+            dirMenu(path, selected, path == appSettings!.connections) : 
             fileMenu(path, selected, () => connect(path))
         )
     }
@@ -80,7 +80,7 @@ export default function Connections({ path, onChange, onSelect, connect, toolbar
             connection={LocalFileSystemID}
             settings={settings}
             path={path} 
-            fixedRoot={appSettings.connections}
+            fixedRoot={appSettings!.connections}
             onChange={onChange} 
             onSelect={(paths: Path[]) => {setSelected(paths); onSelect(paths)}}
             onOpen={connect}

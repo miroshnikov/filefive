@@ -37,7 +37,7 @@ export default async function (files: URI[], connPath: string, immediately = fal
             error => {
                 App.onError({
                     type: FailureType.RemoteError,
-                    id: this.connId,
+                    id: connId,
                     message: error.message ?? String(error)
                 })
             },

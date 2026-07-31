@@ -5,9 +5,9 @@ import { useSubscribe } from '../../hooks'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { AppSettingsContext } from '../../context/config'
-import { createURI } from '../../../../src/utils/URI'
+import { createURI } from '../../shared/utils/URI'
 import { mergeRight, omit } from 'ramda'
-import { LocalFileSystemID, AppSettings } from '../../../../src/types'
+import { LocalFileSystemID, AppSettings } from '../../shared/types'
 import styles from './Settings.less'
 
 export const themes = ['black', 'blue', 'green', 'pink']
@@ -38,11 +38,11 @@ export default function Settings() {
     const appSettings = useContext(AppSettingsContext)
 
     const [shown, show] = useState(false)
-    const [mode, setMode] = useState<AppSettings['mode']>(appSettings.mode)
-    const [theme, setTheme] = useState(appSettings.theme)
-    const [fileTheme, setFileTheme] = useState(appSettings.fileTheme ?? '')
-    const [timeFmt, setTimeFmt] = useState(appSettings.timeFmt)
-    const [sizeFmt, setSizeFmt] = useState(appSettings.sizeFmt)
+    const [mode, setMode] = useState<AppSettings['mode']>(appSettings!.mode)
+    const [theme, setTheme] = useState(appSettings!.theme)
+    const [fileTheme, setFileTheme] = useState(appSettings!.fileTheme ?? '')
+    const [timeFmt, setTimeFmt] = useState(appSettings!.timeFmt)
+    const [sizeFmt, setSizeFmt] = useState(appSettings!.sizeFmt)
 
     useSubscribe(() => 
         command$.subscribe(cmd => {
@@ -55,10 +55,10 @@ export default function Settings() {
         })
     )
 
-    const onClose = (id: ModalButtonID) => {
+    const onClose = (id: string) => {
         show(false)
         if (id == ModalButtonID.Ok) {
-            const settings = omit(['fileIcons'], appSettings) 
+            const settings = omit(['fileIcons'], appSettings!) 
             window.f5.write(
                 createURI(LocalFileSystemID, settings.settings),
                 JSON.stringify( mergeRight(settings, { mode, theme, fileTheme, timeFmt, sizeFmt }) )

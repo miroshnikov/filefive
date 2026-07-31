@@ -11,8 +11,8 @@ import {
     FailureType, 
     DeepPartial,
     FilterSettings
-} from '../../src/types'
-import { LocalFileItem } from '../../src/Local'
+} from './shared/types'
+import { LocalFileItem } from './shared/FileSystem'
 import { error$ } from './observables/error'
 
 
@@ -37,7 +37,8 @@ async function invoke<T>(method: string, data: {} = {}, signal?: AbortSignal): P
     })
 }
 
-const channels = new Map<string, ((event: {}) => void)[]>
+const channels = new Map<string, Function[]>
+
 const ws = new WebSocket(`ws://${location.host}/events`);  
 ws.onmessage = ({data}) => {
     const event = JSON.parse(data)
@@ -53,7 +54,7 @@ ws.onclose = (e) => {
     reload = setTimeout(() => window.location.reload(), 2000)
 }
 
-function subscribe<Event extends {}>(channel: string, callback: (event: Event) => void) {
+function subscribe<Event extends Record<string, any>>(channel: string, callback: (event: Event) => void) {
     const callbacks = channels.get(channel)
     channels.set(channel, callbacks ? [...callbacks, callback] : [callback])
 }
@@ -73,10 +74,11 @@ window.f5 = {
     refresh: dir => invoke<void>('refresh', { dir }),
 
     onDirChange: listener => subscribe<{uri: URI, files: Files}>('dir', ({uri, files}) => listener(uri, files)),
+    //   onDirChange(listener: (uri: URI, files: Files) => void): void
     onFileChange: listener => subscribe<{path: Path, stat: LocalFileItem|null}>('file', ({path, stat}) => listener(path, stat)),
 
     copy: (src, dest, move = false, filter?: FilterSettings, root?: Path, sid?: string) => invoke<string>('copy', { src, dest, move, filter, root, sid }),
-    duplicate: (src, filter: FilterSettings = null) => invoke<void>('duplicate', { src, filter }),
+    duplicate: (src, filter?: FilterSettings) => invoke<void>('duplicate', { src, filter }),
     remove: (files) => invoke<string|null>('remove', { files }),
     clear: (file) => invoke<void>('clear', { file }),
     open: (file, app) => invoke<string>('open', { file, app }),

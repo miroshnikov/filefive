@@ -11,7 +11,7 @@ export default class DownloadQueue extends TransmitQueue {
         connId: ConnectionID,
         src: Path[],
         dest: Path,
-        filter: FilterSettings,
+        filter: FilterSettings|undefined,
         fromRoot: Path|undefined,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,

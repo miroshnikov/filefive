@@ -48,6 +48,6 @@ i18next
 
 window.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('app')
-    const root = createRoot(container)
+    const root = createRoot(container!)
     root.render(<App/>)
 })

@@ -13,12 +13,12 @@ import {
     FilterSettings,
     FailureType,
     FileAttrsAttr
-} from '../../../../src/types'
-import { parseURI, createURI } from '../../../../src/utils/URI'
-import { filterRegExp } from '../../../../src/utils/filter'
+} from '../../shared/types'
+import { parseURI, createURI } from '../../shared/utils/URI'
+import { filterRegExp } from '../../shared/utils/filter'
 import { dirname, descendantOf, join, basename } from '../../utils/path'
-import { unixToWin } from '../../../../src/utils/os'
-import fileicon from '../../utils/fileicon'
+import { unixToWin } from '../../shared/utils/os'
+import getFileIcon from '../../utils/fileicon'
 import styles from './Explorer.less'
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"
 import Filter from '../Filter/Filter'
@@ -77,7 +77,7 @@ const filterFiles = (files: Files, predicate: (f: FileInfo) => boolean) => {
     return files.filter(predicate)
 }
 
-const sortFiles = (files: Files, columns: Columns) => {
+const sortFiles = (files: Files, columns: Columns): FileInfo[] => {
     const sortings = [descend<FileInfo>(prop('dir'))]
     const sortedBy = columns.find(({sort}) => !!sort)
     if (sortedBy) {
@@ -91,9 +91,17 @@ const sortFiles = (files: Files, columns: Columns) => {
 }
 
 const rightsToStr = (n: number) =>
-    n.toString(8).split('').map(s => parseInt(s)).reverse().slice(0, 3).reduce(
-        (rights, n) => [...rights, (n & 4 ? 'r':'-') + (n & 2 ? 'w':'-') + (n & 1 ? 'x':'-')], []
-    ).reverse().join('')
+    n.toString(8)
+        .split('')
+        .map(s => parseInt(s))
+        .reverse()
+        .slice(0, 3)
+        .reduce(
+            (rights, n) => [...rights, (n & 4 ? 'r':'-') + (n & 2 ? 'w':'-') + (n & 1 ? 'x':'-')], 
+            [] as string[]
+        )
+        .reverse()
+        .join('')
 
 
 const toColumns = curry((columns: Columns, formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => string}, files: Files) => {
@@ -106,8 +114,9 @@ const toColumns = curry((columns: Columns, formatters: {[key: keyof FileInfo]: (
     }))
 })
 
-const onlyVisible = (dirs: string[]) => {
-    const visible = new Set([ dirs.sort(ascend(prop('length'))).shift() ])
+const onlyVisible = (dirs: string[]): string[] => {
+    const first = dirs.sort(ascend(prop('length'))).shift()
+    const visible = new Set(first ? [ first ] : [])
     dirs.forEach(dir => visible.has(dirname(dir)) && visible.add(dir))
     return Array.from(visible.values())
 }
@@ -168,10 +177,10 @@ export default function Explorer ({
 
     const [columns, setColumns] = useState<Columns>([])
     const [root, setRoot] = useState<string>(path)
-    const [parent, setParent] = useState<string>(null)
-    const [files, setFiles] = useState<(Item & {rawSize: number})[]>([])
+    const [parent, setParent] = useState<string>()
+    const [files, setFiles] = useState<(Item & {rawSize?: number})[]>([])
     const selected = useRef<string[]>([])
-    const target = useRef<Path>(null)
+    const target = useRef<Path>(undefined)
     const watched = useRef<string[]>([])
     const folders = useRef<Record<string, Files>>({})
     const [loadingRoot, setLoadingRoot] = useState(true)
@@ -179,8 +188,8 @@ export default function Explorer ({
     const [stat, setStat] = useState({ files: 0, dirs: 0, size: 0 })
 
     const [showFilter, setShowFilter] = useState(false)
-    const [initialFilter, setInitialFilter] = useState<FilterSettings>(null)
-    const filterSettings = useRef<FilterSettings>(null)
+    const [initialFilter, setInitialFilter] = useState<FilterSettings>()
+    const filterSettings = useRef<FilterSettings>(undefined)
     const filterRe = useRef<RegExp>(null)
 
     const history = useRef<Path[]>([])
@@ -191,7 +200,7 @@ export default function Explorer ({
     
     const expanded = useRef<string[]>([])
 
-    const list = useRef(null)
+    const list = useRef<HTMLDivElement>(null)
 
     const [showColumnsMenu, setShowColumnsMenu] = useState(false)
 
@@ -220,11 +229,11 @@ export default function Explorer ({
     useEffectOnUpdate(() => setRoot(path), [path])
 
     useEffect(() => {
-        setParent(root == fixedRoot ? null : dirname(root))
+        setParent(root == fixedRoot ? undefined : dirname(root))
     }, [fixedRoot])
     
     useEffect(() => {
-        setParent(root == fixedRoot ? null : dirname(root))
+        setParent(root == fixedRoot ? undefined : dirname(root))
         watch([root])    
         setLoadingRoot(true)
 
@@ -262,8 +271,8 @@ export default function Explorer ({
     }, [settings], equals)
 
     const formatters = {
-        modified: (value: Date) => format(value, appSettings.timeFmt),
-        size: (value: number) => numeral(value).format(appSettings.sizeFmt),
+        modified: (value: Date) => format(value, appSettings!.timeFmt),
+        size: (value: number) => numeral(value).format(appSettings!.sizeFmt),
         rights: (value: number|string) => typeof value == 'number' ? rightsToStr(value) : value
     }
 
@@ -303,17 +312,26 @@ export default function Explorer ({
                 omit([root]),
                 keys,
                 sortBy(length),
-                reduce((files, dir) => {
-                    const i = files.findIndex(({path}) => path == dir)
-                    return i >= 0 ? insertAll(i+1, sortFiles(filterFiles(folders.current[dir as string], filterPredicate), columns), files) : files
-                }, sortFiles(filterFiles(folders.current[root] ?? [], filterPredicate), columns)),
-                appSettings.fileIcons ? 
+                reduce(
+                    (files, dir) => {
+                        const i = files.findIndex(({path}) => path == dir)
+                        return i >= 0 
+                            ? insertAll(i+1, sortFiles(filterFiles(folders.current[dir as string], filterPredicate), columns), files) 
+                            : files
+                    }, 
+                    sortFiles(filterFiles(folders.current[root] ?? [], filterPredicate), columns)
+                ),
+                appSettings!.fileIcons ? 
                     map(f => ({
                         ...f, 
-                        icon: fileicon(appSettings.fileIcons, f.path, f.dir ? expanded.current.includes(f.path) : null),
-                        tooltip: LocalFileSystemID && appSettings.isWin ? unixToWin(f.path) : f.path
+                        icon: getFileIcon(
+                            appSettings!.fileIcons, 
+                            f.path, 
+                            f.dir ? expanded.current.includes(f.path) : undefined
+                        ),
+                        tooltip: LocalFileSystemID && appSettings!.isWin ? unixToWin(f.path) : f.path
                     })) : identity,
-                toColumns(columns, formatters),
+                // toColumns(columns, formatters)
             )(folders.current)
         )
     }
@@ -340,7 +358,7 @@ export default function Explorer ({
         update()
     }, [columns])
 
-    const setFilterSettings = (filter: FilterSettings) => {
+    const setFilterSettings = (filter?: FilterSettings) => {
         filterRe.current = filter ? filterRegExp(filter) : null
         update()
         if (!equals(filter, settings.filter)) {
@@ -349,7 +367,7 @@ export default function Explorer ({
     }
 
     useEffectOnUpdate(() => {
-        setFilterSettings(showFilter ? filterSettings.current : null)
+        setFilterSettings(showFilter ? filterSettings.current : undefined)
         !showFilter && list.current?.focus()
     }, [showFilter])
 
@@ -361,15 +379,15 @@ export default function Explorer ({
                 }, 200)
             }
         })
-        list.current && resizeList.observe(list.current)
-        return () => list.current && resizeList.unobserve(list.current)
+        list.current && resizeList.observe(list.current);
+        return () => { list.current && resizeList.unobserve(list.current) }
     }, [])
 
     useEffect(() => {
-        return () => onBlur()
+        return () => onBlur?.()
     }, [])
 
-    const focused = useFocus(rootRef)
+    const focused = useFocus(rootRef as React.RefObject<HTMLElement>)
 
     useEffect(() => {
         focused ? onFocus?.() : onBlur?.()
@@ -388,7 +406,8 @@ export default function Explorer ({
                     const uris = selected.current?.map(path => createURI(connection, path))
                     if (uris.length) {
                         cmd.e.preventDefault()
-                        cmd.e.clipboardData.setData('URIs', JSON.stringify(uris))
+                        cmd.e.clipboardData 
+                            && cmd.e.clipboardData.setData('URIs', JSON.stringify(uris))
                     }
                     break
                 }
@@ -417,7 +436,7 @@ export default function Explorer ({
                     if (path) {
                         const paths = selected.current?.includes(path) ? selected.current : [path]
                         navigator.clipboard.writeText(
-                            (connection == LocalFileSystemID && appSettings.isWin ? paths.map(unixToWin) : paths).join(' ')
+                            (connection == LocalFileSystemID && appSettings!.isWin ? paths.map(unixToWin) : paths).join(' ')
                         )
                     }
                     break
@@ -428,7 +447,7 @@ export default function Explorer ({
                         const paths = (selected.current?.includes(path) ? selected.current : [path])
                                 .map(path => path.substring(root.length+1))
                         navigator.clipboard.writeText(
-                            (connection == LocalFileSystemID && appSettings.isWin ? paths.map(unixToWin) : paths).join(' ')
+                            (connection == LocalFileSystemID && appSettings!.isWin ? paths.map(unixToWin) : paths).join(' ')
                         )
                     }
                     break
@@ -469,7 +488,7 @@ export default function Explorer ({
                     break
                 }
                 case CommandID.ClearContents: {
-                    error$.next({ type: FailureType.ConfirmClear, file: cmd.uri })
+                    error$.next({ type: FailureType.ConfirmClear, file: cmd.uri! })
                     break
                 }
                 case CommandID.Duplicate: {
@@ -517,12 +536,18 @@ export default function Explorer ({
             expanded.current = without([dir], expanded.current)
         } else {
             expanded.current.push(dir)
+            const a = expanded.current.filter(descendantOf(dir))
+            const b = onlyVisible(a)
             watch(onlyVisible(expanded.current.filter(descendantOf(dir))))            
         }
-        if (appSettings.fileIcons) {
+        if (appSettings!.fileIcons) {
             setFiles(files => files.map(f => ({
                 ...f,
-                icon: fileicon(appSettings.fileIcons, f.path, f.dir ? expanded.current.includes(f.path) : null)
+                icon: getFileIcon(
+                    appSettings!.fileIcons, 
+                    f.path, 
+                    f.dir ? expanded.current.includes(f.path) : undefined
+                )
             })))
         }
     }
@@ -571,7 +596,7 @@ export default function Explorer ({
     const onDrop = (items: string[]|File[], target: Path, effect: DropEffect, e: React.DragEvent<HTMLElement>) => {
         if (items.length) {
             if (typeof items[0] == 'string') {
-                let filter: FilterSettings = null
+                let filter: FilterSettings | undefined = undefined
                 const data = e.dataTransfer.getData('Filter')
                 if (data && data.length) {
                     try {
@@ -583,7 +608,7 @@ export default function Explorer ({
                     createURI(connection, target), 
                     effect == DropEffect.Move, 
                     filter,
-                    null,
+                    undefined,
                     sid
                 ).then(qid => createQueue(qid))
             } else {
@@ -594,9 +619,11 @@ export default function Explorer ({
 
     const sortByColumn = (name: Column['name']) => {
         const toSort = columns.find(whereEq({name}))
-        toSort.sort = toSort.sort === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc
-        setColumns(columns.map(c => c.name == name ? c : omit(['sort'], c)))
-        onSettingsChange?.({ sort: [name, toSort.sort] })
+        if (toSort) {
+            toSort.sort = toSort.sort === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc
+            setColumns(columns.map(c => c.name == name ? c : omit(['sort'], c)))
+            onSettingsChange?.({ sort: [name, toSort.sort] })
+        }
     }
 
     const columnsMenu =
@@ -635,7 +662,7 @@ export default function Explorer ({
                             return { 
                                 dirs: Number(stat.dirs + Number(file.dir)), 
                                 files: stat.files + Number(!file.dir),
-                                size: stat.size + (file.dir ? 0 : file.rawSize)
+                                size: stat.size + (file.dir ? 0 : file.rawSize!)
                             }
                         }
                         return stat
@@ -646,7 +673,7 @@ export default function Explorer ({
                     (stat, f) => ({ 
                         dirs: stat.dirs + Number(f.dir), 
                         files: stat.files + Number(!f.dir),
-                        size: stat.size + (f.dir ? 0 : f.rawSize)
+                        size: stat.size + (f.dir ? 0 : f.rawSize!)
                     }), 
                     {files: 0, dirs: 0, size: 0}
                 )
@@ -662,29 +689,37 @@ export default function Explorer ({
                 <Toolbar items={toolbar} onClick={() => list.current?.focus()} /> : null
             }
             <div className="path">
-                <Tooltips shortcuts={appSettings.keybindings}>
+                <Tooltips shortcuts={appSettings!.keybindings}>
                     <button className="icon" disabled={isFirst} data-command={CommandID.GoBack} data-tooltip="Go Back"
                         onClick={() => command$.next({id: CommandID.GoBack})}
                     >arrow_back</button>
                     <button className="icon" disabled={isLast} data-command={CommandID.GoForward} data-tooltip="Go Forward"
                         onClick={() => command$.next({id: CommandID.GoForward})}
                     >arrow_forward</button>
-                    {connection != LocalFileSystemID && <>
-                        <button className="icon" data-command={CommandID.Refresh} data-tooltip="Refresh"
-                            onClick={() => command$.next({id: CommandID.Refresh})}
-                        >refresh</button>
-                        {homeDir &&
-                            <button className="icon" data-tooltip={homeDir}
-                                onClick={() => setRoot(homeDir)}
-                            >home</button>
-                        }
-                    </>}
+                    {connection != LocalFileSystemID 
+                        ? <>
+                            <button 
+                                className="icon" 
+                                data-command={CommandID.Refresh} 
+                                data-tooltip="Refresh"
+                                onClick={() => command$.next({id: CommandID.Refresh})}
+                            >refresh</button>
+                            {homeDir &&
+                                <button 
+                                    className="icon" 
+                                    data-tooltip={homeDir}
+                                    onClick={() => setRoot(homeDir)}
+                                >home</button>
+                            }
+                        </>
+                        : <></>
+                    }
                     <Breadcrumbs 
                         icon={icon}
                         path={root}
                         root={fixedRoot}
                         go={setRoot}
-                        connection={connectionName ? { id: connection, name: connectionName } : null}
+                        connection={connectionName ? { id: connection, name: connectionName } : undefined}
                     />
                 </Tooltips>
             </div>
@@ -726,7 +761,7 @@ export default function Explorer ({
         </footer>
         {list.current &&
             <ContextMenu target={list.current}>
-                <Menu items={showColumnsMenu ? columnsMenu : contextMenu} shortcuts={appSettings.keybindings} />
+                <Menu items={showColumnsMenu ? columnsMenu : contextMenu} shortcuts={appSettings!.keybindings} />
             </ContextMenu>
         }
     </div>

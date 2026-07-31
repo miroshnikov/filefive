@@ -4,9 +4,9 @@ import styles from './App.less'
 import { useMap, useSubscribe, useShortcuts, useMode, useCopyPaste, useEffectOnUpdate } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import Queue from '../Queue/Queue'
-import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../../../src/types'
+import { LocalFileSystemID, QueueEventType, QueueType, ConnectionID, AppSettings, Path } from '../../shared/types'
 import { parse } from '../../utils/path'
-import { createURI } from '../../../../src/utils/URI'
+import { createURI } from '../../shared/utils/URI'
 import classNames from "classnames"
 import QueueAction from "../QueueAction/QueueAction"
 import Error from '../Error/Error'
@@ -23,14 +23,19 @@ import info from '../../../../package.json'
 import { equals, mergeDeepRight } from 'ramda'
 
 
-function setTitle(connectionId: ConnectionID|null, connectionName: string, localPath: Path, remotePath: Path) {
+function setTitle(
+    connectionId: ConnectionID | undefined, 
+    connectionName: string | undefined, 
+    localPath: Path, 
+    remotePath: Path
+) {
     let title = (connectionName ? connectionName + ' - ' : '') + parse(remotePath).name
-    document.querySelector<HTMLElement>('head > title').innerText = title
+    document.querySelector<HTMLElement>('head > title')!.innerText = title
 }
 
 
 export default function App () {
-    const [appSettings, setAppSettings] = useState<AppSettings>(null)
+    const [appSettings, setAppSettings] = useState<AppSettings>()
 
     const currAppSettings = useRef<AppSettings>(null)
     const settingsFile = useRef('')
@@ -54,7 +59,12 @@ export default function App () {
     const defaultMode = useMode()
     useLayoutEffect(() => {
         if (appSettings) {
-            document.documentElement.setAttribute('data-mode', appSettings.mode == 'system' ? defaultMode : appSettings.mode)            
+            document.documentElement.setAttribute(
+                'data-mode', 
+                appSettings.mode == 'system' 
+                    ? defaultMode 
+                    : appSettings.mode!
+            )
             document.documentElement.setAttribute('data-theme', appSettings.theme)
             if (appSettings.fileTheme) {
                 const link = document.createElement('link')
@@ -68,13 +78,16 @@ export default function App () {
     useCopyPaste(
         (e: ClipboardEvent) => command$.next({ id: CommandID.Copy, e }),
         (e: ClipboardEvent) => {
-            if (e.clipboardData.files.length) {
+            if (e.clipboardData?.files.length) {
                 const files: File[] = []
                 for (let i=0; i<e.clipboardData.files.length; i++) {
-                    files.push(e.clipboardData.files.item(i))
+                    const file = e.clipboardData.files.item(i)
+                    if (file) {
+                        files.push(file)
+                    }
                 }
                 command$.next({ id: CommandID.Paste, files })
-            } else {
+            } else if (e.clipboardData) {
                 const data = e.clipboardData.getData('URIs')
                 if (data && data.length) {
                     command$.next({ id: CommandID.Paste, uris: JSON.parse(data) })
@@ -87,7 +100,7 @@ export default function App () {
         file$.subscribe(({path}) => {
             if (path == settingsFile.current) {
                 window.f5.settings().then(settings => {
-                    if (!equals(currAppSettings.current, settings)) {
+                    if (currAppSettings.current && !equals(currAppSettings.current, settings)) {
                         if (currAppSettings.current.fileTheme != settings.fileTheme) {
                             location.reload()
                         } else {
@@ -102,12 +115,14 @@ export default function App () {
     )
 
     useEffectOnUpdate(() => {
-        allSettingsChanges.current = mergeDeepRight(allSettingsChanges.current, settingsChanges) as AppSettingsChanges
-        currAppSettings.current = mergeDeepRight(currAppSettings.current, allSettingsChanges.current) as AppSettings
-        const tm = setTimeout(() => {
-            window.f5.saveSettings(allSettingsChanges.current)
-        }, 2000)
-        return () => clearTimeout(tm)
+        if (currAppSettings.current) {
+            allSettingsChanges.current = mergeDeepRight(allSettingsChanges.current, settingsChanges) as AppSettingsChanges
+            currAppSettings.current = mergeDeepRight(currAppSettings.current, allSettingsChanges.current) as AppSettings
+            const tm = setTimeout(() => {
+                window.f5.saveSettings(allSettingsChanges.current)
+            }, 2000)
+            return () => clearTimeout(tm)
+        }
     }, [settingsChanges])
 
     useShortcuts(

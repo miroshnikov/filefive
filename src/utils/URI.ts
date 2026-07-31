@@ -10,7 +10,7 @@ export function connectionID(scheme: string, user: string, host: string, port: n
         case 'file': 
             return LocalFileSystemID
         case 's3': 
-            scheme = host.match(/^https?:\/\//)[0].slice(0, -3)
+            scheme = host.match(/^https?:\/\//)![0].slice(0, -3)
             host = host.substring(scheme.length+3)
             break
     }
@@ -37,6 +37,9 @@ export function parseURI(uri: URI) {
 
 export function createURI(id: ConnectionID, path: Path): URI {
     const u = parseURL(id)
+    if (!u) {
+        throw new Error(`Invalid URL: ${id}`)
+    }
     u.path = path
     if (!u.port) {
         u.port = defaultPort(u.scheme)
@@ -46,14 +49,13 @@ export function createURI(id: ConnectionID, path: Path): URI {
 
 function defaultPort(protocol: string) {
     switch (protocol) {
-        case 'file':  return null
+        case 'file':  return 0
         case 'ftp':   return 21
         case 'sftp':  return 22
         case 'http':  return 80
         case 'https': return 443
     }
-    console.error(`Default port for ${protocol} is not defined`)
-    return null
+    throw new Error(`Defaul port for protocol ${protocol} is not defined`)
 }
 
 

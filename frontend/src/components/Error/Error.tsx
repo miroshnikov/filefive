@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { filter } from 'rxjs/operators'
 import { useSubscribe } from '../../hooks'
 import { error$ } from '../../observables/error'
-import { FailureType, ConnectionID, LocalFileSystemID } from '../../../../src/types'
+import { FailureType, ConnectionID, LocalFileSystemID } from '../../shared/types'
 import { Button } from '../../ui/components'
 import styles from './Error.less'
 

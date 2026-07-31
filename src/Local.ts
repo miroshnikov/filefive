@@ -4,12 +4,9 @@ import osPath from 'node:path'
 import { readdirSync, statSync, lstatSync, readlinkSync, watch as fsWatch, WatchEventType } from 'node:fs';
 import { mkdir, unlink, rename, cp, open, rm, readFile, writeFile, watch as asyncWatch } from 'node:fs/promises'
 import { winToUnix, unixToWin } from './utils/os'
-import { FileItem } from './FileSystem'
+import { LocalFileItem, LocalFiles } from './FileSystem'
 import { getDrives } from './win'
 
-
-export type LocalFileItem = FileItem & { inode: number }
-export type LocalFiles = LocalFileItem[]
 
 export function isWin() {
     return platform() === 'win32'
@@ -33,7 +30,7 @@ export function stat(path: string): LocalFileItem|null {
     const actualPath = osify(path)
     try {
         let stat = lstatSync(actualPath)
-        let target: string
+        let target = ''
         if (stat.isSymbolicLink()) {
             target = readlinkSync(actualPath)
             if (!isAbsolute(target)) {
@@ -58,9 +55,9 @@ export function stat(path: string): LocalFileItem|null {
 export function list(dir: string): LocalFiles {
     let actialDir = osify(dir)
     if (actialDir == '\\') {
-        return getDrives().map(path => stat(unosify(path))).filter(f => f)
+        return getDrives().map(path => stat(unosify(path))).filter(f => f != null)
     }
-    return readdirSync(actialDir).map(name => stat(join(dir, name))).filter(f => f)
+    return readdirSync(actialDir).map(name => stat(join(dir, name))).filter(f => f != null)
 }
 
 export async function mkDirRecursive(path: string) {
@@ -118,10 +115,10 @@ export async function write(path: string, data: string): Promise<void> {
 
 export function watch(
     path: string, 
-    listener: (event: WatchEventType, file: string) => void, 
+    listener: (event: WatchEventType, file: string|null) => void, 
     onError: (e: Error) => void
 ): () => void {
-    const watcher = fsWatch(osify(path), listener)
+    const watcher = fsWatch(osify(path), null, listener)
     watcher.on('error', onError)
     return () => watcher.close()
 }

@@ -1,5 +1,5 @@
-import { Path, ConnectionID, LocalFileSystemID, FailureType } from '../../../src/types'
-import { createURI } from '../../../src/utils/URI'
+import { Path, ConnectionID, LocalFileSystemID, FailureType } from '../shared/types'
+import { createURI } from '../shared/utils/URI'
 import { MenuItem } from '../ui/components'
 import { command$ } from '../observables/command'
 import { CommandID } from '../commands'

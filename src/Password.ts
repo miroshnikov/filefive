@@ -27,7 +27,7 @@ export default class Passwords {
 
     static async get(id: ConnectionID, skipMissing = false): Promise<string> {
         if (this.store.has(id)) {
-            return this.store.get(id)[0]
+            return this.store.get(id)![0]
         }
         if (skipMissing) {
             return ''

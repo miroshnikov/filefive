@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Modal, ModalButtonID } from '../ui/components'
-import { URI, FailureType } from '../../../src/types'
-import { parseURI } from '../../../src/utils/URI'
+import { URI, FailureType } from '../shared/types'
+import { parseURI } from '../shared/utils/URI'
 import { useSubscribe } from '../hooks'
 import { error$ } from '../observables/error'
 import { basename } from '../utils/path'
@@ -14,7 +14,7 @@ export default function ConfirmDeletion() {
     const [isLocal, setLocal] = useState(true)
 
     useEffect(() => {
-        setLocal(files.length && files[0].substring(0, 5) == 'file:')
+        setLocal(files.length > 0 && files[0].substring(0, 5) == 'file:')
         setNames(files.map(u => basename( parseURI(u).path) ))
     }, [files])
 
@@ -37,9 +37,9 @@ export default function ConfirmDeletion() {
         } 
     ]
 
-    const onClose = (id: ModalButtonID) => {
+    const onClose = (id: string) => {
         if (id == ModalButtonID.Ok) {
-            window.f5.remove(files).then(id => createQueue(id))
+            window.f5.remove(files).then(id => createQueue(id!))
         }
         setFiles([])
     }

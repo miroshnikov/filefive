@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs'
-import { QueueEvent, QueueEventType } from '../../../src/types'
+import { QueueEvent, QueueEventType } from '../shared/types'
 
 const queues = new Set<string>()
 

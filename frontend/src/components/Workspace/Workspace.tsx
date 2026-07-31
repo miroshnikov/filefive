@@ -3,8 +3,17 @@ import { Split } from '../../ui/components'
 import Explorer from '../Explorer/Explorer'
 import Connections from '../Connections/Connections'
 import { ToolbarItem } from '../Toolbar/Toolbar'
-import { ConnectionID, LocalFileSystemID, URI, Path, AppSettings, ConnectionSettings, FailureType, DeepPartial, QueueEventType } from '../../../../src/types'
-import { createURI, isLocal, parseURI } from '../../../../src/utils/URI'
+import { 
+    ConnectionID, 
+    LocalFileSystemID, 
+    URI, 
+    Path, 
+    AppSettings, 
+    ConnectionSettings, 
+    FailureType, 
+    DeepPartial 
+} from '../../shared/types'
+import { createURI, parseURI } from '../../shared/utils/URI'
 import { AppSettingsContext } from '../../context/config'
 import { Spinner, MenuItem, Button, Tooltips } from '../../ui/components'
 import localFileMenu from '../../menu/localFile'
@@ -26,8 +35,8 @@ export type AppSettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|
 
 interface Props {
     onChange: (
-        connectionId: ConnectionID|null,
-        connectionName: string,
+        connectionId: ConnectionID | undefined,
+        connectionName: string | undefined,
         localPath: Path,
         remotePath: Path
     ) => void
@@ -38,21 +47,21 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const appSettings = useContext(AppSettingsContext)
 
     const [connection, setConnection] = 
-        useState<ConnectionSettings & {id: ConnectionID, file: string}>(null)
-    const [localPath, setLocalPath] = useState(appSettings.path?.local ?? appSettings.home)
-    const [remotePath, setRemotePath] = useState(appSettings.connections)
+        useState<ConnectionSettings & {id: ConnectionID, file: string}>()
+    const [localPath, setLocalPath] = useState(appSettings!.path?.local ?? appSettings!.home)
+    const [remotePath, setRemotePath] = useState(appSettings!.connections)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
     const [remoteSelected, setRemoteSelected] = useState<Path[]>([])
     const [showConnections, setShowConnections] = useState(true)
     const [menu, setMenu] = useState<MenuItem[]>([])
     const [connecting, setConnecting] = useState('')
-    const abortConnecting = useRef<AbortController>(null)
-    const sid = useRef<string>(null)
+    const abortConnecting = useRef<AbortController>(undefined)
+    const sid = useRef<string>(undefined)
     const [sync, setSync] = useState(false)
-    const [syncRootLocal, setSyncRootLocal] = useState<string>(null)
-    const [syncRootRemote, setSyncRootRemote] = useState<string>(null)
+    const [syncRootLocal, setSyncRootLocal] = useState<string>()
+    const [syncRootRemote, setSyncRootRemote] = useState<string>()
     const [tryDir, setTryDir] = useState('')
-    const [missingTarget, setMissingTarget] = useState<'local'|'remote'>(null)
+    const [missingTarget, setMissingTarget] = useState<'local'|'remote'>()
 
     const focused = useRef<'local'|'remote'|null>(null)
 
@@ -66,7 +75,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
 
         const u = new URL(window.location.toString())
         if (u.searchParams.has('connect') && !connecting) {
-            connect(u.searchParams.get('connect'))
+            connect(u.searchParams.get('connect')!)
         }
     }, [])
 
@@ -77,7 +86,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     ...connection,
                     path: { 
                         local: localPath, 
-                        remote: showConnections ? connection.path.remote : remotePath 
+                        remote: showConnections ? connection.path!.remote : remotePath 
                     }
                 }
             )
@@ -89,7 +98,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             onSettingsChange({
                 path: { 
                     local: localPath, 
-                    remote: showConnections ? (appSettings.path?.remote ?? appSettings.home) : remotePath 
+                    remote: showConnections ? (appSettings!.path?.remote ?? appSettings!.home) : remotePath 
                 }
             })
         }
@@ -118,8 +127,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     const {id, settings} = connection
                     setConnection({ ...settings, id, file: path })
                     sid.current = connection.sid
-                    setLocalPath(path => settings.path.local ?? path)
-                    setRemotePath(settings.path.remote!)
+                    setLocalPath(path => settings.path!.local ?? path)
+                    setRemotePath(settings.path!.remote!)
                     const u = new URL(window.location.toString())
                     u.searchParams.set('connect', path)
                     history.replaceState(null, '', u.toString())
@@ -133,11 +142,11 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     }
 
     useEffect(() => {
-        document.documentElement.setAttribute('data-theme', connection ? connection.theme : appSettings.theme)
+        document.documentElement.setAttribute('data-theme', connection ? connection.theme : appSettings!.theme)
 
-        const syncDirs = connection ? connection.sync : appSettings.sync
-        setSyncRootLocal(syncDirs?.local ?? null)
-        setSyncRootRemote(syncDirs?.remote ?? null)
+        const syncDirs = connection ? connection.sync : appSettings!.sync
+        setSyncRootLocal(syncDirs?.local ?? undefined)
+        setSyncRootRemote(syncDirs?.remote ?? undefined)
         setSync(!!syncDirs)
     }, [appSettings, connection])
   
@@ -146,11 +155,11 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         if (!connection) {
             return
         }
+        window.f5.disconnect(connection.id, sid.current!)
         abortConnecting.current = sid.current = undefined
-        window.f5.disconnect(connection.id, sid.current)
-        setConnection(null)
-        setLocalPath(appSettings.path?.local ?? appSettings.home)
-        setRemotePath(appSettings.connections)
+        setConnection(undefined)
+        setLocalPath(appSettings!.path?.local ?? appSettings!.home)
+        setRemotePath(appSettings!.connections)
         const u = new URL(window.location.toString())
         u.searchParams.delete('connect')
         history.replaceState(null, '', u.toString())
@@ -162,7 +171,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             return
         }
         abortConnecting.current?.abort()
-        abortConnecting.current = null
+        abortConnecting.current = undefined
         const u = new URL(window.location.toString())
         u.searchParams.delete('connect')
         history.replaceState(null, '', u.toString())
@@ -260,7 +269,9 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const fileContextMenu = (remote = true) => (file: URI, dir: boolean) => {
         const {id, path} = parseURI(file)
         if (id == LocalFileSystemID) {
-            const copyTo = remote ? createURI(LocalFileSystemID, localPath) : createURI(connection?.id ?? LocalFileSystemID, remotePath)
+            const copyTo = remote 
+                ? createURI(LocalFileSystemID, localPath) 
+                : createURI(connection?.id ?? LocalFileSystemID, remotePath)
             setMenu(dir ? 
                 localDirMenu(
                     path, 
@@ -276,9 +287,9 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                 )
             )
         } else {
-            setMenu(dir ? 
-                remoteDirMenu(id, path, remoteSelected, localPath, path == remotePath, path.length < remotePath.length) : 
-                remoteFileMenu(id, path, remoteSelected, localPath)
+            setMenu(dir 
+                ? remoteDirMenu(id, path, remoteSelected, localPath, path == remotePath, path.length < remotePath.length) 
+                : remoteFileMenu(id, path, remoteSelected, localPath)
             )
         }
     }
@@ -300,12 +311,12 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     if (files.length) {
                         window.f5.copy(
                             files.map(path => createURI(LocalFileSystemID, path)), 
-                            connection?.id ? 
-                                createURI(connection.id, remotePath) :
-                                createURI(LocalFileSystemID, remotePath),
+                            connection?.id 
+                                ? createURI(connection.id, remotePath) 
+                                : createURI(LocalFileSystemID, remotePath),
                             false,
-                            (connection ?? appSettings).local.filter,
-                            cmd.id == CommandID.MirrorLocal ? localPath : null,
+                            (connection ?? appSettings!).local.filter,
+                            cmd.id == CommandID.MirrorLocal ? localPath : undefined,
                             sid.current
                         ).then(createQueue)
                     }
@@ -323,8 +334,8 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             files.map(path => createURI(showConnections ? LocalFileSystemID : connection?.id ?? LocalFileSystemID, path)), 
                             createURI(LocalFileSystemID, localPath),
                             false,
-                            showConnections ? null : (connection ?? appSettings).remote.filter,
-                            cmd.id == CommandID.MirrorRemote ? remotePath : null,
+                            showConnections ? undefined : (connection ?? appSettings!).remote.filter,
+                            cmd.id == CommandID.MirrorRemote ? remotePath : undefined,
                             sid.current
                         ).then(createQueue)
                     }
@@ -354,7 +365,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     if (!connection && path == remotePath) {
                         setRemotePath(dirname(remotePath))
                     }
-                } else if (id == connection.id && path == remotePath) {
+                } else if (id == connection?.id && path == remotePath) {
                     setRemotePath(dirname(remotePath))
                 }
 
@@ -366,28 +377,32 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     useEffectOnUpdate(() => { 
         setSync(false)
         showConnections ? 
-            setRemotePath(appSettings.connections) :
+            setRemotePath(appSettings!.connections) :
             setRemotePath( 
-                connection ? 
-                    (connection.path?.remote ?? connection.pwd) : 
-                    (appSettings.path?.remote ?? appSettings.home) 
+                connection 
+                    ? (connection.path?.remote ?? connection.pwd) 
+                    : (appSettings!.path?.remote ?? appSettings!.home) 
                 )
     }, [showConnections])   
 
     useEffectOnUpdate(() => {       
-        const localRoot = sync ? (syncRootLocal ?? localPath) : null
+        const localRoot = sync ? (syncRootLocal ?? localPath) : undefined
         setSyncRootLocal(localRoot)
 
-        const remoteRoot = sync ? (syncRootRemote ?? remotePath) : null
+        const remoteRoot = sync ? (syncRootRemote ?? remotePath) : undefined
         setSyncRootRemote(remoteRoot)
 
         if (!sync) {
             setTryDir('')
-            setMissingTarget(null)
+            setMissingTarget(undefined)
         }
-        connection ?
-            setConnection(connection => ({ ...connection, sync: sync ? { local: localRoot, remote: remoteRoot } : null })):
-            onSettingsChange({ sync: sync ? { local: localRoot, remote: remoteRoot } : null })
+        connection 
+            ? setConnection(
+                c => ({ 
+                    ...c!,
+                    sync: sync ? { local: localRoot!, remote: remoteRoot! } : null 
+                }))
+            : onSettingsChange({ sync: sync ? { local: localRoot, remote: remoteRoot } : null })
     }, [sync])
 
     const syncDir = (root: string, dir: string, targetRoot: string, setF: (path: string) => void) => {
@@ -395,7 +410,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             return
         }
         const path = join(targetRoot, dir.substring(root.length))
-        setMissingTarget(null)
+        setMissingTarget(undefined)
         setTryDir(path)
         setF(path)
     }
@@ -404,7 +419,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         if (syncRootLocal && localPath.length < syncRootLocal.length) {
             setSync(false)
         } else if (localPath != tryDir) {
-            syncDir(syncRootLocal, localPath, syncRootRemote, setRemotePath)
+            syncDir(syncRootLocal!, localPath, syncRootRemote!, setRemotePath)
         }
     }, [localPath])
 
@@ -412,7 +427,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         if (syncRootRemote && remotePath.length < syncRootRemote.length) {
             setSync(false)
         } else if (remotePath != tryDir) {
-            syncDir(syncRootRemote, remotePath, syncRootLocal, setLocalPath)
+            syncDir(syncRootRemote!, remotePath, syncRootLocal!, setLocalPath)
         }
     }, [remotePath])
 
@@ -426,9 +441,9 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             onClose={async (create) => {
                                 if (create) {
                                     await window.f5.mkdir(basename(tryDir), createURI(LocalFileSystemID, dirname(tryDir)))
-                                    setMissingTarget(null)
+                                    setMissingTarget(undefined)
                                 } else {
-                                    setMissingTarget(null)
+                                    setMissingTarget(undefined)
                                     setSync(false)
                                 }
                             }}
@@ -436,7 +451,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                         <Explorer 
                             icon='computer'
                             connection={LocalFileSystemID}
-                            settings={(connection ?? appSettings).local}
+                            settings={(connection ?? appSettings!).local}
                             path={localPath} 
                             fixedRoot={syncRootLocal ?? '/'}
                             onChange={setLocalPath} 
@@ -444,9 +459,9 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             onOpen={openLocal}
                             onMenu={fileContextMenu(false)}
                             onSettingsChange={changes => 
-                                connection ?
-                                    setConnection(connection => ({...connection, local: {...connection.local, ...changes}})):
-                                    onSettingsChange({ local: changes })
+                                connection 
+                                    ? setConnection(c => ({...c!, local: {...c!.local, ...changes}}))
+                                    : onSettingsChange({ local: changes })
                             }
                             contextMenu={menu}
                             toolbar={localToolbar}
@@ -474,12 +489,12 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                 onClose={async (create) => {
                                     if (create) {
                                         await window.f5.mkdir(
-                                            tryDir.substring(syncRootRemote.length),
-                                            createURI(connection?.id ?? LocalFileSystemID, syncRootRemote)
+                                            tryDir.substring(syncRootRemote!.length),
+                                            createURI(connection?.id ?? LocalFileSystemID, syncRootRemote!)
                                         )
-                                        setMissingTarget(null)
+                                        setMissingTarget(undefined)
                                     } else {
-                                        setMissingTarget(null)
+                                        setMissingTarget(undefined)
                                         setSync(false)
                                     }
                                 }}
@@ -510,7 +525,10 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                             onOpen={openRemote}
                                             onMenu={fileContextMenu()}
                                             onSettingsChange={changes =>
-                                                setConnection(connection => ({...connection, remote: {...connection.remote, ...changes}}))
+                                                setConnection(c => c
+                                                    ? ({...c, remote: {...c.remote, ...changes}})
+                                                    : c
+                                                )
                                             }
                                             contextMenu={menu}
                                             toolbar={remoteToolbar}
@@ -521,7 +539,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                         <Explorer 
                                             icon='computer'
                                             connection={LocalFileSystemID}
-                                            settings={appSettings.remote}
+                                            settings={appSettings!.remote}
                                             path={remotePath} 
                                             fixedRoot={syncRootRemote ?? '/'}
                                             onChange={setRemotePath} 
@@ -539,7 +557,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     )
             }
         >
-            <Tooltips shortcuts={appSettings.keybindings}>
+            <Tooltips shortcuts={appSettings!.keybindings}>
                 <button 
                     className={classNames(styles.synctoggle, 'icon', { on: sync })} 
                     onClick={() => command$.next({id: CommandID.SyncBrowsing})}

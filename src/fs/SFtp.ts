@@ -58,7 +58,7 @@ export default class SFtp extends FileSystem {
         private host: string, 
         private user: string, 
         private password: string, 
-        private privateKey: Buffer = null,
+        private privateKey: Buffer|null = null,
         private port = 22,
         private onError: (e: Error) => void,
         private onClose = () => {}
@@ -315,14 +315,17 @@ export default class SFtp extends FileSystem {
             [STATUS_CODE.OP_UNSUPPORTED]: 'Operation unsupported',
         }
         let msg = e.message || (
-            ('code' in e) ?
-                (e['code'] in STATUS_CODE_STR ? STATUS_CODE_STR[e['code']] : `Code: ${e['code']}`) : 
-                'Unknown error'
+            (e && 'code' in e && typeof e['code'] === 'number')
+                ? (e['code'] in STATUS_CODE_STR 
+                    ? STATUS_CODE_STR[e['code']] 
+                    : `Code: ${e['code']}`
+                ) 
+                : 'Unknown error'
         )
         return msg
     }
 
-    private connected: Promise<SFTPWrapper>
+    private connected?: Promise<SFTPWrapper>
     private connection = new Client()
-    private extensions: Record<OpenSSLExtension, '1'|'2'>
+    private extensions?: Record<OpenSSLExtension, '1'|'2'>
 }

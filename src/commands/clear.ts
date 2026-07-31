@@ -8,7 +8,11 @@ import App from '../App'
 export default async function (file: URI) {
     const { id, path } = parseURI(file)
     
-    await Connection.get(id).write(path, '') 
+    const conn = Connection.get(id)
+    if (!conn) {
+        throw new Error(`Invalid connection id ${id}`)
+    }
+    await conn.write(path, '')
 
     if (id != LocalFileSystemID) {
         App.remoteWatcher.refresh(createURI(id, dirname(path)))

@@ -1,7 +1,8 @@
 import { WatchEventType } from 'node:fs';
 import { join } from 'node:path/posix'
 import { Path } from './types'
-import { list, watch, LocalFiles, stat } from './Local'
+import { list, watch, stat } from './Local'
+import { LocalFiles } from './FileSystem'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 
 
@@ -16,14 +17,14 @@ export default class {
             try {
                 this.watched.inc(dir) || this.watched.set(dir, watch(dir, (event, target) => {
                     if (event == 'rename') {
-                        const child = join(dir, target)
+                        const child = join(dir, target ?? '')
                         if (this.watched.has(child) && !stat(child)) {
                             this.watched.del(child)
                             this.onMissing(child)
                         }
                     }
                     try {
-                        this.listener(dir, list(dir), event, target)
+                        this.listener(dir, list(dir), event, target ?? '')
                     } catch (e) {
                         this.watched.del(dir)
                         this.onMissing(dir)

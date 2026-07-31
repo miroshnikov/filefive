@@ -9,7 +9,12 @@ import Connection from './Connection'
 import App from './App'
 
 
-const files = new Map<Path, { file: URI, deletion: ReturnType<typeof setTimeout>, sending: boolean, changed: boolean }>()
+const files = new Map<Path, {
+    file: URI, 
+    deletion: ReturnType<typeof setTimeout>, 
+    sending: boolean, 
+    changed: boolean 
+}>()
 
 const watcher = new FileWatcher(path => send(path))
 
@@ -24,13 +29,18 @@ export async function open(file: URI, onLoad: (file: Path) => void) {
             [file],
             createURI(LocalFileSystemID, tmpDir),
             false,
-            null,
-            null,
-            null,
+            undefined,
+            undefined,
+            undefined,
             () => {
                 files.set(
                     tmpName,
-                    { file, deletion: resetDeletion(tmpName, null), sending: false, changed: false }
+                    { 
+                        file, 
+                        deletion: resetDeletion(tmpName, undefined), 
+                        sending: false, 
+                        changed: false 
+                    }
                 )
                 watcher.watch(tmpName)
                 onLoad(tmpName)
@@ -65,7 +75,7 @@ async function send(file: Path) {
     }
 }
 
-function resetDeletion(file: Path, current: ReturnType<typeof setTimeout>) {
+function resetDeletion(file: Path, current?: ReturnType<typeof setTimeout>) {
     clearTimeout(current)
     return setTimeout(() => {
         files.delete(file)

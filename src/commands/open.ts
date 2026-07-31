@@ -3,7 +3,7 @@ import { parseURI, isLocal } from '../utils/URI'
 import { open } from '../RemoteFiles'
 import { osify } from '../Local'
 
-export default async function (file: URI, app: string, opener: (file: string) => void): Promise<string> {
+export default async function (file: URI, app: string, opener: (file: string) => void): Promise<string|undefined> {
     if (isLocal(file)) {
         const {id, path} = parseURI(file)
         if (app == 'code') {

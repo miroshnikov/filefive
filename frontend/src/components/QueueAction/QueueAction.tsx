@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
-import { FileItem } from '../../../../src/FileSystem'
+import { FileItem } from '../../shared/FileSystem'
 import { queue$ } from '../../observables/queue'
 import { useSubscribe } from '../../hooks'
-import { QueueEventType, QueueActionType, QueueType } from '../../../../src/types'
+import { QueueEventType, QueueActionType, QueueType } from '../../shared/types'
 import { Modal, Checkbox } from '../../ui/components'
 import { dirname, basename } from '../../utils/path'
 import styles from './QueueAction.less'
@@ -20,7 +20,7 @@ interface QueueConflict {
 
 export default function QueueAction() {
 
-    const [conflict, setConflict] = useState<QueueConflict>(null)
+    const [conflict, setConflict] = useState<QueueConflict>()
     const [conflicts, setConflicts] = useState<QueueConflict[]>([])
     const [forAll, setForAll] = useState(false)
     const [remember, setRemember] = useState(false)
@@ -33,19 +33,21 @@ export default function QueueAction() {
     }, [conflict])
 
     const proceed = (id: string) => {
-        if (id == 'ok') {
-            window.f5.resolve(conflict.id, { type: QueueActionType.Replace }, forAll, remember ? conflict.sid : undefined)
-        } else if (id == 'cancel') {
-            window.f5.resolve(conflict.id, { type: QueueActionType.Skip }, forAll, remember ? conflict.sid : undefined)
-        } else {
-            window.f5.stop(conflict.id)
+        if (conflict) {
+            if (id == 'ok') {
+                window.f5.resolve(conflict.id, { type: QueueActionType.Replace }, forAll, remember ? conflict.sid : undefined)
+            } else if (id == 'cancel') {
+                window.f5.resolve(conflict.id, { type: QueueActionType.Skip }, forAll, remember ? conflict.sid : undefined)
+            } else {
+                window.f5.stop(conflict.id)
+            }
+            conflicts.length ?
+                setConflicts(conflicts => { 
+                    setConflict(conflicts[0])
+                    return conflicts.slice(1)
+                }) :
+            setConflict(undefined)
         }
-        conflicts.length ?
-            setConflicts(conflicts => { 
-                setConflict(conflicts[0])
-                return conflicts.slice(1)
-            }) :
-        setConflict(null)
     }
 
     useSubscribe(() => 

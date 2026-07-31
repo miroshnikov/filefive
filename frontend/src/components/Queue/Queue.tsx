@@ -2,8 +2,8 @@ import React, { useState, useMemo } from "react"
 import { useSubscribe } from '../../hooks'
 import { queue$ } from '../../observables/queue'
 import { filter } from 'rxjs/operators'
-import { whereEq, ifElse, isNil, always, last, pipe, split } from 'ramda'
-import { QueueEventType, QueueType, ConnectionID } from '../../../../src/types'
+import { whereEq, last, pipe, split } from 'ramda'
+import { QueueEventType, QueueType, ConnectionID } from '../../shared/types'
 import { Progress, CircleProgress, Tooltips } from '../../ui/components'
 import styles from './Queue.less'
 import { t } from 'i18next'
@@ -19,7 +19,10 @@ const captions: Record<QueueType, { msg: string, icon: string }> = {
 
 
 
-export default function ({id, type, connection, active}: {id: string, type: QueueType, connection: ConnectionID, active: boolean }) {
+export default function (
+    {id, type, connection, active}: 
+    {id: string, type: QueueType, connection: ConnectionID, active: boolean }
+) {
     const [count, setCount] = useState(0)
     const [total, setTotal] = useState(1)
     const [done, setDone] = useState(0)
@@ -40,7 +43,10 @@ export default function ({id, type, connection, active}: {id: string, type: Queu
 
     const msg = useMemo(
         () => {
-            const conn = ifElse(isNil, always(connection), pipe(split('/'), last))(localStorage.getItem(connection))
+            const c = localStorage.getItem(connection)
+            const conn = c 
+                ? pipe(split('/'), last)(c)
+                : connection
             return t(captions[type].msg, {count, conn})
         }, 
         [count]

@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react"
 import styles from './Breadcrumbs.less'
 import { segments, join, normalize, basename } from '../../utils/path'
 import { last } from 'ramda'
-import { ConnectionID } from "../../../../src/types"
+import { ConnectionID } from "../../shared/types"
 
 
 export default function Breadcrumbs(
@@ -21,8 +21,8 @@ export default function Breadcrumbs(
     useEffect(() => {
         setItems(
             segments(path.substring(root.length)).reduce(
-                (all, segment) => [...all, all.length ? join(last(all), segment) : normalize(segment) ], 
-                []
+                (all, segment) => [...all, all.length ? join(last(all)!, segment) : normalize(segment) ], 
+                [] as string[]
             )
         )
     }, [path, root])

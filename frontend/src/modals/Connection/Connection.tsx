@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
-import { Path } from '../../../../src/types'
-import { unixToWin, winToUnix } from '../../../../src/utils/os'
+import { Path } from '../../shared/types'
+import { unixToWin, winToUnix } from '../../shared/utils/os'
 import { Modal, ModalButtonID, Select, Password, Checkbox } from '../../ui/components'
 import { useForm, Controller } from "react-hook-form"
 import { parse } from '../../utils/path'
@@ -52,7 +52,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
         password: '',
         privatekey: ''
     })
-    const [theme, setTheme] = useState(appSettings.theme)
+    const [theme, setTheme] = useState(appSettings!.theme)
 
     const [username, setUsername] = useState('')
     const [pass, setPass] = useState('')
@@ -60,7 +60,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
     const [usePrivateKey, setUsePrivateKey] = useState(false)
 
     useEffect(() => { 
-        if (file.length) {
+        if (file?.length) {
             setName( parse(file).name )
             window.f5.get(file).then(config => {
                 if (config) {
@@ -71,9 +71,9 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         port: String(port), 
                         user, 
                         password, 
-                        privatekey: appSettings.isWin ? unixToWin(privatekey) : privatekey
+                        privatekey: appSettings!.isWin ? unixToWin(privatekey) : privatekey
                     })
-                    setTheme(config.theme ?? appSettings.theme)
+                    setTheme(config.theme ?? appSettings!.theme)
                     setSavePassword(password.length > 0)
                     setUsePrivateKey(privatekey.length > 0)
                 }
@@ -96,8 +96,8 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
     useEffect(() => {
         const { unsubscribe } = watch(({scheme, user, host, port, password}) => {
             setUsername(`${scheme}://${user}@${host}:${port ? port : (scheme == 'sftp' ? 22 : 21)}`)
-            setProtocol(scheme)
-            setPass(password)
+            setProtocol(scheme!)
+            setPass(password!)
         })
         return () => unsubscribe()
     }, [watch])
@@ -153,7 +153,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
             if (protocol == 'sftp') {
                 if (usePrivateKey) {
                     if (data.privatekey) {
-                        if (appSettings.isWin) {
+                        if (appSettings!.isWin) {
                             data.privatekey = winToUnix(data.privatekey)
                         }
                     } else {
@@ -164,18 +164,18 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                 }
             }
 
-            await window.f5.save(file, { ...data, savePassword })
+            await window.f5.save(file!, { ...data, savePassword })
             if (id == ModalButtonID.Ok) {
-                onConnect(file)            
+                onConnect(file!)            
             }
         }
         onClose()
         reset({ scheme: 'sftp', host: '', port: '', user: '', password: '', privatekey: '' })
-        setTheme(appSettings.theme)
+        setTheme(appSettings!.theme)
     }
 
     return <>
-        {file.length > 0 &&
+        {file?.length &&
             <Modal buttons={buttons} onClose={onModalClose} options={{okOnEnter: false, x: true}}>
                 <form className={styles.root} onSubmit={e => e.preventDefault()}>
                     <h1>{name}</h1>
@@ -252,7 +252,7 @@ export default function ({ file, onConnect, onClose }: { file?: Path, onConnect:
                         <label>Key File Path:</label>
                         <input className='dry'
                             {...register("privatekey")}
-                            placeholder={`${appSettings.isWin ? unixToWin(defaultKeyFile) : defaultKeyFile} (by default)`}
+                            placeholder={`${appSettings!.isWin ? unixToWin(defaultKeyFile) : defaultKeyFile} (by default)`}
                             autoComplete="off"
                         />
                     </>}

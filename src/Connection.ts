@@ -35,6 +35,10 @@ export default class {
             s3: S3_ATTRIBUTES
         }[protocol]
 
+        if (!attrs) {
+            throw new Error(`Invalid protocol ${protocol}`)
+        }
+
         if (this.shared.inc(id)) {
             return attrs
         }
@@ -81,8 +85,8 @@ export default class {
 
         return new Promise((resolve) => {
             const onRelease = (poolId: string) => {
-                const { fs } = this.pools.get(id).get(poolId)
-                resolve([fs, () => this.release(id, poolId)])
+                const pool = this.pools.get(id)?.get(poolId)
+                pool && resolve([pool.fs, () => this.release(id, poolId)])
             }
             id in this.pending ? this.pending[id].push(onRelease) : (this.pending[id] = [onRelease])
         })
@@ -95,7 +99,7 @@ export default class {
         if (conn) {
             return conn
         }
-        if (pool.size < this.getLimit(id)) {
+        if (pool && pool.size < this.getLimit(id)) {
             return new Promise((resolve) => {
 
                 const connect = async () => {
@@ -109,7 +113,7 @@ export default class {
                         const onClose = () => this.pools.get(id)?.delete(poolId)
                         const fs = await this.create(id, onClose)
                         await fs.open()
-                        this.pools.get(id).set(poolId, { fs, idle: false })
+                        this.pools.get(id)!.set(poolId, { fs, idle: false })
                         resolve([fs, poolId])
                     } catch (e) {
                         const conn = this.getIdle(id)
@@ -154,7 +158,7 @@ export default class {
         const conn = this.pools.get(id)?.get(poolId)
         if (conn) {
             if (this.pending[id]?.length) {
-                this.pending[id].shift()(poolId)
+                this.pending[id].shift()!(poolId)
             } else {
                 conn.idle = setTimeout(() => {
                     conn.fs.close()
@@ -164,29 +168,24 @@ export default class {
         }
     }
 
-    private static getLimit(id: ConnectionID) {
-        return this.limits.has(id) ? this.limits.get(id) : 1024     // for vsftpd max_per_ip in /etc/vsftpd.conf
+    private static getLimit(id: ConnectionID): number {
+        return this.limits.has(id) ? (this.limits.get(id) || 1024) : 1024     // for vsftpd max_per_ip in /etc/vsftpd.conf
     }
 
     private static async create(id: ConnectionID, onClose = () => {}): Promise<FileSystem> {
-        if (options.log) {
-            return new LogFS(
-                id, 
-                await this.createFS(id, onClose)
-            )
-        }
-        return this.createFS(id, onClose)
+        const fs = await this.createFS(id, onClose)
+        return options.log ? new LogFS(id, fs) : fs
     }
 
-    private static async createFS(id: ConnectionID, onClose: () => void) {
+    private static async createFS(id: ConnectionID, onClose: () => void): Promise<FileSystem> {
         const { scheme, user, host, port } = parseURI(id as URI)
 
         if (!this.credentials.has(id)) {
             onClose?.()
-            return
+            throw new Error(`No credentials for ${id}`)
         }
 
-        const [authType, credential] = this.credentials.get(id)
+        const [authType, credential] = this.credentials.get(id)!
 
         const protocol = this.protocols.get(id)
         if (!protocol) {
@@ -200,7 +199,7 @@ export default class {
                     user, 
                     authType == 'password' ? credential : '',
                     authType == 'key' ? credential : null,
-                    port, 
+                    port || 22, 
                     error => logger.error('SFTP error:', error),
                     onClose
                 )
@@ -210,7 +209,7 @@ export default class {
                     host, 
                     user, 
                     credential as string,
-                    port, 
+                    port || 21, 
                     error => logger.error('FTP error:', error),
                     onClose
                 )
@@ -221,7 +220,7 @@ export default class {
                     user,
                     credential as string,
                     'us-east-1', // TODO
-                    port,
+                    port || 443,
                     error => logger.error('S3 error:', error),
                     onClose
                 )

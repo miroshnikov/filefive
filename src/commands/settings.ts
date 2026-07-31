@@ -12,7 +12,7 @@ function loadFileIcons(theme: string) {
 }
 
 export default async function (path: string): Promise<AppSettings> {
-    let config: AppConfig = null
+    let config: AppConfig|null = null
     try {
         config = JSON.parse( await read(path) )
     } catch (e) {}

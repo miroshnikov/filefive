@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "sourceMap": true,
-    "baseUrl": ".",
+    "rootDir": "./src",
     "outDir": "../dist",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
+    "types": ["node"],
     "jsx": "react",
     "esModuleInterop": true,
     "target": "es2021",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+    "skipLibCheck": true
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
 }

@@ -54,7 +54,7 @@ const handle = async (name: string, handler: (args: {}) => any) => {
         } catch (e) {
             res.status(400)
             process.env.NODE_ENV == 'development' && console.error('API error: ', e)
-            res.json({ message: (typeof e == 'object' && 'message' in e) ? e.message : String(e) })
+            res.json({ message: (e !== null && typeof e == 'object' && 'message' in e) ? e.message : String(e) })
         }
     })
 }
@@ -73,9 +73,9 @@ app.post('/api/upload', upload.array('files'), async function (req, res) {
             src.map(path => createURI(LocalFileSystemID, path)), 
             req.body['to'], 
             true,
-            null,
-            null,
-            null,
+            undefined,
+            undefined,
+            undefined,
             () => src.forEach(path => del(path))
         )
     }

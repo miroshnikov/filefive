@@ -9,14 +9,14 @@ export default class DuplicateQueue extends CopyQueue {
         connId: ConnectionID,
         src: Path[],
         dest: Path,
-        filter: FilterSettings,
+        filter: FilterSettings|undefined,
         onState: (state: QueueState) => void,
         onConflict: (src: FileItem, dest: FileItem) => void,
         onError: (reason: any) => void,
         onComplete: (stopped: boolean) => void,
         watcher: RemoteWatcher
     ) {
-        super(connId, src, dest, filter, null, onState, onConflict, onError, onComplete, watcher, false)
+        super(connId, src, dest, filter, undefined, onState, onConflict, onError, onComplete, watcher, false)
         this.resolve({ type: QueueActionType.Rename }, true)
     }
 
@@ -29,7 +29,7 @@ export default class DuplicateQueue extends CopyQueue {
                 if (!this.newNames.has(name)) {
                     this.newNames.set(name, await this.rename(name, item.to))
                 }
-                item.dirs[0] = this.newNames.get(name)
+                item.dirs[0] = this.newNames.get(name)!
             }
         }
     }

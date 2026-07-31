@@ -20,13 +20,13 @@ export const lsRemote = (connId: ConnectionID) => {
     const cache = new Map<string, Promise<FileItem[]|null>>()
     return async (path: string): Promise<FileItem[]|null> => {
         if (cache.has(path)) {
-            return cache.get(path)
+            return cache.get(path)!
         }
         const list = new Promise<FileItem[]>(async (resove) => {
             const [conn, close] = await Connection.transmit(connId)   
             conn.ls(path)
                 .then(resove)
-                .catch(() => resove(null))
+                .catch(() => resove([]))
                 .finally(() => close())
         })
         cache.set(path, list)
@@ -59,7 +59,7 @@ export default abstract class TransmitQueue implements Queue {
         const stat = this.stat(this.to)
 
         this.processing = this.queue$.subscribe(async ({from, dirs, to, action}) => {
-            const a = action ?? this.action
+            const a = action ?? this.action!
             const existing = await stat(join(to, ...dirs, from.name))
             if (existing) {
                 if (a) {
@@ -101,10 +101,10 @@ export default abstract class TransmitQueue implements Queue {
         if (this.filter) {
             const re = filterRegExp(this.filter)
             matchFilter = (file: FileItem) => {
-                if (this.filter.ignored === true && 'git_i' in file.attributes) {
+                if (this.filter!.ignored === true && 'git_i' in file.attributes) {
                     return false
                 }
-                if (this.filter.uncommited === true &&
+                if (this.filter!.uncommited === true &&
                     !(  'git_u' in file.attributes || 
                         'git_m' in file.attributes || 
                         'git_a' in file.attributes || 
@@ -132,7 +132,7 @@ export default abstract class TransmitQueue implements Queue {
             if (from) {
                 if (from.dir) {
                     return Promise.all(
-                        (await ls(from.path))?.map(child => add(child.path, to, [...dirs, basename(path)]))
+                        (await ls(from.path))?.map(child => add(child.path, to, [...dirs, basename(path)])) ?? []
                     )
                 } else {
                     if (matchFilter(from)) {
@@ -145,7 +145,14 @@ export default abstract class TransmitQueue implements Queue {
         }
 
         await Promise.all(
-            paths.map(path => add(path, dest, this.fromRoot ? dirname(path).substring(this.fromRoot.length+1).split('/') : []))
+            paths.map(path => add(
+                path, 
+                dest, 
+                this.fromRoot 
+                    ? dirname(path).substring(this.fromRoot.length+1).split('/') 
+                    : []
+                )
+            )
         )
     }
 
@@ -167,7 +174,7 @@ export default abstract class TransmitQueue implements Queue {
                 .splice(0, forAll ? this.pending.length : 1)
                 .map(f => ({from: f.src, dirs: f.dirs, to: f.to, action}))
         )
-        drained && this.queue$.next(this.queue.shift())
+        drained && this.queue$.next(this.queue.shift()!)
         if (this.pending.length) {
             const { src, dest } = this.pending[0]
             this.onConflict(src, dest)
@@ -176,7 +183,7 @@ export default abstract class TransmitQueue implements Queue {
  
     protected next() {
         if (this.queue.length) {
-            this.queue$.next(this.queue.shift())
+            this.queue$.next(this.queue.shift()!)
         } else if (!this.pending.length) {
             this.close()
         }
@@ -239,7 +246,7 @@ export default abstract class TransmitQueue implements Queue {
             async (dir: string) => {
                 return transformer.transform(
                     dir,
-                    (await Connection.get(connId).ls(dir))
+                    (await Connection.get(connId)!.ls(dir))
                         .map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
                 )
             } : 
@@ -251,7 +258,7 @@ export default abstract class TransmitQueue implements Queue {
             return (path: string) => Promise.resolve(localStat(path))
         }
         const ls = this.ls(connId)
-        return async (path: string) => (await ls(dirname(path)))?.find(whereEq({path}))
+        return async (path: string) => (await ls(dirname(path)))?.find(whereEq({path})) ?? null
     }
 
     protected async rename(name: string, dir: Path) {
@@ -271,10 +278,10 @@ export default abstract class TransmitQueue implements Queue {
     protected async finalize() {}
 
     protected queue$ = new Subject<typeof this.queue[number]>()
-    protected processing: Subscription
+    protected processing?: Subscription
     protected queue: { from: FileItem, dirs: string[], to: Path, action?: QueueAction }[] = []
     protected pending: { src: FileItem, dirs: string[], to: Path, dest: FileItem }[] = []
-    protected action: QueueAction
+    protected action?: QueueAction
     protected stopped = false
     protected totalCnt = 0
     protected doneCnt = 0

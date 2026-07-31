@@ -59,7 +59,7 @@ export default class S3 extends FileSystem {
                 }
             })
         } catch (e) {
-            this.onError(e)
+            this.onError(e instanceof Error ? e : new Error(String(e)))
         }
         return Promise.resolve(true)
     }
@@ -67,7 +67,7 @@ export default class S3 extends FileSystem {
     close() {
         this.connection && this.onClose()
         this.connection?.destroy()
-        this.connection = null
+        this.connection = undefined
     }
 
     opened() { 
@@ -86,7 +86,7 @@ export default class S3 extends FileSystem {
 
         const target = parts.length > 1 ? parts.slice(1).join('/') + '/' : undefined
 
-        const output = await this.connection.send( new ListObjectsCommand({
+        const output = await this.connection!.send( new ListObjectsCommand({
             Bucket: parts[0],
             MaxKeys: 1000,
             Delimiter: '/',
@@ -94,21 +94,22 @@ export default class S3 extends FileSystem {
         }) )
 
         return [
-            ...(output.CommonPrefixes ?? []).map(prefix => ({
-                path: resolve('/', parts[0], prefix.Prefix),
-                name: basename(prefix.Prefix),
+            ...(output.CommonPrefixes ?? []).filter(p => !!p.Prefix).map(prefix => ({
+                path: resolve('/', parts[0], prefix.Prefix!),
+                name: basename(prefix.Prefix!),
                 dir: true,
                 size: 0,
                 modified: new Date()
             })),
             ...(output.Contents ?? [])
+                .filter(item => 'Key' in item)
                 .filter(({Key}) => Key != target)
                 .map(item => ({
-                    path: resolve('/', parts[0], item.Key),
-                    name: basename(item.Key),
+                    path: resolve('/', parts[0], item.Key!),
+                    name: basename(item.Key!),
                     dir: false,
-                    size: item.Size,
-                    modified: new Date(item.LastModified)
+                    size: item.Size || 0,
+                    modified: 'LastModified' in item ? new Date(item.LastModified!) : new Date()
                 }))
         ]
     }
@@ -116,7 +117,7 @@ export default class S3 extends FileSystem {
     async get(fromRemote: Path, toLocal: Path): Promise<void> {
         const parts = split(fromRemote)
 
-        const output = await this.connection.send( new GetObjectCommand({
+        const output = await this.connection!.send( new GetObjectCommand({
             Bucket: parts[0],
             Key: parts.slice(1).join('/')
         }) )
@@ -137,7 +138,7 @@ export default class S3 extends FileSystem {
     async put(fromLocal: Path, toRemote: Path): Promise<void> {
         const parts = split(toRemote)
 
-        const { UploadId } = await this.connection.send(
+        const { UploadId } = await this.connection!.send(
             new CreateMultipartUploadCommand({
                 Bucket: parts[0],
                 Key: parts.slice(1).join('/')
@@ -152,7 +153,7 @@ export default class S3 extends FileSystem {
         const uploadParts: { ETag: string|undefined, PartNumber: number }[] = []
 
         const uploadPart = async () => {
-            const { ETag } = await this.connection.send( new UploadPartCommand({
+            const { ETag } = await this.connection!.send( new UploadPartCommand({
                 Bucket: parts[0],
                 Key: parts.slice(1).join('/'),
                 PartNumber: partNumber,
@@ -174,7 +175,7 @@ export default class S3 extends FileSystem {
             await uploadPart()
         }
 
-        await this.connection.send(
+        await this.connection!.send(
             new CompleteMultipartUploadCommand({
                 Bucket: parts[0],
                 Key: parts.slice(1).join('/'),
@@ -186,7 +187,7 @@ export default class S3 extends FileSystem {
 
     async rm(path: Path, recursive: boolean): Promise<void> {   // dir must be empty      
         const parts = split(path)
-        await this.connection.send(new DeleteObjectCommand({
+        await this.connection!.send(new DeleteObjectCommand({
             Bucket: parts[0],
             Key: parts.slice(1).join('/') + (recursive ? '/' : '')
         }));
@@ -195,13 +196,13 @@ export default class S3 extends FileSystem {
     async mkdir(path: Path): Promise<void> {
         const parts = split(path)
         try {
-            await this.connection.send( new PutObjectCommand({
+            await this.connection!.send( new PutObjectCommand({
                 Bucket: parts[0],
                 Key: parts.slice(1).join('/') + '/',
                 Body: '' as string
             }) )
         } catch (e) {
-            this.onError(e)
+            this.onError(e instanceof Error ? e : new Error(String(e)))
         }
     }
 
@@ -231,7 +232,7 @@ export default class S3 extends FileSystem {
             )
         } else {
             const parts = split(from)
-            await this.connection.send( new CopyObjectCommand({
+            await this.connection!.send( new CopyObjectCommand({
                 Bucket: parts[0],
                 CopySource: resolve(from) + (recursive ? '/' : ''),
                 Key: split(to).slice(1).join('/') + (recursive ? '/' : '')
@@ -242,27 +243,27 @@ export default class S3 extends FileSystem {
     async write(path: Path, s: string): Promise<void> {
         const parts = split(path)
         try {
-            await this.connection.send( new PutObjectCommand({
+            await this.connection!.send( new PutObjectCommand({
                 Bucket: parts[0],
                 Key: parts.slice(1).join('/'),
                 Body: s
             }) )
         } catch (e) {
-            this.onError(e)
+            this.onError(e instanceof Error ? e : new Error(String(e)))
         }
     }
 
 
     private async listBuckets(): Promise<FileItem[]> {
-        const output = await this.connection.send( new ListBucketsCommand({}) )
+        const output = await this.connection!.send( new ListBucketsCommand({}) )
         return (output.Buckets ?? []).map(bucket => ({
-            path: join('/', bucket.Name),
-            name: bucket.Name,
+            path: join('/', bucket.Name!),
+            name: bucket.Name!,
             dir: true,
             size: 0,
             modified: bucket.CreationDate ? new Date(bucket.CreationDate) : new Date()
         }))
     }
 
-    private connection: S3Client
+    private connection?: S3Client
 }

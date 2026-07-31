@@ -22,7 +22,7 @@ export default function (src: URI[], filter?: FilterSettings) {
         if (!targets.has(parent)) {
             targets.set(parent, [])
         }
-        targets.get(parent).push(path)
+        targets.get(parent)?.push(path)
     })
 
     for (const [to, from] of targets) {
@@ -31,7 +31,7 @@ export default function (src: URI[], filter?: FilterSettings) {
             connection,
             from,
             to,
-            filter,
+            filter!,
             state => App.onQueueUpdate(id, { type: QueueEventType.Update, state }),
             (from, to) => App.onQueueUpdate(id, { type: QueueEventType.Ask, queueType: QueueType.Copy, from, to }),
             error => {

@@ -1,6 +1,6 @@
 import { accessSync, constants } from 'node:fs'
 
-let drives: string[] = null
+let drives: string[]|null = null
 
 export function getDrives(): string[] {
     if (drives !== null) {

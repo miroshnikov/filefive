@@ -15,7 +15,11 @@ export function depth(path: string): number {
 }
 
 export function join(...paths: string[]): string {
-    return normalize(paths.reduce((all, path) => [...all, ...segments(path)], []).join(sep))
+    return normalize(
+        paths
+            .reduce((all, path) => [...all, ...segments(path)], [] as string[])
+            .join(sep)
+    )
 }
 
 export function normalize(path: string): string {

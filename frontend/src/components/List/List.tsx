@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, forwardRef, useCallback, JSX } from
 import classNames from 'classnames'
 import styles from './List.less'
 import { without, whereEq, prop, propEq, __, includes, identity, startsWith, update, move, isNotNil } from 'ramda'
-import { URI, FileInfo, Path, FileState, SortOrder, FileAttrsAttr } from '../../../../src/types'
+import { URI, FileInfo, Path, FileState, SortOrder, FileAttrsAttr } from '../../shared/types'
 import { filter } from 'rxjs/operators'
 import { depth, dirname, parse, childOf, join } from '../../utils/path'
 import { useSet, useSubscribe, useEvent, useType } from '../../hooks'
@@ -54,7 +54,7 @@ interface ListProps {
     files: Items
     onGo: (dir: string) => void
     onToggle: (dir: string) => void
-    onSelect: (paths: string[], target: Path|null) => void
+    onSelect: (paths: string[], target: Path|undefined) => void
     onOpen: (path: string) => void
     onDragStart?: (dragged: URI[], e: React.DragEvent<HTMLElement>) => void
     onDragEnd?: (e: React.DragEvent<HTMLElement>) => void
@@ -96,31 +96,31 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     }, 
     fwdRef
 ) {
-    const rootEl = useRef(null)
+    const rootEl = useRef<HTMLDivElement>(null)
 
     const [items, setItems] = useState<Items>([])
     const [expanded, setExpanded] = useState<string[]>([])
     const [rootDepth, setRootDepth] = useState(0)
     const [selected, {has: isSelected, reset: setSelected, toggle: toggleSelected}] = useSet<string>([])
-    const [target, setTarget] = useState<Item>(null)
+    const [target, setTarget] = useState<Item>()
 
     const isActive = useRef(false)
 
-    const waitForSecondClick = useRef<ReturnType<typeof setTimeout>>(null)
+    const waitForSecondClick = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-    const [creating, createIn] = useState<{in: Path, dir: boolean}>(null)
-    const [renaming, rename] = useState<URI>(null)
+    const [creating, createIn] = useState<{in: Path, dir: boolean}>()
+    const [renaming, rename] = useState<URI>()
 
     const [dropTarget, setDropTarget] = useState<string>('')
 
-    const insertNewItem = (items: Items) => {
+    const insertNewItem = (items: Items): Items => {
         if (creating) {
             let i = items.findIndex(({path}) => path == creating.in)
             if (i < 0 && creating.in == root) {
                 i = 0
             }
             if (i < 0) {
-                return
+                return items
             }
             const newItem = {
                 URI: '' as URI,
@@ -149,7 +149,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
 
     useEffect(() => {
         if (target && !files.find(whereEq({URI: target.URI}))) {
-            setTarget(null)
+            setTarget(undefined)
         }
         setItems(setRenamingItem(insertNewItem(files)))
     }, [files])
@@ -166,14 +166,21 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
 
     useEffect(() => {
         setItems(items =>
-            items.map(item => ({...item, FileStateAttr: item.URI == renaming ? FileState.Renaming : null }))
+            items.map(item => ({
+                ...item, 
+                FileStateAttr: item.URI == renaming 
+                    ? FileState.Renaming 
+                    : undefined
+            }))
         )
     }, [renaming])
 
     useEffect(() => {
         setSelected([])
         setExpanded([])
-        rootEl.current.scrollTop = rootEl.current.scrollLeft = 0
+        if (rootEl.current) {
+            rootEl.current.scrollTop = rootEl.current.scrollLeft = 0
+        }
     }, [parent])
 
     useEffect(() => {
@@ -189,7 +196,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
         setSelected(selected.filter(includes(__, items.map(prop('path'))))
     ), [items])
 
-    const [widths, setWidths] = useState([]) 
+    const [widths, setWidths] = useState([] as number[]) 
     useEffect(() => { 
         setWidths(columns.map(prop('width'))) 
     }, [columns])
@@ -284,7 +291,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                     break
                 }
                 case CommandID.Rename: {
-                    rename(cmd.uri ?? target.URI)
+                    target && rename(cmd.uri ?? target.URI)
                     break
                 }
                 case CommandID.GoUp: {
@@ -311,13 +318,17 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     const dragStart = (i: number, e: React.DragEvent<HTMLElement>) => {
         onDragStart?.(
             selected.includes(items[i].path) ? 
-                selected.map(path => items.find(whereEq({path})).URI) : 
+                selected.map(path => items.find(whereEq({path}))!.URI) : 
                 [items[i].URI],
             e
         )
     }
 
-    const dragCounter = useRef({path: '', count: 0, timeout: null})
+    const dragCounter = useRef<{
+        path: string, 
+        count: number,
+        timeout: ReturnType<typeof setTimeout> | undefined
+    }>({path: '', count: 0, timeout: undefined })
 
     const dragEnter = (item: Item, e: React.DragEvent<HTMLElement>) => {
         const path = item.dir ? item.path : dirname(item.path)
@@ -325,7 +336,13 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
             dragCounter.current.count++
         } else {
             clearTimeout(dragCounter.current.timeout)
-            dragCounter.current = {path, count: 1, timeout: expanded.includes(path) ? null : setTimeout(() => toggle(path), 800)}
+            dragCounter.current = {
+                path, 
+                count: 1, 
+                timeout: expanded.includes(path) 
+                    ? undefined 
+                    : setTimeout(() => toggle(path), 800)
+            }
             setDropTarget(path)
         }
     }
@@ -337,7 +354,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                 dragCounter.current.count--
             } else {
                 clearTimeout(dragCounter.current.timeout)
-                dragCounter.current = {path: '', count: 0, timeout: null}
+                dragCounter.current = {path: '', count: 0, timeout: undefined}
                 setDropTarget('')
             }
         }
@@ -357,7 +374,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
             if (!URIs
                     .map(URI => items.find(whereEq({URI})))
                     .filter(identity)
-                    .some(({path}) => childOf(targetDir, path))
+                    .some(uri => uri && childOf(targetDir, uri.path))
             ) {
                 onDrop(URIs, targetDir, e.altKey ? DropEffect.Copy : DropEffect.Move, e)           
             }
@@ -365,13 +382,16 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
             const files: File[] = []
             for (let i = 0; i < e.dataTransfer.items.length; i++) {
                 const item = e.dataTransfer.items[i]
-                item.kind == 'file' && files.push(item.getAsFile())
+                if (item.kind == 'file') {
+                    const f = item.getAsFile()
+                    f && files.push(f)
+                }
             }
             files.length && onDrop(files, targetDir, DropEffect.Copy, e) 
         }
 
         clearTimeout(dragCounter.current.timeout)
-        dragCounter.current = { path: '', count: 0, timeout: null }
+        dragCounter.current = { path: '', count: 0, timeout: undefined }
 
         setDropTarget('')
     }
@@ -388,7 +408,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
         [onColumnsChange]
     )
 
-    useEvent(document, 'mousemove', ({pageX}: MouseEvent) => {
+    useEvent(document, 'mousemove', e => {
+        const {pageX} = e as MouseEvent
         if (resizing.current !== null && rootEl.current && columns.length) {
             const target = rootEl.current.querySelector(`th:nth-child(${resizing.current+1})`)
             if (target) {
@@ -402,7 +423,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
     })
 
     const draggingColumn = useRef<number>(null)
-    const [colDropTarget, setColDropTarget] = useState<number>(null)
+    const [colDropTarget, setColDropTarget] = useState<number>()
     const onColumnDragOver = (target: number) => () => {
         if (draggingColumn.current && target != draggingColumn.current) {
             setColDropTarget(target)
@@ -416,7 +437,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                     .map(({name}, i) => ({name, width: newWidths[i]}))  
             )
         }
-        setColDropTarget(null)
+        setColDropTarget(undefined)
     }
 
     useEvent(document, 'mouseup', () => {
@@ -429,8 +450,8 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                 ref={setRef(rootEl, fwdRef)}
                 onFocus={() => isActive.current = true}
                 onBlur={() => isActive.current = false}
-                onClick={e => { if (e.target == rootEl.current) { setTarget(null); setSelected([]) }}}
-                onContextMenu={() => {setTarget(null); onMenu(root, true)}}
+                onClick={e => { if (e.target == rootEl.current) { setTarget(undefined); setSelected([]) }}}
+                onContextMenu={() => {setTarget(undefined); onMenu(root, true)}}
                 onDragOver={e => onDragOver?.(e)}
                 onDrop={e => dragDrop(root, e)}
                 tabIndex={tabindex}
@@ -448,7 +469,7 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                         onClick={() => onSort?.(name)}
                                         onMouseDown={() => i && (draggingColumn.current = i)}
                                         onMouseOver={onColumnDragOver(i)}
-                                        onMouseOut={() => setColDropTarget(null)}
+                                        onMouseOut={() => setColDropTarget(undefined)}
                                         onMouseUp={onColumnDrop(i)}
                                     >
                                         {title}
@@ -489,13 +510,18 @@ export default forwardRef<HTMLDivElement, ListProps>(function List ({
                                         >
                                             <EditFileName 
                                                 name = {item.name}
-                                                sublings = {selectChildren(creating?.in, files.map(prop('path')))}
+                                                sublings = {creating 
+                                                    ? selectChildren(creating.in, files.map(prop('path')))
+                                                    : []
+                                                }
                                                 onOk = {nm => {
-                                                    creating ? onNew?.(nm, creating.in, creating.dir) : onRename?.(renaming, nm)
-                                                    createIn(null)
-                                                    rename(null)
+                                                    creating 
+                                                        ? onNew?.(nm, creating.in, creating.dir) 
+                                                        : onRename?.(renaming!, nm)
+                                                    createIn(undefined)
+                                                    rename(undefined)
                                                 }}
-                                                onCancel={() => { createIn(null); rename(null) }}
+                                                onCancel={() => { createIn(undefined); rename(undefined) }}
                                             />
                                         </td>
                                         <td></td>

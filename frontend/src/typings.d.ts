@@ -7,4 +7,4 @@ declare module '*.svg' {
     export default function (): JSX.Element;
 }
 
-
+declare module "*.css";

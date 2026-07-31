@@ -57,9 +57,9 @@ export default class<K, V> {
         if (!this.entries.has(from)) {
             return
         }
-        this.entries.has(to) ?
-            this.entries.get(to).count += this.entries.get(from).count :
-            this.entries.set(to, this.entries.get(from))
+        this.entries.has(to) 
+            ? this.entries.get(to)!.count += this.entries.get(from)!.count 
+            : this.entries.set(to, this.entries.get(from)!)
         this.entries.delete(from)
     }
 

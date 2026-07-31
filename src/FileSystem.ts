@@ -42,3 +42,7 @@ export abstract class FileSystem {
     abstract cp(from: Path, to: Path, recursive: boolean): Promise<void>
     abstract write(path: Path, data: string): Promise<void>
 }
+
+
+export type LocalFileItem = FileItem & { inode: number }
+export type LocalFiles = LocalFileItem[]

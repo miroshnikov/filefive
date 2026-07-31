@@ -15,6 +15,9 @@ export default async function (name: string, parent: URI) {
         } else {
             const parts = split(name)
             const conn = Connection.get(id)
+            if (!conn) {
+                throw new Error(`Invalid connection id ${id}`)
+            }
             for (let i=0; i<parts.length; i++) {
                 path = join(path, parts[i])
                 try {
@@ -26,8 +29,12 @@ export default async function (name: string, parent: URI) {
                 }
             }
         }
-    } catch (error) {
-        App.onError({ type: FailureType.RemoteError, id, message: 'message' in error ? error.message : String(error) })
+    } catch (e) {
+        App.onError({ 
+            type: FailureType.RemoteError, 
+            id, 
+            message: (e instanceof Error) ? e.message : String(e) 
+        })
     }
     if (!isLocal(parent)) {
         App.remoteWatcher.refresh(parent)

@@ -171,7 +171,7 @@ export default class Ftp extends FileSystem {
     }
 
 
-    private connected: Promise<FileSystemURI>
+    private connected?: Promise<FileSystemURI>
     private connection = new Client()
-    private uri: FileSystemURI
+    private uri?: FileSystemURI
 }

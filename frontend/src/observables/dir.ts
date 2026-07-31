@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs'
-import { URI, Files } from '../../../src/types'
+import { URI, Files } from '../shared/types'
 
 export const dir$ = new Subject<{ dir: URI, files: Files }>()
 

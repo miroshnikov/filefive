@@ -91,7 +91,7 @@ export interface ExplorerSettings {
     columns: (FileAttribute & { visible: boolean, width: number })[]
     sort: [FileAttribute['name'], SortOrder]
     history: Path[]
-    filter: FilterSettings|null
+    filter?: FilterSettings
 }
 
 export interface ConnectionSettings extends Twofold<ExplorerSettings> {
@@ -135,7 +135,7 @@ export interface AppSettings extends Twofold<ExplorerSettings> {
         languages: {
             id: string
             extensions?: string[]
-            filenames?: string
+            filenames?: string[]
             filenamePatterns?: string[]
         }[]
     }

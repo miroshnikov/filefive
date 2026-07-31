@@ -1,7 +1,8 @@
 import { WatchEventType } from 'node:fs'
 import { basename, dirname, join } from 'node:path/posix'
 import { Path } from './types'
-import { stat, LocalFileItem, watchChanges } from './Local'
+import { stat, watchChanges } from './Local'
+import { LocalFileItem } from './FileSystem'
 import ReferenceCountMap from './utils/ReferenceCountMap'
 
 
@@ -18,7 +19,7 @@ export default class {
             for await (const {eventType, filename} of watchChanges(path, ac)) {
                 let newPath = path
                 if (eventType == "rename" && basename(path) !== filename) {
-                    newPath = join(dirname(path), filename)
+                    newPath = join(dirname(path), filename ?? '')
                     this.watched.renameKey(path, newPath)
                 }
                 try {

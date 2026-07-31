@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import { useSubscribe } from '../../hooks'
 import { error$ } from '../../observables/error'
-import { FailureType, ConnectionID } from '../../../../src/types'
+import { FailureType, ConnectionID } from '../../shared/types'
 import { Modal, ModalButtonID, Password, Checkbox } from '../../ui/components'
 import styles from './Password.less'
 
@@ -50,8 +50,8 @@ export default function AskForPassword() {
         } 
     ]
 
-    const onClose = (id: ModalButtonID, pass: string = null, rem: boolean = null) => {
-        window.f5.login(connectionId, id == ModalButtonID.Ok ? (pass ?? password) : false, rem ?? remember)
+    const onClose = (id: string, pass?: string, rem?: boolean) => {
+        window.f5.login(connectionId!, id == ModalButtonID.Ok ? (pass ?? password) : false, rem ?? remember)
         if (id != ModalButtonID.Ok) {
             const u = new URL(window.location.toString())
             u.searchParams.delete('connect')

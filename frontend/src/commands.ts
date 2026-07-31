@@ -1,4 +1,4 @@
-import { URI, Path } from '../../src/types'
+import { URI } from './shared/types'
 
 
 export enum CommandID {

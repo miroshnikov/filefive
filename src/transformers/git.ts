@@ -37,14 +37,14 @@ export default async function(path: Path, files: Files): Promise<Files> {
                 .filter(([, status]) => status),
                 ...[ ...new Set(
                     inSubfolders.map(([p]) => topDir.exec(p.substring(path.length+1))?.[1]).filter(s => s)
-                )].map(dir => [join(path, dir), GitStatus.Contains])
+                )].map(dir => [join(path, dir!), GitStatus.Contains])
             ].forEach(([path, status]) => {
                 const f = files.find(f => f.path == path)
                 if (f) {
                     if (f.dir) {
                         status = GitStatus.Contains
                     }
-                    f[FileAttrsAttr][status] = status ? (statusNames[status] ?? '') : ''
+                    f[FileAttrsAttr][status!] = status ? (statusNames[status] ?? '') : ''
                 }
             })
         }
@@ -87,7 +87,7 @@ const statusNames: Record<string, string> = {
     [GitStatus.Ignored]: 'Ignored'
 }
 
-function getStatusCode(s: string): GitStatus {
+function getStatusCode(s: string): GitStatus|null {
     if (s.includes('?')) {
         return GitStatus.Untracked
     } else if (s.includes('M')) {

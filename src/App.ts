@@ -20,7 +20,8 @@ import RemoteWatcher from './RemoteWatcher'
 import { queues } from './queues/Queue'
 import Password from './Password'
 import { commands } from './commands'
-import { pwd, touch, stat, LocalFileItem, mkDirRecursive } from './Local'
+import { pwd, touch, stat, mkDirRecursive } from './Local'
+import { LocalFileItem } from './FileSystem'
 import { createURI } from './utils/URI'
 import { SaveConnectionSettings } from './commands/saveConnection'
 import LocalTransformer from './transformers/Local'
@@ -30,8 +31,11 @@ export type Emitter = <Event extends {}>(channel: string) => (event: Event) => v
 
 export default class App {
        
-    static async bootstrap(handle: (name: string, handler: (args: {}) => any) => void, emitter: Emitter, opener: (file: string) => void) {
-
+    static async bootstrap(
+        handle: (name: string, handler: (args: any) => any) => void, 
+        emitter: Emitter, 
+        opener: (file: string) => void
+    ) {
         const dataPath = join(pwd(), '.f5')
         const connPath = join(dataPath, 'connections')
         mkDirRecursive(connPath)
@@ -88,7 +92,7 @@ export default class App {
                     createURI(LocalFileSystemID, path), 
                     await transformer.transform(
                         path,
-                        files.map(f => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
+                        files.map((f: LocalFileItem) => ({...f, URI: createURI(LocalFileSystemID, f.path)}))
                     )
                 )
             },
