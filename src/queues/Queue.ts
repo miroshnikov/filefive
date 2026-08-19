@@ -75,7 +75,7 @@ export default abstract class TransmitQueue implements Queue {
 
             const [fs, close] = await Connection.transmit(this.from != LocalFileSystemID ? this.from : this.to)
 
-            this.transmits++
+            this.transmits++;
             (new Promise((resolve) =>
                 resolve(
                     existing ? 

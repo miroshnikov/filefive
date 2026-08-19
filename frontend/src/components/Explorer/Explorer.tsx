@@ -11,8 +11,7 @@ import {
     ExplorerSettings, 
     LocalFileSystemID,
     FilterSettings,
-    FailureType,
-    FileAttrsAttr
+    FailureType
 } from '../../shared/types'
 import { parseURI, createURI } from '../../shared/utils/URI'
 import { filterRegExp } from '../../shared/utils/filter'
@@ -61,7 +60,6 @@ import { error$ } from '../../observables/error'
 import { createQueue } from '../../observables/queue'
 
 
-
 const createDragImage = (text: string) => {
     const dragImage = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     dragImage.setAttribute('class', 'drag-image')
@@ -104,15 +102,19 @@ const rightsToStr = (n: number) =>
         .join('')
 
 
-const toColumns = curry((columns: Columns, formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => string}, files: Files) => {
-    return files.map(file => ({
-        ...pick(['URI', 'path', 'dir', 'target', 'icon', 'tooltip', FileAttrsAttr], file),
-        ...{ rawSize: file.size },
-        ...columns.reduce((props, {name}) => ({...props, 
-            [name]: new String(name=='size' && file.dir ? '' : name in formatters ? formatters[name](file[name]) : file[name])
-        }), {})
-    }))
-})
+const toColumns = (
+    columns: Columns, 
+    formatters: {[key: keyof FileInfo]: (value: FileInfo[string]) => string}
+) => {
+    return (files: Files) =>
+        files.map(file => ({
+            ...file,
+            ...{ rawSize: file.size },
+            ...columns.reduce((props, {name}) => ({...props, 
+                [name]: new String(name=='size' && file.dir ? '' : name in formatters ? formatters[name](file[name]) : file[name])
+            }), {})
+        }))
+}
 
 const onlyVisible = (dirs: string[]): string[] => {
     const first = dirs.sort(ascend(prop('length'))).shift()
@@ -331,7 +333,7 @@ export default function Explorer ({
                         ),
                         tooltip: LocalFileSystemID && appSettings!.isWin ? unixToWin(f.path) : f.path
                     })) : identity,
-                // toColumns(columns, formatters)
+                toColumns(columns, formatters)
             )(folders.current)
         )
     }
@@ -521,7 +523,9 @@ export default function Explorer ({
 
     const watch = (dirs: string[]) => {
         watched.current.push(...dirs)
-        dirs.forEach(dir => window.f5.watch(createURI(connection, dir)))
+        dirs.forEach(dir => {
+            window.f5.watch(createURI(connection, dir))
+        })
     }
 
     const unwatch = (dirs: string[]) => {

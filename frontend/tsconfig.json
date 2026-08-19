@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "ES2024",
     "module": "esnext",
     "moduleResolution": "bundler",
     "noImplicitAny": true,
@@ -10,7 +11,6 @@
     "types": ["node"],
     "jsx": "react",
     "esModuleInterop": true,
-    "target": "es2021",
     "skipLibCheck": true
   },
   "include": ["./src/**/*"],

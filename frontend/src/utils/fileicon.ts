@@ -35,7 +35,7 @@ const getFileIcon = curry(
         path = path.toLocaleLowerCase()
         const name = basename(path)
 
-        if (dir !== null) {
+        if (dir != undefined) {
             return (
                 (dir ? icons.folderNamesExpanded?.[name] : null) ?? 
                 icons.folderNames?.[name] ?? 

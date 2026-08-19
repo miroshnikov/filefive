@@ -34,8 +34,12 @@ export default class Queue {
     public resolve(action: QueueAction, forAll = false) {
         forAll && (this.action = action)
         const drained = !this.queue.length
-        this.queue.push( ...this.pending.splice(0, forAll ? this.pending.length : 1).map(f => ({from: f.src, to: f.dest.path, action})) )
-        drained && this.queue$.next(this.queue.shift())
+        this.queue.push( 
+            ...this.pending
+                .splice(0, forAll ? this.pending.length : 1)
+                .map(f => ({from: f.src, to: f.dest.path, action})) 
+        )
+        drained && this.queue$.next(this.queue.shift()!)
         if (this.pending.length) {
             const { src, dest } = this.pending[0]
             this.onConflict(src, dest)
@@ -72,7 +76,7 @@ export default class Queue {
         }
 
         this.processing = this.queue$.subscribe(async ({from, to, action}) => {
-            let a = action ?? this.action
+            let a = action ?? this.action!
             const existing = stat(to)
             if (existing) {
                 if (a) {
@@ -83,12 +87,13 @@ export default class Queue {
                 } else {
                     this.putOnHold(from, existing)
                     return this.next()
-                }                
+                }
             }
             const [fs, close] = await Connection.transmit(this.connId)
-            existing ? 
-                this.applyAction(a, from, existing, transmit.bind(this, fs)).then(close) : 
-                transmit(fs, from, to).then(close)
+            existing 
+                ? this.applyAction(a, from, existing, transmit.bind(this, fs))
+                    .then(close) 
+                : transmit(fs, from, to).then(close)
             this.next()
         })
         this.next()
@@ -125,14 +130,14 @@ export default class Queue {
 
         const ls = memoizeWith(identity, async (path: string) => {
             try {
-                return await conn.ls(path)
+                return await conn!.ls(path)
             } catch(e) {}
             return []
         })
         const exists = async (path: string) => (await ls(dirname(path))).find(whereEq({path}))
 
         this.processing = this.queue$.subscribe(async ({from, to, action}) => {
-            let a = action ?? this.action
+            let a = action ?? this.action!
             const existing = await exists(to)
             if (existing) {
                 if (a) {
@@ -146,9 +151,10 @@ export default class Queue {
                 }                
             }
             const [fs, close] = await Connection.transmit(this.connId)
-            existing ? 
-                this.applyAction(a, from, existing, transmit.bind(this, fs)).then(close) : 
-                transmit(fs, from, to).then(close)
+            existing 
+                ? this.applyAction(a, from, existing, transmit.bind(this, fs))
+                    .then(close) 
+                : transmit(fs, from, to).then(close)
             this.next()
         })
         this.next()
@@ -194,7 +200,7 @@ export default class Queue {
 
     private next() {
         if (this.queue.length) {
-            this.queue$.next(this.queue.shift())
+            this.queue$.next(this.queue.shift()!)
         } else if (!this.pending.length) {
             this.close()
         }
@@ -216,11 +222,17 @@ export default class Queue {
         this.queue.forEach(({from: {size}}) => { this.totalCnt++; this.totalSize += size })
     }
 
-    private applyAction(action: QueueAction, from: FileItem, to: FileItem, transmit: (from: FileItem, to: string) => Promise<void>) {
+    private applyAction(
+        action: QueueAction, 
+        from: FileItem, 
+        to: FileItem, 
+        transmit: (from: FileItem, to: string) => Promise<void>
+    ) {
         switch (action.type) {
             case QueueActionType.Replace:
                 return transmit(from, to.path)
         }
+        return Promise.resolve()
     }
 
     private putOnHold(src: FileItem, dest: FileItem) {
@@ -245,13 +257,13 @@ export default class Queue {
 
     private queue: { from: FileItem, to: Path, action?: QueueAction }[] = []
     private queue$ = new Subject<{ from: FileItem, to: Path, action?: QueueAction }>()
-    private processing: Subscription
+    private processing: Subscription | undefined
     private totalCnt = 0
     private doneCnt = 0
     private totalSize = 0
     private doneSize = 0
     private pending: { src: FileItem, dest: FileItem }[] = []
-    private action: QueueAction
+    private action: QueueAction | undefined
     private touched = new Set<Path>()
 }
 

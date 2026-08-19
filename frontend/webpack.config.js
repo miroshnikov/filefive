@@ -1,8 +1,9 @@
 const path = require('path')
 const util = require('node:util')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const CopyPlugin = require("copy-webpack-plugin")
+
 
 const config = {
   entry: './src/index.tsx',
@@ -54,13 +55,12 @@ const config = {
       patterns: [
         { from: 'src/assets/icon-themes/', to: 'icon-themes' }
       ],
-    }),
+    })
   ],
   module: {
       rules: [
           { test: /\.tsx?$/, use: 'ts-loader' },
           { test: /\.css$/,  use: ["style-loader", 'css-loader'] },
-
           { 
             test: /\.less$/,
             include: path.resolve(__dirname, "src/ui"),
@@ -73,7 +73,6 @@ const config = {
               "less-loader" 
             ] 
           },
-
           { 
             test: /\.less$/,    
             exclude: path.resolve(__dirname, "src/ui"),
@@ -89,7 +88,6 @@ const config = {
               "less-loader" 
             ] 
           },
-
           { test: /\.svg$/, use: ['@svgr/webpack'] }
       ]
   }

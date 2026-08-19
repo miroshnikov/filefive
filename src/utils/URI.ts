@@ -23,7 +23,7 @@ export function connectionID(scheme: string, user: string, host: string, port: n
 
 export function parseURI(uri: URI) {
     const { protocol, pathname, username, hostname, port: p } = new URL(uri)
-    const port = p ? parseInt(p) : defaultPort(protocol.slice(0,-1))
+    const port = p ? parseInt(p) : defaultPort(protocol.slice(0,-1)) ?? 0
 
     return {
         id: connectionID(protocol.slice(0,-1), username, hostname, port),
@@ -49,7 +49,7 @@ export function createURI(id: ConnectionID, path: Path): URI {
 
 function defaultPort(protocol: string) {
     switch (protocol) {
-        case 'file':  return 0
+        case 'file':  return null
         case 'ftp':   return 21
         case 'sftp':  return 22
         case 'http':  return 80
