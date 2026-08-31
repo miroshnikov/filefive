@@ -9,7 +9,8 @@ import {
     QueueEvent, 
     QueueAction, 
     DeepPartial,
-    FilterSettings 
+    FilterSettings,
+    MirrorEvent
 } from './shared/types'
 import { LocalFileItem } from './shared/Local'
 import { SaveConnectionSettings } from './shared/saveConnection'
@@ -48,6 +49,10 @@ export interface F5 {
     resolve(id: string, action: QueueAction, forAll: boolean, sid?: string): void
     stop(id: string): void
     onQueueUpdate(listener: (id: string, event: QueueEvent) => void): void
+
+    mirror(local: Path, remote: URI, sid: string, recursive: boolean, del: boolean): Promise<string>
+    unmirror(id: string): void
+    onMirrorUpdate(listener: (event: MirrorEvent) => void): void
 }
 
 declare global {

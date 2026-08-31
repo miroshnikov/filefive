@@ -236,7 +236,9 @@ export default abstract class TransmitQueue implements Queue {
     protected putOnHold(src: FileItem, dirs: string[], to: Path, dest: FileItem) {
         this.pending.push({src, dirs, to, dest})
         if (this.pending.length == 1) {
-            this.onConflict(src, dest)
+            setTimeout(
+                () => this.onConflict(src, dest)
+            )
         }
     }
 

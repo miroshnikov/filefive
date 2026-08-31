@@ -82,6 +82,7 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
             {
                 id: 'delete',
                 label: 'Delete',
+                className: 'attention',
                 click: () => {
                     error$.next({ 
                         type: FailureType.ConfirmDeletion, 

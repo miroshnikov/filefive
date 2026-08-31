@@ -33,6 +33,7 @@ export default function (path: Path, selected: Path[], isRoot: boolean): MenuIte
             {
                 id: 'delete',
                 label: 'Delete',
+                className: 'attention',
                 click: () => {
                     error$.next({ 
                         type: FailureType.ConfirmDeletion, 

@@ -20,18 +20,28 @@ import localFileMenu from '../../menu/localFile'
 import remoteFileMenu from '../../menu/remoteFile'
 import localDirMenu from '../../menu/localDir'
 import remoteDirMenu from '../../menu/remoteDir'
-import { useEffectOnUpdate, useSubscribe, useConcatAsyncEffect } from '../../hooks'
+import { 
+    useEffectOnUpdate, 
+    useCustomCompareEffect,
+    useSubscribe, 
+    useConcatAsyncEffect 
+} from '../../hooks'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
 import { error$ } from '../../observables/error'
 import { basename, dirname, join } from '../../utils/path'
+import { equals } from 'ramda'
 import classNames from 'classnames'
 import MissingDir from './MissingDir'
+import LocalPane from './LocalPane'
 import styles from './Workspace.less'
 import { createQueue } from '../../observables/queue'
+import { delimiter } from "node:path"
 
 
 export type AppSettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'|'sync'>>
+
+export type ConnectionInfo = ConnectionSettings & { id: ConnectionID, file: string }
 
 interface Props {
     onChange: (
@@ -43,11 +53,13 @@ interface Props {
     onSettingsChange: (settings: AppSettingsChanges) => void
 }
 
-export default function Workspace({onChange, onSettingsChange}: Props) {
+export default function Workspace({
+    onChange, 
+    onSettingsChange
+}: Props) {
     const appSettings = useContext(AppSettingsContext)
 
-    const [connection, setConnection] = 
-        useState<ConnectionSettings & {id: ConnectionID, file: string}>()
+    const [connection, setConnection] = useState<ConnectionInfo>()
     const [localPath, setLocalPath] = useState(appSettings!.path?.local ?? appSettings!.home)
     const [remotePath, setRemotePath] = useState(appSettings!.connections)
     const [localSelected, setLocalSelected] = useState<Path[]>([])
@@ -56,7 +68,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     const [menu, setMenu] = useState<MenuItem[]>([])
     const [connecting, setConnecting] = useState('')
     const abortConnecting = useRef<AbortController>(undefined)
-    const sid = useRef<string>(undefined)
+    const [sid, setSid] = useState<string>()
     const [sync, setSync] = useState(false)
     const [syncRootLocal, setSyncRootLocal] = useState<string>()
     const [syncRootRemote, setSyncRootRemote] = useState<string>()
@@ -78,6 +90,14 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             connect(u.searchParams.get('connect')!)
         }
     }, [])
+
+    useCustomCompareEffect(() => {
+        if (connection) {
+            const onWindowClose = () => disconnect()
+            window.addEventListener('beforeunload', onWindowClose)
+            return () => window.removeEventListener('beforeunload', onWindowClose)
+        }
+    }, [connection], equals)
 
     useConcatAsyncEffect(async () => {
         if (connection) {
@@ -113,6 +133,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     }
 
     const connect = (path: string) => {
+        console.log('CONNECT...')
         disconnect()
 
         setConnecting(basename(path))
@@ -126,7 +147,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                     setShowConnections(false)
                     const {id, settings} = connection
                     setConnection({ ...settings, id, file: path })
-                    sid.current = connection.sid
+                    setSid(connection.sid)
                     setLocalPath(path => settings.path!.local ?? path)
                     setRemotePath(settings.path!.remote!)
                     const u = new URL(window.location.toString())
@@ -155,8 +176,9 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
         if (!connection) {
             return
         }
-        window.f5.disconnect(connection.id, sid.current!)
-        abortConnecting.current = sid.current = undefined
+        window.f5.disconnect(connection.id, sid!)
+        setSid(undefined)
+        abortConnecting.current = undefined
         setConnection(undefined)
         setLocalPath(appSettings!.path?.local ?? appSettings!.home)
         setRemotePath(appSettings!.connections)
@@ -218,6 +240,19 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
     ]
 
     const localToolbar: ToolbarItem[] = [
+        ...(connection 
+            ?   [
+                    {
+                        id: CommandID.MirrorSync,
+                        icon: 'folder_eye',
+                        title: 'Watch local and keep remote up to date',
+                        disabled: false,
+                        delimiter: true,
+                        onClick: () => command$.next({id: CommandID.MirrorSync})
+                    }
+                ] 
+            :   []
+        ),
         ...toolbar,
         {
             id: CommandID.Delete,
@@ -227,7 +262,6 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             onClick: () => command$.next({id: CommandID.Delete})
         }
     ]
-
     const remoteToolbar: ToolbarItem[] = [
         ...toolbar,
         {
@@ -235,6 +269,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             icon: 'delete',
             title: 'Delete',
             disabled: !remoteSelected.length,
+            delimiter: !!connection,
             onClick: () => command$.next({id: CommandID.Delete})
         },
         ...(connection ? [
@@ -253,10 +288,49 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
             id: 'connect',
             icon: 'power_settings_new',
             title: 'Connect <code>Double-click on File</code>',
+            label: 'Connect',
             disabled: remoteSelected.length != 1,
             onClick: () => connect(remoteSelected[0])
         },
-        ...toolbar,
+        {
+            id: CommandID.NewFile,
+            icon: 'add',
+            title: 'New Connection...',
+            label: 'New',
+            delimiter: true,
+            onClick: () => command$.next({id: CommandID.NewFile})
+        },
+        {
+            id: CommandID.NewDir,
+            icon: 'create_new_folder',
+            title: 'New Folder...',
+            onClick: () => command$.next({id: CommandID.NewDir})
+        },
+        {
+            id: CommandID.ShowFilter,
+            icon: 'filter_alt',
+            title: 'Toggle Filter...',
+            onClick: () => command$.next({id: CommandID.ShowFilter})
+        },
+        {
+            id: CommandID.SelectAll,
+            icon: 'select_all',
+            title: 'Select All',
+            onClick: () => command$.next({id: CommandID.SelectAll})
+        },
+        {
+            id: CommandID.SelectAllFiles,
+            icon: 'select',
+            title: 'Select Only Files',
+            onClick: () => command$.next({id: CommandID.SelectAllFiles})
+        },
+        {
+            id: CommandID.CollapseAll,
+            icon: 'unfold_less',
+            title: 'Collapse All Folders',
+            delimiter: true,
+            onClick: () => command$.next({id: CommandID.CollapseAll})
+        },
         {
             id: 'Close',
             icon: 'close',
@@ -317,7 +391,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             false,
                             (connection ?? appSettings!).local.filter,
                             cmd.id == CommandID.MirrorLocal ? localPath : undefined,
-                            sid.current
+                            sid
                         ).then(createQueue)
                     }
                     break
@@ -336,15 +410,14 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                             false,
                             showConnections ? undefined : (connection ?? appSettings!).remote.filter,
                             cmd.id == CommandID.MirrorRemote ? remotePath : undefined,
-                            sid.current
+                            sid
                         ).then(createQueue)
                     }
                     break
                 }
-                case CommandID.SyncBrowsing: {
+                case CommandID.SyncBrowsing:
                     setSync(sync => !sync)
                     break
-                }
             }
         }),
         [appSettings, connection, localSelected, remoteSelected]
@@ -433,47 +506,40 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
 
     return (<>
         <Split className={classNames({ sync })}
-            left = {
-                localPath ? (
-                    missingTarget == 'local' ? 
-                        <MissingDir 
-                            path={localPath}
-                            onClose={async (create) => {
-                                if (create) {
-                                    await window.f5.mkdir(basename(tryDir), createURI(LocalFileSystemID, dirname(tryDir)))
-                                    setMissingTarget(undefined)
-                                } else {
-                                    setMissingTarget(undefined)
-                                    setSync(false)
-                                }
-                            }}
-                        /> :
-                        <Explorer 
-                            icon='computer'
-                            connection={LocalFileSystemID}
-                            settings={(connection ?? appSettings!).local}
-                            path={localPath} 
-                            fixedRoot={syncRootLocal ?? '/'}
-                            onChange={setLocalPath} 
-                            onSelect={paths => setLocalSelected(paths)}
-                            onOpen={openLocal}
-                            onMenu={fileContextMenu(false)}
-                            onSettingsChange={changes => 
-                                connection 
-                                    ? setConnection(c => ({...c!, local: {...c!.local, ...changes}}))
-                                    : onSettingsChange({ local: changes })
-                            }
-                            contextMenu={menu}
-                            toolbar={localToolbar}
-                            tabindex={1}
-                            onFocus={() => focused.current = 'local'}
-                            onBlur={() => focused.current = null}
-                        />
-                ) : 
-                <div className="fill-center">
-                    <Spinner radius="2em" />
-                </div>
-            }
+           left =  
+                <LocalPane
+                    localPath={localPath}
+                    remotePath={remotePath}
+                    connId={connection?.id}
+                    sid={sid}
+                    missingTarget={missingTarget}
+                    setMissingTarget={setMissingTarget}
+                    tryDir={tryDir}
+                    setSync={setSync}
+                >
+                    <Explorer 
+                        icon='computer'
+                        connection={LocalFileSystemID}
+                        settings={(connection ?? appSettings!).local}
+                        path={localPath} 
+                        fixedRoot={syncRootLocal ?? '/'}
+                        onChange={setLocalPath} 
+                        onSelect={paths => setLocalSelected(paths)}
+                        onOpen={openLocal}
+                        onMenu={fileContextMenu(false)}
+                        onSettingsChange={changes => {
+                            console.log('changes', changes)
+                            connection 
+                                ? setConnection(c => ({...c!, local: {...c!.local, ...changes}}))
+                                : onSettingsChange({ local: changes })
+                        }}
+                        contextMenu={menu}
+                        toolbar={localToolbar}
+                        tabindex={1}
+                        onFocus={() => focused.current = 'local'}
+                        onBlur={() => focused.current = null}
+                    />
+                </LocalPane>
             right = {
                 connecting.length ? 
                     <div className="fill-center">
@@ -516,7 +582,7 @@ export default function Workspace({onChange, onSettingsChange}: Props) {
                                             connection={connection.id}
                                             connectionName={basename(connection.file)}
                                             homeDir={connection.pwd}
-                                            sid={sid.current}
+                                            sid={sid}
                                             settings={connection.remote}
                                             path={remotePath}
                                             fixedRoot={syncRootRemote ?? '/'}

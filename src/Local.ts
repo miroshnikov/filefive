@@ -1,7 +1,15 @@
 import { homedir, platform } from 'node:os'
 import { normalize, basename, dirname, join, isAbsolute } from 'node:path/posix'
 import osPath from 'node:path'
-import { readdirSync, statSync, lstatSync, readlinkSync, watch as fsWatch, WatchEventType } from 'node:fs';
+import { 
+    readdirSync, 
+    statSync, 
+    lstatSync, 
+    readlinkSync, 
+    watch as fsWatch,
+    WatchEventType,
+    WatchOptionsWithStringEncoding
+} from 'node:fs';
 import { mkdir, unlink, rename, cp, open, rm, readFile, writeFile, watch as asyncWatch } from 'node:fs/promises'
 import { winToUnix, unixToWin } from './utils/os'
 import { LocalFileItem, LocalFiles } from './FileSystem'
@@ -116,9 +124,10 @@ export async function write(path: string, data: string): Promise<void> {
 export function watch(
     path: string, 
     listener: (event: WatchEventType, file: string|null) => void, 
-    onError: (e: Error) => void
+    onError: (e: Error) => void,
+    options: WatchOptionsWithStringEncoding | null = null
 ): () => void {
-    const watcher = fsWatch(osify(path), null, listener)
+    const watcher = fsWatch(osify(path), options, listener)
     watcher.on('error', onError)
     return () => watcher.close()
 }

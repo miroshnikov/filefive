@@ -42,6 +42,7 @@ export default function (path: Path, selected: Path[], connect: () => void): Men
         {
             id: 'delete',
             label: 'Delete',
+            className: 'attention',
             click: () => {
                 error$.next({
                     type: FailureType.ConfirmDeletion, 

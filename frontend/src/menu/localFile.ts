@@ -51,7 +51,7 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         {
             id: 'vscode',
             label: "Open in VS Code",
-            click: () => window.f5.open(createURI(LocalFileSystemID, path), 'code')
+            click: () => { window.f5.open(createURI(LocalFileSystemID, path), 'code') }
         },
         {
             id: 'open',
@@ -74,11 +74,13 @@ export default function (path: Path, selected: Path[], copyTo: URI): MenuItem[] 
         {
             id: 'clear',
             label: 'Clear Contents',
+            className: 'attention',
             click: () => command$.next({ id: CommandID.ClearContents, uri: createURI(LocalFileSystemID, path) })
         },
         {
             id: CommandID.Delete,
             label: 'Delete',
+            className: 'attention',
             click: () => {
                 error$.next({
                     type: FailureType.ConfirmDeletion, 

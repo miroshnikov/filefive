@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, Fragment } from "react"
 import { Tooltips, getTooltipShortcut } from '../../ui/components/Tooltips/Tooltips'
 import styles from './Toolbar.less'
 import { AppSettingsContext } from '../../context/config'
@@ -9,6 +9,8 @@ export interface ToolbarItem {
     icon: string
     title?: string
     disabled?: boolean
+    label?: string
+    delimiter?: boolean
     onClick: () => void
 }
 
@@ -22,8 +24,8 @@ export default function Toolbar({items, onClick}: {items: ToolbarItem[], onClick
     return (
         <Tooltips>
             <div className={styles.root}>
-                {items.map(item => 
-                    <button key={item.id}
+                {items.map(item => <Fragment key={item.id}>
+                    <button
                         className="icon" 
                         disabled={item.disabled ?? false}
                         onClick={e => { 
@@ -33,8 +35,9 @@ export default function Toolbar({items, onClick}: {items: ToolbarItem[], onClick
                             setTimeout(() => item.onClick(), 100) 
                         }}
                         data-tooltip={item.title + getTooltipShortcut(item.id, appSettings.keybindings)}
-                    >{item.icon}</button>
-                )}
+                    >{item.icon} {item.label && <span>{item.label}</span>}</button>
+                    {item.delimiter && <i></i>}
+                </Fragment>)}
             </div>
         </Tooltips>
     )

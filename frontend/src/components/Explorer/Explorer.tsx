@@ -40,7 +40,6 @@ import {
     insertAll, 
     sortBy, 
     length, 
-    curry, 
     whereEq, 
     takeLast,
     equals,

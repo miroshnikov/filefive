@@ -7,6 +7,7 @@ import { connectionID } from '../utils/URI'
 import Connection from '../Connection'
 import Password from '../Password'
 import Session from '../Session'
+import { SystemEventType, event$ } from '../events'
 import { where, whereEq, isNotNil, isNotEmpty } from 'ramda'
 
 
@@ -99,7 +100,14 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
             },
             sync: config.sync ?? null
         }
-        return { id, sid: Session.create(), settings }
+
+        const sid = Session.create()
+        event$.next({
+            type: SystemEventType.Connect, id, sid, settings, file
+        })
+
+        return { id, sid, settings }
+        
     } catch (e) {
         Password.delete(id, false)
         onError(id, e)

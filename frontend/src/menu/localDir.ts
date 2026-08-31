@@ -90,6 +90,7 @@ export default function (path: Path, selected: Path[], copyTo: URI, isRoot: bool
             {
                 id: 'delete',
                 label: 'Delete',
+                className: 'attention',
                 click: () => {
                     error$.next({ 
                         type: FailureType.ConfirmDeletion, 

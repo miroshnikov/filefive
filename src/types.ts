@@ -235,3 +235,29 @@ export type Failure =
         type: FailureType.Warning
         message: string
     }
+
+
+export enum MirrorEventType {
+    Create = 'create',
+    Syncing = 'syncing',
+    Complete = 'complete'
+}
+
+export interface MirrorSettings {
+    local: Path
+    remote: URI 
+    recursive: boolean
+    del: boolean
+}
+
+export type MirrorEvent = 
+    | { 
+        type: MirrorEventType.Create
+        id: string
+        sid: string
+        setting: MirrorSettings
+    }
+    | {
+        type: Exclude<MirrorEventType, MirrorEventType.Create>
+        id: string
+    }

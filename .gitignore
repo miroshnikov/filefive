@@ -11,3 +11,5 @@ frontend/src/hooks
 frontend/src/shared
 frontend/src/assets/icon-themes
 src/icon-themes
+src/plugins
+frontend/src/plugins

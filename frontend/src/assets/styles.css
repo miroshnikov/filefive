@@ -165,9 +165,16 @@ section {
 }
 
 .modal-content {
-    padding: 1em;
     p {
         padding: .5em 0;
+        > em {
+            display: block;
+            font-weight: 600;
+            background-color: var(--bar-background);
+            padding: .1em .5em;
+            border-radius: var(--dry-border-radius);
+            margin: .2em 0;
+        }
     }
     strong {
         font-size: 1.1rem;
@@ -176,6 +183,10 @@ section {
     i {
         font-weight: 400;
     }
+}
+
+.dry-menu .attention * {
+    color: var(--attention-color);
 }
 
 :root {
@@ -193,6 +204,14 @@ section {
     --drop-background: #BEBEBE;
     --link: #1976d2;
     --highlight: #4e91fd;
+
+    --attention-color: #C24944;
+
+    --success-bg: #2A3F35;
+    --success-color: #67A85E;
+
+    --info-bg: #27334D;
+    --info-color: #7094D5;
 }
 
 form {
@@ -236,7 +255,7 @@ form {
     --dry-border-width: 1px;
     --dry-border-style: solid;
     --dry-border: var(--dry-border-width) var(--dry-border-style) var(--dry-border-color);
-    --dry-border-radius: .3rem;
+    --dry-border-radius: .6rem;
     --dry-hover-bg: var(--hover-background);
     --dry-primary: var(--primary);
     --dry-primary-highlight-text: var(--background);

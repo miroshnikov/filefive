@@ -20,6 +20,7 @@ export enum CommandID {
     GoForward = 'go-forward',
     GoUp = 'go-up',
     SyncBrowsing = 'sync-browsing',
+    MirrorSync = 'mirror-sync',     // Ctrl + U
     
     Rename = 'rename',
     Duplicate = 'duplicate',
@@ -53,6 +54,7 @@ export type KeyShortcutCommand =
     | CommandID.GoForward
     | CommandID.GoUp
     | CommandID.SyncBrowsing
+    | CommandID.MirrorSync
 
 type FileCommand = 
     | CommandID.Upload

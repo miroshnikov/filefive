@@ -19,7 +19,9 @@ export default class RemoveQueue implements Queue {
 
 
     public async create() {
-        const paths = this.paths.map(normalize).filter(path => !this.paths.find(ancestor => path.startsWith(ancestor + sep)))
+        const paths = this.paths
+            .map(normalize)
+            .filter(path => !this.paths.find(ancestor => path.startsWith(ancestor + sep)))
 
         interface ItemToRemove {
             path: string

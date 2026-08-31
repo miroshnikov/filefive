@@ -79,11 +79,13 @@ export default function (id: ConnectionID, path: Path, selected: Path[], copyTo:
         {
             id: 'clear',
             label: 'Clear Contents',
+            className: 'attention',
             click: () => command$.next({ id: CommandID.ClearContents, uri: createURI(id, path) })
         },
         {
             id: 'delete',
             label: 'Delete',
+            className: 'attention',
             click: () => {
                 error$.next({ 
                     type: FailureType.ConfirmDeletion, 

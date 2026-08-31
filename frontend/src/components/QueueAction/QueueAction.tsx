@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { FileItem } from '../../shared/FileSystem'
 import { queue$ } from '../../observables/queue'
 import { useSubscribe } from '../../hooks'
 import { QueueEventType, QueueActionType, QueueType } from '../../shared/types'
 import { Modal, Checkbox } from '../../ui/components'
 import { dirname, basename } from '../../utils/path'
+import Path from '../Path/Path'
 import styles from './QueueAction.less'
+import { AppSettingsContext } from '../../context/config'
 import numeral from 'numeral'
+import { format } from 'date-fns'
 
 
 interface QueueConflict {
@@ -19,6 +22,8 @@ interface QueueConflict {
 
 
 export default function QueueAction() {
+
+    const appSettings = useContext(AppSettingsContext)
 
     const [conflict, setConflict] = useState<QueueConflict>()
     const [conflicts, setConflicts] = useState<QueueConflict[]>([])
@@ -68,7 +73,10 @@ export default function QueueAction() {
                         The destination already contains a {conflict.to.dir ? 'folder' : 'file'} called 
                         <strong>{basename(conflict.to.path)}</strong>
                     </p>
-                    <p>Would you like to replace the existing {conflict.to.dir ? 'folder' : 'file'} in <strong>{dirname(conflict.to.path)}</strong></p>
+                    <p>
+                        Would you like to replace the existing {conflict.to.dir ? 'folder' : 'file'} in 
+                        <strong><Path path={dirname(conflict.to.path)} /></strong>
+                    </p>
 
                     <div className={styles.file}>
                         <i className='icon'>{
@@ -78,21 +86,24 @@ export default function QueueAction() {
                         }</i>
                         <p>
                             { conflict.to.dir ? '' : <>{'Size: ' + numeral(conflict.to.size).format('0.0 b')} <br/></> } 
-                            Modified: {new Date(conflict?.to.modified).toLocaleString()}
+                            Modified: {format(conflict?.to.modified, appSettings!.timeFmt)}
                         </p>
                     </div>
 
-                    <p>with the new one from <strong>{dirname(conflict.from.path)}</strong></p>
+                    <p>
+                        with the new one from 
+                        <strong><Path path={dirname(conflict.from.path)} /></strong>
+                    </p>
 
                     <div className={styles.file}>
                         <i className='icon'>{
                             (conflict.queueType == QueueType.Move || conflict.queueType == QueueType.Copy) ? 
                                 (conflict.from.dir ? 'folder' : 'file_copy') : 
-                                (conflict.queueType == QueueType.Download ? 'computer' : 'cloud')
+                                (conflict.queueType == QueueType.Download ? 'cloud' : 'computer')
                         }</i>
                         <p>
                             { conflict.to.dir ? '' : <>{'Size: ' + numeral(conflict.from.size).format('0.0 b')} <br/></> } 
-                            Modified: {new Date(conflict?.from.modified).toLocaleString()}
+                            Modified: {format(conflict?.from.modified, appSettings!.timeFmt)}
                         </p>
                     </div>
 
@@ -100,7 +111,6 @@ export default function QueueAction() {
                         <Checkbox value={forAll} onChange={() => setForAll(v => !v)}>
                             Apply the chosen action to the rest of files
                         </Checkbox>
-
                         {conflict.sid && forAll &&
                             <Checkbox value={remember} onChange={() => setRemember(remember => !remember)}>
                                 Remember for the current session

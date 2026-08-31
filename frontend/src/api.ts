@@ -10,7 +10,8 @@ import {
     Failure, 
     FailureType, 
     DeepPartial,
-    FilterSettings
+    FilterSettings,
+    MirrorEvent
 } from './shared/types'
 import { LocalFileItem } from './shared/FileSystem'
 import { error$ } from './observables/error'
@@ -74,7 +75,6 @@ window.f5 = {
     refresh: dir => invoke<void>('refresh', { dir }),
 
     onDirChange: listener => subscribe<{uri: URI, files: Files}>('dir', ({uri, files}) => listener(uri, files)),
-    //   onDirChange(listener: (uri: URI, files: Files) => void): void
     onFileChange: listener => subscribe<{path: Path, stat: LocalFileItem|null}>('file', ({path, stat}) => listener(path, stat)),
 
     copy: (src, dest, move = false, filter?: FilterSettings, root?: Path, sid?: string) => invoke<string>('copy', { src, dest, move, filter, root, sid }),
@@ -92,7 +92,11 @@ window.f5 = {
 
     resolve: (id, action, forAll, sid) => invoke<void>('resolve', { id, action, forAll, sid }),
     stop: id => invoke<void>('stop', { id }),
-    onQueueUpdate: listener => subscribe<{id: string, event: QueueEvent}>('queue', ({id, event}) => listener(id, event))
+    onQueueUpdate: listener => subscribe<{id: string, event: QueueEvent}>('queue', ({id, event}) => listener(id, event)),
+
+    mirror: (local, remote, sid, recursive, del) => invoke<string>('mirror', { local, remote, sid, recursive, del }),
+    unmirror: (id) => invoke<void>('unmirror', { id }),
+    onMirrorUpdate: listener => subscribe<MirrorEvent>('mirror', (event) => listener(event)),
 }
 
 window.f5.onError((error: Failure) => error$.next(error))

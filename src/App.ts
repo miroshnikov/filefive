@@ -11,7 +11,8 @@ import {
     LocalFileSystemID, 
     AppSettings,
     DeepPartial,
-    FilterSettings
+    FilterSettings,
+    MirrorEvent
 } from './types'
 import Connection from './Connection'
 import LocalWatcher from './LocalWatcher'
@@ -25,6 +26,7 @@ import { LocalFileItem } from './FileSystem'
 import { createURI } from './utils/URI'
 import { SaveConnectionSettings } from './commands/saveConnection'
 import LocalTransformer from './transformers/Local'
+import { mirror, unmirror } from './plugins/mirror/commands'
 import { inspect } from 'node:util'
 
 export type Emitter = <Event extends {}>(channel: string) => (event: Event) => void
@@ -62,7 +64,7 @@ export default class App {
             refresh:      ({dir}: {dir: URI}) => this.remoteWatcher.refresh(dir),
 
             copy:         ({src, dest, move, filter, root, sid}: {src: URI[], dest: URI, move: boolean, filter?: FilterSettings, root?: Path, sid?: string}) => 
-                                    commands.copy(src, dest, move, filter, root, sid),
+                                commands.copy(src, dest, move, filter, root, sid),
             duplicate:    ({src, filter}: {src: URI[], filter?: FilterSettings}) => commands.duplicate(src, filter),
             remove:       ({files}: {files: URI[]}) => commands.remove(files, connPath),
             clear:        ({file}: {file: URI}) => commands.clear(file),
@@ -76,8 +78,14 @@ export default class App {
             save:         ({path, settings}: {path: Path, settings: SaveConnectionSettings}) => commands.saveConnection(path, settings),
 
             resolve:      ({id, action, forAll, sid}: {id: string, action: QueueAction, forAll: boolean, sid?: string}) => 
-                                    commands.resolve(id, action, forAll, sid),
-            stop:         ({id}: {id: string}) => queues.get(id)?.stop()
+                                commands.resolve(id, action, forAll, sid),
+            stop:         ({id}: {id: string}) => queues.get(id)?.stop(),
+
+            mirror:       ({local, remote, sid, recursive, del}: 
+                            {local: Path, remote: URI, sid: string, recursive: boolean, del: boolean}) =>
+                                mirror(local, remote, sid, recursive, del, this.remoteWatcher, emitter<MirrorEvent>('mirror')),
+            unmirror:     ({id}: {id: string}) => unmirror(id)
+
         }).forEach(([name, handler]) => handle(name, handler))
 
         const emitError = emitter<Failure>('error')
