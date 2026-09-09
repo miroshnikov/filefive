@@ -1,46 +1,57 @@
-import React, { useState, useEffect, JSX, Dispatch, SetStateAction } from "react"
+import React, { useState, useEffect, useRef, JSX, Dispatch, SetStateAction } from "react"
 import { basename, dirname } from '../../utils/path'
 import { createURI } from '../../shared/utils/URI'
-import { ConnectionID, LocalFileSystemID, MirrorSettings, MirrorEventType } from '../../shared/types'
+import { 
+    LocalFileSystemID, 
+    MirrorSettings, 
+    MirrorEventType,
+    FilterSettings
+} from '../../shared/types'
+import { ConnectionInfo } from './Workspace'
 import { command$ } from '../../observables/command'
 import { CommandID } from '../../commands'
-import { useSubscribe } from '../../hooks'
+import { useEffectOnUpdate, useSubscribe } from '../../hooks'
 import { remove } from 'ramda'
 import MissingDir from './MissingDir'
 import { Spinner, Split } from '../../ui/components'
-import CreateMirrorSync, { MirrorConf } from '../../plugins/mirror/Create'
+import CreateMirrorSync, { MirrorConf } from '../../plugins/mirror/Create/Create'
 import MirrorsList from '../../plugins/mirror/List/List'
 import { events$ } from '../../plugins/mirror/events'
-
 
 
 interface Props {
     localPath: string
     remotePath: string
-    connId: ConnectionID | undefined
+    connection: ConnectionInfo | undefined
+    onSettingsChange: (mirrors: MirrorSettings[]) => void
     sid: string | undefined
     missingTarget: "local" | "remote" | undefined
     setMissingTarget: Dispatch<SetStateAction<"local" | "remote" | undefined>>
     tryDir: string
     setSync: (sync: boolean) => void
+    filter?: FilterSettings
     children: JSX.Element
 }
 
 export default function LocalPane({
     localPath,
     remotePath,
-    connId,
+    connection,
+    onSettingsChange,
     sid,
     missingTarget,
     setMissingTarget,
     tryDir,
     setSync,
+    filter,
     children
 }: Props) {
 
     const [showCreateMirrorSync, setShowCreateMirrorSync] = useState(false)
 
     const [mirrors, setMirrors] = useState<(MirrorSettings & { id: string })[]>([])
+
+    const mirrorsChanged = useRef(false)
 
     useSubscribe(() => 
         command$.subscribe(cmd => {
@@ -55,12 +66,11 @@ export default function LocalPane({
 
     useEffect(() => {
         setMirrors([])
-    }, [connId])
+    }, [connection?.id])
 
     useSubscribe(() => 
         events$
             .subscribe(event => {
-                console.log('EVENT', event, sid)
                 if (event.type == MirrorEventType.Create
                         && event.sid == sid) {
                     setMirrors(mirrors => [
@@ -71,6 +81,7 @@ export default function LocalPane({
                             remote: event.setting.remote,
                             recursive: event.setting.recursive, 
                             del: event.setting.del, 
+                            filter: event.setting.filter
                         }
                     ])
                 }
@@ -78,18 +89,35 @@ export default function LocalPane({
         [sid]
     )
 
-    const createMirrorSync = (conf: MirrorConf) => {
-        if (!connId || !sid) {
+    useEffectOnUpdate(() => {
+        if (mirrorsChanged.current == true) {
+            mirrorsChanged.current = false
+            if (sid && connection?.file) {
+                onSettingsChange(mirrors)
+            }
+        }
+    }, [mirrors]) 
+
+    const createMirror = (conf: MirrorConf) => {
+        if (!connection?.id || !sid) {
             return
         }
-        const remote = createURI(connId, remotePath)
+        const remote = createURI(connection.id, remotePath)
         window.f5.mirror(
             localPath, 
             remote,
             sid,
             conf.recursive,
-            conf.del
+            conf.del,
+            (filter 
+                && (
+                    filter.text.trim().length > 0 
+                    || filter.uncommited === true
+                    || filter.ignored === true
+                )
+            ) ? filter : undefined
         )
+        mirrorsChanged.current = true
     }
 
     const onMirrorDelete = (id: string) => {
@@ -97,10 +125,11 @@ export default function LocalPane({
         if (i >= 0) {
             setMirrors(remove(i, 1, mirrors))
             window.f5.unmirror(id)
+            mirrorsChanged.current = true
         }
     }
 
-    const inner = connId && mirrors.length
+    const inner = connection?.id && mirrors.length
         ?   <Split 
                 vertical={true} 
                 initial={80} 
@@ -130,14 +159,16 @@ export default function LocalPane({
                             <CreateMirrorSync
                                 localPath={localPath}
                                 remotePath={remotePath}
+                                filter={filter}
                                 onClose={conf => {
                                     setShowCreateMirrorSync(false)
-                                    conf && createMirrorSync(conf)
+                                    conf && createMirror(conf)
                                 }}
                             />
                         }
                     </>
-        ) : <div className="fill-center">
+        ) 
+        :   <div className="fill-center">
                 <Spinner radius="2em" />
             </div>
 }

@@ -81,9 +81,9 @@ export default class App {
                                 commands.resolve(id, action, forAll, sid),
             stop:         ({id}: {id: string}) => queues.get(id)?.stop(),
 
-            mirror:       ({local, remote, sid, recursive, del}: 
-                            {local: Path, remote: URI, sid: string, recursive: boolean, del: boolean}) =>
-                                mirror(local, remote, sid, recursive, del, this.remoteWatcher, emitter<MirrorEvent>('mirror')),
+            mirror:       ({local, remote, sid, recursive, del, filter}: 
+                            {local: Path, remote: URI, sid: string, recursive: boolean, del: boolean, filter?: FilterSettings}) =>
+                                mirror(local, remote, sid, recursive, del, filter, this.remoteWatcher, emitter<MirrorEvent>('mirror')),
             unmirror:     ({id}: {id: string}) => unmirror(id)
 
         }).forEach(([name, handler]) => handle(name, handler))

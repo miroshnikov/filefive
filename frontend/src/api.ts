@@ -94,7 +94,7 @@ window.f5 = {
     stop: id => invoke<void>('stop', { id }),
     onQueueUpdate: listener => subscribe<{id: string, event: QueueEvent}>('queue', ({id, event}) => listener(id, event)),
 
-    mirror: (local, remote, sid, recursive, del) => invoke<string>('mirror', { local, remote, sid, recursive, del }),
+    mirror: (local, remote, sid, recursive, del, filter) => invoke<string>('mirror', { local, remote, sid, recursive, del, filter }),
     unmirror: (id) => invoke<void>('unmirror', { id }),
     onMirrorUpdate: listener => subscribe<MirrorEvent>('mirror', (event) => listener(event)),
 }

@@ -17,7 +17,7 @@ export function getSettings(settings: ExplorerSettings): ExplorerConfig {
 
 export type SaveConnectionSettings = 
     | (Pick<ConnectionConfig, 'scheme'|'host'|'port'|'user'|'password'|'privatekey'> & { savePassword: boolean })
-    | Pick<ConnectionSettings, 'local'|'remote'|'path'|'sync'>
+    | Partial<Pick<ConnectionSettings, 'local'|'remote'|'path'|'sync'|'mirrors'>>
 
 
 export default async function (path: Path, settings: SaveConnectionSettings) {
@@ -46,6 +46,9 @@ export default async function (path: Path, settings: SaveConnectionSettings) {
             config.path = settings.path
         }
         config.sync = settings.sync
+        config.mirrors = settings.mirrors 
+            ? settings.mirrors
+            : []
     }
 
     if (!config) {

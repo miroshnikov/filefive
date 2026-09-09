@@ -36,7 +36,6 @@ import MissingDir from './MissingDir'
 import LocalPane from './LocalPane'
 import styles from './Workspace.less'
 import { createQueue } from '../../observables/queue'
-import { delimiter } from "node:path"
 
 
 export type AppSettingsChanges = DeepPartial<Pick<AppSettings, 'local'|'remote'|'path'|'sync'>>
@@ -133,7 +132,6 @@ export default function Workspace({
     }
 
     const connect = (path: string) => {
-        console.log('CONNECT...')
         disconnect()
 
         setConnecting(basename(path))
@@ -510,11 +508,13 @@ export default function Workspace({
                 <LocalPane
                     localPath={localPath}
                     remotePath={remotePath}
-                    connId={connection?.id}
+                    connection={connection}
+                    onSettingsChange={mirrors => setConnection(c => ({...c!, mirrors}))}
                     sid={sid}
                     missingTarget={missingTarget}
                     setMissingTarget={setMissingTarget}
                     tryDir={tryDir}
+                    filter={(connection ?? appSettings!).local?.filter}
                     setSync={setSync}
                 >
                     <Explorer 
@@ -527,12 +527,11 @@ export default function Workspace({
                         onSelect={paths => setLocalSelected(paths)}
                         onOpen={openLocal}
                         onMenu={fileContextMenu(false)}
-                        onSettingsChange={changes => {
-                            console.log('changes', changes)
+                        onSettingsChange={changes =>
                             connection 
                                 ? setConnection(c => ({...c!, local: {...c!.local, ...changes}}))
                                 : onSettingsChange({ local: changes })
-                        }}
+                        }
                         contextMenu={menu}
                         toolbar={localToolbar}
                         tabindex={1}

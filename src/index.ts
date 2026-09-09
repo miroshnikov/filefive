@@ -23,7 +23,8 @@ program
     .option('-p, --port <number>','port number', '3113')
     .option('--log', 'prints the log information')
 program.parse()
-const inputOptions = program.opts()
+
+export const inputOptions = program.opts()
 
 const port = inputOptions.port ?? 3113
 options.log = inputOptions.log ?? process.env.NODE_ENV == 'development'

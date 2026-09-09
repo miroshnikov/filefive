@@ -8,6 +8,7 @@ import { AppSettingsContext } from '../../context/config'
 import { createURI } from '../../shared/utils/URI'
 import { mergeRight, omit } from 'ramda'
 import { LocalFileSystemID, AppSettings } from '../../shared/types'
+import info from '../../../../package.json'
 import styles from './Settings.less'
 
 export const themes = ['black', 'blue', 'green', 'pink']
@@ -67,50 +68,54 @@ export default function Settings() {
     }
     
     return shown && <Modal buttons={buttons} onClose={onClose} options={{x: true}}>
-        <form className={styles.form} onSubmit={e => e.preventDefault()}>
-            <label>Mode:</label>
-            <div className="dry-buttons">
-                <button onClick={() => setMode('light')}  data-checked={mode=='light'}>Light</button>
-                <button onClick={() => setMode('system')} data-checked={mode=='system'}>System</button>
-                <button onClick={() => setMode('dark')}   data-checked={mode=='dark'}>Dark</button>
-            </div>
+        <div className={styles.root + ' modal-content'}>
+            <header>Settings</header>
+            <form className={styles.form} onSubmit={e => e.preventDefault()}>
+                <label>Mode:</label>
+                <div className="dry-buttons">
+                    <button onClick={() => setMode('light')}  data-checked={mode=='light'}>Light</button>
+                    <button onClick={() => setMode('system')} data-checked={mode=='system'}>System</button>
+                    <button onClick={() => setMode('dark')}   data-checked={mode=='dark'}>Dark</button>
+                </div>
 
-            <label>Color Theme:</label>
-            <div className={styles.themes}>
-                {themes.map(t => 
-                    <span key={t}
-                        data-mode="dark"
-                        data-theme={t}
-                        data-active={t==theme} 
-                        onClick={() => setTheme(t)}
-                    ></span>
-                )}
-            </div>
+                <label>Color Theme:</label>
+                <div className={styles.themes}>
+                    {themes.map(t => 
+                        <span key={t}
+                            data-mode="dark"
+                            data-theme={t}
+                            data-active={t==theme} 
+                            onClick={() => setTheme(t)}
+                        ></span>
+                    )}
+                </div>
 
-            <label>File Icon Theme:</label>
-            <Select value={fileTheme} options={fileIconThemes} onChange={setFileTheme} />
+                <label>File Icon Theme:</label>
+                <Select value={fileTheme} options={fileIconThemes} onChange={setFileTheme} />
 
-            <label>Date/time format:</label>
-            <input className={classNames('dry')} 
-                name="date-time-fmt"
-                value={timeFmt}
-                onChange={e => setTimeFmt(e.target.value)}
-                placeholder="e.g. yyyy-MM-dd HH:mm" 
-            />
-            <p>
-                <i className="icon">info</i><a href="https://date-fns.org/v3.6.0/docs/format" target="_blank">See all formats</a>
-            </p>
+                <label>Date/time format:</label>
+                <input className={classNames('dry')} 
+                    name="date-time-fmt"
+                    value={timeFmt}
+                    onChange={e => setTimeFmt(e.target.value)}
+                    placeholder="e.g. yyyy-MM-dd HH:mm" 
+                />
+                <p>
+                    <i className="icon">info</i><a href="https://date-fns.org/v3.6.0/docs/format" target="_blank">Supported formats</a>
+                </p>
 
-            <label>Filesize format:</label>
-            <input className={classNames('dry')} 
-                name="filesize-fmt"
-                value={sizeFmt}
-                onChange={e => setSizeFmt(e.target.value)}
-                placeholder="e.g. 0.0 b" 
-            />
-            <p>
-                <i className="icon">info</i><a href="http://numeraljs.com/#format-bytes" target="_blank">See all formats</a>
-            </p>
-        </form>
+                <label>Filesize format:</label>
+                <input className={classNames('dry')} 
+                    name="filesize-fmt"
+                    value={sizeFmt}
+                    onChange={e => setSizeFmt(e.target.value)}
+                    placeholder="e.g. 0.0 b" 
+                />
+                <p>
+                    <i className="icon">info</i><a href="http://numeraljs.com/#format-bytes" target="_blank">Supported formats</a>
+                </p>
+            </form>
+            <small>Version: {info.version}</small>
+        </div>
     </Modal>
 }

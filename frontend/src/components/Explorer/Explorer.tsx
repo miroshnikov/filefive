@@ -192,6 +192,7 @@ export default function Explorer ({
     const [initialFilter, setInitialFilter] = useState<FilterSettings>()
     const filterSettings = useRef<FilterSettings>(undefined)
     const filterRe = useRef<RegExp>(null)
+    const userChangedFilter = useRef<boolean>(false)
 
     const history = useRef<Path[]>([])
     const historyIndex = useRef(0)
@@ -219,13 +220,16 @@ export default function Explorer ({
 
     useCustomCompareEffect(() => {
         updateColumns()
+    }, [settings.columns], equals)
 
-        if (!equals(settings.filter, showFilter ? filterSettings.current : null)) {
+    useCustomCompareEffect(() => {
+        if (!userChangedFilter.current) {  
             filterSettings.current = settings.filter
             setInitialFilter(settings.filter)
-            setShowFilter(settings.filter != null)            
+            setShowFilter(settings.filter != null)
         }
-    }, [settings], equals)
+        userChangedFilter.current = false
+    }, [settings.filter], equals)
 
     useEffectOnUpdate(() => setRoot(path), [path])
 
@@ -504,6 +508,7 @@ export default function Explorer ({
                     break
                 }
                 case CommandID.ShowFilter: {
+                    userChangedFilter.current = true
                     setShowFilter(showFilter => !showFilter)
                     break
                 }
@@ -730,8 +735,14 @@ export default function Explorer ({
         <Filter 
             show={showFilter}
             initial={initialFilter}
-            onChange={settings => setFilterSettings(filterSettings.current = settings)}
-            onClose={() => setShowFilter(false)}
+            onChange={settings => {
+                userChangedFilter.current = true
+                setFilterSettings(filterSettings.current = settings)
+            }}
+            onClose={() => {
+                userChangedFilter.current = true
+                setShowFilter(false)
+            }}
         />
         <List 
             ref={list}

@@ -72,6 +72,7 @@ export interface ConnectionConfig extends Twofold<ExplorerConfig> {
     theme: string
     path?: Twofold<Path|undefined>
     sync?: Twofold<Path>|null
+    mirrors?: MirrorSettings[]
 }
 
 
@@ -101,6 +102,7 @@ export interface ConnectionSettings extends Twofold<ExplorerSettings> {
     theme: string
     path?: Twofold<Path|undefined>
     sync: Twofold<Path>|null
+    mirrors?: MirrorSettings[]
 }
 
 export interface AppSettings extends Twofold<ExplorerSettings> {
@@ -248,6 +250,7 @@ export interface MirrorSettings {
     remote: URI 
     recursive: boolean
     del: boolean
+    filter?: FilterSettings
 }
 
 export type MirrorEvent = 

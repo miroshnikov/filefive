@@ -74,9 +74,15 @@ export default function Filter({ show, initial, onChange, onClose }: FilterProps
                         autoComplete="off"
                     />
                     <Tooltips>
-                        <button data-on={value.matchCase} data-tooltip="Match Case" onClick={() => update({matchCase: !value.matchCase})}>Aa</button>
-                        <button className="wholeWord" data-on={value.wholeWord} data-tooltip="Match Whole Word" onClick={() => update({wholeWord: !value.wholeWord})}>ab</button>
-                        <button data-on={value.useRe} data-tooltip="Use JavaScript Regular Expression" onClick={() => update({useRe: !value.useRe})}>.*</button>
+                        <button data-on={value.matchCase} data-tooltip="Match Case" onClick={() => update({matchCase: !value.matchCase})}>
+                            <i className="icon">match_case</i>
+                        </button>
+                        <button data-on={value.wholeWord} data-tooltip="Match Whole Word" onClick={() => update({wholeWord: !value.wholeWord})}>
+                            <i className="icon">match_word</i>
+                        </button>
+                        <button data-on={value.useRe} data-tooltip="Use JavaScript Regular Expression" onClick={() => update({useRe: !value.useRe})}>
+                            <i className="icon">regular_expression</i>
+                        </button>
                         <button data-on={value.folders} data-tooltip="Include Folders" onClick={() => update({folders: !value.folders})}>
                             <i className="icon">folder</i>
                         </button>

@@ -68,7 +68,10 @@ export default function QueueAction() {
     return <>
         {conflict &&
             <Modal onClose={proceed} buttons={[{id: 'stop', label: 'Stop'}, {id: 'cancel', label: 'Skip'}, {id: 'ok', label: 'Replace'}]}>
-                <div className={styles.root}>
+                <div className={'modal-content ' + styles.root}>
+                    <header>
+                        Choose action
+                    </header>
                     <p>
                         The destination already contains a {conflict.to.dir ? 'folder' : 'file'} called 
                         <strong>{basename(conflict.to.path)}</strong>

@@ -8,7 +8,7 @@ export default function Path({path, type}: {path: string, type?: 'local'|'remote
 
     useEffect(() => setItems(segments(path)), [path])
 
-    return <span className={styles.root}>
+    return <span className={styles.root + ' path-breadcrumbs'}>
         {type != undefined && <>
             <i className="icon">
                 {type == 'local' ? 'computer' : 'cloud'}

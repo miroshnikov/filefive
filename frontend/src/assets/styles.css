@@ -165,14 +165,20 @@ section {
 }
 
 .modal-content {
+    header {
+        font-weight: 600;
+        font-size: 1.4em;
+        margin-bottom: 1em;
+    }
     p {
         padding: .5em 0;
         > em {
             display: block;
             font-weight: 600;
             background-color: var(--bar-background);
-            padding: .1em .5em;
-            border-radius: var(--dry-border-radius);
+            padding: .5em .8em;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
             margin: .2em 0;
         }
     }
@@ -182,6 +188,23 @@ section {
     }
     i {
         font-weight: 400;
+    }
+    > .info {
+        margin: .8em 0;
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        font-size: .9em;
+        background-color: var(--bar-background);
+        border: 1px solid var(--dry-primary);
+        border-radius: 5px;
+        padding: .5em;
+        &::before {
+            font-family: 'Material Symbols Outlined';
+            font-size: 1.8em;
+            color: var(--dry-primary);
+            content: "info";
+        }
     }
 }
 

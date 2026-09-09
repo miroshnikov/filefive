@@ -1,5 +1,5 @@
-import { read, write } from './Local'
 import { join } from 'node:path/posix'
+import { read, concurrentWrite } from './Local'
 import { ConnectionID } from './types'
 
 
@@ -48,7 +48,7 @@ export default class Passwords {
 
 
     private static dump() {
-        write(
+        concurrentWrite(
             this.saveFile,
             JSON.stringify(
                 Array.from(this.store.entries())

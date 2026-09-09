@@ -9,11 +9,14 @@ import {
     watch as fsWatch,
     WatchEventType,
     WatchOptionsWithStringEncoding
-} from 'node:fs';
+} from 'node:fs'
+import pLimit from 'p-limit'
 import { mkdir, unlink, rename, cp, open, rm, readFile, writeFile, watch as asyncWatch } from 'node:fs/promises'
 import { winToUnix, unixToWin } from './utils/os'
 import { LocalFileItem, LocalFiles } from './FileSystem'
 import { getDrives } from './win'
+
+const limit = pLimit(1)
 
 
 export function isWin() {
@@ -119,6 +122,10 @@ export async function readInBuffer(path: string): Promise<Buffer> {
 
 export async function write(path: string, data: string): Promise<void> {
     return writeFile(osify(path), data)
+}
+
+export async function concurrentWrite(path: string, data: string) {
+    return limit(() => write(path, data))
 }
 
 export function watch(

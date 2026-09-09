@@ -165,8 +165,7 @@ export default function App () {
                         <div className={styles.toolbar}>
                             <span>
                                 <a href="https://github.com/miroshnikov/filefive" target="_blank">
-                                    <span>F5</span>FileFive 
-                                    <small>{info.version}</small>
+                                    <span>F5</span>FileFive
                                 </a>
                                 <nav>
                                     <svg viewBox="0 0 16 16" width="16" height="16">

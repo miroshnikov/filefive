@@ -50,7 +50,7 @@ export interface F5 {
     stop(id: string): void
     onQueueUpdate(listener: (id: string, event: QueueEvent) => void): void
 
-    mirror(local: Path, remote: URI, sid: string, recursive: boolean, del: boolean): Promise<string>
+    mirror(local: Path, remote: URI, sid: string, recursive: boolean, del: boolean, filter?: FilterSettings): Promise<string>
     unmirror(id: string): void
     onMirrorUpdate(listener: (event: MirrorEvent) => void): void
 }

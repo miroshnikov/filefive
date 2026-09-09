@@ -98,7 +98,8 @@ export default async function (file: Path, onError: (id: ConnectionID, e: any) =
                 local: config.path?.local,
                 remote: config.path?.remote ?? pwd
             },
-            sync: config.sync ?? null
+            sync: config.sync ?? null,
+            mirrors: config.mirrors
         }
 
         const sid = Session.create()
