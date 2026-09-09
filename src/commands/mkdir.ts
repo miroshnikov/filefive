@@ -24,7 +24,7 @@ export default async function (name: string, parent: URI) {
                     await conn.mkdir(path)
                 } catch (e) {
                     if (i == parts.length-1) {
-                        throw e
+                        // throw e SKIP
                     }
                 }
             }
